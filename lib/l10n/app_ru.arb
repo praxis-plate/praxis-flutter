@@ -1,0 +1,43 @@
+{
+  "appTitle": "Codium",
+  "@appTitle": {
+    "description": "Codium"
+  },
+  "displaySignUp": "Регистрация",
+  "labelPhoneNumber": "Номер телефона:",
+  "next": "Далее",
+  "labelEmail": "Email",
+  "labelPassword": "Пароль",
+  "errorPasswordsDoNotMatch": "Пароли не совпадают",
+  "displayAlreadyHaveAnAccount": "Уже есть аккаунт?",
+  "displaySignIn": "Войти",
+  "displayEmailHint": "example@yandex.ru",
+  "displayPasswordHint": "•••••••••",
+  "errorEmail": "Email не валиден",
+  "errorPassword": "Пароль не валиден",
+  "errorPasswordRequires": "Пароль должен содержать минимум 8 символов",
+  "displayDontHaveAnAccount": "Нет аккаунта?",
+
+  "navigationMainTitle": "Обзор",
+  "navigationLearningTitle": "Прохожу",
+  "navigationProfileTitle": "Профиль",
+
+  "mainTitle": "Обзор",
+  "recommend": "Рекомендации:",
+  "courses": "Курсы:",
+  "searchCourse": "Найти курс...",
+  "yourBalance": "Мой баланс:",
+
+  "learningTitle": "Прохожу",
+  "streak": "Стрик",
+  "points": "Очки",
+  "solved": "Решено",
+  "active": "Активные",
+  "passed": "Пройденные",
+  "noData": "Нет данных",
+
+  "profileTitle": "Профиль",
+  "profileSetRussian": "Русский",
+  "profileSetDarkMode": "Тёмный режим",
+  "profileLogOut": "Выйти"
+}

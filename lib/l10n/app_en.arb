@@ -1,0 +1,43 @@
+{
+  "appTitle": "Codium",
+  "@appTitle": {
+    "description": "Codium"
+  },
+  "displaySignUp": "Sign Up",
+  "labelPhoneNumber": "Phone number:",
+  "next": "Next",
+  "labelEmail": "Email",
+  "labelPassword": "Password",
+  "errorPasswordsDoNotMatch": "Passwords do not match",
+  "displayAlreadyHaveAnAccount": "Already have an account?",
+  "displaySignIn": "Sign In",
+  "displayEmailHint": "example@gmail.com",
+  "displayPasswordHint": "•••••••••",
+  "errorEmail": "Email is not valid",
+  "errorPassword": "Password is not valid",
+  "errorPasswordRequires": "Password must be at least 8 characters long",
+  "displayDontHaveAnAccount": "Don't have an account?",
+
+  "navigationMainTitle": "Main",
+  "navigationLearningTitle": "Learning",
+  "navigationProfileTitle": "Profile",
+
+  "mainTitle": "Main",
+  "recommend": "Recommend",
+  "courses": "Courses",
+  "searchCourse": "Search course...",
+  "yourBalance": "Your balance:",
+
+  "learningTitle": "Learning",
+  "streak": "Streak",
+  "points": "Points",
+  "solved": "Solved",
+  "active": "Active",
+  "passed": "Passed",
+  "noData": "No data",
+
+  "profileTitle": "Profile",
+  "profileSetRussian": "Russian",
+  "profileSetDarkMode": "Dark theme",
+  "profileLogOut": "Sign out"
+}
