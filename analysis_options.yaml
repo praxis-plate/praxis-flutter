@@ -7,3 +7,5 @@ linter:
     prefer_const_constructors: true
     prefer_const_declarations: true
     prefer_const_literals_to_create_immutables: true
+    prefer_int_literals: true
+    require_trailing_commas: true
