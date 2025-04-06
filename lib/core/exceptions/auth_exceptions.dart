@@ -1,0 +1,12 @@
+class AuthException implements Exception {
+  final String message;
+  AuthException(this.message);
+}
+
+class AuthValidationException extends AuthException {
+  AuthValidationException(super.message);
+}
+
+class AuthServerException extends AuthException {
+  AuthServerException(super.message);
+}

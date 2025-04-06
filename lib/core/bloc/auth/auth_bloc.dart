@@ -1,5 +1,8 @@
-import 'package:codium/repositories/codium_auth/abstract_auth_repository.dart';
-import 'package:codium/repositories/codium_courses/models/models.dart';
+import 'package:codium/domain/models/models.dart';
+import 'package:codium/domain/usecases/auth/check_auth_status_usecase.dart';
+import 'package:codium/domain/usecases/auth/sign_in_usecase.dart';
+import 'package:codium/domain/usecases/auth/sign_out_usecase.dart';
+import 'package:codium/domain/usecases/auth/sign_up_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,35 +10,80 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final IAuthRepository _authRepository;
+  final CheckAuthStatusUseCase _checkAuthStatusUseCase;
+  final SignUpUseCase _signUpUseCase;
+  final SignInUseCase _signInUseCase;
+  final SignOutUseCase _signOutUseCase;
 
-  AuthBloc(this._authRepository) : super(const AuthState.unauthenticated()) {
-    on<AuthLogoutEvent>(_onAuthLogout);
-    on<AuthLoginEvent>(_onAuthLogin);
-    on<AuthRegisterEvent>(_onAuthRegister);
+  AuthBloc({
+    required CheckAuthStatusUseCase checkAuthStatusUseCase,
+    required SignUpUseCase signUpUseCase,
+    required SignInUseCase signInUseCase,
+    required SignOutUseCase signOutUseCase,
+  })  : _checkAuthStatusUseCase = checkAuthStatusUseCase,
+        _signUpUseCase = signUpUseCase,
+        _signInUseCase = signInUseCase,
+        _signOutUseCase = signOutUseCase,
+        super(const AuthInitialState()) {
+    on<AuthSignUpEvent>(_onSignUp);
+    on<AuthSignInEvent>(_onSignIn);
+    on<AuthSignOutEvent>(_onSignOut);
+    on<AuthCheckStatus>(_onCheckStatus);
   }
 
-  Future<void> _onAuthLogout(
-    AuthLogoutEvent event,
+  Future<void> _onSignUp(
+    AuthSignUpEvent event,
     Emitter<AuthState> emit,
   ) async {
-    await _authRepository.logout();
-    emit(const AuthState.unauthenticated());
+    try {
+      emit(const AuthLoadingState());
+      final user = await _signUpUseCase.execute(event.email, event.password);
+      emit(AuthAuthenticatedState(user));
+    } catch (e) {
+      emit(AuthErrorState(e.toString()));
+    }
   }
 
-  Future<void> _onAuthLogin(
-    AuthLoginEvent event,
+  Future<void> _onSignIn(
+    AuthSignInEvent event,
     Emitter<AuthState> emit,
   ) async {
-    final user = await _authRepository.login(event.email, event.password);
-    emit(AuthState.authenticated(user));
+    try {
+      emit(const AuthLoadingState());
+      final user = await _signInUseCase.execute(event.email, event.password);
+      emit(AuthAuthenticatedState(user));
+    } catch (e) {
+      emit(AuthErrorState(e.toString()));
+    }
   }
 
-  Future<void> _onAuthRegister(
-    AuthRegisterEvent event,
+  Future<void> _onSignOut(
+    AuthSignOutEvent event,
     Emitter<AuthState> emit,
   ) async {
-    final user = await _authRepository.signUp(event.email, event.password);
-    emit(AuthState.authenticated(user));
+    try {
+      emit(const AuthLoadingState());
+      await _signOutUseCase.execute();
+      emit(const AuthUnauthenticatedState());
+    } catch (e) {
+      emit(AuthErrorState(e.toString()));
+    }
+  }
+
+  Future<void> _onCheckStatus(
+    AuthCheckStatus event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoadingState());
+    try {
+      final currentUser = await _checkAuthStatusUseCase.execute();
+      if (currentUser != null) {
+        emit(AuthAuthenticatedState(currentUser));
+      } else {
+        emit(const AuthUnauthenticatedState());
+      }
+    } catch (e) {
+      emit(const AuthUnauthenticatedState());
+    }
   }
 }

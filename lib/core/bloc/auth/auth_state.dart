@@ -1,31 +1,51 @@
 part of 'auth_bloc.dart';
 
 enum AuthStatus {
+  unknown,
   authenticated,
   unauthenticated,
+  loading,
+  error,
 }
 
-final class AuthState extends Equatable {
-  const AuthState._({
-    required this.status,
-    required this.user,
-  });
+sealed class AuthState extends Equatable {
+  const AuthState();
+  
+  @override
+  List<Object?> get props => [];
+}
 
-  const AuthState.authenticated(User user)
-      : this._(
-          status: AuthStatus.authenticated,
-          user: user,
-        );
+class AuthInitialState extends AuthState {
+  const AuthInitialState();
+}
 
-  const AuthState.unauthenticated()
-      : this._(
-          status: AuthStatus.unauthenticated,
-          user: null,
-        );
+class AuthLoadingState extends AuthState {
+  const AuthLoadingState();
+}
 
-  final AuthStatus status;
-  final User? user;
+class AuthAuthenticatedState extends AuthState {
+  final User user;
+  
+  const AuthAuthenticatedState(this.user);
 
   @override
-  List<Object?> get props => [status, user];
+  List<Object?> get props => [user];
+}
+
+class AuthUnauthenticatedState extends AuthState {
+  final String? redirectReason;
+  
+  const AuthUnauthenticatedState({this.redirectReason});
+
+  @override
+  List<Object?> get props => [redirectReason];
+}
+
+class AuthErrorState extends AuthState {
+  final String message;
+  
+  const AuthErrorState(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

@@ -8,7 +8,7 @@ class GetButton extends StatelessWidget {
   });
 
   final VoidCallback? onPressed;
-  final int? price;
+  final double? price;
 
   @override
   Widget build(BuildContext context) {

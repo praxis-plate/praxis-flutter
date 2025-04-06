@@ -1,7 +1,6 @@
 import 'dart:math';
 
-import 'package:codium/repositories/codium_courses/models/activity_cell.dart';
-import 'package:codium/repositories/codium_courses/models/user_statistics.dart';
+import 'package:codium/domain/models/models.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +26,7 @@ class ActivityTable extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             StatisticsElement(
-              number: userStatistics.maxStreakInDays.toString(),
+              number: userStatistics.maxStreak.toString(),
               label: S.of(context).streak,
             ),
             StatisticsElement(
@@ -35,7 +34,7 @@ class ActivityTable extends StatelessWidget {
               label: S.of(context).points,
             ),
             StatisticsElement(
-              number: userStatistics.solvedTasks.toString(),
+              number: userStatistics.totalSolvedTasks.toString(),
               label: S.of(context).solved,
             ),
           ],
@@ -68,7 +67,7 @@ class GridWithMonths extends StatelessWidget {
         itemBuilder: (context, index) {
           var cell = activities[index];
 
-          if (cell is ActivityMonthName) {
+          if (cell is ActivityMonth) {
             return ActivityMonthNameGridCell(monthName: cell);
           }
 
@@ -107,7 +106,7 @@ class ActivityMonthNameGridCell extends StatelessWidget {
     required this.monthName,
   });
 
-  final ActivityMonthName monthName;
+  final ActivityMonth monthName;
 
   @override
   Widget build(BuildContext context) {
