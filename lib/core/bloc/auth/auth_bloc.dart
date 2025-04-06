@@ -5,6 +5,8 @@ import 'package:codium/domain/usecases/auth/sign_out_usecase.dart';
 import 'package:codium/domain/usecases/auth/sign_up_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -38,9 +40,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthLoadingState());
       final user = await _signUpUseCase.execute(event.email, event.password);
-      emit(AuthAuthenticatedState(user));
-    } catch (e) {
+      GetIt.I.registerSingleton<User>(user);
+      emit(const AuthAuthenticatedState());
+    } catch (e, st) {
       emit(AuthErrorState(e.toString()));
+      GetIt.I<Talker>().handle(e, st);
     }
   }
 
@@ -51,9 +55,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthLoadingState());
       final user = await _signInUseCase.execute(event.email, event.password);
-      emit(AuthAuthenticatedState(user));
-    } catch (e) {
+      GetIt.I.registerSingleton<User>(user);
+      emit(const AuthAuthenticatedState());
+    } catch (e, st) {
       emit(AuthErrorState(e.toString()));
+      GetIt.I<Talker>().handle(e, st);
     }
   }
 
@@ -64,9 +70,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthLoadingState());
       await _signOutUseCase.execute();
+      GetIt.I.unregister<User>();
       emit(const AuthUnauthenticatedState());
-    } catch (e) {
+    } catch (e, st) {
       emit(AuthErrorState(e.toString()));
+      GetIt.I<Talker>().handle(e, st);
     }
   }
 
@@ -78,12 +86,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final currentUser = await _checkAuthStatusUseCase.execute();
       if (currentUser != null) {
-        emit(AuthAuthenticatedState(currentUser));
+        GetIt.I.registerSingleton<User>(currentUser);
+        emit(const AuthAuthenticatedState());
       } else {
         emit(const AuthUnauthenticatedState());
       }
-    } catch (e) {
+    } catch (e, st) {
       emit(const AuthUnauthenticatedState());
+      GetIt.I<Talker>().handle(e, st);
     }
   }
 }

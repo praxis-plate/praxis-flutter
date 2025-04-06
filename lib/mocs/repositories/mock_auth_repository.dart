@@ -1,6 +1,9 @@
 import 'package:codium/core/exceptions/auth_exceptions.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/abstract_auth_repository.dart';
+import 'package:codium/mocs/data/mock_user.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 class MockAuthRepository implements IAuthRepository {
   User? _currentUser;
@@ -17,36 +20,32 @@ class MockAuthRepository implements IAuthRepository {
       throw AuthException('Ошибка регистрации');
     }
 
-    _currentUser = User(
-      id: 'mock_${email.hashCode}',
-      email: email,
-      name: email.split('@').first,
-      balance: 0,
-    );
+    _currentUser = mockUser;
+
+    GetIt.I<Talker>().info('Sign Up. Email: $email. Password: $password');
 
     return _currentUser!;
   }
 
   @override
-  Future<User> login(String email, String password) async {
+  Future<User> signIn(String email, String password) async {
     await Future.delayed(const Duration(seconds: 1));
 
     if (_shouldFail) {
       throw AuthException('Неверные учетные данные');
     }
 
-    _currentUser = User(
-      id: 'mock_${email.hashCode}',
-      email: email,
-      name: 'Mock User',
-      balance: 0,
-    );
+    _currentUser = mockUser;
+
+    GetIt.I<Talker>().info('Sign Up. Email: $email. Password: $password');
 
     return _currentUser!;
   }
 
   @override
   Future<void> signOut() async {
+    GetIt.I<Talker>().info('Sign Out');
+
     _currentUser = null;
   }
 

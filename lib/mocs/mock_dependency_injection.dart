@@ -1,10 +1,4 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/data/datasources/go_auth_datasource.dart';
-import 'package:codium/data/datasources/go_course_datasource.dart';
-import 'package:codium/data/repositories/repositories.dart';
-import 'package:codium/domain/datasources/abstract_auth_datasource.dart';
-import 'package:codium/domain/datasources/abstract_course_datasource.dart';
-import 'package:codium/domain/datasources/abstract_user_datasource.dart';
 import 'package:codium/domain/repositories/abstract_user_statistics_repository.dart';
 import 'package:codium/domain/repositories/repositories.dart';
 import 'package:codium/domain/usecases/auth/check_auth_status_usecase.dart';
@@ -24,36 +18,35 @@ import 'package:codium/features/main/bloc/main/main_bloc.dart';
 import 'package:codium/features/main/bloc/main_carousel/main_carousel_bloc.dart';
 import 'package:codium/features/main/bloc/user_statistics/user_statistics_bloc.dart';
 import 'package:codium/features/profile/bloc/bloc/profile_bloc.dart';
+import 'package:codium/mocs/repositories/mock_auth_repository.dart';
+import 'package:codium/mocs/repositories/mock_course_repository.dart';
+import 'package:codium/mocs/repositories/mock_user_repository.dart';
+import 'package:codium/mocs/repositories/mock_user_statistics_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-class DependencyInjection {
+class MockDependencyInjection {
   void initialize() {
     GetIt.I.registerSingleton(TalkerFlutter.init());
 
-    _registerDataSources();
-    _registerRepositories();
+    _registerMockRepositories();
     _registerUseCases();
     _registerBlocs();
   }
 
-  void _registerDataSources() {
-    GetIt.I
-      ..registerSingleton<IAuthDataSource>(GoAuthDatasource())
-      ..registerSingleton<ICourseDataSource>(GoCourseDatasource())
-      ..registerSingleton<IAuthDataSource>(GoAuthDatasource());
-  }
-
-  void _registerRepositories() {
+  void _registerMockRepositories() {
     GetIt.I
       ..registerLazySingleton<IAuthRepository>(
-        () => AuthRepository(GetIt.I<IAuthDataSource>()),
+        () => MockAuthRepository(),
       )
       ..registerLazySingleton<ICourseRepository>(
-        () => CourseRepository(GetIt.I<ICourseDataSource>()),
+        () => MockCourseRepository(),
       )
       ..registerLazySingleton<IUserRepository>(
-        () => UserRepository(GetIt.I<IUserDataSource>()),
+        () => MockUserRepository(),
+      )
+      ..registerLazySingleton<IUserStatisticsRepository>(
+        () => MockUserStatisticsRepository(),
       );
   }
 

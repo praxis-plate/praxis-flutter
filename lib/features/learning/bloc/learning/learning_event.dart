@@ -10,5 +10,5 @@ sealed class LearningEvent extends Equatable {
 final class LearningLoadEvent extends LearningEvent {
   final String userId;
 
-  const LearningLoadEvent(this.userId);
+  const LearningLoadEvent({required this.userId});
 }

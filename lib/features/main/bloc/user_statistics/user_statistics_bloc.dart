@@ -27,9 +27,9 @@ class UserStatisticsBloc
     try {
       final statistics = await _getUserStatisticsUseCase.execute(event.userId);
       emit(UserStatisticsLoadSuccessState(statistics));
-    } catch (e) {
+    } catch (e, st) {
       emit(UserStatisticsLoadErrorState(e.toString()));
-      GetIt.I<Talker>().handle(e);
+      GetIt.I<Talker>().handle(e, st);
     }
   }
 }
