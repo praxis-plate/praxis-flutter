@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:codium/app/app.dart';
+import 'package:codium/mocs/mock_dependency_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -15,6 +16,8 @@ void main() {
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
       ]);
+
+      MockDependencyInjection().initialize();
 
       runApp(const App());
     },

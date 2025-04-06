@@ -24,12 +24,7 @@ class AuthLoadingState extends AuthState {
 }
 
 class AuthAuthenticatedState extends AuthState {
-  final User user;
-  
-  const AuthAuthenticatedState(this.user);
-
-  @override
-  List<Object?> get props => [user];
+  const AuthAuthenticatedState();
 }
 
 class AuthUnauthenticatedState extends AuthState {

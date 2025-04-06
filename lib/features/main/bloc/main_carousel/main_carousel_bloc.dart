@@ -9,9 +9,9 @@ part 'main_carousel_state.dart';
 class MainCarouselBloc extends Bloc<MainCarouselEvent, MainCarouselState> {
   final GetMainCarouselCoursesUseCase _getMainCarouselCoursesUseCase;
 
-  MainCarouselBloc(
-      {required GetMainCarouselCoursesUseCase getMainCarouselCoursesUseCase,})
-      : _getMainCarouselCoursesUseCase = getMainCarouselCoursesUseCase,
+  MainCarouselBloc({
+    required GetMainCarouselCoursesUseCase getMainCarouselCoursesUseCase,
+  })  : _getMainCarouselCoursesUseCase = getMainCarouselCoursesUseCase,
         super(MainCarouselInitialState()) {
     on<MainCarouselLoadEvent>(_onCarouselLoadCourses);
   }

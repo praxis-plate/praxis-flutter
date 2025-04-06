@@ -1,19 +1,28 @@
 import 'package:codium/core/widgets/activity_table.dart';
 import 'package:codium/core/widgets/added_course_card.dart';
 import 'package:codium/core/widgets/wrapper.dart';
+import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
 class LearningScreen extends StatelessWidget {
   const LearningScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    if (!GetIt.I.isRegistered<User>()) {
+      context.go('/');
+      return const SizedBox();
+    }
+
+    final user = GetIt.I<User>();
+
     return BlocProvider(
-      create: (context) => GetIt.I<LearningBloc>(),
+      create: (context) => GetIt.I<LearningBloc>()..add(LearningLoadEvent(userId: user.id)),
       child: const _LearningScreenContent(),
     );
   }

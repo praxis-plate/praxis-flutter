@@ -12,7 +12,8 @@ class GetUserStatisticsUseCase {
       return await _userStatisticsRepository.getStatisticsByUserId(userId);
     } catch (e) {
       throw UserStatisticsException(
-          'Ошибка загрузки статистики: ${e.toString()}',);
+        'Ошибка загрузки статистики: ${e.toString()}',
+      );
     }
   }
 }

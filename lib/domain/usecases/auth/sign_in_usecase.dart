@@ -12,7 +12,7 @@ class SignInUseCase {
     AuthValidator.validateCredentials(email, password);
 
     try {
-      final user = await _authRepository.login(email, password);
+      final user = await _authRepository.signIn(email, password);
       return user;
     } on AuthServerException catch (e) {
       throw AuthException(e.message);

@@ -1,9 +1,9 @@
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/widgets/course_card.dart';
 import 'package:codium/core/widgets/course_carousel.dart';
 import 'package:codium/core/widgets/course_search_bar.dart';
 import 'package:codium/core/widgets/user_points_card.dart';
 import 'package:codium/core/widgets/wrapper.dart';
+import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/main/bloc/main/main_bloc.dart';
 import 'package:codium/features/main/bloc/main_carousel/main_carousel_bloc.dart';
 import 'package:codium/features/main/bloc/user_statistics/user_statistics_bloc.dart';
@@ -17,17 +17,20 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = GetIt.I<User>();
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GetIt.I<MainBloc>()..add(MainLoadCoursesEvent()),
-        ),
-        BlocProvider(
-          create: (context) => GetIt.I<UserStatisticsBloc>(),
+          create: (context) => GetIt.I<UserStatisticsBloc>()
+            ..add(UserStatisticsLoadEvent(userId: user.id)),
         ),
         BlocProvider(
           create: (context) =>
               GetIt.I<MainCarouselBloc>()..add(MainCarouselLoadEvent()),
+        ),
+        BlocProvider(
+          create: (context) => GetIt.I<MainBloc>()..add(MainLoadCoursesEvent()),
         ),
       ],
       child: const _MainScreenContent(),
@@ -41,30 +44,24 @@ class _MainScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final user = GetIt.I<User>();
 
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthAuthenticatedState) {
-          context.read<UserStatisticsBloc>().add(
-            UserStatisticsLoadEvent(userId: state.user.id),
-          );
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            S.of(context).mainTitle,
-            style: theme.textTheme.titleLarge,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          S.of(context).mainTitle,
+          style: theme.textTheme.titleLarge,
         ),
-        body: const _MainScreenBody(),
       ),
+      body: _MainScreenBody(user: user),
     );
   }
 }
 
 class _MainScreenBody extends StatelessWidget {
-  const _MainScreenBody();
+  final User user;
+
+  const _MainScreenBody({required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +152,14 @@ class _CoursesSection extends StatelessWidget {
               MainCoursesLoadSuccessState() => ListView(
                   physics: const ClampingScrollPhysics(),
                   shrinkWrap: true,
-                  children:
-                      state.courses.map((e) => CourseCard(course: e)).toList(),
+                  children: state.courses
+                      .map(
+                        (e) => Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: CourseCard(course: e),
+                        ),
+                      )
+                      .toList(),
                 ),
               MainCoursesLoadErrorState() => Text(state.message),
               _ => const Center(child: CircularProgressIndicator()),

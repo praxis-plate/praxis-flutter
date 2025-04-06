@@ -32,7 +32,7 @@ final class AuthRepository implements IAuthRepository {
   }
 
   @override
-  Future<User> login(String email, String password) async {
+  Future<User> signIn(String email, String password) async {
     try {
       final user = await _dataSource.signIn(
         email: email,

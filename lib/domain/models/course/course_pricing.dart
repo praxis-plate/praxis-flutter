@@ -10,4 +10,13 @@ class CoursePricing {
     this.hasCertification = false,
     this.hasLifetimeAccess = true,
   });
+
+factory CoursePricing.free() {
+    return CoursePricing(
+      price: 0,
+      currency: 'USD',
+      hasCertification: false,
+      hasLifetimeAccess: true,
+    );
+  }
 }

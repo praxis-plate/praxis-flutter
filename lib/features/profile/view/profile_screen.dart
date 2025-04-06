@@ -9,6 +9,7 @@ import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -38,71 +39,78 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: theme.textTheme.titleLarge,
         ),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              BlocBuilder<ProfileBloc, ProfileState>(
-                bloc: _profileBloc,
-                builder: (context, state) {
-                  if (state is ProfileLoadSuccessState) {
-                    return SettingsProfileCard(
-                      userProfile: UserProfile(
-                        imagePath: state.user.avatarUrl ??
-                            Constants.placeholderProfileImagePath,
-                        name: state.user.email,
-                        email: state.user.email,
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthUnauthenticatedState) {
+            context.go('/');
+          }
+        },
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                BlocBuilder<ProfileBloc, ProfileState>(
+                  bloc: _profileBloc,
+                  builder: (context, state) {
+                    if (state is ProfileLoadSuccessState) {
+                      return SettingsProfileCard(
+                        userProfile: UserProfile(
+                          imagePath: state.user.avatarUrl ??
+                              Constants.placeholderProfileImagePath,
+                          name: state.user.email,
+                          email: state.user.email,
+                        ),
+                      );
+                    }
+
+                    if (state is ProfileLoadErrorState) {
+                      return Text(state.message);
+                    }
+
+                    return const CircularProgressIndicator();
+                  },
+                ),
+                const Divider(height: 8),
+                BlocBuilder<ThemeCubit, ThemeState>(
+                  builder: (context, state) {
+                    return SettingsSwitch(
+                      icon: const Icon(
+                        Icons.light_mode_rounded,
+                      ),
+                      title: S.of(context).profileSetDarkMode,
+                      value: state.isDarkTheme,
+                      onChanged: (isDark) =>
+                          context.read<ThemeCubit>().setDarkTheme(isDark),
+                    );
+                  },
+                ),
+                SettingsSwitch(
+                  icon: const Icon(Icons.language),
+                  title: S.of(context).profileSetRussian,
+                  value: true,
+                  onChanged: (value) {},
+                ),
+                const Expanded(
+                  child: SizedBox(),
+                ),
+                const Divider(height: 8),
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return SettingsTile(
+                      title: S.of(context).profileLogOut,
+                      onTap: () =>
+                          context.read<AuthBloc>().add(AuthSignOutEvent()),
+                      icon: Icon(
+                        Icons.exit_to_app_rounded,
+                        color: theme.colorScheme.error,
                       ),
                     );
-                  }
-
-                  if (state is ProfileLoadErrorState) {
-                    return Text(state.message);
-                  }
-
-                  return const CircularProgressIndicator();
-                },
-              ),
-              const Divider(height: 8),
-              BlocBuilder<ThemeCubit, ThemeState>(
-                builder: (context, state) {
-                  return SettingsSwitch(
-                    icon: const Icon(
-                      Icons.light_mode_rounded,
-                    ),
-                    title: S.of(context).profileSetDarkMode,
-                    value: state.isDarkTheme,
-                    onChanged: (isDark) =>
-                        context.read<ThemeCubit>().setDarkTheme(isDark),
-                  );
-                },
-              ),
-              SettingsSwitch(
-                icon: const Icon(Icons.language),
-                title: S.of(context).profileSetRussian,
-                value: true,
-                onChanged: (value) {},
-              ),
-              const Expanded(
-                child: SizedBox(),
-              ),
-              const Divider(height: 8),
-              BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  return SettingsTile(
-                    title: S.of(context).profileLogOut,
-                    onTap: () =>
-                        context.read<AuthBloc>().add(AuthSignOutEvent()),
-                    icon: Icon(
-                      Icons.exit_to_app_rounded,
-                      color: theme.colorScheme.error,
-                    ),
-                  );
-                },
-              ),
-            ],
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
