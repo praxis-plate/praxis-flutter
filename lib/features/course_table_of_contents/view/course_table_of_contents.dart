@@ -1,6 +1,7 @@
 import 'package:codium/core/widgets/running_text.dart';
 import 'package:codium/core/widgets/wrapper.dart';
-import 'package:codium/repositories/codium_courses/models/course.dart';
+import 'package:codium/domain/models/course/course.dart';
+import 'package:codium/domain/models/task/course_task.dart';
 import 'package:flutter/material.dart';
 
 class CourseTableOfContents extends StatelessWidget {
@@ -13,6 +14,21 @@ class CourseTableOfContents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final moduleWidgets = course.modules.expand<Widget>((module) => [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Text(
+              module.title,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          ...module.tasks.map<Widget>((task) => ContentElement(
+                task: task,
+                onTap: () {},
+                indent: 1,
+              ),),
+        ],).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: RunningText(
@@ -25,27 +41,10 @@ class CourseTableOfContents extends StatelessWidget {
       ),
       body: Wrapper(
         child: ListView(
-          children: _buildTaskWidgets(course.taskNodes),
+          children: moduleWidgets,
         ),
       ),
     );
-  }
-
-  List<Widget> _buildTaskWidgets(List<TaskNode> taskNodes, {int indent = 0}) {
-    return taskNodes
-        .map<Widget>(
-          (node) => ContentElement(
-            task: node.task,
-            onTap: () {},
-            indent: indent,
-          ),
-        )
-        .followedBy(
-          taskNodes.expand(
-            (node) => _buildTaskWidgets(node.subTasks, indent: indent + 1),
-          ),
-        )
-        .toList();
   }
 }
 
@@ -57,7 +56,7 @@ class ContentElement extends StatelessWidget {
     this.indent = 0,
   });
 
-  final Task task;
+  final CourseTask task;
   final VoidCallback onTap;
   final int indent;
 

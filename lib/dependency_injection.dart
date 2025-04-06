@@ -15,6 +15,7 @@ import 'package:codium/domain/usecases/auth/sign_up_usecase.dart';
 import 'package:codium/domain/usecases/generate_activity_usecase.dart';
 import 'package:codium/domain/usecases/get_course_detail_usecase.dart';
 import 'package:codium/domain/usecases/get_courses_usecase.dart';
+import 'package:codium/domain/usecases/get_learning_data_usecase.dart';
 import 'package:codium/domain/usecases/get_main_carousel_courses.dart';
 import 'package:codium/domain/usecases/get_profile_usecase.dart';
 import 'package:codium/domain/usecases/get_user_statistics_usecase.dart';
@@ -91,6 +92,13 @@ class DependencyInjection {
       )
       ..registerFactory(
         () => GetCourseDetailUseCase(GetIt.I<ICourseRepository>()),
+      )
+      ..registerFactory(
+        () => GetLearningDataUseCase(
+          GetIt.I<IUserStatisticsRepository>(),
+          GetIt.I<ICourseRepository>(),
+          GetIt.I<GenerateActivityUsecase>(),
+        ),
       );
   }
 
@@ -127,8 +135,7 @@ class DependencyInjection {
       )
       ..registerFactory(
         () => LearningBloc(
-          generateActivityUsecase: GetIt.I<GenerateActivityUsecase>(),
-          getUserStatisticsUseCase: GetIt.I<GetUserStatisticsUseCase>(),
+          getLearningDataUseCase: GetIt.I<GetLearningDataUseCase>(),
         ),
       )
       ..registerFactory<CourseDetailBloc>(

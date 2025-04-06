@@ -1,5 +1,5 @@
-import 'package:codium/repositories/codium_courses/abstract_course_repository.dart';
-import 'package:codium/repositories/codium_courses/models/course.dart';
+import 'package:codium/domain/models/course/course.dart';
+import 'package:codium/domain/usecases/get_main_carousel_courses.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,9 +7,12 @@ part 'main_carousel_event.dart';
 part 'main_carousel_state.dart';
 
 class MainCarouselBloc extends Bloc<MainCarouselEvent, MainCarouselState> {
-  final ICourseRepository courseRepository;
+  final GetMainCarouselCoursesUseCase _getMainCarouselCoursesUseCase;
 
-  MainCarouselBloc(this.courseRepository) : super(MainCarouselInitialState()) {
+  MainCarouselBloc(
+      {required GetMainCarouselCoursesUseCase getMainCarouselCoursesUseCase,})
+      : _getMainCarouselCoursesUseCase = getMainCarouselCoursesUseCase,
+        super(MainCarouselInitialState()) {
     on<MainCarouselLoadEvent>(_onCarouselLoadCourses);
   }
 
@@ -19,7 +22,7 @@ class MainCarouselBloc extends Bloc<MainCarouselEvent, MainCarouselState> {
   ) async {
     emit(MainCarouselLoadingState());
     try {
-      final courses = await courseRepository.getCourses();
+      final courses = await _getMainCarouselCoursesUseCase.execute();
       emit(MainCarouselLoadSuccessState(courses));
     } catch (e) {
       emit(MainCarouselLoadErrorState(e.toString()));

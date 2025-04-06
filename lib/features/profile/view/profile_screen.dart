@@ -5,7 +5,6 @@ import 'package:codium/features/profile/bloc/bloc/profile_bloc.dart';
 import 'package:codium/features/profile/widgets/settings_profile_card.dart';
 import 'package:codium/features/profile/widgets/settings_switch.dart';
 import 'package:codium/features/profile/widgets/settings_tile.dart';
-import 'package:codium/repositories/codium_user/abstract_user_repository.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,10 +18,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final _profileBloc = ProfileBloc(GetIt.I<IUserRepository>());
+  late final ProfileBloc _profileBloc;
 
   @override
   void initState() {
+    _profileBloc = GetIt.I<ProfileBloc>();
     _profileBloc.add(ProfileLoadEvent());
     super.initState();
   }
@@ -50,9 +50,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (state is ProfileLoadSuccessState) {
                     return SettingsProfileCard(
                       userProfile: UserProfile(
-                        imagePath: state.user.imagePath ??
+                        imagePath: state.user.avatarUrl ??
                             Constants.placeholderProfileImagePath,
-                        name: state.user.name ?? state.user.email,
+                        name: state.user.email,
                         email: state.user.email,
                       ),
                     );
@@ -94,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   return SettingsTile(
                     title: S.of(context).profileLogOut,
                     onTap: () =>
-                        context.read<AuthBloc>().add(AuthLogoutEvent()),
+                        context.read<AuthBloc>().add(AuthSignOutEvent()),
                     icon: Icon(
                       Icons.exit_to_app_rounded,
                       color: theme.colorScheme.error,

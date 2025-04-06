@@ -7,4 +7,8 @@ sealed class RecommendEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class RecommendLoadEvent extends RecommendEvent {}
+final class RecommendLoadEvent extends RecommendEvent {
+  final String userId;
+
+  const RecommendLoadEvent(this.userId);
+}

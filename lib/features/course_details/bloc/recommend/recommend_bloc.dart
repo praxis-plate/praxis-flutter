@@ -1,5 +1,5 @@
-import 'package:codium/repositories/codium_courses/models/user_course_statistics.dart';
-import 'package:codium/repositories/codium_user/abstract_user_repository.dart';
+import 'package:codium/domain/models/models.dart';
+import 'package:codium/domain/usecases/get_recommended_courses_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -9,9 +9,12 @@ part 'recommend_event.dart';
 part 'recommend_state.dart';
 
 class RecommendBloc extends Bloc<RecommendEvent, RecommendState> {
-  final IUserRepository userRepository;
+  final GetRecommendedCoursesUseCase _getRecommendedCoursesUseCase;
 
-  RecommendBloc(this.userRepository) : super(RecommendInitialState()) {
+  RecommendBloc({
+    required GetRecommendedCoursesUseCase getRecommendedCoursesUseCase,
+  })  : _getRecommendedCoursesUseCase = getRecommendedCoursesUseCase,
+        super(RecommendInitialState()) {
     on<RecommendLoadEvent>(_onRecommendLoadEvent);
   }
 
@@ -21,11 +24,11 @@ class RecommendBloc extends Bloc<RecommendEvent, RecommendState> {
   ) async {
     emit(RecommendLoadingState());
     try {
-      final recommendCoursesStatistics =
-          await userRepository.getUserPassedCoursesStatistics();
+      final coursesStatistics =
+          await _getRecommendedCoursesUseCase.execute(event.userId);
       emit(
         RecommendLoadSuccessState(
-          recommendCoursesStatistics: recommendCoursesStatistics,
+          recommendCourses: coursesStatistics,
         ),
       );
     } catch (e, st) {

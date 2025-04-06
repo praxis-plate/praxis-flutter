@@ -1,17 +1,21 @@
-import 'package:codium/repositories/codium_courses/models/user_statistics.dart';
-import 'package:codium/repositories/codium_user/abstract_user_repository.dart';
+import 'package:codium/domain/models/user_statistics.dart';
+import 'package:codium/domain/usecases/get_user_statistics_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 part 'user_statistics_event.dart';
 part 'user_statistics_state.dart';
 
 class UserStatisticsBloc
     extends Bloc<UserStatisticsEvent, UserStatisticsState> {
-  final IUserRepository userStatisticsRepository;
+  final GetUserStatisticsUseCase _getUserStatisticsUseCase;
 
-  UserStatisticsBloc(this.userStatisticsRepository)
-      : super(UserStatisticsInitial()) {
+  UserStatisticsBloc(
+      {required GetUserStatisticsUseCase getUserStatisticsUseCase,})
+      : _getUserStatisticsUseCase = getUserStatisticsUseCase,
+        super(UserStatisticsInitial()) {
     on<UserStatisticsLoadEvent>(_onLoadUserStatistics);
   }
 
@@ -21,10 +25,11 @@ class UserStatisticsBloc
   ) async {
     emit(UserStatisticsLoadingState());
     try {
-      final userStatistics = await userStatisticsRepository.getUserStatistics();
-      emit(UserStatisticsLoadSuccessState(userStatistics));
+      final statistics = await _getUserStatisticsUseCase.execute(event.userId);
+      emit(UserStatisticsLoadSuccessState(statistics));
     } catch (e) {
       emit(UserStatisticsLoadErrorState(e.toString()));
+      GetIt.I<Talker>().handle(e);
     }
   }
 }
