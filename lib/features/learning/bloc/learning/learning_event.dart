@@ -7,4 +7,8 @@ sealed class LearningEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class LearningLoadEvent extends LearningEvent {}
+final class LearningLoadEvent extends LearningEvent {
+  final String userId;
+
+  const LearningLoadEvent(this.userId);
+}

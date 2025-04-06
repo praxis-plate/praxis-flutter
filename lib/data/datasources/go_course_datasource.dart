@@ -3,7 +3,7 @@ import 'package:codium/domain/models/course/course.dart';
 
 class GoCourseDatasource implements ICourseDataSource {
   @override
-  Future<Course> fetchCourse(String id) {
+  Future<Course> fetchCourseById(String id) {
     // TODO: implement fetchCourse
     throw UnimplementedError();
   }

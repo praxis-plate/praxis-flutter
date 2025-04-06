@@ -12,25 +12,14 @@ final class LearningInitialState extends LearningState {}
 final class LearningLoadingState extends LearningState {}
 
 final class LearningLoadSuccessState extends LearningState {
-  final List<ActivityCell> activityCells;
-  final UserStatistics userStatistics;
-  final List<UserCourseStatistics> addedCoursesStatistics;
-  final List<UserCourseStatistics> passedCoursesStatistics;
+  final LearningData learningData;
 
   const LearningLoadSuccessState({
-    required this.activityCells,
-    required this.userStatistics,
-    required this.addedCoursesStatistics,
-    required this.passedCoursesStatistics,
+    required this.learningData,
   });
 
   @override
-  List<Object> get props => [
-        activityCells,
-        userStatistics,
-        addedCoursesStatistics,
-        passedCoursesStatistics,
-      ];
+  List<Object> get props => [learningData];
 }
 
 final class LearningLoadErrorState extends LearningState {

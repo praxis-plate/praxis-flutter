@@ -12,12 +12,12 @@ final class RecommendInitialState extends RecommendState {}
 final class RecommendLoadingState extends RecommendState {}
 
 final class RecommendLoadSuccessState extends RecommendState {
-  final List<UserCourseStatistics> recommendCoursesStatistics;
+  final List<Course> recommendCourses;
 
-  const RecommendLoadSuccessState({required this.recommendCoursesStatistics});
+  const RecommendLoadSuccessState({required this.recommendCourses});
 
   @override
-  List<Object> get props => [recommendCoursesStatistics];
+  List<Object> get props => [recommendCourses];
 }
 
 final class RecommendLoadErrorState extends RecommendState {
