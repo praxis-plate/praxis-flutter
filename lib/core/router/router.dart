@@ -12,6 +12,10 @@ class AppRouter {
         redirect: (context, state) => '/navigation',
       ),
       GoRoute(
+        path: '/home',
+        redirect: (context, state) => '/navigation',
+      ),
+      GoRoute(
         path: '/sign-up',
         builder: (context, state) => const SignUpPage(),
       ),

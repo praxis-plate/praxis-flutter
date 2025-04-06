@@ -1,4 +1,4 @@
-import 'package:codium/repositories/codium_courses/models/user_statistics.dart';
+import 'package:codium/domain/models/user_statistics.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 

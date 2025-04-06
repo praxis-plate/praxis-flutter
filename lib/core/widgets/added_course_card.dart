@@ -2,16 +2,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:codium/core/utils/constants.dart';
 import 'package:codium/core/widgets/course_info.dart';
 import 'package:codium/core/widgets/course_progress_bar.dart';
-import 'package:codium/repositories/codium_courses/models/user_course_statistics.dart';
+import 'package:codium/domain/models/models.dart';
 import 'package:flutter/material.dart';
 
 class AddedCourseCard extends StatelessWidget {
   const AddedCourseCard({
-    required this.courseStatistics,
+    required this.course,
+    required this.userCourseStatistics,
     super.key,
   });
 
-  final UserCourseStatistics courseStatistics;
+  final Course course;
+  final UserCourseStatistics userCourseStatistics;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class AddedCourseCard extends StatelessWidget {
               width: 120,
               alignment: Alignment.topCenter,
               fit: BoxFit.cover,
-              imageUrl: courseStatistics.course.imagePath,
+              imageUrl: course.coverImage,
               placeholder: (context, url) =>
                   const Center(child: CircularProgressIndicator()),
               errorWidget: (context, url, error) =>
@@ -42,18 +44,18 @@ class AddedCourseCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  courseStatistics.course.title,
+                  course.title,
                   style: Theme.of(context).textTheme.titleMedium,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
                 const Spacer(),
                 CourseProgressBar(
-                  courseStatistics: courseStatistics,
+                  userCourseStatistics: userCourseStatistics,
                 ),
                 const SizedBox(height: 8),
                 CourseInfo(
-                  course: courseStatistics.course,
+                  course: course,
                   mainAxisAlignment: MainAxisAlignment.center,
                 ),
                 const Spacer(),

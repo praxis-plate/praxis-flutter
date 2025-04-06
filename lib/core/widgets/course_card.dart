@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:codium/core/utils/constants.dart';
 import 'package:codium/core/widgets/course_info.dart';
 import 'package:codium/core/widgets/get_button.dart';
-import 'package:codium/repositories/codium_courses/models/course.dart';
+import 'package:codium/domain/models/course/course.dart';
 import 'package:flutter/material.dart';
 
 class CourseCard extends StatelessWidget {
@@ -30,10 +30,10 @@ class CourseCard extends StatelessWidget {
               width: 140,
               alignment: Alignment.topCenter,
               fit: BoxFit.cover,
-              imageUrl: course.imagePath,
+              imageUrl: course.coverImage,
               placeholder: (context, url) =>
                   const Center(child: CircularProgressIndicator()),
-              errorWidget: (context, url, error) => Image(
+              errorWidget: (context, url, error) => const Image(
                 image: AssetImage(Constants.placeholderCourseImagePath),
               ),
             ),
@@ -69,7 +69,7 @@ class CourseCard extends StatelessWidget {
                 Row(
                   children: [
                     GetButton(
-                      price: course.price,
+                      price: course.pricing.price,
                     ),
                   ],
                 ),

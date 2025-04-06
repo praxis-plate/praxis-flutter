@@ -1,5 +1,4 @@
-import 'package:codium/core/utils/duration.dart';
-import 'package:codium/repositories/codium_courses/models/course.dart';
+import 'package:codium/domain/models/course/course.dart';
 import 'package:flutter/material.dart';
 
 class CourseInfo extends StatelessWidget {
@@ -20,41 +19,37 @@ class CourseInfo extends StatelessWidget {
       mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (course.duration != null)
-          Icon(
-            Icons.watch_later_rounded,
-            color: theme.colorScheme.primary,
-            size: 18,
-          ),
-        if (course.duration != null)
-          Text(
-            ' ${course.duration!.format()}',
-            style: theme.textTheme.labelSmall,
-          ),
-        if (course.tasksCount > 0) const SizedBox(width: 8),
-        if (course.tasksCount > 0)
+        Icon(
+          Icons.watch_later_rounded,
+          color: theme.colorScheme.primary,
+          size: 18,
+        ),
+        Text(
+          ' ${course.totalDuration}',
+          style: theme.textTheme.labelSmall,
+        ),
+        if (course.totalTasks > 0) const SizedBox(width: 8),
+        if (course.totalTasks > 0)
           Icon(
             Icons.task_alt_rounded,
             color: theme.colorScheme.primary,
             size: 18,
           ),
-        if (course.tasksCount > 0)
+        if (course.totalTasks > 0)
           Text(
-            ' ${course.tasksCount.toString()}',
+            ' ${course.totalTasks.toString()}',
             style: theme.textTheme.labelSmall,
           ),
-        if (course.tasksCount > 0) const SizedBox(width: 8),
-        if (course.ratingScores != null)
-          Icon(
-            Icons.star_rounded,
-            color: theme.colorScheme.primary,
-            size: 18,
-          ),
-        if (course.ratingScores != null)
-          Text(
-            ' ${course.ratingScores!.toString()}',
-            style: theme.textTheme.labelSmall,
-          ),
+        if (course.totalTasks > 0) const SizedBox(width: 8),
+        Icon(
+          Icons.star_rounded,
+          color: theme.colorScheme.primary,
+          size: 18,
+        ),
+        Text(
+          ' ${course.statistics.averageRating.toString()}',
+          style: theme.textTheme.labelSmall,
+        ),
       ],
     );
   }
