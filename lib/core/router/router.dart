@@ -1,5 +1,5 @@
-import 'package:codium/features/auth/view/signin_page.dart';
-import 'package:codium/features/auth/view/signup_page.dart';
+import 'package:codium/features/auth/view/sign_in_screen.dart';
+import 'package:codium/features/auth/view/sign_up_screen.dart';
 import 'package:codium/features/course_details/view/course_detail_screen.dart';
 import 'package:codium/features/navigation/view/navigation_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -18,11 +18,11 @@ class AppRouter {
       ),
       GoRoute(
         path: '/sign-up',
-        builder: (context, state) => const SignUpPage(),
+        builder: (context, state) => const SignUpScreen(),
       ),
       GoRoute(
         path: '/sign-in',
-        builder: (context, state) => const SignInPage(),
+        builder: (context, state) => const SignInScreen(),
       ),
       GoRoute(
         path: '/navigation',

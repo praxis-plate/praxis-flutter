@@ -13,9 +13,6 @@
   "displaySignIn": "Войти",
   "displayEmailHint": "example@yandex.ru",
   "displayPasswordHint": "•••••••••",
-  "errorEmail": "Email не валиден",
-  "errorPassword": "Пароль не валиден",
-  "errorPasswordRequires": "Пароль должен содержать минимум 8 символов",
   "displayDontHaveAnAccount": "Нет аккаунта?",
 
   "navigationMainTitle": "Обзор",
@@ -39,5 +36,10 @@
   "profileTitle": "Профиль",
   "profileSetRussian": "Русский",
   "profileSetDarkMode": "Тёмный режим",
-  "profileLogOut": "Выйти"
+  "profileLogOut": "Выйти",
+  
+  "errorEmailEmpty": "Поле email обязательно для заполнения",
+  "errorEmailInvalid": "Неверный формат email",
+  "errorPasswordEmpty": "Поле пароля обязательно для заполнения",
+  "errorPasswordInvalid": "Минимум 8 символов, буквы и цифры"
 }

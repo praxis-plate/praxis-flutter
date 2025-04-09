@@ -1,13 +1,5 @@
 part of 'auth_bloc.dart';
 
-enum AuthStatus {
-  unknown,
-  authenticated,
-  unauthenticated,
-  loading,
-  error,
-}
-
 sealed class AuthState extends Equatable {
   const AuthState();
 
