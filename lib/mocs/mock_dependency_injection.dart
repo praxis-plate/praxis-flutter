@@ -13,6 +13,8 @@ import 'package:codium/domain/usecases/get_main_carousel_courses.dart';
 import 'package:codium/domain/usecases/get_profile_usecase.dart';
 import 'package:codium/domain/usecases/get_user_statistics_usecase.dart';
 import 'package:codium/domain/usecases/purchase_course.dart';
+import 'package:codium/features/auth/bloc/sign_in/sign_in_cubit.dart';
+import 'package:codium/features/auth/bloc/sign_up/sign_up_cubit.dart';
 import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
 import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
 import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
@@ -24,12 +26,21 @@ import 'package:codium/mocs/repositories/mock_auth_repository.dart';
 import 'package:codium/mocs/repositories/mock_course_repository.dart';
 import 'package:codium/mocs/repositories/mock_user_repository.dart';
 import 'package:codium/mocs/repositories/mock_user_statistics_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class MockDependencyInjection {
   void initialize() {
     GetIt.I.registerSingleton(TalkerFlutter.init());
+    Bloc.observer = TalkerBlocObserver(
+      settings: const TalkerBlocLoggerSettings(
+        enabled: true,
+        printStateFullData: true,
+        printTransitions: true,
+      ),
+    );
 
     _registerMockRepositories();
     _registerUseCases();
@@ -149,6 +160,12 @@ class MockDependencyInjection {
           authBloc: GetIt.I<AuthBloc>(),
           purchaseCourseUseCase: GetIt.I<PurchaseCourseUseCase>(),
         ),
+      )
+      ..registerFactory(
+        () => SignUpCubit(),
+      )
+      ..registerFactory(
+        () => SignInCubit(),
       );
   }
 }

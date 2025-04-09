@@ -13,9 +13,6 @@
   "displaySignIn": "Sign In",
   "displayEmailHint": "example@gmail.com",
   "displayPasswordHint": "•••••••••",
-  "errorEmail": "Email is not valid",
-  "errorPassword": "Password is not valid",
-  "errorPasswordRequires": "Password must be at least 8 characters long",
   "displayDontHaveAnAccount": "Don't have an account?",
 
   "navigationMainTitle": "Main",
@@ -39,5 +36,10 @@
   "profileTitle": "Profile",
   "profileSetRussian": "Russian",
   "profileSetDarkMode": "Dark theme",
-  "profileLogOut": "Sign out"
+  "profileLogOut": "Sign out",
+
+  "errorEmailEmpty": "Email is required",
+  "errorEmailInvalid": "Invalid email format",
+  "errorPasswordEmpty": "Password is required",
+  "errorPasswordInvalid": "Password must be at least 8 characters, at least one letter and one number"
 }

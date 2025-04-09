@@ -14,7 +14,7 @@ class MockAuthRepository implements IAuthRepository {
 
   @override
   Future<User> signUp(String email, String password) async {
-    await Future.delayed(const Duration(seconds: 1)); // Имитация задержки
+    await Future.delayed(const Duration(seconds: 3)); // Имитация задержки
 
     if (_shouldFail) {
       throw AuthException('Ошибка регистрации');
@@ -45,7 +45,6 @@ class MockAuthRepository implements IAuthRepository {
   @override
   Future<void> signOut() async {
     GetIt.I<Talker>().info('Sign Out');
-
     _currentUser = null;
   }
 

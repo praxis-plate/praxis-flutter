@@ -20,6 +20,8 @@ import 'package:codium/domain/usecases/get_main_carousel_courses.dart';
 import 'package:codium/domain/usecases/get_profile_usecase.dart';
 import 'package:codium/domain/usecases/get_user_statistics_usecase.dart';
 import 'package:codium/domain/usecases/purchase_course.dart';
+import 'package:codium/features/auth/bloc/sign_in/sign_in_cubit.dart';
+import 'package:codium/features/auth/bloc/sign_up/sign_up_cubit.dart';
 import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
 import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
 import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
@@ -157,6 +159,12 @@ class DependencyInjection {
           authBloc: GetIt.I<AuthBloc>(),
           purchaseCourseUseCase: GetIt.I<PurchaseCourseUseCase>(),
         ),
+      )
+      ..registerFactory(
+        () => SignUpCubit(),
+      )
+      ..registerFactory(
+        () => SignInCubit(),
       );
   }
 }
