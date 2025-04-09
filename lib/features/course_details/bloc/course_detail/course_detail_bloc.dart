@@ -2,6 +2,8 @@ import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/usecases/get_course_detail_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 part 'course_detail_event.dart';
 part 'course_detail_state.dart';
@@ -22,6 +24,7 @@ class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
   ) async {
     emit(CourseDetailLoadingState());
     try {
+      GetIt.I<Talker>().log('event.courseId: ${event.courseId}');
       final course = await _getCourseDetailUseCase.execute(event.courseId);
       emit(CourseDetailLoadSuccessState(course: course));
     } catch (e) {

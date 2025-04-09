@@ -6,6 +6,7 @@ class User extends Equatable {
   final String name;
   final String email;
   final double balance;
+  final List<String> purchasedCourseIds;
   final String? avatarUrl; 
 
   const User({
@@ -13,6 +14,7 @@ class User extends Equatable {
     required this.name,
     required this.email,
     required this.balance,
+    required this.purchasedCourseIds,
     this.avatarUrl,
   });
 
@@ -21,6 +23,7 @@ class User extends Equatable {
     String? name,
     String? email,
     double? balance,
+    List<String>? purchasedCourseIds,
     String? avatarUrl,
   }) {
     return User(
@@ -28,9 +31,11 @@ class User extends Equatable {
       name: name ?? this.name, 
       email: email ?? this.email,
       balance: balance ?? this.balance,
+      purchasedCourseIds: purchasedCourseIds ?? this.purchasedCourseIds,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
     );
   }
   
   @override
-  List<Object?> get props => [id, name, email, avatarUrl, balance];
+  List<Object?> get props => [id, balance, purchasedCourseIds];
 }

@@ -1,6 +1,7 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/data/datasources/go_auth_datasource.dart';
 import 'package:codium/data/datasources/go_course_datasource.dart';
+import 'package:codium/data/datasources/go_user_datasource.dart';
 import 'package:codium/data/repositories/repositories.dart';
 import 'package:codium/domain/datasources/abstract_auth_datasource.dart';
 import 'package:codium/domain/datasources/abstract_course_datasource.dart';
@@ -18,8 +19,10 @@ import 'package:codium/domain/usecases/get_learning_data_usecase.dart';
 import 'package:codium/domain/usecases/get_main_carousel_courses.dart';
 import 'package:codium/domain/usecases/get_profile_usecase.dart';
 import 'package:codium/domain/usecases/get_user_statistics_usecase.dart';
+import 'package:codium/domain/usecases/purchase_course.dart';
 import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
 import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
+import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:codium/features/main/bloc/main/main_bloc.dart';
 import 'package:codium/features/main/bloc/main_carousel/main_carousel_bloc.dart';
 import 'package:codium/features/main/bloc/user_statistics/user_statistics_bloc.dart';
@@ -41,7 +44,7 @@ class DependencyInjection {
     GetIt.I
       ..registerSingleton<IAuthDataSource>(GoAuthDatasource())
       ..registerSingleton<ICourseDataSource>(GoCourseDatasource())
-      ..registerSingleton<IAuthDataSource>(GoAuthDatasource());
+      ..registerSingleton<IUserDataSource>(GoUserDatasource());
   }
 
   void _registerRepositories() {
@@ -98,6 +101,13 @@ class DependencyInjection {
           GetIt.I<ICourseRepository>(),
           GetIt.I<GenerateActivityUsecase>(),
         ),
+      )
+      ..registerFactory(
+        () => PurchaseCourseUseCase(
+          courseRepository: GetIt.I<ICourseRepository>(),
+          userRepository: GetIt.I<IUserRepository>(),
+          userStatisticsRepository: GetIt.I<IUserStatisticsRepository>(),
+        ),
       );
   }
 
@@ -140,6 +150,12 @@ class DependencyInjection {
       ..registerFactory<CourseDetailBloc>(
         () => CourseDetailBloc(
           getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
+        ),
+      )
+      ..registerLazySingleton(
+        () => CoursePurchasingBloc(
+          authBloc: GetIt.I<AuthBloc>(),
+          purchaseCourseUseCase: GetIt.I<PurchaseCourseUseCase>(),
         ),
       );
   }

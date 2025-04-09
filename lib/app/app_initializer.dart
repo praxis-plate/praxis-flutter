@@ -1,5 +1,6 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/theme/theme_cubit.dart';
+import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +26,9 @@ class AppInitializer extends StatelessWidget {
         BlocProvider(
           create: (context) => GetIt.I<AuthBloc>(),
           lazy: false,
+        ),
+        BlocProvider(
+          create: (context) => GetIt.I<CoursePurchasingBloc>(),
         ),
       ],
       child: child,

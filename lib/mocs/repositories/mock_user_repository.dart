@@ -10,6 +10,6 @@ class MockUserRepository implements IUserRepository {
 
   @override
   Future<void> saveUser(User user) async {
-    // Для тестов, просто ничего не делаем
+    mockUser = user;
   }
 }
