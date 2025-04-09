@@ -13,7 +13,6 @@ class LearningData {
 
   List<MapEntry<Course, UserCourseStatistics>> get addedCoursesStatistics {
     return userCourseStatisticsByCourse.entries
-        .where((entry) => entry.value.progress > 0)
         .toList();
   }
 

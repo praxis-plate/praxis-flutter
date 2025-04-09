@@ -4,6 +4,7 @@ import 'package:codium/core/widgets/course_info.dart';
 import 'package:codium/core/widgets/course_progress_bar.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AddedCourseCard extends StatelessWidget {
   const AddedCourseCard({
@@ -71,7 +72,9 @@ class AddedCourseCard extends StatelessWidget {
                             color: theme.colorScheme.primary,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          context.push('/course/${course.id}');
+                        },
                         iconAlignment: IconAlignment.end,
                       ),
                     ),

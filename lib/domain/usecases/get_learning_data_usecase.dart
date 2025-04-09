@@ -19,15 +19,19 @@ class GetLearningDataUseCase {
   Future<LearningData> execute(String userId) async {
     try {
       final activityCells = await _generateActivityUsecase.execute();
-      final userStatistics = await _userStatisticsRepository.getStatisticsByUserId(userId);
-      final courses = await _courseRepository.getCourses();
+      final userStatistics = await _userStatisticsRepository.get(userId);
 
       final Map<Course, UserCourseStatistics> courseMapping = {};
-      for (final course in courses) {
-        final stats = userStatistics.courses[course.id];
-        if (stats != null) {
-          courseMapping[course] = stats;
+      for (final entry in userStatistics.courses.entries) {
+        final courseId = entry.key;
+        final userCourseStatistics = entry.value;
+        final course = await _courseRepository.getCourseById(courseId);
+
+        if (courseMapping.containsKey(course)) {
+          continue;
         }
+
+        courseMapping[course] = userCourseStatistics;
       }
 
       return LearningData(

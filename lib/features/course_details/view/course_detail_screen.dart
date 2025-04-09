@@ -17,7 +17,8 @@ class CourseDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GetIt.I<CourseDetailBloc>(),
+      create: (context) =>
+          GetIt.I<CourseDetailBloc>()..add(CourseDetailLoadEvent(courseId)),
       child: Scaffold(
         appBar: _CourseAppBar(),
         body: _CourseBody(),

@@ -1,7 +1,8 @@
+import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/widgets/activity_table.dart';
 import 'package:codium/core/widgets/added_course_card.dart';
+import 'package:codium/core/widgets/user_provider.dart';
 import 'package:codium/core/widgets/wrapper.dart';
-import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -14,16 +15,19 @@ class LearningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!GetIt.I.isRegistered<User>()) {
-      context.go('/');
-      return const SizedBox();
-    }
-
-    final user = GetIt.I<User>();
+    final user = UserProvider.of(context);
 
     return BlocProvider(
-      create: (context) => GetIt.I<LearningBloc>()..add(LearningLoadEvent(userId: user.id)),
-      child: const _LearningScreenContent(),
+      create: (context) =>
+          GetIt.I<LearningBloc>()..add(LearningLoadEvent(userId: user.id)),
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthUnauthenticatedState) {
+            context.go('/sign-in');
+          }
+        },
+        child: const _LearningScreenContent(),
+      ),
     );
   }
 }
@@ -63,11 +67,12 @@ class _LearningScreenContent extends StatelessWidget {
                     ),
                   if (state.learningData.addedCoursesStatistics.isNotEmpty)
                     const SizedBox(height: 8),
-                  ...state.learningData.addedCoursesStatistics
-                      .map((entry) => AddedCourseCard(
-                            course: entry.key,
-                            userCourseStatistics: entry.value,
-                          ),),
+                  ...state.learningData.addedCoursesStatistics.map(
+                    (entry) => AddedCourseCard(
+                      course: entry.key,
+                      userCourseStatistics: entry.value,
+                    ),
+                  ),
                   if (state.learningData.addedCoursesStatistics.isNotEmpty)
                     const SizedBox(height: 8),
                   if (state.learningData.passedCoursesStatistics.isNotEmpty)
@@ -77,11 +82,12 @@ class _LearningScreenContent extends StatelessWidget {
                     ),
                   if (state.learningData.passedCoursesStatistics.isNotEmpty)
                     const SizedBox(height: 8),
-                  ...state.learningData.passedCoursesStatistics
-                      .map((entry) => AddedCourseCard(
-                            course: entry.key,
-                            userCourseStatistics: entry.value,
-                          ),),
+                  ...state.learningData.passedCoursesStatistics.map(
+                    (entry) => AddedCourseCard(
+                      course: entry.key,
+                      userCourseStatistics: entry.value,
+                    ),
+                  ),
                   if (state.learningData.passedCoursesStatistics.isEmpty &&
                       state.learningData.addedCoursesStatistics.isEmpty)
                     SizedBox(

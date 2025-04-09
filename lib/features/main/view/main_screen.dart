@@ -2,6 +2,7 @@ import 'package:codium/core/widgets/course_card.dart';
 import 'package:codium/core/widgets/course_carousel.dart';
 import 'package:codium/core/widgets/course_search_bar.dart';
 import 'package:codium/core/widgets/user_points_card.dart';
+import 'package:codium/core/widgets/user_provider.dart';
 import 'package:codium/core/widgets/wrapper.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/main/bloc/main/main_bloc.dart';
@@ -17,7 +18,7 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = GetIt.I<User>();
+    final user = UserProvider.of(context);
 
     return MultiBlocProvider(
       providers: [
@@ -33,18 +34,19 @@ class MainScreen extends StatelessWidget {
           create: (context) => GetIt.I<MainBloc>()..add(MainLoadCoursesEvent()),
         ),
       ],
-      child: const _MainScreenContent(),
+      child: _MainScreenContent(user: user),
     );
   }
 }
 
 class _MainScreenContent extends StatelessWidget {
-  const _MainScreenContent();
+  final User user;
+
+  const _MainScreenContent({required this.user});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final user = GetIt.I<User>();
 
     return Scaffold(
       appBar: AppBar(

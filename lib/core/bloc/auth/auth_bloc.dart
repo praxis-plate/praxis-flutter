@@ -31,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignInEvent>(_onSignIn);
     on<AuthSignOutEvent>(_onSignOut);
     on<AuthCheckStatus>(_onCheckStatus);
+    on<AuthUpdateUserEvent>(_onUpdateUser);
   }
 
   Future<void> _onSignUp(
@@ -40,8 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthLoadingState());
       final user = await _signUpUseCase.execute(event.email, event.password);
-      GetIt.I.registerSingleton<User>(user);
-      emit(const AuthAuthenticatedState());
+      emit(AuthAuthenticatedState(user));
     } catch (e, st) {
       emit(AuthErrorState(e.toString()));
       GetIt.I<Talker>().handle(e, st);
@@ -55,8 +55,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthLoadingState());
       final user = await _signInUseCase.execute(event.email, event.password);
-      GetIt.I.registerSingleton<User>(user);
-      emit(const AuthAuthenticatedState());
+      emit(AuthAuthenticatedState(user));
     } catch (e, st) {
       emit(AuthErrorState(e.toString()));
       GetIt.I<Talker>().handle(e, st);
@@ -70,7 +69,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthLoadingState());
       await _signOutUseCase.execute();
-      GetIt.I.unregister<User>();
       emit(const AuthUnauthenticatedState());
     } catch (e, st) {
       emit(AuthErrorState(e.toString()));
@@ -86,14 +84,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final currentUser = await _checkAuthStatusUseCase.execute();
       if (currentUser != null) {
-        GetIt.I.registerSingleton<User>(currentUser);
-        emit(const AuthAuthenticatedState());
+        emit(AuthAuthenticatedState(currentUser));
       } else {
         emit(const AuthUnauthenticatedState());
       }
     } catch (e, st) {
       emit(const AuthUnauthenticatedState());
       GetIt.I<Talker>().handle(e, st);
+    }
+  }
+
+  void _onUpdateUser(
+    AuthUpdateUserEvent event,
+    Emitter<AuthState> emit,
+  ) {
+    if (state is AuthAuthenticatedState) {
+      emit(AuthAuthenticatedState(event.updatedUser));
     }
   }
 }

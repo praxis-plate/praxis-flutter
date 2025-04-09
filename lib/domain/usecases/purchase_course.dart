@@ -1,29 +1,59 @@
+import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/abstract_course_repository.dart';
 import 'package:codium/domain/repositories/abstract_user_repository.dart';
+import 'package:codium/domain/repositories/abstract_user_statistics_repository.dart';
 import 'package:get_it/get_it.dart';
-import 'package:talker/talker.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 class PurchaseCourseUseCase {
-  final ICourseRepository _courseRepo;
-  final IUserRepository _userRepo;
+  final ICourseRepository _courseRepository;
+  final IUserRepository _userRepository;
+  final IUserStatisticsRepository _userStatisticsRepository;
 
   PurchaseCourseUseCase({
-    required ICourseRepository courseRepo,
-    required IUserRepository userRepo,
-  }) : _courseRepo = courseRepo, _userRepo = userRepo;
+    required ICourseRepository courseRepository,
+    required IUserRepository userRepository,
+    required IUserStatisticsRepository userStatisticsRepository,
+  })  : _courseRepository = courseRepository,
+        _userRepository = userRepository,
+        _userStatisticsRepository = userStatisticsRepository;
 
-  Future<void> execute(String courseId) async {
-    final course = await _courseRepo.getCourseById(courseId);
-    final user = await _userRepo.getCurrentUser();
+  Future<User> execute(String courseId) async {
+    try {
+      final course = await _courseRepository.getCourseById(courseId);
+      final user = await _userRepository.getCurrentUser();
 
-    if (user.balance < course.pricing.price) {
-      GetIt.I<Talker>().error('User balance less than course price');
-      return;
+      if (user.purchasedCourseIds.contains(course.id)) {
+        GetIt.I<Talker>()
+            .log('User #${user.id} already has course #${course.id}');
+        return user;
+      }
+
+      if (user.balance < course.pricing.price) {
+        GetIt.I<Talker>().log(
+          'User #${user.id} money less than course price #${course.id}: ${user.balance} < ${course.pricing.price}',
+        );
+        return user;
+      }
+
+      final newBalance = user.balance - course.pricing.price;
+      final updatedUser = user.copyWith(
+        balance: newBalance,
+        purchasedCourseIds: [...user.purchasedCourseIds, courseId],
+      );
+
+
+      GetIt.I<Talker>().log('Successful bought');
+
+      await _userStatisticsRepository.createUserCourseStatistics(
+        userId: user.id,
+        courseId: courseId,
+      );
+
+      await _userRepository.saveUser(updatedUser);
+      return updatedUser;
+    } on Exception catch (_) {
+      rethrow;
     }
-
-    final newBalance = user.balance - course.pricing.price;
-    final updatedUser = user.copyWith(balance: newBalance);
-
-    await _userRepo.saveUser(updatedUser);
   }
 }

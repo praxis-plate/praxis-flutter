@@ -1,4 +1,5 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/auth/widgets/auth_button.dart';
 import 'package:codium/features/auth/widgets/auth_field.dart';
 import 'package:codium/features/auth/widgets/password_field.dart';
@@ -22,11 +23,13 @@ class SignUpPage extends StatelessWidget {
         body: SafeArea(
           child: GestureDetector(
             onTap: FocusScope.of(context).unfocus,
-            child: const Center(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: _SignUpForm(),
+            child: const Wrapper(
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: _SignUpForm(),
+                  ),
                 ),
               ),
             ),

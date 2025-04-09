@@ -15,8 +15,20 @@ class UserStatisticsRepository implements IUserStatisticsRepository {
         _remoteDataSource = remoteDataSource;
 
   @override
-  Future<UserStatistics> getStatisticsByUserId(String userId) async {
-    try {
+  Future<UserCourseStatistics> createUserCourseStatistics({required String userId, required String courseId}) {
+    // TODO: implement createUserCourseStatistics
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<bool> exists(String userId) {
+    // TODO: implement exists
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<UserStatistics> get(String userId) async {
+     try {
       final remoteStats = await _remoteDataSource.fetchStatisticsByUserId(userId);
       await _localDataSource.saveStatistics(remoteStats);
       return remoteStats;
@@ -26,8 +38,20 @@ class UserStatisticsRepository implements IUserStatisticsRepository {
   }
   
   @override
-  Future<Course> getCourseStatistics(String userId, String courseId) {
-    // TODO: implement getCourseStatistics
+  Future<UserCourseStatistics> getUserCourseStatistics({required String userId, required String courseId}) {
+    // TODO: implement getUserCourseStatistics
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> reset(String userId) {
+    // TODO: implement reset
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> update(UserStatistics stats) {
+    // TODO: implement update
     throw UnimplementedError();
   }
 }

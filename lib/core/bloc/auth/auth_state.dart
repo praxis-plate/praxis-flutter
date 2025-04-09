@@ -10,7 +10,7 @@ enum AuthStatus {
 
 sealed class AuthState extends Equatable {
   const AuthState();
-  
+
   @override
   List<Object?> get props => [];
 }
@@ -24,12 +24,17 @@ class AuthLoadingState extends AuthState {
 }
 
 class AuthAuthenticatedState extends AuthState {
-  const AuthAuthenticatedState();
+  final User user;
+
+  const AuthAuthenticatedState(this.user);
+
+  @override
+  List<Object> get props => [user];
 }
 
 class AuthUnauthenticatedState extends AuthState {
   final String? redirectReason;
-  
+
   const AuthUnauthenticatedState({this.redirectReason});
 
   @override
@@ -38,7 +43,7 @@ class AuthUnauthenticatedState extends AuthState {
 
 class AuthErrorState extends AuthState {
   final String message;
-  
+
   const AuthErrorState(this.message);
 
   @override

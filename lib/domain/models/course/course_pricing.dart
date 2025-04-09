@@ -13,7 +13,7 @@ class CoursePricing {
 
 factory CoursePricing.free() {
     return CoursePricing(
-      price: 0,
+      price: 12,
       currency: 'USD',
       hasCertification: false,
       hasLifetimeAccess: true,
