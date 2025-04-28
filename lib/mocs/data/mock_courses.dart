@@ -4,7 +4,7 @@ import 'package:codium/domain/models/course/course_pricing.dart';
 import 'package:codium/mocs/data/mock_course_tasks.dart';
 import 'package:codium/mocs/data/mock_user.dart';
 
-final mockCourses = List.generate(3, (i) {
+final mockCourses = List.generate(5, (i) {
   final tasks = mockTasks;
 
   final module = CourseModule(
@@ -17,7 +17,7 @@ final mockCourses = List.generate(3, (i) {
   return Course(
     id: 'course_$i',
     title: 'Курс $i',
-    previewDescription: 'Превью $i',
+    previewDescription: 'Превью текст $i',
     description: 'Полное описание курса $i',
     coverImage: '',
     author: mockUser,

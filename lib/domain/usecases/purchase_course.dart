@@ -2,6 +2,7 @@ import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/abstract_course_repository.dart';
 import 'package:codium/domain/repositories/abstract_user_repository.dart';
 import 'package:codium/domain/repositories/abstract_user_statistics_repository.dart';
+import 'package:decimal/decimal.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -29,16 +30,18 @@ class PurchaseCourseUseCase {
         return user;
       }
 
-      if (user.balance < course.pricing.price) {
+      if (user.balance.amount < course.pricing.price.amount) {
         GetIt.I<Talker>().log(
-          'User #${user.id} money less than course price #${course.id}: ${user.balance} < ${course.pricing.price}',
+          'User #${user.id} balance amount less than course price amount #${course.id}: ${user.balance.amount} < ${course.pricing.price.amount}',
         );
         return user;
       }
 
-      final newBalance = user.balance - course.pricing.price;
+      Decimal newBalanceAmount = user.balance.amount - course.pricing.price.amount;
       final updatedUser = user.copyWith(
-        balance: newBalance,
+        balance: user.balance.copyWith(
+          amount: newBalanceAmount,
+        ),
         purchasedCourseIds: [...user.purchasedCourseIds, courseId],
       );
 

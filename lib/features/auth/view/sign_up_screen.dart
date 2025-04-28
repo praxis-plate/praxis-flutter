@@ -178,14 +178,14 @@ class _SubmitButton extends StatelessWidget {
           builder: (context, authState) {
             final isLoading = authState is AuthLoadingState;
 
-            return ElevatedButton(
-              onPressed: formState.isValid && !isLoading
-                  ? () => _handleSignIn(context, formState)
-                  : null,
-              child: isLoading
-                  ? const CircularProgressIndicator()
-                  : Text(S.of(context).displaySignUp),
-            );
+            return isLoading
+                ? const CircularProgressIndicator()
+                : ElevatedButton(
+                    onPressed: formState.isValid
+                        ? () => _handleSignIn(context, formState)
+                        : null,
+                    child: Text(S.of(context).displaySignUp),
+                  );
           },
         );
       },
