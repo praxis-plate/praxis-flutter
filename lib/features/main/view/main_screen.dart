@@ -12,6 +12,7 @@ import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -118,8 +119,14 @@ class _RecommendationsSection extends StatelessWidget {
           builder: (context, state) {
             return switch (state) {
               MainCarouselLoadSuccessState() => CourseCarousel(
-                  courseCards:
-                      state.courses.map((e) => CourseCard(course: e)).toList(),
+                  courseCards: state.courses
+                      .map(
+                        (e) => CourseCard(
+                          course: e,
+                          onPressed: () => context.push('/course/${e.id}'),
+                        ),
+                      )
+                      .toList(),
                 ),
               MainCarouselLoadErrorState() => Text(state.message),
               _ => const Center(child: CircularProgressIndicator()),
@@ -158,7 +165,10 @@ class _CoursesSection extends StatelessWidget {
                       .map(
                         (e) => Padding(
                           padding: const EdgeInsets.only(bottom: 16),
-                          child: CourseCard(course: e),
+                          child: CourseCard(
+                            course: e,
+                            onPressed: () => context.push('/course/${e.id}'),
+                          ),
                         ),
                       )
                       .toList(),

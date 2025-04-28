@@ -1,3 +1,4 @@
+import 'package:codium/core/widgets/user_provider.dart';
 import 'package:codium/domain/models/user_statistics.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class UserPointsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final user = UserProvider.of(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -25,17 +27,20 @@ class UserPointsCard extends StatelessWidget {
           children: [
             Text(
               S.of(context).yourBalance,
-              style: theme.textTheme.titleSmall,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: theme.colorScheme.surface,
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '${userStatistics.points}',
-                  style: theme.textTheme.titleMedium,
+                  user.balance.format(),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.surface,
+                  ),
                 ),
-                const Icon(Icons.bolt),
               ],
             ),
           ],

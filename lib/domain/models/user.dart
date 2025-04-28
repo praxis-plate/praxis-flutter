@@ -1,11 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:codium/domain/models/money.dart';
 import 'package:equatable/equatable.dart';
 
 class User extends Equatable {
   final String id;
   final String name;
   final String email;
-  final double balance;
+  final Money balance;
   final List<String> purchasedCourseIds;
   final String? avatarUrl; 
 
@@ -22,7 +23,7 @@ class User extends Equatable {
     String? id,
     String? name,
     String? email,
-    double? balance,
+    Money? balance,
     List<String>? purchasedCourseIds,
     String? avatarUrl,
   }) {

@@ -140,7 +140,10 @@ class CourseHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CourseCard(course: course),
+        CourseCard(
+          course: course,
+          onPressed: null,
+        ),
         const SizedBox(height: 16),
         const Divider(indent: 0, endIndent: 0),
       ],
@@ -165,7 +168,7 @@ class CourseMetaInfo extends StatelessWidget {
         child: ListView(
           scrollDirection: Axis.horizontal,
           children: [
-            MetaItem(value: '${course.pricing.price}', label: 'Price'),
+            MetaItem(value: course.pricing.price.format(), label: 'Price'),
             MetaItem(value: course.author.name, label: 'Author'),
             MetaItem(
               value: '${course.statistics.averageRating}/5',
@@ -226,7 +229,10 @@ class RecommendationSection extends StatelessWidget {
             return switch (state) {
               RecommendLoadSuccessState() => CourseCarousel(
                   courseCards: state.recommendCourses
-                      .map((rc) => CourseCard(course: rc))
+                      .map((rc) => CourseCard(
+                            course: rc,
+                            onPressed: null,
+                          ),)
                       .toList(),
                 ),
               RecommendLoadErrorState() => ErrorWidget(state.message),

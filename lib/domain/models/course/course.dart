@@ -4,6 +4,7 @@ import 'package:codium/domain/models/course/course_pricing.dart';
 import 'package:codium/domain/models/course/course_statistics.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/models/task/course_task.dart';
+import 'package:decimal/decimal.dart';
 
 class Course {
   final String id;
@@ -63,7 +64,7 @@ class Course {
 
   void _validateCourse() {
     if (title.isEmpty) throw ArgumentError('Title cannot be empty');
-    if (pricing.price < 0) throw ArgumentError('Price cannot be negative');
+    if (pricing.price.amount < Decimal.zero) throw ArgumentError('Price cannot be negative');
   }
 
   String get tableOfContents {

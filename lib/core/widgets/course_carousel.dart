@@ -15,8 +15,8 @@ class CourseCarousel extends StatelessWidget {
     return CarouselSlider(
       items: courseCards,
       options: CarouselOptions(
-        height: 140,
-        viewportFraction: 1,
+        height: 130,
+        viewportFraction: 0.9,
         initialPage: 0,
         enableInfiniteScroll: true,
         reverse: false,
