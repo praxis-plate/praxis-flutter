@@ -6,5 +6,5 @@ export 'course_info.dart';
 export 'course_progress_bar.dart';
 export 'get_button.dart';
 export 'running_text.dart';
-export 'user_points_card.dart';
+export 'smart/user_balance_card.dart';
 export 'wrapper.dart';

@@ -1,6 +1,6 @@
 import 'package:codium/domain/enums/task_type.dart';
 
-abstract class CourseTask {
+class CourseTask {
   final String id;
   final String title;
   final String content;

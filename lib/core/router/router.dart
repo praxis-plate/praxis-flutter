@@ -2,6 +2,7 @@ import 'package:codium/features/auth/view/sign_in_screen.dart';
 import 'package:codium/features/auth/view/sign_up_screen.dart';
 import 'package:codium/features/course_details/view/course_detail_screen.dart';
 import 'package:codium/features/navigation/view/navigation_screen.dart';
+import 'package:codium/features/test/view/test_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
@@ -33,6 +34,10 @@ class AppRouter {
         builder: (context, state) => CourseDetailScreen(
           courseId: state.pathParameters['courseId']!,
         ),
+      ),
+      GoRoute(
+        path: '/test',
+        builder: (context, state) => const TestScreen(),
       ),
     ],
   );

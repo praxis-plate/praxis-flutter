@@ -77,42 +77,114 @@ class _CourseDetail extends StatelessWidget {
         children: [
           CourseHeader(course: course),
           CourseMetaInfo(course: course),
-          _buildDescriptionSection(context),
-          _buildTableOfContents(context),
+          _buildTabSection(context),
           _buildRecommendations(),
         ],
       ),
     );
   }
 
-  Widget _buildDescriptionSection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+Widget _buildTabSection(BuildContext context) {
+  final theme = Theme.of(context);
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 1, // По умолчанию активна вторая вкладка (Table of Contents)
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionTitle(title: 'Description'),
-          const SizedBox(height: 8),
-          Text(
-            course.description,
-            style: Theme.of(context).textTheme.bodyMedium,
+           TabBar(
+            tabs: const [
+              Tab(text: 'Описание'),
+              Tab(text: 'Содержание'),
+            ],
+            dividerHeight: 0,
+            labelColor: theme.primaryColor,
+            indicatorColor: theme.primaryColor,
+            labelStyle: theme.textTheme.labelMedium,
+          ),
+          SizedBox(
+            height: 400, // Фиксированная высота или использовать LayoutBuilder
+            child: TabBarView(
+              children: [
+                _buildDescriptionContent(context),
+                _buildTableOfContentsContent(context),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTableOfContents(BuildContext context) {
+  Widget _buildDescriptionContent(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Text(
+          course.description,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTableOfContentsContent(BuildContext context) {
+    final parsedContent = _parseTableOfContents(context, course.tableOfContents);
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: parsedContent,
+    );
+  }
+
+    List<Widget> _parseTableOfContents(BuildContext context, String content) {
+    final lines = content.split('\n');
+    final List<Widget> result = [];
+    
+    for (final line in lines) {
+      final trimmedLine = line.trim();
+      if (trimmedLine.isEmpty) continue;
+
+      if (trimmedLine.startsWith('#')) {
+        result.add(_buildModuleTitle(context, trimmedLine.substring(1).trim()));
+      } else if (trimmedLine.startsWith('*')) {
+        result.add(_buildTaskItem(context, trimmedLine.substring(1).trim()));
+      }
+    }
+    
+    return result;
+  }
+
+  Widget _buildModuleTitle(BuildContext context, String text) {
+    final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
+      padding: const EdgeInsets.only(top: 16, bottom: 8),
+      child: Text(
+        text,
+        style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.primaryColor,
+            ),
+      ),
+    );
+  }
+
+  Widget _buildTaskItem(BuildContext context, String text) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionTitle(title: 'Table of contents'),
-          const SizedBox(height: 16),
-          Text(
-            course.tableOfContents,
-            style: Theme.of(context).textTheme.bodyMedium,
+          Padding(
+            padding: const EdgeInsets.only(top: 6, right: 12),
+            child: Icon(Icons.chevron_right, size: 18, color: Colors.grey[600]),
+          ),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                    height: 1.4,
+                  ),
+            ),
           ),
         ],
       ),
