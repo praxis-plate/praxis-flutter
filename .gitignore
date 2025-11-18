@@ -37,22 +37,22 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-
 # FVM Version Cache
 .fvm/
+.fvmrc
 
-# Other
-/lib/core/secrets/
+# Platform folders
+/android/
 /macos/
 /windows/
 /web/
 /linux/
 /ios/
+
+# Generated files
 /lib/generated/
-/android/.gradle/
-/android/local.properties
-/android/key.properties
+.metadata
+devtools_options.yaml
+
+# Secrets
+/lib/core/secrets/
