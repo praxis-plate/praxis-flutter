@@ -1,4 +1,4 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:codium/l10n/app_localizations.dart';
 import 'package:formz/formz.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';

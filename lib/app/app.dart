@@ -21,8 +21,9 @@ class App extends StatelessWidget {
             supportedLocales: S.supportedLocales,
             locale: S.locale,
             title: 'Codium',
-            theme: state.isDarkTheme ? AppTheme.darkTheme : AppTheme.lightTheme,
+            theme: state.isDarkTheme ? AppTheme.of(Brightness.dark) : AppTheme.of(Brightness.dark),
             routerConfig: AppRouter.router,
+            debugShowCheckedModeBanner: false,
             builder: (context, child) => BlocBuilder<AuthBloc, AuthState>(
               buildWhen: (prev, curr) {
                 if (prev.runtimeType != curr.runtimeType) return true;

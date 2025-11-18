@@ -23,6 +23,7 @@ class SignInScreen extends StatelessWidget {
           }
         },
         child: Scaffold(
+          appBar: AppBar(backgroundColor: Colors.black),
           body: SafeArea(
             child: GestureDetector(
               onTap: FocusScope.of(context).unfocus,
@@ -196,11 +197,8 @@ class _SubmitButton extends StatelessWidget {
     final password = formState.password.value;
 
     context.read<AuthBloc>().add(
-          AuthSignInEvent(
-            email: email,
-            password: password,
-          ),
-        );
+      AuthSignInEvent(email: email, password: password),
+    );
 
     context.read<SignInCubit>().setSubmissionInProgress();
   }

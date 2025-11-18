@@ -1,11 +1,12 @@
 import 'package:codium/core/widgets/course_card.dart';
+import 'package:codium/core/widgets/course_carousel.dart';
 import 'package:codium/core/widgets/course_search_bar.dart';
-import 'package:codium/core/widgets/dumb/section.dart';
 import 'package:codium/core/widgets/smart/user_balance_card.dart';
 import 'package:codium/core/widgets/user_provider.dart';
 import 'package:codium/core/widgets/wrapper.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/main/bloc/main/main_bloc.dart';
+import 'package:codium/features/main/bloc/main_carousel/main_carousel_bloc.dart';
 import 'package:codium/features/main/bloc/user_statistics/user_statistics_bloc.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,10 @@ class MainScreen extends StatelessWidget {
         BlocProvider(
           create: (context) => GetIt.I<UserStatisticsBloc>()
             ..add(UserStatisticsLoadEvent(userId: user.id)),
+        ),
+        BlocProvider(
+          create: (context) =>
+              GetIt.I<MainCarouselBloc>()..add(MainCarouselLoadEvent()),
         ),
         BlocProvider(
           create: (context) => GetIt.I<MainBloc>()..add(MainLoadCoursesEvent()),
@@ -63,19 +68,72 @@ class _MainScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
-
     return Wrapper(
       child: ListView(
-        children: [
-          Section(
-            title: s.balance,
-            widget: const UserBalanceCard(),
-          ),
-          const SizedBox(height: 8),
-          const _CoursesSection(),
+        children: const [
+          _UserStatisticsSection(),
+          SizedBox(height: 8),
+          _RecommendationsSection(),
+          SizedBox(height: 8),
+          _CoursesSection(),
         ],
       ),
+    );
+  }
+}
+
+class _UserStatisticsSection extends StatelessWidget {
+  const _UserStatisticsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserStatisticsBloc, UserStatisticsState>(
+      builder: (context, state) {
+        return switch (state) {
+          UserStatisticsLoadSuccessState() =>
+            const UserBalanceCard(),
+          UserStatisticsLoadErrorState() => ErrorWidget(state.message),
+          _ => const Center(child: CircularProgressIndicator()),
+        };
+      },
+    );
+  }
+}
+
+class _RecommendationsSection extends StatelessWidget {
+  const _RecommendationsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          S.of(context).recommend,
+          style: theme.textTheme.titleSmall,
+        ),
+        const SizedBox(height: 8),
+        BlocBuilder<MainCarouselBloc, MainCarouselState>(
+          builder: (context, state) {
+            return switch (state) {
+              MainCarouselLoadSuccessState() => CourseCarousel(
+                  courseCards: state.courses
+                      .map(
+                        (e) => CourseCard(
+                          course: e,
+                          onPressed: () => context.push('/course/${e.id}'),
+                        ),
+                      )
+                      .toList(),
+                ),
+              MainCarouselLoadErrorState() => Text(state.message),
+              _ => const Center(child: CircularProgressIndicator()),
+            };
+          },
+        ),
+      ],
     );
   }
 }
