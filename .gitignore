@@ -53,6 +53,13 @@ app.*.map.json
 /lib/generated/
 .metadata
 devtools_options.yaml
+*.g.dart
+*.freezed.dart
+
+# Environment variables
+.env
+.env.local
+.env.*.local
 
 # Secrets
 /lib/core/secrets/
