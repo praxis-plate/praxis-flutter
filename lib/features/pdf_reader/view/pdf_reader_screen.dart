@@ -1,3 +1,5 @@
+import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
+import 'package:codium/features/ai_explanation/widgets/explanation_bottom_sheet.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
 import 'package:codium/features/pdf_reader/widgets/bookmarks_panel.dart';
 import 'package:codium/features/pdf_reader/widgets/text_selection_menu.dart';
@@ -80,110 +82,136 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
           ),
         ],
       ),
-      body: BlocConsumer<PdfReaderBloc, PdfReaderState>(
-        listener: (context, state) {
-          if (state is PdfReaderLoadedState && _pdfController == null) {
-            _initializePdfController(state.book.filePath, state.currentPage);
-          }
-        },
-        builder: (context, state) {
-          if (state is PdfReaderLoadingState) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<AiExplanationBloc, AiExplanationState>(
+            listener: (context, state) {
+              if (state is AiExplanationLoadedState ||
+                  state is AiExplanationErrorState) {
+                _showExplanationBottomSheet(context);
+              }
+            },
+          ),
+        ],
+        child: BlocConsumer<PdfReaderBloc, PdfReaderState>(
+          listener: (context, state) {
+            if (state is PdfReaderLoadedState && _pdfController == null) {
+              _initializePdfController(state.book.filePath, state.currentPage);
+            }
+          },
+          builder: (context, state) {
+            if (state is PdfReaderLoadingState) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state is PdfReaderErrorState) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text(
-                    state.message,
-                    style: const TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            );
-          }
-
-          if (state is PdfReaderLoadedState && _pdfController != null) {
-            return Stack(
-              children: [
-                Column(
+            if (state is PdfReaderErrorState) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onLongPressStart: (details) {
-                          _handleTextSelection(details.globalPosition, state);
-                        },
-                        child: PdfView(
-                          controller: _pdfController!,
-                          onPageChanged: (page) {
-                            context.read<PdfReaderBloc>().add(
-                              ChangePageEvent(page - 1),
-                            );
-                          },
-                          onDocumentLoaded: (document) {},
-                          onDocumentError: (error) {},
-                        ),
-                      ),
+                    const Icon(
+                      Icons.error_outline,
+                      size: 64,
+                      color: Colors.red,
                     ),
-                    _buildPageIndicator(state),
+                    const SizedBox(height: 16),
+                    Text(
+                      state.message,
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
-                if (_showTextSelectionMenu)
-                  Positioned(
-                    left: _menuPosition.dx,
-                    top: _menuPosition.dy,
-                    child: TextSelectionMenu(
-                      selectedText: _selectedText,
-                      onExplain: () {
-                        context.read<PdfReaderBloc>().add(
-                          SelectTextEvent(
-                            selectedText: _selectedText,
-                            pageNumber: state.currentPage,
-                          ),
-                        );
-                        setState(() {
-                          _showTextSelectionMenu = false;
-                        });
-                        _showExplainDialog();
-                      },
-                      onDismiss: () {
-                        setState(() {
-                          _showTextSelectionMenu = false;
-                        });
-                      },
-                    ),
-                  ),
-                if (_showBookmarksPanel)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                    child: BookmarksPanel(
-                      bookId: state.book.id,
-                      onClose: () {
-                        setState(() {
-                          _showBookmarksPanel = false;
-                        });
-                      },
-                      onBookmarkTap: (pageNumber) {
-                        _pdfController?.jumpToPage(pageNumber + 1);
-                        setState(() {
-                          _showBookmarksPanel = false;
-                        });
-                      },
-                    ),
-                  ),
-              ],
-            );
-          }
+              );
+            }
 
-          return const Center(child: Text('No PDF loaded'));
-        },
+            if (state is PdfReaderLoadedState && _pdfController != null) {
+              return Stack(
+                children: [
+                  Column(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onLongPressStart: (details) {
+                            _handleTextSelection(details.globalPosition, state);
+                          },
+                          child: PdfView(
+                            controller: _pdfController!,
+                            onPageChanged: (page) {
+                              context.read<PdfReaderBloc>().add(
+                                ChangePageEvent(page - 1),
+                              );
+                            },
+                            onDocumentLoaded: (document) {},
+                            onDocumentError: (error) {},
+                          ),
+                        ),
+                      ),
+                      _buildPageIndicator(state),
+                    ],
+                  ),
+                  if (_showTextSelectionMenu)
+                    Positioned(
+                      left: _menuPosition.dx,
+                      top: _menuPosition.dy,
+                      child: TextSelectionMenu(
+                        selectedText: _selectedText,
+                        onExplain: () {
+                          context.read<PdfReaderBloc>().add(
+                            SelectTextEvent(
+                              selectedText: _selectedText,
+                              pageNumber: state.currentPage,
+                            ),
+                          );
+
+                          context.read<AiExplanationBloc>().add(
+                            RequestExplanationEvent(
+                              selectedText: _selectedText,
+                              context:
+                                  'Context from PDF page ${state.currentPage + 1}',
+                              pdfBookId: state.book.id,
+                              pageNumber: state.currentPage,
+                            ),
+                          );
+
+                          setState(() {
+                            _showTextSelectionMenu = false;
+                          });
+                        },
+                        onDismiss: () {
+                          setState(() {
+                            _showTextSelectionMenu = false;
+                          });
+                        },
+                      ),
+                    ),
+                  if (_showBookmarksPanel)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: BookmarksPanel(
+                        bookId: state.book.id,
+                        onClose: () {
+                          setState(() {
+                            _showBookmarksPanel = false;
+                          });
+                        },
+                        onBookmarkTap: (pageNumber) {
+                          _pdfController?.jumpToPage(pageNumber + 1);
+                          setState(() {
+                            _showBookmarksPanel = false;
+                          });
+                        },
+                      ),
+                    ),
+                ],
+              );
+            }
+
+            return const Center(child: Text('No PDF loaded'));
+          },
+        ),
       ),
     );
   }
@@ -261,25 +289,16 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
     });
   }
 
-  void _showExplainDialog() {
-    showDialog(
+  void _showExplanationBottomSheet(BuildContext context) {
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('AI Explanation'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Generating explanation...'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.3,
+        maxChildSize: 0.9,
+        builder: (context, scrollController) => const ExplanationBottomSheet(),
       ),
     );
   }
