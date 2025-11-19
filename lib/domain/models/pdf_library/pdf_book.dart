@@ -1,15 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 class PdfBook extends Equatable {
-  final String id;
-  final String title;
-  final String? author;
-  final String filePath;
-  final int totalPages;
-  final int currentPage;
-  final DateTime? lastRead;
-  final bool isFavorite;
-
   const PdfBook({
     required this.id,
     required this.title,
@@ -20,6 +11,15 @@ class PdfBook extends Equatable {
     this.lastRead,
     this.isFavorite = false,
   });
+
+  final String id;
+  final String title;
+  final String? author;
+  final String filePath;
+  final int totalPages;
+  final int currentPage;
+  final DateTime? lastRead;
+  final bool isFavorite;
 
   bool isValid() {
     return id.isNotEmpty &&
@@ -52,18 +52,46 @@ class PdfBook extends Equatable {
     );
   }
 
-  @override
-  List<Object?> get props => [
-    id,
-    title,
-    author,
-    filePath,
-    totalPages,
-    currentPage,
-    lastRead,
-    isFavorite,
-  ];
+  factory PdfBook.fromJson(Map<String, dynamic> json) {
+    return PdfBook(
+      id: json['id'],
+      title: json['title'],
+      author: json['author'],
+      filePath: json['filePath'],
+      totalPages: json['totalPages'],
+      currentPage: json['currentPage'],
+      lastRead: DateTime.fromMillisecondsSinceEpoch(json['lastRead']),
+      isFavorite: json['isFavorite'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'author': author,
+      'filePath': filePath,
+      'totalPages': totalPages,
+      'currentPage': currentPage,
+      'lastRead': lastRead?.millisecondsSinceEpoch,
+      'isFavorite': isFavorite,
+    };
+  }
 
   @override
-  bool get stringify => true;
+  bool? get stringify => true;
+
+  @override
+  List<Object?> get props {
+    return [
+      id,
+      title,
+      author,
+      filePath,
+      totalPages,
+      currentPage,
+      lastRead,
+      isFavorite,
+    ];
+  }
 }
