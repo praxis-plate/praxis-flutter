@@ -1,0 +1,286 @@
+import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
+import 'package:codium/features/pdf_reader/widgets/bookmarks_panel.dart';
+import 'package:codium/features/pdf_reader/widgets/text_selection_menu.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pdfx/pdfx.dart';
+
+class PdfReaderScreen extends StatefulWidget {
+  final String bookId;
+
+  const PdfReaderScreen({super.key, required this.bookId});
+
+  @override
+  State<PdfReaderScreen> createState() => _PdfReaderScreenState();
+}
+
+class _PdfReaderScreenState extends State<PdfReaderScreen> {
+  PdfController? _pdfController;
+  bool _showBookmarksPanel = false;
+  bool _showTextSelectionMenu = false;
+  Offset _menuPosition = Offset.zero;
+  String _selectedText = '';
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<PdfReaderBloc>().add(OpenPdfEvent(widget.bookId));
+  }
+
+  @override
+  void dispose() {
+    _pdfController?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initializePdfController(
+    String filePath,
+    int initialPage,
+  ) async {
+    _pdfController = PdfController(
+      document: PdfDocument.openFile(filePath),
+      initialPage: initialPage + 1,
+    );
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: BlocBuilder<PdfReaderBloc, PdfReaderState>(
+          builder: (context, state) {
+            if (state is PdfReaderLoadedState) {
+              return Text(state.book.title);
+            }
+            return const Text('PDF Reader');
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bookmark),
+            onPressed: () {
+              setState(() {
+                _showBookmarksPanel = !_showBookmarksPanel;
+              });
+            },
+          ),
+          BlocBuilder<PdfReaderBloc, PdfReaderState>(
+            builder: (context, state) {
+              if (state is PdfReaderLoadedState) {
+                return IconButton(
+                  icon: const Icon(Icons.bookmark_add),
+                  onPressed: () {
+                    _showAddBookmarkDialog(context, state.currentPage);
+                  },
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
+      ),
+      body: BlocConsumer<PdfReaderBloc, PdfReaderState>(
+        listener: (context, state) {
+          if (state is PdfReaderLoadedState && _pdfController == null) {
+            _initializePdfController(state.book.filePath, state.currentPage);
+          }
+        },
+        builder: (context, state) {
+          if (state is PdfReaderLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is PdfReaderErrorState) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text(
+                    state.message,
+                    style: const TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (state is PdfReaderLoadedState && _pdfController != null) {
+            return Stack(
+              children: [
+                Column(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onLongPressStart: (details) {
+                          _handleTextSelection(details.globalPosition, state);
+                        },
+                        child: PdfView(
+                          controller: _pdfController!,
+                          onPageChanged: (page) {
+                            context.read<PdfReaderBloc>().add(
+                              ChangePageEvent(page - 1),
+                            );
+                          },
+                          onDocumentLoaded: (document) {},
+                          onDocumentError: (error) {},
+                        ),
+                      ),
+                    ),
+                    _buildPageIndicator(state),
+                  ],
+                ),
+                if (_showTextSelectionMenu)
+                  Positioned(
+                    left: _menuPosition.dx,
+                    top: _menuPosition.dy,
+                    child: TextSelectionMenu(
+                      selectedText: _selectedText,
+                      onExplain: () {
+                        context.read<PdfReaderBloc>().add(
+                          SelectTextEvent(
+                            selectedText: _selectedText,
+                            pageNumber: state.currentPage,
+                          ),
+                        );
+                        setState(() {
+                          _showTextSelectionMenu = false;
+                        });
+                        _showExplainDialog();
+                      },
+                      onDismiss: () {
+                        setState(() {
+                          _showTextSelectionMenu = false;
+                        });
+                      },
+                    ),
+                  ),
+                if (_showBookmarksPanel)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    child: BookmarksPanel(
+                      bookId: state.book.id,
+                      onClose: () {
+                        setState(() {
+                          _showBookmarksPanel = false;
+                        });
+                      },
+                      onBookmarkTap: (pageNumber) {
+                        _pdfController?.jumpToPage(pageNumber + 1);
+                        setState(() {
+                          _showBookmarksPanel = false;
+                        });
+                      },
+                    ),
+                  ),
+              ],
+            );
+          }
+
+          return const Center(child: Text('No PDF loaded'));
+        },
+      ),
+    );
+  }
+
+  Widget _buildPageIndicator(PdfReaderLoadedState state) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.black87,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Page ${state.currentPage + 1} of ${state.book.totalPages}',
+            style: const TextStyle(color: Colors.white, fontSize: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddBookmarkDialog(BuildContext context, int currentPage) {
+    final noteController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Add Bookmark'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Page ${currentPage + 1}'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: noteController,
+              decoration: const InputDecoration(
+                labelText: 'Note (optional)',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.read<PdfReaderBloc>().add(
+                AddBookmarkEvent(
+                  pageNumber: currentPage,
+                  note: noteController.text.isEmpty
+                      ? null
+                      : noteController.text,
+                ),
+              );
+              Navigator.of(dialogContext).pop();
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Bookmark added')));
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleTextSelection(Offset position, PdfReaderLoadedState state) {
+    setState(() {
+      _selectedText = 'Selected text from page ${state.currentPage + 1}';
+      _menuPosition = Offset(position.dx - 50, position.dy - 60);
+      _showTextSelectionMenu = true;
+    });
+  }
+
+  void _showExplainDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('AI Explanation'),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Generating explanation...'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+}
