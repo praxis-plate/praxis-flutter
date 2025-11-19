@@ -43,6 +43,16 @@ class StorageRepositoryImpl implements IStorageRepository {
   }
 
   @override
+  Future<List<Explanation>> getAllExplanations() async {
+    try {
+      return await _explanationDataSource.getAllExplanations();
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      throw Exception('Failed to get all explanations: $e');
+    }
+  }
+
+  @override
   Future<List<Explanation>> getExplanationsByPdfId(String pdfId) async {
     try {
       return await _explanationDataSource.getExplanationsByPdfId(pdfId);

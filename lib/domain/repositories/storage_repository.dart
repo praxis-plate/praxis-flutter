@@ -6,6 +6,7 @@ abstract interface class IStorageRepository {
   Future<void> saveBookmark(Bookmark bookmark);
   Future<void> deleteBookmark(String bookmarkId);
 
+  Future<List<Explanation>> getAllExplanations();
   Future<List<Explanation>> getExplanationsByPdfId(String pdfId);
   Future<void> saveExplanation(Explanation explanation);
   Future<void> deleteExplanation(String explanationId);
