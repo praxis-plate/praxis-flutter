@@ -56,6 +56,25 @@ void main() {
         }
       },
     );
+
+    test('Feature: codium-ai-enhancement, Property 5: Web Search Integration - '
+        'For any explanation request, the system should perform a web search '
+        'and include results when internet is available', () async {
+      final testCases = _generateSearchPropertyTestCases(100);
+
+      for (final testCase in testCases) {
+        when(
+          mockSearchDataSource.searchWeb(testCase.query),
+        ).thenAnswer((_) async => testCase.expectedResults);
+
+        final result = await repository.searchWeb(testCase.query);
+
+        expect(result, testCase.expectedResults);
+        verify(mockSearchDataSource.searchWeb(testCase.query)).called(1);
+
+        reset(mockSearchDataSource);
+      }
+    });
   });
 
   group('AiRepositoryImpl - Unit Tests', () {
@@ -132,7 +151,7 @@ void main() {
     test('should return search results when web search succeeds', () async {
       const query = 'Dart programming';
       final expectedResults = [
-        SearchSource(
+        const SearchSource(
           title: 'Dart Language',
           snippet: 'Dart is a programming language...',
           url: 'https://dart.dev',
@@ -186,6 +205,13 @@ class _PropertyTestCase {
 
   final String text;
   final String context;
+}
+
+class _SearchPropertyTestCase {
+  _SearchPropertyTestCase({required this.query, required this.expectedResults});
+
+  final String query;
+  final List<SearchSource> expectedResults;
 }
 
 List<_PropertyTestCase> _generatePropertyTestCases(int count) {
@@ -255,6 +281,72 @@ List<_PropertyTestCase> _generatePropertyTestCases(int count) {
       _PropertyTestCase(
         text: sampleTexts[textIndex],
         context: sampleContexts[contextIndex],
+      ),
+    );
+  }
+
+  return cases;
+}
+
+List<_SearchPropertyTestCase> _generateSearchPropertyTestCases(int count) {
+  final random = DateTime.now().millisecondsSinceEpoch;
+  final cases = <_SearchPropertyTestCase>[];
+
+  final sampleQueries = [
+    'Dart programming',
+    'Flutter widgets',
+    'async await',
+    'state management',
+    'dependency injection',
+    'clean architecture',
+    'design patterns',
+    'unit testing',
+    'property based testing',
+    'functional programming',
+  ];
+
+  final sampleTitles = [
+    'Official Documentation',
+    'Tutorial Guide',
+    'Stack Overflow Answer',
+    'Medium Article',
+    'GitHub Repository',
+    'Blog Post',
+    'Video Tutorial',
+    'Course Material',
+  ];
+
+  final sampleSnippets = [
+    'This is a comprehensive guide to...',
+    'Learn how to implement...',
+    'Best practices for...',
+    'Common patterns in...',
+    'Understanding the basics of...',
+    'Advanced techniques for...',
+  ];
+
+  for (var i = 0; i < count; i++) {
+    final queryIndex = (random + i * 7) % sampleQueries.length;
+    final resultCount = (i % 3) + 1;
+
+    final results = <SearchSource>[];
+    for (var j = 0; j < resultCount; j++) {
+      final titleIndex = (random + i * 11 + j * 13) % sampleTitles.length;
+      final snippetIndex = (random + i * 17 + j * 19) % sampleSnippets.length;
+
+      results.add(
+        SearchSource(
+          title: sampleTitles[titleIndex],
+          snippet: sampleSnippets[snippetIndex],
+          url: 'https://example.com/${sampleQueries[queryIndex]}-$j',
+        ),
+      );
+    }
+
+    cases.add(
+      _SearchPropertyTestCase(
+        query: sampleQueries[queryIndex],
+        expectedResults: results,
       ),
     );
   }
