@@ -1,34 +1,20 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/data/datasources/go_auth_datasource.dart';
-import 'package:codium/data/datasources/go_course_datasource.dart';
-import 'package:codium/data/datasources/go_user_datasource.dart';
+import 'package:codium/data/datasources/datasources.dart';
+import 'package:codium/data/repositories/ai_repository_impl.dart';
 import 'package:codium/data/repositories/repositories.dart';
-import 'package:codium/domain/datasources/abstract_auth_datasource.dart';
-import 'package:codium/domain/datasources/abstract_course_datasource.dart';
-import 'package:codium/domain/datasources/abstract_user_datasource.dart';
-import 'package:codium/domain/repositories/abstract_user_statistics_repository.dart';
+import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/repositories/repositories.dart';
-import 'package:codium/domain/usecases/auth/check_auth_status_usecase.dart';
-import 'package:codium/domain/usecases/auth/sign_in_usecase.dart';
-import 'package:codium/domain/usecases/auth/sign_out_usecase.dart';
-import 'package:codium/domain/usecases/auth/sign_up_usecase.dart';
-import 'package:codium/domain/usecases/generate_activity_usecase.dart';
-import 'package:codium/domain/usecases/get_course_detail_usecase.dart';
-import 'package:codium/domain/usecases/get_courses_usecase.dart';
-import 'package:codium/domain/usecases/get_learning_data_usecase.dart';
-import 'package:codium/domain/usecases/get_main_carousel_courses.dart';
-import 'package:codium/domain/usecases/get_profile_usecase.dart';
-import 'package:codium/domain/usecases/get_user_statistics_usecase.dart';
-import 'package:codium/domain/usecases/purchase_course.dart';
-import 'package:codium/features/auth/bloc/sign_in/sign_in_cubit.dart';
-import 'package:codium/features/auth/bloc/sign_up/sign_up_cubit.dart';
-import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
-import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
-import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
-import 'package:codium/features/main/bloc/main/main_bloc.dart';
-import 'package:codium/features/main/bloc/main_carousel/main_carousel_bloc.dart';
-import 'package:codium/features/main/bloc/user_statistics/user_statistics_bloc.dart';
-import 'package:codium/features/profile/bloc/bloc/profile_bloc.dart';
+import 'package:codium/domain/usecases/usecases.dart';
+import 'package:codium/features/ai_explanation/ai_explanation.dart';
+import 'package:codium/features/auth/auth.dart';
+import 'package:codium/features/course_details/course_details.dart';
+import 'package:codium/features/explanation_history/explanation_history.dart';
+import 'package:codium/features/learning/learning.dart';
+import 'package:codium/features/library/library.dart';
+import 'package:codium/features/main/main.dart';
+import 'package:codium/features/onboarding/onboarding.dart';
+import 'package:codium/features/pdf_reader/pdf_reader.dart';
+import 'package:codium/features/profile/profile.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -46,7 +32,19 @@ class DependencyInjection {
     GetIt.I
       ..registerSingleton<IAuthDataSource>(GoAuthDatasource())
       ..registerSingleton<ICourseDataSource>(GoCourseDatasource())
-      ..registerSingleton<IUserDataSource>(GoUserDatasource());
+      ..registerSingleton<IUserDataSource>(GoUserDatasource())
+      ..registerLazySingleton<AppDatabase>(() => AppDatabase())
+      ..registerLazySingleton<PdfLocalDataSource>(
+        () => PdfLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<BookmarkLocalDataSource>(
+        () => BookmarkLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<ExplanationLocalDataSource>(
+        () => ExplanationLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<GeminiDataSource>(() => GeminiDataSource())
+      ..registerLazySingleton<SearchDataSource>(() => SearchDataSource());
   }
 
   void _registerRepositories() {
@@ -59,6 +57,24 @@ class DependencyInjection {
       )
       ..registerLazySingleton<IUserRepository>(
         () => UserRepository(GetIt.I<IUserDataSource>()),
+      )
+      ..registerLazySingleton<IPdfRepository>(
+        () => PdfRepositoryImpl(
+          GetIt.I<PdfLocalDataSource>(),
+          GetIt.I<BookmarkLocalDataSource>(),
+        ),
+      )
+      ..registerLazySingleton<IStorageRepository>(
+        () => StorageRepositoryImpl(
+          GetIt.I<BookmarkLocalDataSource>(),
+          GetIt.I<ExplanationLocalDataSource>(),
+        ),
+      )
+      ..registerLazySingleton<IAiRepository>(
+        () => AiRepositoryImpl(
+          geminiDataSource: GetIt.I<GeminiDataSource>(),
+          searchDataSource: GetIt.I<SearchDataSource>(),
+        ),
       );
   }
 
@@ -70,30 +86,18 @@ class DependencyInjection {
           GetIt.I<IUserRepository>(),
         ),
       )
-      ..registerFactory(
-        () => SignInUseCase(GetIt.I<IAuthRepository>()),
-      )
-      ..registerFactory(
-        () => SignUpUseCase(GetIt.I<IAuthRepository>()),
-      )
-      ..registerFactory(
-        () => SignOutUseCase(GetIt.I<IAuthRepository>()),
-      )
-      ..registerFactory(
-        () => GetProfileUseCase(GetIt.I<IUserRepository>()),
-      )
-      ..registerFactory(
-        () => GetCoursesUseCase(GetIt.I<ICourseRepository>()),
-      )
+      ..registerFactory(() => SignInUseCase(GetIt.I<IAuthRepository>()))
+      ..registerFactory(() => SignUpUseCase(GetIt.I<IAuthRepository>()))
+      ..registerFactory(() => SignOutUseCase(GetIt.I<IAuthRepository>()))
+      ..registerFactory(() => GetProfileUseCase(GetIt.I<IUserRepository>()))
+      ..registerFactory(() => GetCoursesUseCase(GetIt.I<ICourseRepository>()))
       ..registerFactory(
         () => GetMainCarouselCoursesUseCase(GetIt.I<ICourseRepository>()),
       )
       ..registerFactory(
         () => GetUserStatisticsUseCase(GetIt.I<IUserStatisticsRepository>()),
       )
-      ..registerFactory(
-        () => GenerateActivityUsecase(),
-      )
+      ..registerFactory(() => GenerateActivityUsecase())
       ..registerFactory(
         () => GetCourseDetailUseCase(GetIt.I<ICourseRepository>()),
       )
@@ -110,6 +114,33 @@ class DependencyInjection {
           userRepository: GetIt.I<IUserRepository>(),
           userStatisticsRepository: GetIt.I<IUserStatisticsRepository>(),
         ),
+      )
+      ..registerFactory(() => GetPdfListUseCase(GetIt.I<IPdfRepository>()))
+      ..registerFactory(() => ImportPdfUseCase(GetIt.I<IPdfRepository>()))
+      ..registerFactory(() => GetPdfBookByIdUseCase(GetIt.I<IPdfRepository>()))
+      ..registerFactory(
+        () => UpdateReadingProgressUseCase(GetIt.I<IPdfRepository>()),
+      )
+      ..registerFactory(
+        () => SaveBookmarkUseCase(GetIt.I<IStorageRepository>()),
+      )
+      ..registerFactory(
+        () => ExplainTextUseCase(
+          GetIt.I<IAiRepository>(),
+          GetIt.I<IStorageRepository>(),
+        ),
+      )
+      ..registerFactory(
+        () => GetExplanationHistoryUseCase(GetIt.I<IStorageRepository>()),
+      )
+      ..registerFactory(
+        () => SearchExplanationHistoryUseCase(GetIt.I<IStorageRepository>()),
+      )
+      ..registerFactory(
+        () => DeleteExplanationUseCase(GetIt.I<IStorageRepository>()),
+      )
+      ..registerFactory(
+        () => GetRecommendedCoursesUseCase(GetIt.I<ICourseRepository>()),
       );
   }
 
@@ -124,14 +155,10 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(
-        () => ProfileBloc(
-          getProfileUseCase: GetIt.I<GetProfileUseCase>(),
-        ),
+        () => ProfileBloc(getProfileUseCase: GetIt.I<GetProfileUseCase>()),
       )
       ..registerFactory(
-        () => MainBloc(
-          getCoursesUseCase: GetIt.I<GetCoursesUseCase>(),
-        ),
+        () => MainBloc(getCoursesUseCase: GetIt.I<GetCoursesUseCase>()),
       )
       ..registerFactory(
         () => MainCarouselBloc(
@@ -160,11 +187,40 @@ class DependencyInjection {
           purchaseCourseUseCase: GetIt.I<PurchaseCourseUseCase>(),
         ),
       )
+      ..registerFactory(() => SignUpCubit())
+      ..registerFactory(() => SignInCubit())
       ..registerFactory(
-        () => SignUpCubit(),
+        () => LibraryBloc(
+          getPdfListUseCase: GetIt.I<GetPdfListUseCase>(),
+          importPdfUseCase: GetIt.I<ImportPdfUseCase>(),
+          pdfRepository: GetIt.I<IPdfRepository>(),
+        ),
       )
       ..registerFactory(
-        () => SignInCubit(),
-      );
+        () => PdfReaderBloc(
+          getPdfBookByIdUseCase: GetIt.I<GetPdfBookByIdUseCase>(),
+          updateReadingProgressUseCase: GetIt.I<UpdateReadingProgressUseCase>(),
+          saveBookmarkUseCase: GetIt.I<SaveBookmarkUseCase>(),
+        ),
+      )
+      ..registerFactory(
+        () => AiExplanationBloc(
+          explainTextUseCase: GetIt.I<ExplainTextUseCase>(),
+        ),
+      )
+      ..registerFactory(
+        () => ExplanationHistoryBloc(
+          getExplanationHistoryUseCase: GetIt.I<GetExplanationHistoryUseCase>(),
+          searchExplanationHistoryUseCase:
+              GetIt.I<SearchExplanationHistoryUseCase>(),
+          deleteExplanationUseCase: GetIt.I<DeleteExplanationUseCase>(),
+        ),
+      )
+      ..registerFactory(
+        () => RecommendBloc(
+          getRecommendedCoursesUseCase: GetIt.I<GetRecommendedCoursesUseCase>(),
+        ),
+      )
+      ..registerFactory(() => OnboardingBloc());
   }
 }
