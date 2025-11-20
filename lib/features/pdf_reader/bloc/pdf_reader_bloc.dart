@@ -6,6 +6,8 @@ import 'package:codium/domain/models/pdf_reader/bookmark.dart';
 import 'package:codium/domain/usecases/get_pdf_book_by_id_usecase.dart';
 import 'package:codium/domain/usecases/save_bookmark_usecase.dart';
 import 'package:codium/domain/usecases/update_reading_progress_usecase.dart';
+import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart';
+import 'package:codium/features/pdf_reader/domain/pdf_rendering_config.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -19,19 +21,32 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
   final GetPdfBookByIdUseCase _getPdfBookByIdUseCase;
   final UpdateReadingProgressUseCase _updateReadingProgressUseCase;
   final SaveBookmarkUseCase _saveBookmarkUseCase;
+  final PdfCacheService _cacheService;
+  final PdfRenderingConfig _renderingConfig;
 
   PdfReaderBloc({
     required GetPdfBookByIdUseCase getPdfBookByIdUseCase,
     required UpdateReadingProgressUseCase updateReadingProgressUseCase,
     required SaveBookmarkUseCase saveBookmarkUseCase,
+    PdfCacheService? cacheService,
+    PdfRenderingConfig? renderingConfig,
   }) : _getPdfBookByIdUseCase = getPdfBookByIdUseCase,
        _updateReadingProgressUseCase = updateReadingProgressUseCase,
        _saveBookmarkUseCase = saveBookmarkUseCase,
+       _cacheService = cacheService ?? PdfCacheService(),
+       _renderingConfig = renderingConfig ?? const PdfRenderingConfig(),
        super(PdfReaderInitialState()) {
     on<OpenPdfEvent>(_onOpenPdf);
     on<ChangePageEvent>(_onChangePage);
     on<SelectTextEvent>(_onSelectText);
     on<AddBookmarkEvent>(_onAddBookmark);
+    on<SaveScrollPositionEvent>(_onSaveScrollPosition);
+  }
+
+  @override
+  Future<void> close() {
+    _cacheService.clearCache();
+    return super.close();
   }
 
   Future<void> _onOpenPdf(
@@ -55,7 +70,25 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
         );
         return;
       }
-      emit(PdfReaderLoadedState(book: book, currentPage: book.currentPage));
+
+      _cacheService.clearCache();
+
+      final useLazyLoading = _renderingConfig.shouldUseLazyLoading(
+        book.totalPages,
+      );
+
+      emit(
+        PdfReaderLoadedState(
+          book: book,
+          currentPage: book.currentPage,
+          renderingConfig: _renderingConfig,
+          useLazyLoading: useLazyLoading,
+        ),
+      );
+
+      if (_renderingConfig.enableProgressiveRendering) {
+        _cacheService.preloadAdjacentPages(book.currentPage, book.totalPages);
+      }
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
       final error = e is AppError ? e : const UnknownError();
@@ -77,6 +110,13 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
       final currentState = state as PdfReaderLoadedState;
 
       emit(currentState.copyWith(currentPage: event.pageNumber));
+
+      if (_renderingConfig.enableProgressiveRendering) {
+        _cacheService.preloadAdjacentPages(
+          event.pageNumber,
+          currentState.book.totalPages,
+        );
+      }
 
       try {
         await _updateReadingProgressUseCase.execute(
@@ -135,6 +175,16 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
           ),
         );
       }
+    }
+  }
+
+  void _onSaveScrollPosition(
+    SaveScrollPositionEvent event,
+    Emitter<PdfReaderState> emit,
+  ) {
+    if (state is PdfReaderLoadedState) {
+      final currentState = state as PdfReaderLoadedState;
+      emit(currentState.copyWith(scrollPosition: event.scrollPosition));
     }
   }
 }

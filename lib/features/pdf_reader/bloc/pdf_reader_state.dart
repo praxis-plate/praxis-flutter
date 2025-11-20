@@ -15,25 +15,44 @@ class PdfReaderLoadedState extends PdfReaderState {
   final PdfBook book;
   final int currentPage;
   final String? selectedText;
+  final PdfRenderingConfig renderingConfig;
+  final bool useLazyLoading;
+  final double? scrollPosition;
 
   const PdfReaderLoadedState({
     required this.book,
     required this.currentPage,
     this.selectedText,
+    this.renderingConfig = const PdfRenderingConfig(),
+    this.useLazyLoading = false,
+    this.scrollPosition,
   });
 
   @override
-  List<Object?> get props => [book, currentPage, selectedText];
+  List<Object?> get props => [
+    book,
+    currentPage,
+    selectedText,
+    renderingConfig,
+    useLazyLoading,
+    scrollPosition,
+  ];
 
   PdfReaderLoadedState copyWith({
     PdfBook? book,
     int? currentPage,
     String? selectedText,
+    PdfRenderingConfig? renderingConfig,
+    bool? useLazyLoading,
+    double? scrollPosition,
   }) {
     return PdfReaderLoadedState(
       book: book ?? this.book,
       currentPage: currentPage ?? this.currentPage,
       selectedText: selectedText ?? this.selectedText,
+      renderingConfig: renderingConfig ?? this.renderingConfig,
+      useLazyLoading: useLazyLoading ?? this.useLazyLoading,
+      scrollPosition: scrollPosition ?? this.scrollPosition,
     );
   }
 }

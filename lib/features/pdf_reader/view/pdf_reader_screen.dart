@@ -23,6 +23,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
   bool _showTextSelectionMenu = false;
   Offset _menuPosition = Offset.zero;
   String _selectedText = '';
+  double _lastScrollPosition = 0.0;
 
   @override
   void initState() {
@@ -32,6 +33,8 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
 
   @override
   void dispose() {
+    final bloc = context.read<PdfReaderBloc>();
+    bloc.add(SaveScrollPositionEvent(_lastScrollPosition));
     _pdfController?.dispose();
     super.dispose();
   }
@@ -39,11 +42,17 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
   Future<void> _initializePdfController(
     String filePath,
     int initialPage,
+    double? scrollPosition,
   ) async {
     _pdfController = PdfController(
       document: PdfDocument.openFile(filePath),
       initialPage: initialPage + 1,
     );
+
+    if (scrollPosition != null) {
+      _lastScrollPosition = scrollPosition;
+    }
+
     setState(() {});
   }
 
@@ -97,7 +106,11 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
         child: BlocConsumer<PdfReaderBloc, PdfReaderState>(
           listener: (context, state) {
             if (state is PdfReaderLoadedState && _pdfController == null) {
-              _initializePdfController(state.book.filePath, state.currentPage);
+              _initializePdfController(
+                state.book.filePath,
+                state.currentPage,
+                state.scrollPosition,
+              );
             }
           },
           builder: (context, state) {
@@ -134,20 +147,52 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                 children: [
                   Column(
                     children: [
+                      if (state.useLazyLoading)
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          color: Colors.blue.withOpacity(0.1),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.speed,
+                                size: 16,
+                                color: Colors.blue[700],
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Lazy loading enabled for large PDF',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       Expanded(
                         child: GestureDetector(
                           onLongPressStart: (details) {
                             _handleTextSelection(details.globalPosition, state);
                           },
-                          child: PdfView(
-                            controller: _pdfController!,
-                            onPageChanged: (page) {
-                              context.read<PdfReaderBloc>().add(
-                                ChangePageEvent(page - 1),
-                              );
+                          child: NotificationListener<ScrollNotification>(
+                            onNotification: (notification) {
+                              if (notification is ScrollUpdateNotification) {
+                                _lastScrollPosition =
+                                    notification.metrics.pixels;
+                              }
+                              return false;
                             },
-                            onDocumentLoaded: (document) {},
-                            onDocumentError: (error) {},
+                            child: PdfView(
+                              controller: _pdfController!,
+                              onPageChanged: (page) {
+                                context.read<PdfReaderBloc>().add(
+                                  ChangePageEvent(page - 1),
+                                );
+                              },
+                              onDocumentLoaded: (document) {},
+                              onDocumentError: (error) {},
+                            ),
                           ),
                         ),
                       ),
