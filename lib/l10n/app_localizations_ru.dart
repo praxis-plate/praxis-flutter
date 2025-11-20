@@ -172,4 +172,250 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorUnknown => 'Произошла неожиданная ошибка. Попробуйте еще раз.';
+
+  @override
+  String get onboardingSkip => 'Пропустить';
+
+  @override
+  String get onboardingNext => 'Далее';
+
+  @override
+  String get onboardingSkipForNow => 'Пропустить пока';
+
+  @override
+  String get onboardingTitle1 => 'AI Smart Reader';
+
+  @override
+  String get onboardingDescription1 => 'Превратите любую техническую книгу в интерактивный учебник с помощью AI-объяснений';
+
+  @override
+  String get onboardingTitle2 => 'Читайте и учитесь';
+
+  @override
+  String get onboardingDescription2 => 'Импортируйте PDF-книги и читайте их с возможностью выделения текста. Выделите любой термин для получения мгновенных AI-объяснений с примерами';
+
+  @override
+  String get onboardingTitle3 => 'Отслеживайте прогресс';
+
+  @override
+  String get onboardingDescription3 => 'Ваш прогресс чтения автоматически сохраняется. Создавайте закладки, просматривайте историю объяснений и продолжайте с того места, где остановились';
+
+  @override
+  String get onboardingLanguageTitle => 'Выберите язык программирования';
+
+  @override
+  String get onboardingLanguageDescription => 'Выберите язык программирования для начала работы с соответствующими курсами';
+
+  @override
+  String get onboardingErrorUnknown => 'Неизвестная ошибка';
+
+  @override
+  String get libraryTitle => 'Библиотека PDF';
+
+  @override
+  String get libraryNoBooksFound => 'Книги не найдены';
+
+  @override
+  String get libraryNoPdfs => 'Нет PDF в библиотеке';
+
+  @override
+  String get libraryTapToImport => 'Нажмите +, чтобы импортировать первый PDF';
+
+  @override
+  String get libraryErrorLoading => 'Ошибка загрузки библиотеки';
+
+  @override
+  String get libraryRetry => 'Повторить';
+
+  @override
+  String get librarySearchHint => 'Поиск по названию или автору...';
+
+  @override
+  String get historyTitle => 'История объяснений';
+
+  @override
+  String get historyNoExplanationsFound => 'Объяснения не найдены';
+
+  @override
+  String get historyNoHistory => 'Нет истории объяснений';
+
+  @override
+  String get historyStartReading => 'Начните читать и запрашивайте объяснения';
+
+  @override
+  String get historyErrorLoading => 'Ошибка загрузки истории';
+
+  @override
+  String get historyRetry => 'Повторить';
+
+  @override
+  String get historySearchHint => 'Поиск объяснений...';
+
+  @override
+  String get historyUnknownPdf => 'Неизвестный PDF';
+
+  @override
+  String get historyExplanation => 'объяснение';
+
+  @override
+  String get historyExplanations => 'объяснений';
+
+  @override
+  String get historyDeleteTitle => 'Удалить объяснение';
+
+  @override
+  String get historyDeleteMessage => 'Вы уверены, что хотите удалить это объяснение из истории?';
+
+  @override
+  String get historyDeleteCancel => 'Отмена';
+
+  @override
+  String get historyDeleteConfirm => 'Удалить';
+
+  @override
+  String historyNavigateTo(Object page, Object text) {
+    return 'Перейти к $text на странице $page';
+  }
+
+  @override
+  String get pdfReaderTitle => 'Просмотр PDF';
+
+  @override
+  String get pdfReaderErrorLoading => 'Ошибка загрузки PDF';
+
+  @override
+  String get pdfReaderLazyLoading => 'Включена ленивая загрузка для большого PDF';
+
+  @override
+  String get pdfReaderNoPdfLoaded => 'PDF не загружен';
+
+  @override
+  String pdfReaderPageIndicator(Object current, Object total) {
+    return 'Страница $current из $total';
+  }
+
+  @override
+  String get pdfReaderAddBookmarkTitle => 'Добавить закладку';
+
+  @override
+  String pdfReaderAddBookmarkPage(Object page) {
+    return 'Страница $page';
+  }
+
+  @override
+  String get pdfReaderAddBookmarkCancel => 'Отмена';
+
+  @override
+  String get pdfReaderAddBookmarkAdd => 'Добавить';
+
+  @override
+  String get pdfReaderBookmarkAdded => 'Закладка добавлена';
+
+  @override
+  String get bookmarksTitle => 'Закладки';
+
+  @override
+  String get bookmarksNoBookmarks => 'Пока нет закладок';
+
+  @override
+  String get bookmarksTapToAdd => 'Нажмите на иконку закладки, чтобы добавить';
+
+  @override
+  String get bookmarksErrorLoading => 'Ошибка загрузки закладок';
+
+  @override
+  String get bookmarksRetry => 'Повторить';
+
+  @override
+  String get bookmarksDeleted => 'Закладка удалена';
+
+  @override
+  String bookmarksErrorDeleting(Object error) {
+    return 'Ошибка удаления закладки: $error';
+  }
+
+  @override
+  String bookmarksPage(Object page) {
+    return 'Страница $page';
+  }
+
+  @override
+  String get explanationGenerating => 'Генерация объяснения...';
+
+  @override
+  String explanationSelected(Object text) {
+    return 'Выбрано: \"$text\"';
+  }
+
+  @override
+  String get explanationTitle => 'Объяснение';
+
+  @override
+  String get explanationSources => 'Источники';
+
+  @override
+  String get explanationNoInternet => 'Нет подключения к интернету';
+
+  @override
+  String get explanationError => 'Ошибка';
+
+  @override
+  String get explanationRetry => 'Повторить';
+
+  @override
+  String pdfBookPages(Object current, Object total) {
+    return '$current / $total страниц';
+  }
+
+  @override
+  String get pdfBookOpen => 'Открыть';
+
+  @override
+  String get pdfBookAddToFavorites => 'Добавить в избранное';
+
+  @override
+  String get pdfBookRemoveFromFavorites => 'Удалить из избранного';
+
+  @override
+  String get pdfBookRename => 'Переименовать';
+
+  @override
+  String get pdfBookDelete => 'Удалить';
+
+  @override
+  String get pdfBookRenameTitle => 'Переименовать PDF';
+
+  @override
+  String get pdfBookRenameCancel => 'Отмена';
+
+  @override
+  String get pdfBookRenameSave => 'Сохранить';
+
+  @override
+  String get pdfBookDeleteTitle => 'Удалить PDF';
+
+  @override
+  String pdfBookDeleteMessage(Object title) {
+    return 'Вы уверены, что хотите удалить \"$title\"?';
+  }
+
+  @override
+  String get pdfBookDeleteCancel => 'Отмена';
+
+  @override
+  String get pdfBookDeleteConfirm => 'Удалить';
+
+  @override
+  String get courseDetailsUnknown => 'Неизвестно';
+
+  @override
+  String courseDetailsLessons(Object count) {
+    return '$count уроков';
+  }
+
+  @override
+  String get courseDetailsGet => 'Получить';
+
+  @override
+  String get courseDetailsContinue => 'Продолжить';
 }
