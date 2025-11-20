@@ -34,7 +34,7 @@ class PdfBookCard extends StatelessWidget {
                     child: Icon(
                       Icons.picture_as_pdf,
                       size: 64,
-                      color: theme.colorScheme.primary.withOpacity(0.5),
+                      color: theme.colorScheme.primary.withValues(alpha: 0.5),
                     ),
                   ),
                   if (book.isFavorite)
@@ -44,7 +44,9 @@ class PdfBookCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.surface.withOpacity(0.9),
+                          color: theme.colorScheme.surface.withValues(
+                            alpha: 0.9,
+                          ),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -58,7 +60,7 @@ class PdfBookCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -75,7 +77,9 @@ class PdfBookCard extends StatelessWidget {
                     Text(
                       book.author!,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.6,
+                        ),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -90,7 +94,7 @@ class PdfBookCard extends StatelessWidget {
                   Text(
                     '${book.currentPage} / ${book.totalPages} pages',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                 ],

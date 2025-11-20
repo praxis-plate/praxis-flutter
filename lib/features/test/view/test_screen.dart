@@ -8,23 +8,16 @@ class TestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16)
-            .copyWith(top: 64),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ).copyWith(top: 64),
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Section(
-              title: 'Colors',
-              widget: _ColorsPreview(),
-            ),
-            Section(
-              title: 'Typography',
-              widget: _TypographyPreview(),
-            ),
-            Section(
-              title: 'Buttons',
-              widget: _ButtonsPreview(),
-            ),
+            Section(title: 'Colors', widget: _ColorsPreview()),
+            Section(title: 'Typography', widget: _TypographyPreview()),
+            Section(title: 'Buttons', widget: _ButtonsPreview()),
             // Section(
             //   title: 'Cards',
             //   widget: _CardsPreview(),
@@ -33,10 +26,7 @@ class TestScreen extends StatelessWidget {
             //   title: 'Textfields',
             //   widget: _TextFieldsPreview(),
             // ),
-            Section(
-              title: 'Avatars',
-              widget: _AvatarsPreview(),
-            ),
+            Section(title: 'Avatars', widget: _AvatarsPreview()),
           ],
         ),
       ),
@@ -60,14 +50,12 @@ class _ColorsPreview extends StatelessWidget {
       'Error': theme.colorScheme.error,
       'Surface': theme.colorScheme.surface,
     };
-    
+
     return Wrap(
       spacing: 8,
       runSpacing: 8,
       children: swatches.entries
-          .map(
-            (e) => _ColorSwatch(name: e.key, color: e.value),
-          )
+          .map((e) => _ColorSwatch(name: e.key, color: e.value))
           .toList(),
     );
   }
@@ -137,109 +125,20 @@ class _ButtonsPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Wrap(
       spacing: 12,
       runSpacing: 12,
       children: [
-        ElevatedButton(
-          onPressed: () {},
-          child: const Text('ElevatedButton'),
-        ),
-        FilledButton(
-          onPressed: () {},
-          child: const Text('FilledButton'),
-        ),
-        OutlinedButton(
-          onPressed: () {},
-          child: const Text('OutlinedButton'),
-        ),
-        TextButton(
-          onPressed: () {},
-          child: const Text('TextButton'),
-        ),
+        ElevatedButton(onPressed: () {}, child: const Text('ElevatedButton')),
+        FilledButton(onPressed: () {}, child: const Text('FilledButton')),
+        OutlinedButton(onPressed: () {}, child: const Text('OutlinedButton')),
+        TextButton(onPressed: () {}, child: const Text('TextButton')),
         IconButton(
           onPressed: () {},
-          icon: Icon(
-            Icons.star,
-            color: theme.colorScheme.primary,
-          ),
+          icon: Icon(Icons.star, color: theme.colorScheme.primary),
         ),
       ],
-    );
-  }
-}
-
-class _TextFieldsPreview extends StatelessWidget {
-  const _TextFieldsPreview();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        TextField(
-          decoration: InputDecoration(
-            labelText: 'Standard',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        SizedBox(height: 16),
-        TextField(
-          decoration: InputDecoration(
-            labelText: 'With icon',
-            prefixIcon: Icon(Icons.mail),
-            border: OutlineInputBorder(),
-          ),
-        ),
-        SizedBox(height: 16),
-        TextField(
-          enabled: false,
-          decoration: InputDecoration(
-            labelText: 'Disabled',
-            border: OutlineInputBorder(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _CardsPreview extends StatelessWidget {
-  const _CardsPreview();
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 12,
-      runSpacing: 12,
-      children: List.generate(
-        3,
-        (index) => SizedBox(
-          width: 160,
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Card Title ${index + 1}',
-                      style: Theme.of(context).textTheme.titleMedium,),
-                  const SizedBox(height: 8),
-                  const Text('Supporting text goes here; keep it short.'),
-                  const Spacer(),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text('ACTION'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -251,16 +150,14 @@ class _AvatarsPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return  Wrap(
+    return Wrap(
       spacing: 12,
       runSpacing: 12,
       children: [
         CircleAvatar(
           radius: 24,
           backgroundColor: theme.colorScheme.primary,
-          child: const Icon(
-            Icons.person,
-          ),
+          child: const Icon(Icons.person),
         ),
       ],
     );
