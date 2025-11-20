@@ -1,11 +1,17 @@
 import 'package:codium/app/app.dart';
 import 'package:codium/dependency_injection.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 
 void main() {
   group('App Launch Performance Tests', () {
-    setUpAll(() {
+    setUp(() async {
+      await GetIt.I.reset();
       DependencyInjection().initialize();
+    });
+
+    tearDown(() async {
+      await GetIt.I.reset();
     });
 
     testWidgets('App launches within 2 seconds', (WidgetTester tester) async {
