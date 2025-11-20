@@ -26,6 +26,7 @@ import 'package:talker_flutter/talker_flutter.dart' as _i2;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeTalkerSettings_0 extends _i1.SmartFake
     implements _i2.TalkerSettings {
@@ -195,8 +196,8 @@ class MockTalker extends _i1.Mock implements _i2.Talker {
           as _i2.TalkerFilter);
 
   @override
-  set settings(_i2.TalkerSettings? _settings) => super.noSuchMethod(
-    Invocation.setter(#settings, _settings),
+  set settings(_i2.TalkerSettings? value) => super.noSuchMethod(
+    Invocation.setter(#settings, value),
     returnValueForMissingStub: null,
   );
 

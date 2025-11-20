@@ -28,28 +28,28 @@ class AppPalette {
 
   static const dark = AppPalette(
     primary: Color.fromARGB(255, 43, 230, 188),
-    primaryVariant: Color.fromARGB(255, 230, 43, 85),
-    card: Colors.white10,
-    onSurface: Colors.white,
-    onCard: Colors.white70,
-    divider: Colors.white24,
-    onPrimary: Colors.black,
-    surface: Colors.black,
-    error: Color.fromARGB(255, 254, 83, 86),
-    onError: Colors.white,
+    primaryVariant: Color.fromARGB(255, 30, 180, 150),
+    card: Color.fromARGB(255, 22, 27, 34),
+    onSurface: Color.fromARGB(255, 230, 237, 243),
+    onCard: Color.fromARGB(255, 139, 148, 158),
+    divider: Color.fromARGB(255, 48, 54, 61),
+    onPrimary: Color.fromARGB(255, 13, 17, 23),
+    surface: Color.fromARGB(255, 13, 17, 23),
+    error: Color.fromARGB(255, 248, 81, 73),
+    onError: Color.fromARGB(255, 255, 255, 255),
   );
 
   static const light = AppPalette(
     primary: Color.fromARGB(255, 43, 230, 188),
-    primaryVariant: Color.fromARGB(255, 41, 132, 11),
-    card: Colors.white10,
-    onSurface: Colors.white,
-    onCard: Colors.white70,
-    divider: Colors.white24,
-    onPrimary: Colors.black,
-    surface: Colors.black,
-    error: Color.fromARGB(255, 254, 83, 86),
-    onError: Colors.white,
+    primaryVariant: Color.fromARGB(255, 30, 180, 150),
+    card: Color.fromARGB(255, 255, 255, 255),
+    onSurface: Color.fromARGB(255, 33, 33, 33),
+    onCard: Color.fromARGB(255, 66, 66, 66),
+    divider: Color.fromARGB(255, 224, 224, 224),
+    onPrimary: Color.fromARGB(255, 0, 0, 0),
+    surface: Color.fromARGB(255, 250, 250, 250),
+    error: Color.fromARGB(255, 211, 47, 47),
+    onError: Color.fromARGB(255, 255, 255, 255),
   );
 }
 
@@ -57,8 +57,9 @@ class AppTheme {
   const AppTheme._();
 
   static ThemeData of(Brightness brightness) {
-    final palette =
-        brightness == Brightness.dark ? AppPalette.dark : AppPalette.light;
+    final palette = brightness == Brightness.dark
+        ? AppPalette.dark
+        : AppPalette.light;
 
     return ThemeData(
       brightness: brightness,
@@ -84,6 +85,11 @@ class AppTheme {
       scaffoldBackgroundColor: palette.surface,
       textTheme: _textTheme(palette),
       inputDecorationTheme: _inputDecorationTheme(palette),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: palette.primary,
+        selectionColor: palette.primary.withValues(alpha: 0.3),
+        selectionHandleColor: palette.primary,
+      ),
       elevatedButtonTheme: _elevatedButtonTheme(palette),
       navigationBarTheme: _navigationBarTheme(palette),
       chipTheme: _chipTheme(palette),
@@ -95,50 +101,44 @@ class AppTheme {
 
   // ---------- helpers ----------
 
-  static OutlineInputBorder _border(
-    AppPalette palette, [
-    Color? override,
-  ]) =>
+  static OutlineInputBorder _border(AppPalette palette, [Color? override]) =>
       OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(
-          color: override ?? palette.primary,
-          width: 2,
-        ),
+        borderSide: BorderSide(color: override ?? palette.primary, width: 2),
       );
 
   static TextTheme _textTheme(AppPalette p) => TextTheme(
-        displayLarge: TextStyle(
-          color: p.onSurface,
-          fontWeight: FontWeight.w600,
-          fontSize: 48,
-        ),
-        titleMedium: TextStyle(
-          color: p.onSurface,
-          fontSize: 22,
-          fontWeight: FontWeight.w500,
-        ),
-        titleSmall: TextStyle(
-          color: p.onSurface,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        bodyMedium: TextStyle(
-          color: p.onSurface,
-          fontSize: 18,
-          fontWeight: FontWeight.w400,
-        ),
-        bodySmall: TextStyle(
-          color: p.onSurface,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-        ),
-        labelSmall: TextStyle(
-          color: p.onSurface,
-          fontSize: 10,
-          fontWeight: FontWeight.w400,
-        ),
-      );
+    displayLarge: TextStyle(
+      color: p.onSurface,
+      fontWeight: FontWeight.w600,
+      fontSize: 48,
+    ),
+    titleMedium: TextStyle(
+      color: p.onSurface,
+      fontSize: 22,
+      fontWeight: FontWeight.w500,
+    ),
+    titleSmall: TextStyle(
+      color: p.onSurface,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+    ),
+    bodyMedium: TextStyle(
+      color: p.onSurface,
+      fontSize: 18,
+      fontWeight: FontWeight.w400,
+    ),
+    bodySmall: TextStyle(
+      color: p.onSurface,
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+    ),
+    labelSmall: TextStyle(
+      color: p.onSurface,
+      fontSize: 10,
+      fontWeight: FontWeight.w400,
+    ),
+  );
 
   static IconThemeData _iconTheme(AppPalette p) =>
       IconThemeData(color: p.onCard, size: 26);
@@ -151,6 +151,8 @@ class AppTheme {
       enabledBorder: _border(p),
       focusedBorder: _border(p, p.primary),
       errorBorder: _border(p, p.error),
+      labelStyle: TextStyle(color: p.onSurface),
+      floatingLabelStyle: TextStyle(color: p.primary),
       hintStyle: text.bodyMedium?.copyWith(
         color: p.onSurface.withValues(alpha: .5),
       ),
@@ -163,9 +165,7 @@ class AppTheme {
           backgroundColor: p.primary,
           foregroundColor: p.onPrimary,
           textStyle: _textTheme(p).bodyLarge,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       );
 
@@ -192,31 +192,30 @@ class AppTheme {
   }
 
   static ChipThemeData _chipTheme(AppPalette p) => ChipThemeData(
-        color: WidgetStateProperty.resolveWith(
-          (states) =>
-              states.contains(WidgetState.selected) ? p.primary : p.surface,
-        ),
-        labelStyle: _textTheme(p).bodyMedium!,
-      );
+    color: WidgetStateProperty.resolveWith(
+      (states) => states.contains(WidgetState.selected) ? p.primary : p.surface,
+    ),
+    labelStyle: _textTheme(p).bodyMedium!,
+  );
 
   static DividerThemeData _dividerTheme(AppPalette p) => DividerThemeData(
-        color: p.divider,
-        indent: 16,
-        endIndent: 16,
-        thickness: 1,
-        space: 0,
-      );
+    color: p.divider,
+    indent: 16,
+    endIndent: 16,
+    thickness: 1,
+    space: 0,
+  );
 
   static ListTileThemeData _listTileTheme(AppPalette p) => ListTileThemeData(
-        titleTextStyle: _textTheme(p).labelLarge,
-        subtitleTextStyle: _textTheme(p).labelSmall,
-      );
+    titleTextStyle: _textTheme(p).labelLarge,
+    subtitleTextStyle: _textTheme(p).labelSmall,
+  );
 
   static CardThemeData _cardTheme(AppPalette p) => CardThemeData(
-        color: p.card, // белая карточка
-        elevation: 0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-      );
+    color: p.card, // белая карточка
+    elevation: 0,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+    ),
+  );
 }

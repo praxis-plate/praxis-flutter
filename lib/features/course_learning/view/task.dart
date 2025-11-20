@@ -15,12 +15,9 @@ class TaskWidgetFactory {
 }
 
 class TheoryBody extends StatelessWidget {
-final CourseTask task;
+  final CourseTask task;
 
-  const TheoryBody({
-    super.key,
-    required this.task,
-  });
+  const TheoryBody({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +44,7 @@ final CourseTask task;
 class PracticeBody extends StatelessWidget {
   final CourseTask task;
 
-  const PracticeBody({
-    super.key,
-    required this.task,
-  });
+  const PracticeBody({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +54,9 @@ class PracticeBody extends StatelessWidget {
       padding: EdgeInsets.zero,
       data: task.content,
       selectable: true,
-      styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-        blockquote: const TextStyle(
-          color: Colors.red,
-        ),
-      ),
+      styleSheet: MarkdownStyleSheet.fromTheme(
+        theme,
+      ).copyWith(blockquote: TextStyle(color: theme.colorScheme.error)),
     );
   }
 }
@@ -72,10 +64,7 @@ class PracticeBody extends StatelessWidget {
 class QuizBody extends StatelessWidget {
   final CourseTask task;
 
-  const QuizBody({
-    super.key,
-    required this.task,
-  });
+  const QuizBody({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
@@ -86,10 +75,7 @@ class QuizBody extends StatelessWidget {
 class ProjectBody extends StatelessWidget {
   final CourseTask task;
 
-  const ProjectBody({
-    super.key,
-    required this.task,
-  });
+  const ProjectBody({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {

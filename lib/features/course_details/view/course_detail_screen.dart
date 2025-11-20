@@ -9,20 +9,14 @@ import 'package:get_it/get_it.dart';
 class CourseDetailScreen extends StatelessWidget {
   final String courseId;
 
-  const CourseDetailScreen({
-    required this.courseId,
-    super.key,
-  });
+  const CourseDetailScreen({required this.courseId, super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           GetIt.I<CourseDetailBloc>()..add(CourseDetailLoadEvent(courseId)),
-      child: Scaffold(
-        appBar: _CourseAppBar(),
-        body: _CourseBody(),
-      ),
+      child: Scaffold(appBar: _CourseAppBar(), body: _CourseBody()),
     );
   }
 }
@@ -53,8 +47,9 @@ class _CourseBody extends StatelessWidget {
     return BlocBuilder<CourseDetailBloc, CourseDetailState>(
       builder: (context, state) {
         return switch (state) {
-          CourseDetailLoadSuccessState(:final course) =>
-            _CourseDetail(course: course),
+          CourseDetailLoadSuccessState(:final course) => _CourseDetail(
+            course: course,
+          ),
           CourseDetailLoadErrorState(:final message) => ErrorWidget(message),
           _ => const Center(child: CircularProgressIndicator()),
         };
@@ -66,9 +61,7 @@ class _CourseBody extends StatelessWidget {
 class _CourseDetail extends StatelessWidget {
   final Course course;
 
-  const _CourseDetail({
-    required this.course,
-  });
+  const _CourseDetail({required this.course});
 
   @override
   Widget build(BuildContext context) {
@@ -84,14 +77,15 @@ class _CourseDetail extends StatelessWidget {
     );
   }
 
-Widget _buildTabSection(BuildContext context) {
-  final theme = Theme.of(context);
+  Widget _buildTabSection(BuildContext context) {
+    final theme = Theme.of(context);
     return DefaultTabController(
       length: 2,
-      initialIndex: 1, // По умолчанию активна вторая вкладка (Table of Contents)
+      initialIndex:
+          1, // По умолчанию активна вторая вкладка (Table of Contents)
       child: Column(
         children: [
-           TabBar(
+          TabBar(
             tabs: const [
               Tab(text: 'Описание'),
               Tab(text: 'Содержание'),
@@ -119,26 +113,23 @@ Widget _buildTabSection(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(
-          course.description,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
+        Text(course.description, style: Theme.of(context).textTheme.bodyMedium),
       ],
     );
   }
 
   Widget _buildTableOfContentsContent(BuildContext context) {
-    final parsedContent = _parseTableOfContents(context, course.tableOfContents);
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: parsedContent,
+    final parsedContent = _parseTableOfContents(
+      context,
+      course.tableOfContents,
     );
+    return ListView(padding: const EdgeInsets.all(16), children: parsedContent);
   }
 
-    List<Widget> _parseTableOfContents(BuildContext context, String content) {
+  List<Widget> _parseTableOfContents(BuildContext context, String content) {
     final lines = content.split('\n');
     final List<Widget> result = [];
-    
+
     for (final line in lines) {
       final trimmedLine = line.trim();
       if (trimmedLine.isEmpty) continue;
@@ -149,7 +140,7 @@ Widget _buildTabSection(BuildContext context) {
         result.add(_buildTaskItem(context, trimmedLine.substring(1).trim()));
       }
     }
-    
+
     return result;
   }
 
@@ -160,9 +151,9 @@ Widget _buildTabSection(BuildContext context) {
       child: Text(
         text,
         style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: theme.primaryColor,
-            ),
+          fontWeight: FontWeight.w600,
+          color: theme.primaryColor,
+        ),
       ),
     );
   }
@@ -176,14 +167,16 @@ Widget _buildTabSection(BuildContext context) {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 6, right: 12),
-            child: Icon(Icons.chevron_right, size: 18, color: Colors.grey[600]),
+            child: Icon(
+              Icons.chevron_right,
+              size: 18,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
           Expanded(
             child: Text(
               text,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                    height: 1.4,
-                  ),
+              style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
             ),
           ),
         ],
@@ -203,19 +196,13 @@ Widget _buildTabSection(BuildContext context) {
 class CourseHeader extends StatelessWidget {
   final Course course;
 
-  const CourseHeader({
-    super.key,
-    required this.course,
-  });
+  const CourseHeader({super.key, required this.course});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CourseCard(
-          course: course,
-          onPressed: null,
-        ),
+        CourseCard(course: course, onPressed: null),
         const SizedBox(height: 16),
         const Divider(indent: 0, endIndent: 0),
       ],
@@ -224,10 +211,7 @@ class CourseHeader extends StatelessWidget {
 }
 
 class CourseMetaInfo extends StatelessWidget {
-  const CourseMetaInfo({
-    super.key,
-    required this.course,
-  });
+  const CourseMetaInfo({super.key, required this.course});
 
   final Course course;
 
@@ -255,11 +239,7 @@ class CourseMetaInfo extends StatelessWidget {
 }
 
 class MetaItem extends StatelessWidget {
-  const MetaItem({
-    required this.value,
-    required this.label,
-    super.key,
-  });
+  const MetaItem({required this.value, required this.label, super.key});
 
   final String value;
   final String label;
@@ -272,14 +252,8 @@ class MetaItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            value,
-            style: theme.textTheme.titleSmall,
-          ),
-          Text(
-            label,
-            style: theme.textTheme.labelMedium,
-          ),
+          Text(value, style: theme.textTheme.titleSmall),
+          Text(label, style: theme.textTheme.labelMedium),
         ],
       ),
     );
@@ -300,13 +274,10 @@ class RecommendationSection extends StatelessWidget {
           builder: (context, state) {
             return switch (state) {
               RecommendLoadSuccessState() => CourseCarousel(
-                  courseCards: state.recommendCourses
-                      .map((rc) => CourseCard(
-                            course: rc,
-                            onPressed: null,
-                          ),)
-                      .toList(),
-                ),
+                courseCards: state.recommendCourses
+                    .map((rc) => CourseCard(course: rc, onPressed: null))
+                    .toList(),
+              ),
               RecommendLoadErrorState() => ErrorWidget(state.message),
               _ => const Center(child: CircularProgressIndicator()),
             };
@@ -324,9 +295,6 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleSmall,
-    );
+    return Text(title, style: Theme.of(context).textTheme.titleSmall);
   }
 }

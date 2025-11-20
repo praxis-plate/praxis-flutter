@@ -32,7 +32,7 @@ class TextSelectionMenu extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.lightbulb_outline,
-                color: isOffline ? Colors.grey : null,
+                color: isOffline ? Theme.of(context).disabledColor : null,
               ),
               tooltip: isOffline ? 'Offline - AI features disabled' : 'Explain',
               onPressed: isOffline ? null : onExplain,
