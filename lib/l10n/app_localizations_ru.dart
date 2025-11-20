@@ -115,4 +115,61 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorPasswordInvalid => 'Минимум 8 символов, буквы и цифры';
+
+  @override
+  String get errorNetworkTimeout => 'Превышено время ожидания. Проверьте подключение к интернету.';
+
+  @override
+  String get errorNetworkNoInternet => 'Нет подключения к интернету. Проверьте настройки сети.';
+
+  @override
+  String get errorNetworkGeneral => 'Ошибка сети. Попробуйте еще раз.';
+
+  @override
+  String get errorFileNotFound => 'Файл не найден. Возможно, он был перемещен или удален.';
+
+  @override
+  String get errorFilePermissionDenied => 'Доступ запрещен. Предоставьте необходимые разрешения.';
+
+  @override
+  String get errorFileInsufficientStorage => 'Недостаточно места. Освободите место и попробуйте снова.';
+
+  @override
+  String get errorFileCorrupted => 'Файл поврежден. Попробуйте импортировать другой файл.';
+
+  @override
+  String get errorFileGeneral => 'Ошибка файла. Попробуйте еще раз.';
+
+  @override
+  String get errorDatabaseLocked => 'База данных занята. Попробуйте через момент.';
+
+  @override
+  String get errorDatabaseConstraint => 'Ошибка валидации данных. Проверьте введенные данные.';
+
+  @override
+  String get errorDatabaseMigration => 'Ошибка обновления базы данных. Перезапустите приложение.';
+
+  @override
+  String get errorDatabaseGeneral => 'Ошибка базы данных. Попробуйте еще раз.';
+
+  @override
+  String get errorValidationInvalid => 'Неверные данные. Проверьте введенную информацию.';
+
+  @override
+  String get errorApiUnauthorized => 'Ошибка аутентификации. Проверьте API ключи.';
+
+  @override
+  String get errorApiForbidden => 'Доступ запрещен. У вас нет прав для этого действия.';
+
+  @override
+  String get errorApiNotFound => 'Ресурс не найден. Данные могут больше не существовать.';
+
+  @override
+  String get errorApiGeneral => 'Ошибка API. Попробуйте еще раз.';
+
+  @override
+  String get errorRateLimitExceeded => 'Превышен лимит запросов. Подождите немного.';
+
+  @override
+  String get errorUnknown => 'Произошла неожиданная ошибка. Попробуйте еще раз.';
 }

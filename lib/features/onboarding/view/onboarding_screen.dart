@@ -43,6 +43,9 @@ class _OnboardingScreenContent extends StatelessWidget {
               OnboardingInitialState() => const Center(
                 child: CircularProgressIndicator(),
               ),
+              OnboardingErrorState() => Center(
+                child: Text('Error: ${state.message ?? 'Unknown error'}'),
+              ),
             };
           },
         ),
@@ -100,7 +103,7 @@ class _OnboardingPage1 extends StatelessWidget {
                 ],
               ),
             ),
-            _PageIndicator(currentPage: 0),
+            const _PageIndicator(currentPage: 0),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
@@ -167,7 +170,7 @@ class _OnboardingPage2 extends StatelessWidget {
                 ],
               ),
             ),
-            _PageIndicator(currentPage: 1),
+            const _PageIndicator(currentPage: 1),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
@@ -234,7 +237,7 @@ class _OnboardingPage3 extends StatelessWidget {
                 ],
               ),
             ),
-            _PageIndicator(currentPage: 2),
+            const _PageIndicator(currentPage: 2),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,

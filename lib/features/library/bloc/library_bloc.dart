@@ -1,9 +1,14 @@
+import 'package:codium/core/exceptions/app_error.dart';
+import 'package:codium/core/exceptions/app_exception.dart';
+import 'package:codium/core/utils/retry_logic.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/domain/repositories/pdf_repository.dart';
 import 'package:codium/domain/usecases/get_pdf_list_usecase.dart';
 import 'package:codium/domain/usecases/import_pdf_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 part 'library_event.dart';
 part 'library_state.dart';
@@ -33,10 +38,22 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
   ) async {
     emit(LibraryLoadingState());
     try {
-      final books = await _getPdfListUseCase.execute();
+      final books = await RetryLogic.retry(
+        operation: () => _getPdfListUseCase.execute(),
+        maxAttempts: 2,
+        shouldRetry: (e) => e is DatabaseError,
+      );
       emit(LibraryLoadedState(books: books, filteredBooks: books));
-    } catch (e) {
-      emit(LibraryErrorState(e.toString()));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError ? e : const UnknownError();
+      emit(
+        LibraryErrorState(
+          errorCode: error.code,
+          message: error.message,
+          canRetry: error.canRetry,
+        ),
+      );
     }
   }
 
@@ -47,8 +64,16 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     try {
       await _importPdfUseCase.execute(event.filePath);
       add(LoadLibraryEvent());
-    } catch (e) {
-      emit(LibraryErrorState(e.toString()));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError ? e : const UnknownError();
+      emit(
+        LibraryErrorState(
+          errorCode: error.code,
+          message: error.message,
+          canRetry: error.canRetry,
+        ),
+      );
     }
   }
 
@@ -59,8 +84,16 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     try {
       await _pdfRepository.deleteBook(event.bookId);
       add(LoadLibraryEvent());
-    } catch (e) {
-      emit(LibraryErrorState(e.toString()));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError ? e : const UnknownError();
+      emit(
+        LibraryErrorState(
+          errorCode: error.code,
+          message: error.message,
+          canRetry: error.canRetry,
+        ),
+      );
     }
   }
 

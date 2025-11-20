@@ -39,10 +39,16 @@ class PdfReaderLoadedState extends PdfReaderState {
 }
 
 class PdfReaderErrorState extends PdfReaderState {
-  final String message;
+  final AppErrorCode errorCode;
+  final String? message;
+  final bool canRetry;
 
-  const PdfReaderErrorState(this.message);
+  const PdfReaderErrorState({
+    required this.errorCode,
+    this.message,
+    this.canRetry = false,
+  });
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [errorCode, message, canRetry];
 }

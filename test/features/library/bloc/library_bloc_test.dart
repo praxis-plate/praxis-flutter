@@ -1,25 +1,36 @@
+import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/domain/repositories/pdf_repository.dart';
 import 'package:codium/domain/usecases/get_pdf_list_usecase.dart';
 import 'package:codium/domain/usecases/import_pdf_usecase.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 import 'library_bloc_test.mocks.dart';
 
-@GenerateMocks([IPdfRepository, GetPdfListUseCase, ImportPdfUseCase])
+@GenerateMocks([IPdfRepository, GetPdfListUseCase, ImportPdfUseCase, Talker])
 void main() {
   late LibraryBloc bloc;
   late MockIPdfRepository mockPdfRepository;
   late MockGetPdfListUseCase mockGetPdfListUseCase;
   late MockImportPdfUseCase mockImportPdfUseCase;
+  late MockTalker mockTalker;
 
   setUp(() {
     mockPdfRepository = MockIPdfRepository();
     mockGetPdfListUseCase = MockGetPdfListUseCase();
     mockImportPdfUseCase = MockImportPdfUseCase();
+    mockTalker = MockTalker();
+
+    // Register Talker mock in GetIt
+    if (!GetIt.I.isRegistered<Talker>()) {
+      GetIt.I.registerSingleton<Talker>(mockTalker);
+    }
+
     bloc = LibraryBloc(
       getPdfListUseCase: mockGetPdfListUseCase,
       importPdfUseCase: mockImportPdfUseCase,
@@ -29,6 +40,9 @@ void main() {
 
   tearDown(() {
     bloc.close();
+    if (GetIt.I.isRegistered<Talker>()) {
+      GetIt.I.unregister<Talker>();
+    }
   });
 
   group('LibraryBloc - Property Tests', () {
@@ -180,9 +194,9 @@ void main() {
         emitsInOrder([
           isA<LibraryLoadingState>(),
           isA<LibraryErrorState>().having(
-            (state) => state.message,
-            'message',
-            contains('Exception'),
+            (state) => state.errorCode,
+            'errorCode',
+            AppErrorCode.unknown,
           ),
         ]),
       );
@@ -354,9 +368,9 @@ void main() {
         bloc.stream,
         emits(
           isA<LibraryErrorState>().having(
-            (state) => state.message,
-            'message',
-            contains('Exception'),
+            (state) => state.errorCode,
+            'errorCode',
+            AppErrorCode.unknown,
           ),
         ),
       );
@@ -397,9 +411,9 @@ void main() {
         bloc.stream,
         emits(
           isA<LibraryErrorState>().having(
-            (state) => state.message,
-            'message',
-            contains('Exception'),
+            (state) => state.errorCode,
+            'errorCode',
+            AppErrorCode.unknown,
           ),
         ),
       );

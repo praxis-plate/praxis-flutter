@@ -1,7 +1,12 @@
+import 'package:codium/core/exceptions/app_error.dart';
+import 'package:codium/core/exceptions/app_exception.dart';
+import 'package:codium/core/utils/retry_logic.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/usecases/explain_text_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 part 'ai_explanation_event.dart';
 part 'ai_explanation_state.dart';
@@ -23,29 +28,32 @@ class AiExplanationBloc extends Bloc<AiExplanationEvent, AiExplanationState> {
     emit(AiExplanationLoadingState(selectedText: event.selectedText));
 
     try {
-      final explanation = await _explainTextUseCase.execute(
-        selectedText: event.selectedText,
-        context: event.context,
-        pdfBookId: event.pdfBookId,
-        pageNumber: event.pageNumber,
+      final explanation = await RetryLogic.retry(
+        operation: () => _explainTextUseCase.execute(
+          selectedText: event.selectedText,
+          context: event.context,
+          pdfBookId: event.pdfBookId,
+          pageNumber: event.pageNumber,
+        ),
+        maxAttempts: 2,
+        shouldRetry: (e) => e is NetworkError && e is! RateLimitError,
       );
 
       emit(AiExplanationLoadedState(explanation: explanation));
-    } catch (e) {
-      final errorMessage = e.toString();
-      final isNetworkError =
-          errorMessage.contains('connection') ||
-          errorMessage.contains('network') ||
-          errorMessage.contains('offline');
-      final isRateLimitError =
-          errorMessage.contains('rate limit') ||
-          errorMessage.contains('Rate limit');
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError ? e : const UnknownError();
+
+      final isOffline =
+          error.code == AppErrorCode.networkNoInternet ||
+          error.code == AppErrorCode.networkTimeout;
 
       emit(
         AiExplanationErrorState(
-          message: _formatErrorMessage(errorMessage),
-          canRetry: !isRateLimitError,
-          isOffline: isNetworkError,
+          errorCode: error.code,
+          message: error.message,
+          canRetry: error.canRetry && error is! RateLimitError,
+          isOffline: isOffline,
         ),
       );
     }
@@ -58,20 +66,5 @@ class AiExplanationBloc extends Bloc<AiExplanationEvent, AiExplanationState> {
     if (event.lastRequest != null) {
       add(event.lastRequest!);
     }
-  }
-
-  String _formatErrorMessage(String error) {
-    if (error.contains('Rate limit') || error.contains('rate limit')) {
-      return 'AI service is temporarily unavailable. Please try again in a few moments.';
-    }
-    if (error.contains('connection') ||
-        error.contains('network') ||
-        error.contains('offline')) {
-      return 'No internet connection. Please check your network and try again.';
-    }
-    if (error.contains('timeout')) {
-      return 'Request timed out. Please try again.';
-    }
-    return 'Failed to generate explanation. Please try again.';
   }
 }

@@ -3,14 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
-import 'package:codium/domain/models/pdf_library/pdf_book.dart' as _i4;
-import 'package:codium/domain/models/pdf_reader/bookmark.dart' as _i5;
-import 'package:codium/domain/repositories/pdf_repository.dart' as _i2;
-import 'package:codium/domain/usecases/get_pdf_list_usecase.dart' as _i6;
-import 'package:codium/domain/usecases/import_pdf_usecase.dart' as _i7;
+import 'package:codium/domain/models/pdf_library/pdf_book.dart' as _i5;
+import 'package:codium/domain/models/pdf_reader/bookmark.dart' as _i6;
+import 'package:codium/domain/repositories/pdf_repository.dart' as _i3;
+import 'package:codium/domain/usecases/get_pdf_list_usecase.dart' as _i7;
+import 'package:codium/domain/usecases/import_pdf_usecase.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:talker_flutter/talker_flutter.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -26,115 +27,296 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeTalkerSettings_0 extends _i1.SmartFake
+    implements _i2.TalkerSettings {
+  _FakeTalkerSettings_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeTalkerFilter_1 extends _i1.SmartFake implements _i2.TalkerFilter {
+  _FakeTalkerFilter_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [IPdfRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIPdfRepository extends _i1.Mock implements _i2.IPdfRepository {
+class MockIPdfRepository extends _i1.Mock implements _i3.IPdfRepository {
   MockIPdfRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<List<_i4.PdfBook>> getAllBooks() =>
+  _i4.Future<List<_i5.PdfBook>> getAllBooks() =>
       (super.noSuchMethod(
             Invocation.method(#getAllBooks, []),
-            returnValue: _i3.Future<List<_i4.PdfBook>>.value(<_i4.PdfBook>[]),
+            returnValue: _i4.Future<List<_i5.PdfBook>>.value(<_i5.PdfBook>[]),
           )
-          as _i3.Future<List<_i4.PdfBook>>);
+          as _i4.Future<List<_i5.PdfBook>>);
 
   @override
-  _i3.Future<_i4.PdfBook?> getBookById(String? id) =>
+  _i4.Future<_i5.PdfBook?> getBookById(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#getBookById, [id]),
-            returnValue: _i3.Future<_i4.PdfBook?>.value(),
+            returnValue: _i4.Future<_i5.PdfBook?>.value(),
           )
-          as _i3.Future<_i4.PdfBook?>);
+          as _i4.Future<_i5.PdfBook?>);
 
   @override
-  _i3.Future<void> importPdf(String? filePath) =>
+  _i4.Future<void> importPdf(String? filePath) =>
       (super.noSuchMethod(
             Invocation.method(#importPdf, [filePath]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i3.Future<void> updateReadingProgress(String? bookId, int? page) =>
+  _i4.Future<void> updateReadingProgress(String? bookId, int? page) =>
       (super.noSuchMethod(
             Invocation.method(#updateReadingProgress, [bookId, page]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i3.Future<void> deleteBook(String? bookId) =>
+  _i4.Future<void> deleteBook(String? bookId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteBook, [bookId]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i3.Future<List<_i5.Bookmark>> getBookmarks(String? bookId) =>
+  _i4.Future<List<_i6.Bookmark>> getBookmarks(String? bookId) =>
       (super.noSuchMethod(
             Invocation.method(#getBookmarks, [bookId]),
-            returnValue: _i3.Future<List<_i5.Bookmark>>.value(<_i5.Bookmark>[]),
+            returnValue: _i4.Future<List<_i6.Bookmark>>.value(<_i6.Bookmark>[]),
           )
-          as _i3.Future<List<_i5.Bookmark>>);
+          as _i4.Future<List<_i6.Bookmark>>);
 
   @override
-  _i3.Future<void> addBookmark(_i5.Bookmark? bookmark) =>
+  _i4.Future<void> addBookmark(_i6.Bookmark? bookmark) =>
       (super.noSuchMethod(
             Invocation.method(#addBookmark, [bookmark]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i3.Future<void> deleteBookmark(String? bookmarkId) =>
+  _i4.Future<void> deleteBookmark(String? bookmarkId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteBookmark, [bookmarkId]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i4.Future<void>);
 }
 
 /// A class which mocks [GetPdfListUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGetPdfListUseCase extends _i1.Mock implements _i6.GetPdfListUseCase {
+class MockGetPdfListUseCase extends _i1.Mock implements _i7.GetPdfListUseCase {
   MockGetPdfListUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<List<_i4.PdfBook>> execute() =>
+  _i4.Future<List<_i5.PdfBook>> execute() =>
       (super.noSuchMethod(
             Invocation.method(#execute, []),
-            returnValue: _i3.Future<List<_i4.PdfBook>>.value(<_i4.PdfBook>[]),
+            returnValue: _i4.Future<List<_i5.PdfBook>>.value(<_i5.PdfBook>[]),
           )
-          as _i3.Future<List<_i4.PdfBook>>);
+          as _i4.Future<List<_i5.PdfBook>>);
 }
 
 /// A class which mocks [ImportPdfUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockImportPdfUseCase extends _i1.Mock implements _i7.ImportPdfUseCase {
+class MockImportPdfUseCase extends _i1.Mock implements _i8.ImportPdfUseCase {
   MockImportPdfUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<void> execute(String? filePath) =>
+  _i4.Future<void> execute(String? filePath) =>
       (super.noSuchMethod(
             Invocation.method(#execute, [filePath]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i4.Future<void>);
+}
+
+/// A class which mocks [Talker].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockTalker extends _i1.Mock implements _i2.Talker {
+  MockTalker() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.TalkerSettings get settings =>
+      (super.noSuchMethod(
+            Invocation.getter(#settings),
+            returnValue: _FakeTalkerSettings_0(
+              this,
+              Invocation.getter(#settings),
+            ),
+          )
+          as _i2.TalkerSettings);
+
+  @override
+  _i4.Stream<_i2.TalkerData> get stream =>
+      (super.noSuchMethod(
+            Invocation.getter(#stream),
+            returnValue: _i4.Stream<_i2.TalkerData>.empty(),
+          )
+          as _i4.Stream<_i2.TalkerData>);
+
+  @override
+  List<_i2.TalkerData> get history =>
+      (super.noSuchMethod(
+            Invocation.getter(#history),
+            returnValue: <_i2.TalkerData>[],
+          )
+          as List<_i2.TalkerData>);
+
+  @override
+  _i2.TalkerFilter get filter =>
+      (super.noSuchMethod(
+            Invocation.getter(#filter),
+            returnValue: _FakeTalkerFilter_1(this, Invocation.getter(#filter)),
+          )
+          as _i2.TalkerFilter);
+
+  @override
+  set settings(_i2.TalkerSettings? _settings) => super.noSuchMethod(
+    Invocation.setter(#settings, _settings),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void configure({
+    _i2.TalkerLogger? logger,
+    _i2.TalkerSettings? settings,
+    _i2.TalkerObserver? observer,
+    _i2.TalkerFilter? filter,
+    _i2.TalkerErrorHandler? errorHandler,
+    _i2.TalkerHistory? history,
+  }) => super.noSuchMethod(
+    Invocation.method(#configure, [], {
+      #logger: logger,
+      #settings: settings,
+      #observer: observer,
+      #filter: filter,
+      #errorHandler: errorHandler,
+      #history: history,
+    }),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void handle(Object? exception, [StackTrace? stackTrace, dynamic msg]) =>
+      super.noSuchMethod(
+        Invocation.method(#handle, [exception, stackTrace, msg]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void log(
+    dynamic message, {
+    _i2.LogLevel? logLevel = _i2.LogLevel.debug,
+    Object? exception,
+    StackTrace? stackTrace,
+    _i2.AnsiPen? pen,
+  }) => super.noSuchMethod(
+    Invocation.method(
+      #log,
+      [message],
+      {
+        #logLevel: logLevel,
+        #exception: exception,
+        #stackTrace: stackTrace,
+        #pen: pen,
+      },
+    ),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void logTyped(_i2.TalkerLog? log) => super.noSuchMethod(
+    Invocation.method(#logTyped, [log]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void logCustom(_i2.TalkerLog? log) => super.noSuchMethod(
+    Invocation.method(#logCustom, [log]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void critical(dynamic msg, [Object? exception, StackTrace? stackTrace]) =>
+      super.noSuchMethod(
+        Invocation.method(#critical, [msg, exception, stackTrace]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void debug(dynamic msg, [Object? exception, StackTrace? stackTrace]) =>
+      super.noSuchMethod(
+        Invocation.method(#debug, [msg, exception, stackTrace]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void error(dynamic msg, [Object? exception, StackTrace? stackTrace]) =>
+      super.noSuchMethod(
+        Invocation.method(#error, [msg, exception, stackTrace]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void info(dynamic msg, [Object? exception, StackTrace? stackTrace]) =>
+      super.noSuchMethod(
+        Invocation.method(#info, [msg, exception, stackTrace]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void verbose(dynamic msg, [Object? exception, StackTrace? stackTrace]) =>
+      super.noSuchMethod(
+        Invocation.method(#verbose, [msg, exception, stackTrace]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void warning(dynamic msg, [Object? exception, StackTrace? stackTrace]) =>
+      super.noSuchMethod(
+        Invocation.method(#warning, [msg, exception, stackTrace]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void cleanHistory() => super.noSuchMethod(
+    Invocation.method(#cleanHistory, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void enable() => super.noSuchMethod(
+    Invocation.method(#enable, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void disable() => super.noSuchMethod(
+    Invocation.method(#disable, []),
+    returnValueForMissingStub: null,
+  );
 }

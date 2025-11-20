@@ -115,4 +115,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorPasswordInvalid => 'Password must be at least 8 characters, at least one letter and one number';
+
+  @override
+  String get errorNetworkTimeout => 'Connection timeout. Please check your internet connection.';
+
+  @override
+  String get errorNetworkNoInternet => 'No internet connection. Please check your network settings.';
+
+  @override
+  String get errorNetworkGeneral => 'Network error. Please try again.';
+
+  @override
+  String get errorFileNotFound => 'File not found. It may have been moved or deleted.';
+
+  @override
+  String get errorFilePermissionDenied => 'Permission denied. Please grant the necessary permissions.';
+
+  @override
+  String get errorFileInsufficientStorage => 'Insufficient storage. Please free up space and try again.';
+
+  @override
+  String get errorFileCorrupted => 'File is corrupted. Please try a different file.';
+
+  @override
+  String get errorFileGeneral => 'File error. Please try again.';
+
+  @override
+  String get errorDatabaseLocked => 'Database is busy. Please try again in a moment.';
+
+  @override
+  String get errorDatabaseConstraint => 'Data validation error. Please check your input.';
+
+  @override
+  String get errorDatabaseMigration => 'Database update failed. Please restart the app.';
+
+  @override
+  String get errorDatabaseGeneral => 'Database error. Please try again.';
+
+  @override
+  String get errorValidationInvalid => 'Invalid data. Please check your input.';
+
+  @override
+  String get errorApiUnauthorized => 'Authentication failed. Please check your API credentials.';
+
+  @override
+  String get errorApiForbidden => 'Access denied. You do not have permission for this action.';
+
+  @override
+  String get errorApiNotFound => 'Resource not found. The data may no longer exist.';
+
+  @override
+  String get errorApiGeneral => 'API error. Please try again.';
+
+  @override
+  String get errorRateLimitExceeded => 'Rate limit exceeded. Please wait a moment.';
+
+  @override
+  String get errorUnknown => 'An unexpected error occurred. Please try again.';
 }

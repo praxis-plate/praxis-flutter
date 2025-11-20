@@ -1,3 +1,4 @@
+import 'package:codium/core/exceptions/app_error_extensions.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:codium/features/ai_explanation/widgets/explanation_bottom_sheet.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
@@ -105,6 +106,9 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
             }
 
             if (state is PdfReaderErrorState) {
+              final errorMessage =
+                  state.message ?? state.errorCode.localizedMessage(context);
+
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -116,7 +120,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      state.message,
+                      errorMessage,
                       style: const TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
