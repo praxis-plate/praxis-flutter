@@ -1,5 +1,6 @@
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
+import 'package:codium/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -92,7 +93,9 @@ class PdfBookCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${book.currentPage} / ${book.totalPages} pages',
+                    S
+                        .of(context)
+                        .pdfBookPages(book.currentPage, book.totalPages),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
@@ -116,7 +119,7 @@ class PdfBookCard extends StatelessWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.open_in_new),
-                title: const Text('Open'),
+                title: Text(S.of(context).pdfBookOpen),
                 onTap: () {
                   Navigator.pop(bottomSheetContext);
                 },
@@ -127,8 +130,8 @@ class PdfBookCard extends StatelessWidget {
                 ),
                 title: Text(
                   book.isFavorite
-                      ? 'Remove from favorites'
-                      : 'Add to favorites',
+                      ? S.of(context).pdfBookRemoveFromFavorites
+                      : S.of(context).pdfBookAddToFavorites,
                 ),
                 onTap: () {
                   Navigator.pop(bottomSheetContext);
@@ -136,7 +139,7 @@ class PdfBookCard extends StatelessWidget {
               ),
               ListTile(
                 leading: const Icon(Icons.edit),
-                title: const Text('Rename'),
+                title: Text(S.of(context).pdfBookRename),
                 onTap: () {
                   Navigator.pop(bottomSheetContext);
                   _showRenameDialog(context);
@@ -148,7 +151,7 @@ class PdfBookCard extends StatelessWidget {
                   color: Theme.of(context).colorScheme.error,
                 ),
                 title: Text(
-                  'Delete',
+                  S.of(context).pdfBookDelete,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
                 onTap: () {
@@ -170,7 +173,7 @@ class PdfBookCard extends StatelessWidget {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Rename PDF'),
+          title: Text(S.of(context).pdfBookRenameTitle),
           content: TextField(
             controller: controller,
             decoration: const InputDecoration(
@@ -182,13 +185,13 @@ class PdfBookCard extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel'),
+              child: Text(S.of(context).pdfBookRenameCancel),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(dialogContext);
               },
-              child: const Text('Save'),
+              child: Text(S.of(context).pdfBookRenameSave),
             ),
           ],
         );
@@ -201,12 +204,12 @@ class PdfBookCard extends StatelessWidget {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Delete PDF'),
-          content: Text('Are you sure you want to delete "${book.title}"?'),
+          title: Text(S.of(context).pdfBookDeleteTitle),
+          content: Text(S.of(context).pdfBookDeleteMessage(book.title)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel'),
+              child: Text(S.of(context).pdfBookDeleteCancel),
             ),
             TextButton(
               onPressed: () {
@@ -216,7 +219,7 @@ class PdfBookCard extends StatelessWidget {
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.error,
               ),
-              child: const Text('Delete'),
+              child: Text(S.of(context).pdfBookDeleteConfirm),
             ),
           ],
         );

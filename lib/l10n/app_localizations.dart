@@ -424,6 +424,462 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An unexpected error occurred. Please try again.'**
   String get errorUnknown;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingSkipForNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now'**
+  String get onboardingSkipForNow;
+
+  /// No description provided for @onboardingTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Smart Reader'**
+  String get onboardingTitle1;
+
+  /// No description provided for @onboardingDescription1.
+  ///
+  /// In en, this message translates to:
+  /// **'Transform any technical book into an interactive learning experience with AI-powered explanations'**
+  String get onboardingDescription1;
+
+  /// No description provided for @onboardingTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Read & Learn'**
+  String get onboardingTitle2;
+
+  /// No description provided for @onboardingDescription2.
+  ///
+  /// In en, this message translates to:
+  /// **'Import your PDF books and read them with built-in text selection. Select any term to get instant AI explanations with examples'**
+  String get onboardingDescription2;
+
+  /// No description provided for @onboardingTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Progress'**
+  String get onboardingTitle3;
+
+  /// No description provided for @onboardingDescription3.
+  ///
+  /// In en, this message translates to:
+  /// **'Your reading progress is automatically saved. Create bookmarks, view explanation history, and pick up right where you left off'**
+  String get onboardingDescription3;
+
+  /// No description provided for @onboardingLanguageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Language'**
+  String get onboardingLanguageTitle;
+
+  /// No description provided for @onboardingLanguageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a programming language to get started with relevant courses'**
+  String get onboardingLanguageDescription;
+
+  /// No description provided for @onboardingErrorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown error'**
+  String get onboardingErrorUnknown;
+
+  /// No description provided for @libraryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF Library'**
+  String get libraryTitle;
+
+  /// No description provided for @libraryNoBooksFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No books found'**
+  String get libraryNoBooksFound;
+
+  /// No description provided for @libraryNoPdfs.
+  ///
+  /// In en, this message translates to:
+  /// **'No PDFs in library'**
+  String get libraryNoPdfs;
+
+  /// No description provided for @libraryTapToImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to import your first PDF'**
+  String get libraryTapToImport;
+
+  /// No description provided for @libraryErrorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading library'**
+  String get libraryErrorLoading;
+
+  /// No description provided for @libraryRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get libraryRetry;
+
+  /// No description provided for @librarySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by title or author...'**
+  String get librarySearchHint;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation History'**
+  String get historyTitle;
+
+  /// No description provided for @historyNoExplanationsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No explanations found'**
+  String get historyNoExplanationsFound;
+
+  /// No description provided for @historyNoHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No explanation history'**
+  String get historyNoHistory;
+
+  /// No description provided for @historyStartReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Start reading and ask for explanations'**
+  String get historyStartReading;
+
+  /// No description provided for @historyErrorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading history'**
+  String get historyErrorLoading;
+
+  /// No description provided for @historyRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get historyRetry;
+
+  /// No description provided for @historySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search explanations...'**
+  String get historySearchHint;
+
+  /// No description provided for @historyUnknownPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown PDF'**
+  String get historyUnknownPdf;
+
+  /// No description provided for @historyExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'explanation'**
+  String get historyExplanation;
+
+  /// No description provided for @historyExplanations.
+  ///
+  /// In en, this message translates to:
+  /// **'explanations'**
+  String get historyExplanations;
+
+  /// No description provided for @historyDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Explanation'**
+  String get historyDeleteTitle;
+
+  /// No description provided for @historyDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this explanation from history?'**
+  String get historyDeleteMessage;
+
+  /// No description provided for @historyDeleteCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get historyDeleteCancel;
+
+  /// No description provided for @historyDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get historyDeleteConfirm;
+
+  /// No description provided for @historyNavigateTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate to {text} on page {page}'**
+  String historyNavigateTo(Object page, Object text);
+
+  /// No description provided for @pdfReaderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF Reader'**
+  String get pdfReaderTitle;
+
+  /// No description provided for @pdfReaderErrorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading PDF'**
+  String get pdfReaderErrorLoading;
+
+  /// No description provided for @pdfReaderLazyLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Lazy loading enabled for large PDF'**
+  String get pdfReaderLazyLoading;
+
+  /// No description provided for @pdfReaderNoPdfLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'No PDF loaded'**
+  String get pdfReaderNoPdfLoaded;
+
+  /// No description provided for @pdfReaderPageIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {current} of {total}'**
+  String pdfReaderPageIndicator(Object current, Object total);
+
+  /// No description provided for @pdfReaderAddBookmarkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Bookmark'**
+  String get pdfReaderAddBookmarkTitle;
+
+  /// No description provided for @pdfReaderAddBookmarkPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page}'**
+  String pdfReaderAddBookmarkPage(Object page);
+
+  /// No description provided for @pdfReaderAddBookmarkCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get pdfReaderAddBookmarkCancel;
+
+  /// No description provided for @pdfReaderAddBookmarkAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get pdfReaderAddBookmarkAdd;
+
+  /// No description provided for @pdfReaderBookmarkAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark added'**
+  String get pdfReaderBookmarkAdded;
+
+  /// No description provided for @bookmarksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bookmarksTitle;
+
+  /// No description provided for @bookmarksNoBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet'**
+  String get bookmarksNoBookmarks;
+
+  /// No description provided for @bookmarksTapToAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the bookmark icon to add one'**
+  String get bookmarksTapToAdd;
+
+  /// No description provided for @bookmarksErrorLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading bookmarks'**
+  String get bookmarksErrorLoading;
+
+  /// No description provided for @bookmarksRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get bookmarksRetry;
+
+  /// No description provided for @bookmarksDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark deleted'**
+  String get bookmarksDeleted;
+
+  /// No description provided for @bookmarksErrorDeleting.
+  ///
+  /// In en, this message translates to:
+  /// **'Error deleting bookmark: {error}'**
+  String bookmarksErrorDeleting(Object error);
+
+  /// No description provided for @bookmarksPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page}'**
+  String bookmarksPage(Object page);
+
+  /// No description provided for @explanationGenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating explanation...'**
+  String get explanationGenerating;
+
+  /// No description provided for @explanationSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected: \"{text}\"'**
+  String explanationSelected(Object text);
+
+  /// No description provided for @explanationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation'**
+  String get explanationTitle;
+
+  /// No description provided for @explanationSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Sources'**
+  String get explanationSources;
+
+  /// No description provided for @explanationNoInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Internet Connection'**
+  String get explanationNoInternet;
+
+  /// No description provided for @explanationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get explanationError;
+
+  /// No description provided for @explanationRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get explanationRetry;
+
+  /// No description provided for @pdfBookPages.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total} pages'**
+  String pdfBookPages(Object current, Object total);
+
+  /// No description provided for @pdfBookOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get pdfBookOpen;
+
+  /// No description provided for @pdfBookAddToFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get pdfBookAddToFavorites;
+
+  /// No description provided for @pdfBookRemoveFromFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get pdfBookRemoveFromFavorites;
+
+  /// No description provided for @pdfBookRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get pdfBookRename;
+
+  /// No description provided for @pdfBookDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get pdfBookDelete;
+
+  /// No description provided for @pdfBookRenameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename PDF'**
+  String get pdfBookRenameTitle;
+
+  /// No description provided for @pdfBookRenameCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get pdfBookRenameCancel;
+
+  /// No description provided for @pdfBookRenameSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get pdfBookRenameSave;
+
+  /// No description provided for @pdfBookDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete PDF'**
+  String get pdfBookDeleteTitle;
+
+  /// No description provided for @pdfBookDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{title}\"?'**
+  String pdfBookDeleteMessage(Object title);
+
+  /// No description provided for @pdfBookDeleteCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get pdfBookDeleteCancel;
+
+  /// No description provided for @pdfBookDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get pdfBookDeleteConfirm;
+
+  /// No description provided for @courseDetailsUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get courseDetailsUnknown;
+
+  /// No description provided for @courseDetailsLessons.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} уроков'**
+  String courseDetailsLessons(Object count);
+
+  /// No description provided for @courseDetailsGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Get'**
+  String get courseDetailsGet;
+
+  /// No description provided for @courseDetailsContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get courseDetailsContinue;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

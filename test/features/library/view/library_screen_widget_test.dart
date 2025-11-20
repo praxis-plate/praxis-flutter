@@ -4,7 +4,9 @@ import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
 import 'package:codium/features/library/view/library_screen.dart';
 import 'package:codium/features/library/widgets/pdf_book_card.dart';
+import 'package:codium/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 
@@ -26,7 +28,16 @@ void main() {
 
   Widget createWidgetUnderTest() {
     GetIt.I.registerFactory<LibraryBloc>(() => mockLibraryBloc);
-    return const MaterialApp(home: LibraryScreen());
+    return MaterialApp(
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      home: const LibraryScreen(),
+    );
   }
 
   group('LibraryScreen Widget Tests', () {

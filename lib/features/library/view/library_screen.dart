@@ -1,6 +1,7 @@
 import 'package:codium/core/exceptions/app_error_extensions.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
 import 'package:codium/features/library/widgets/pdf_book_card.dart';
+import 'package:codium/generated/l10n.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,10 @@ class _LibraryScreenContent extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('PDF Library', style: theme.textTheme.titleLarge),
+        title: Text(
+          S.of(context).libraryTitle,
+          style: theme.textTheme.titleLarge,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -93,7 +97,9 @@ class _LibraryScreenContent extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            isSearching ? 'No books found' : 'No PDFs in library',
+            isSearching
+                ? S.of(context).libraryNoBooksFound
+                : S.of(context).libraryNoPdfs,
             style: theme.textTheme.titleMedium?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
@@ -101,7 +107,7 @@ class _LibraryScreenContent extends StatelessWidget {
           const SizedBox(height: 8),
           if (!isSearching)
             Text(
-              'Tap + to import your first PDF',
+              S.of(context).libraryTapToImport,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
               ),
@@ -122,7 +128,10 @@ class _LibraryScreenContent extends StatelessWidget {
         children: [
           Icon(Icons.error_outline, size: 64, color: theme.colorScheme.error),
           const SizedBox(height: 16),
-          Text('Error loading library', style: theme.textTheme.titleMedium),
+          Text(
+            S.of(context).libraryErrorLoading,
+            style: theme.textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           Text(
             errorMessage,
@@ -136,7 +145,7 @@ class _LibraryScreenContent extends StatelessWidget {
             onPressed: () {
               context.read<LibraryBloc>().add(LoadLibraryEvent());
             },
-            child: const Text('Retry'),
+            child: Text(S.of(context).libraryRetry),
           ),
         ],
       ),
@@ -178,7 +187,7 @@ class _SearchBarState extends State<_SearchBar> {
     return TextField(
       controller: _controller,
       decoration: InputDecoration(
-        hintText: 'Search by title or author...',
+        hintText: S.of(context).librarySearchHint,
         prefixIcon: const Icon(Icons.search),
         suffixIcon: _controller.text.isNotEmpty
             ? IconButton(

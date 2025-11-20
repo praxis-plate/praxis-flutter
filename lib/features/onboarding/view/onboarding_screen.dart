@@ -1,4 +1,5 @@
 import 'package:codium/features/onboarding/bloc/onboarding_bloc.dart';
+import 'package:codium/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -44,7 +45,9 @@ class _OnboardingScreenContent extends StatelessWidget {
                 child: CircularProgressIndicator(),
               ),
               OnboardingErrorState() => Center(
-                child: Text('Error: ${state.message ?? 'Unknown error'}'),
+                child: Text(
+                  'Error: ${state.message ?? S.of(context).onboardingErrorUnknown}',
+                ),
               ),
             };
           },
@@ -72,7 +75,7 @@ class _OnboardingPage1 extends StatelessWidget {
                 onPressed: () {
                   context.read<OnboardingBloc>().add(CompleteOnboardingEvent());
                 },
-                child: const Text('Skip'),
+                child: Text(S.of(context).onboardingSkip),
               ),
             ),
             Expanded(
@@ -86,7 +89,7 @@ class _OnboardingPage1 extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    'AI Smart Reader',
+                    S.of(context).onboardingTitle1,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -94,7 +97,7 @@ class _OnboardingPage1 extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Transform any technical book into an interactive learning experience with AI-powered explanations',
+                    S.of(context).onboardingDescription1,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
@@ -111,7 +114,7 @@ class _OnboardingPage1 extends StatelessWidget {
                 onPressed: () {
                   context.read<OnboardingBloc>().add(NextPageEvent());
                 },
-                child: const Text('Next'),
+                child: Text(S.of(context).onboardingNext),
               ),
             ),
           ],
@@ -139,7 +142,7 @@ class _OnboardingPage2 extends StatelessWidget {
                 onPressed: () {
                   context.read<OnboardingBloc>().add(CompleteOnboardingEvent());
                 },
-                child: const Text('Skip'),
+                child: Text(S.of(context).onboardingSkip),
               ),
             ),
             Expanded(
@@ -153,7 +156,7 @@ class _OnboardingPage2 extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    'Read & Learn',
+                    S.of(context).onboardingTitle2,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -161,7 +164,7 @@ class _OnboardingPage2 extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Import your PDF books and read them with built-in text selection. Select any term to get instant AI explanations with examples',
+                    S.of(context).onboardingDescription2,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
@@ -178,7 +181,7 @@ class _OnboardingPage2 extends StatelessWidget {
                 onPressed: () {
                   context.read<OnboardingBloc>().add(NextPageEvent());
                 },
-                child: const Text('Next'),
+                child: Text(S.of(context).onboardingNext),
               ),
             ),
           ],
@@ -206,7 +209,7 @@ class _OnboardingPage3 extends StatelessWidget {
                 onPressed: () {
                   context.read<OnboardingBloc>().add(CompleteOnboardingEvent());
                 },
-                child: const Text('Skip'),
+                child: Text(S.of(context).onboardingSkip),
               ),
             ),
             Expanded(
@@ -220,7 +223,7 @@ class _OnboardingPage3 extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    'Track Progress',
+                    S.of(context).onboardingTitle3,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -228,7 +231,7 @@ class _OnboardingPage3 extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Your reading progress is automatically saved. Create bookmarks, view explanation history, and pick up right where you left off',
+                    S.of(context).onboardingDescription3,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
@@ -245,7 +248,7 @@ class _OnboardingPage3 extends StatelessWidget {
                 onPressed: () {
                   context.read<OnboardingBloc>().add(NextPageEvent());
                 },
-                child: const Text('Next'),
+                child: Text(S.of(context).onboardingNext),
               ),
             ),
           ],
@@ -278,7 +281,7 @@ class _LanguageSelectionPage extends StatelessWidget {
           children: [
             const SizedBox(height: 32),
             Text(
-              'Choose Your Language',
+              S.of(context).onboardingLanguageTitle,
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -286,7 +289,7 @@ class _LanguageSelectionPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Select a programming language to get started with relevant courses',
+              S.of(context).onboardingLanguageDescription,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
               ),
@@ -321,7 +324,7 @@ class _LanguageSelectionPage extends StatelessWidget {
               onPressed: () {
                 context.read<OnboardingBloc>().add(CompleteOnboardingEvent());
               },
-              child: const Text('Skip for now'),
+              child: Text(S.of(context).onboardingSkipForNow),
             ),
           ],
         ),

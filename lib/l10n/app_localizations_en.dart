@@ -172,4 +172,250 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorUnknown => 'An unexpected error occurred. Please try again.';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingSkipForNow => 'Skip for now';
+
+  @override
+  String get onboardingTitle1 => 'AI Smart Reader';
+
+  @override
+  String get onboardingDescription1 => 'Transform any technical book into an interactive learning experience with AI-powered explanations';
+
+  @override
+  String get onboardingTitle2 => 'Read & Learn';
+
+  @override
+  String get onboardingDescription2 => 'Import your PDF books and read them with built-in text selection. Select any term to get instant AI explanations with examples';
+
+  @override
+  String get onboardingTitle3 => 'Track Progress';
+
+  @override
+  String get onboardingDescription3 => 'Your reading progress is automatically saved. Create bookmarks, view explanation history, and pick up right where you left off';
+
+  @override
+  String get onboardingLanguageTitle => 'Choose Your Language';
+
+  @override
+  String get onboardingLanguageDescription => 'Select a programming language to get started with relevant courses';
+
+  @override
+  String get onboardingErrorUnknown => 'Unknown error';
+
+  @override
+  String get libraryTitle => 'PDF Library';
+
+  @override
+  String get libraryNoBooksFound => 'No books found';
+
+  @override
+  String get libraryNoPdfs => 'No PDFs in library';
+
+  @override
+  String get libraryTapToImport => 'Tap + to import your first PDF';
+
+  @override
+  String get libraryErrorLoading => 'Error loading library';
+
+  @override
+  String get libraryRetry => 'Retry';
+
+  @override
+  String get librarySearchHint => 'Search by title or author...';
+
+  @override
+  String get historyTitle => 'Explanation History';
+
+  @override
+  String get historyNoExplanationsFound => 'No explanations found';
+
+  @override
+  String get historyNoHistory => 'No explanation history';
+
+  @override
+  String get historyStartReading => 'Start reading and ask for explanations';
+
+  @override
+  String get historyErrorLoading => 'Error loading history';
+
+  @override
+  String get historyRetry => 'Retry';
+
+  @override
+  String get historySearchHint => 'Search explanations...';
+
+  @override
+  String get historyUnknownPdf => 'Unknown PDF';
+
+  @override
+  String get historyExplanation => 'explanation';
+
+  @override
+  String get historyExplanations => 'explanations';
+
+  @override
+  String get historyDeleteTitle => 'Delete Explanation';
+
+  @override
+  String get historyDeleteMessage => 'Are you sure you want to delete this explanation from history?';
+
+  @override
+  String get historyDeleteCancel => 'Cancel';
+
+  @override
+  String get historyDeleteConfirm => 'Delete';
+
+  @override
+  String historyNavigateTo(Object page, Object text) {
+    return 'Navigate to $text on page $page';
+  }
+
+  @override
+  String get pdfReaderTitle => 'PDF Reader';
+
+  @override
+  String get pdfReaderErrorLoading => 'Error loading PDF';
+
+  @override
+  String get pdfReaderLazyLoading => 'Lazy loading enabled for large PDF';
+
+  @override
+  String get pdfReaderNoPdfLoaded => 'No PDF loaded';
+
+  @override
+  String pdfReaderPageIndicator(Object current, Object total) {
+    return 'Page $current of $total';
+  }
+
+  @override
+  String get pdfReaderAddBookmarkTitle => 'Add Bookmark';
+
+  @override
+  String pdfReaderAddBookmarkPage(Object page) {
+    return 'Page $page';
+  }
+
+  @override
+  String get pdfReaderAddBookmarkCancel => 'Cancel';
+
+  @override
+  String get pdfReaderAddBookmarkAdd => 'Add';
+
+  @override
+  String get pdfReaderBookmarkAdded => 'Bookmark added';
+
+  @override
+  String get bookmarksTitle => 'Bookmarks';
+
+  @override
+  String get bookmarksNoBookmarks => 'No bookmarks yet';
+
+  @override
+  String get bookmarksTapToAdd => 'Tap the bookmark icon to add one';
+
+  @override
+  String get bookmarksErrorLoading => 'Error loading bookmarks';
+
+  @override
+  String get bookmarksRetry => 'Retry';
+
+  @override
+  String get bookmarksDeleted => 'Bookmark deleted';
+
+  @override
+  String bookmarksErrorDeleting(Object error) {
+    return 'Error deleting bookmark: $error';
+  }
+
+  @override
+  String bookmarksPage(Object page) {
+    return 'Page $page';
+  }
+
+  @override
+  String get explanationGenerating => 'Generating explanation...';
+
+  @override
+  String explanationSelected(Object text) {
+    return 'Selected: \"$text\"';
+  }
+
+  @override
+  String get explanationTitle => 'Explanation';
+
+  @override
+  String get explanationSources => 'Sources';
+
+  @override
+  String get explanationNoInternet => 'No Internet Connection';
+
+  @override
+  String get explanationError => 'Error';
+
+  @override
+  String get explanationRetry => 'Retry';
+
+  @override
+  String pdfBookPages(Object current, Object total) {
+    return '$current / $total pages';
+  }
+
+  @override
+  String get pdfBookOpen => 'Open';
+
+  @override
+  String get pdfBookAddToFavorites => 'Add to favorites';
+
+  @override
+  String get pdfBookRemoveFromFavorites => 'Remove from favorites';
+
+  @override
+  String get pdfBookRename => 'Rename';
+
+  @override
+  String get pdfBookDelete => 'Delete';
+
+  @override
+  String get pdfBookRenameTitle => 'Rename PDF';
+
+  @override
+  String get pdfBookRenameCancel => 'Cancel';
+
+  @override
+  String get pdfBookRenameSave => 'Save';
+
+  @override
+  String get pdfBookDeleteTitle => 'Delete PDF';
+
+  @override
+  String pdfBookDeleteMessage(Object title) {
+    return 'Are you sure you want to delete \"$title\"?';
+  }
+
+  @override
+  String get pdfBookDeleteCancel => 'Cancel';
+
+  @override
+  String get pdfBookDeleteConfirm => 'Delete';
+
+  @override
+  String get courseDetailsUnknown => 'Unknown';
+
+  @override
+  String courseDetailsLessons(Object count) {
+    return '$count уроков';
+  }
+
+  @override
+  String get courseDetailsGet => 'Get';
+
+  @override
+  String get courseDetailsContinue => 'Continue';
 }
