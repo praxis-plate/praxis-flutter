@@ -1,6 +1,10 @@
+import 'package:codium/core/exceptions/app_error.dart';
+import 'package:codium/core/exceptions/app_exception.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 part 'onboarding_event.dart';
 part 'onboarding_state.dart';
@@ -20,13 +24,18 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     CheckOnboardingStatusEvent event,
     Emitter<OnboardingState> emit,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
-    final isComplete = prefs.getBool(_onboardingCompleteKey) ?? false;
-    final selectedLanguage = prefs.getString(_selectedLanguageKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final isComplete = prefs.getBool(_onboardingCompleteKey) ?? false;
+      final selectedLanguage = prefs.getString(_selectedLanguageKey);
 
-    if (isComplete) {
-      emit(OnboardingCompleteState(selectedLanguage: selectedLanguage));
-    } else {
+      if (isComplete) {
+        emit(OnboardingCompleteState(selectedLanguage: selectedLanguage));
+      } else {
+        emit(OnboardingPage1State());
+      }
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
       emit(OnboardingPage1State());
     }
   }
@@ -48,21 +57,37 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     CompleteOnboardingEvent event,
     Emitter<OnboardingState> emit,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_onboardingCompleteKey, true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_onboardingCompleteKey, true);
 
-    final selectedLanguage = prefs.getString(_selectedLanguageKey);
-    emit(OnboardingCompleteState(selectedLanguage: selectedLanguage));
+      final selectedLanguage = prefs.getString(_selectedLanguageKey);
+      emit(OnboardingCompleteState(selectedLanguage: selectedLanguage));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError
+          ? e
+          : const UnknownError(message: 'Failed to save onboarding status');
+      emit(OnboardingErrorState(errorCode: error.code, message: error.message));
+    }
   }
 
   Future<void> _onSelectLanguage(
     SelectLanguageEvent event,
     Emitter<OnboardingState> emit,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_selectedLanguageKey, event.language);
-    await prefs.setBool(_onboardingCompleteKey, true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_selectedLanguageKey, event.language);
+      await prefs.setBool(_onboardingCompleteKey, true);
 
-    emit(OnboardingCompleteState(selectedLanguage: event.language));
+      emit(OnboardingCompleteState(selectedLanguage: event.language));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError
+          ? e
+          : const UnknownError(message: 'Failed to save language selection');
+      emit(OnboardingErrorState(errorCode: error.code, message: error.message));
+    }
   }
 }

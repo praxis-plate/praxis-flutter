@@ -1,3 +1,4 @@
+import 'package:codium/core/exceptions/app_error_extensions.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
 import 'package:codium/features/library/widgets/pdf_book_card.dart';
 import 'package:file_picker/file_picker.dart';
@@ -112,6 +113,8 @@ class _LibraryScreenContent extends StatelessWidget {
 
   Widget _buildErrorState(BuildContext context, LibraryErrorState state) {
     final theme = Theme.of(context);
+    final errorMessage =
+        state.message ?? state.errorCode.localizedMessage(context);
 
     return Center(
       child: Column(
@@ -122,7 +125,7 @@ class _LibraryScreenContent extends StatelessWidget {
           Text('Error loading library', style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Text(
-            state.message,
+            errorMessage,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),

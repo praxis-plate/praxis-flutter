@@ -4,7 +4,7 @@ sealed class LibraryState extends Equatable {
   const LibraryState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class LibraryInitialState extends LibraryState {}
@@ -27,10 +27,16 @@ final class LibraryLoadedState extends LibraryState {
 }
 
 final class LibraryErrorState extends LibraryState {
-  final String message;
+  final AppErrorCode errorCode;
+  final String? message;
+  final bool canRetry;
 
-  const LibraryErrorState(this.message);
+  const LibraryErrorState({
+    required this.errorCode,
+    this.message,
+    this.canRetry = false,
+  });
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [errorCode, message, canRetry];
 }

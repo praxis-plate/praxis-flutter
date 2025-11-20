@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
 import 'package:codium/features/library/view/library_screen.dart';
@@ -181,7 +182,10 @@ void main() {
       testWidgets('displays error state with retry button on error', (
         tester,
       ) async {
-        const errorState = LibraryErrorState('Failed to load library');
+        const errorState = LibraryErrorState(
+          errorCode: AppErrorCode.databaseGeneral,
+          message: 'Failed to load library',
+        );
 
         whenListen(
           mockLibraryBloc,
@@ -199,7 +203,10 @@ void main() {
       });
 
       testWidgets('retry button is tappable', (tester) async {
-        const errorState = LibraryErrorState('Failed to load library');
+        const errorState = LibraryErrorState(
+          errorCode: AppErrorCode.databaseGeneral,
+          message: 'Failed to load library',
+        );
 
         whenListen(
           mockLibraryBloc,

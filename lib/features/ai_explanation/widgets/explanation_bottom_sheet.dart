@@ -1,3 +1,4 @@
+import 'package:codium/core/exceptions/app_error_extensions.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class ExplanationBottomSheet extends StatelessWidget {
 
   Widget _buildLoading(BuildContext context, AiExplanationLoadingState state) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -83,7 +84,7 @@ class ExplanationBottomSheet extends StatelessWidget {
     final explanation = state.explanation;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -146,7 +147,7 @@ class ExplanationBottomSheet extends StatelessWidget {
         onTap: () => _launchUrl(source.url),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -196,8 +197,11 @@ class ExplanationBottomSheet extends StatelessWidget {
   }
 
   Widget _buildError(BuildContext context, AiExplanationErrorState state) {
+    final errorMessage =
+        state.message ?? state.errorCode.localizedMessage(context);
+
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -215,7 +219,7 @@ class ExplanationBottomSheet extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            state.message,
+            errorMessage,
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),

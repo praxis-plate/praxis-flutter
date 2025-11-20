@@ -4,6 +4,7 @@ export 'course_card.dart';
 export 'course_carousel.dart';
 export 'course_info.dart';
 export 'course_progress_bar.dart';
+export 'feedback/feedback.dart';
 export 'get_button.dart';
 export 'running_text.dart';
 export 'smart/user_balance_card.dart';

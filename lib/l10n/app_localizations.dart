@@ -310,6 +310,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password must be at least 8 characters, at least one letter and one number'**
   String get errorPasswordInvalid;
+
+  /// No description provided for @errorNetworkTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection timeout. Please check your internet connection.'**
+  String get errorNetworkTimeout;
+
+  /// No description provided for @errorNetworkNoInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Please check your network settings.'**
+  String get errorNetworkNoInternet;
+
+  /// No description provided for @errorNetworkGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Please try again.'**
+  String get errorNetworkGeneral;
+
+  /// No description provided for @errorFileNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'File not found. It may have been moved or deleted.'**
+  String get errorFileNotFound;
+
+  /// No description provided for @errorFilePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission denied. Please grant the necessary permissions.'**
+  String get errorFilePermissionDenied;
+
+  /// No description provided for @errorFileInsufficientStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient storage. Please free up space and try again.'**
+  String get errorFileInsufficientStorage;
+
+  /// No description provided for @errorFileCorrupted.
+  ///
+  /// In en, this message translates to:
+  /// **'File is corrupted. Please try a different file.'**
+  String get errorFileCorrupted;
+
+  /// No description provided for @errorFileGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'File error. Please try again.'**
+  String get errorFileGeneral;
+
+  /// No description provided for @errorDatabaseLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Database is busy. Please try again in a moment.'**
+  String get errorDatabaseLocked;
+
+  /// No description provided for @errorDatabaseConstraint.
+  ///
+  /// In en, this message translates to:
+  /// **'Data validation error. Please check your input.'**
+  String get errorDatabaseConstraint;
+
+  /// No description provided for @errorDatabaseMigration.
+  ///
+  /// In en, this message translates to:
+  /// **'Database update failed. Please restart the app.'**
+  String get errorDatabaseMigration;
+
+  /// No description provided for @errorDatabaseGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'Database error. Please try again.'**
+  String get errorDatabaseGeneral;
+
+  /// No description provided for @errorValidationInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid data. Please check your input.'**
+  String get errorValidationInvalid;
+
+  /// No description provided for @errorApiUnauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication failed. Please check your API credentials.'**
+  String get errorApiUnauthorized;
+
+  /// No description provided for @errorApiForbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied. You do not have permission for this action.'**
+  String get errorApiForbidden;
+
+  /// No description provided for @errorApiNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource not found. The data may no longer exist.'**
+  String get errorApiNotFound;
+
+  /// No description provided for @errorApiGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'API error. Please try again.'**
+  String get errorApiGeneral;
+
+  /// No description provided for @errorRateLimitExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate limit exceeded. Please wait a moment.'**
+  String get errorRateLimitExceeded;
+
+  /// No description provided for @errorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again.'**
+  String get errorUnknown;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

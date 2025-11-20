@@ -28,16 +28,18 @@ final class AiExplanationLoadedState extends AiExplanationState {
 }
 
 final class AiExplanationErrorState extends AiExplanationState {
-  final String message;
+  final AppErrorCode errorCode;
+  final String? message;
   final bool canRetry;
   final bool isOffline;
 
   const AiExplanationErrorState({
-    required this.message,
+    required this.errorCode,
+    this.message,
     this.canRetry = true,
     this.isOffline = false,
   });
 
   @override
-  List<Object?> get props => [message, canRetry, isOffline];
+  List<Object?> get props => [errorCode, message, canRetry, isOffline];
 }

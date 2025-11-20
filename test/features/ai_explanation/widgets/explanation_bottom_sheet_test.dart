@@ -1,3 +1,4 @@
+import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
@@ -182,6 +183,7 @@ void main() {
 
     testWidgets('should show error state with retry button', (tester) async {
       const state = AiExplanationErrorState(
+        errorCode: AppErrorCode.apiGeneral,
         message: 'Failed to generate explanation',
         canRetry: true,
       );
@@ -196,6 +198,7 @@ void main() {
 
     testWidgets('should show offline indicator when offline', (tester) async {
       const state = AiExplanationErrorState(
+        errorCode: AppErrorCode.networkNoInternet,
         message: 'No internet connection',
         canRetry: true,
         isOffline: true,
@@ -212,6 +215,7 @@ void main() {
       tester,
     ) async {
       const state = AiExplanationErrorState(
+        errorCode: AppErrorCode.rateLimitExceeded,
         message: 'Rate limit exceeded',
         canRetry: false,
       );

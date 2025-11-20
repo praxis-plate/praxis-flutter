@@ -4,7 +4,7 @@ sealed class ExplanationHistoryState extends Equatable {
   const ExplanationHistoryState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class ExplanationHistoryInitialState extends ExplanationHistoryState {}
@@ -27,10 +27,16 @@ final class ExplanationHistoryLoadedState extends ExplanationHistoryState {
 }
 
 final class ExplanationHistoryErrorState extends ExplanationHistoryState {
-  final String message;
+  final AppErrorCode errorCode;
+  final String? message;
+  final bool canRetry;
 
-  const ExplanationHistoryErrorState(this.message);
+  const ExplanationHistoryErrorState({
+    required this.errorCode,
+    this.message,
+    this.canRetry = false,
+  });
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [errorCode, message, canRetry];
 }

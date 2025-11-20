@@ -42,5 +42,31 @@
   "errorEmailEmpty": "Email is required",
   "errorEmailInvalid": "Invalid email format",
   "errorPasswordEmpty": "Password is required",
-  "errorPasswordInvalid": "Password must be at least 8 characters, at least one letter and one number"
+  "errorPasswordInvalid": "Password must be at least 8 characters, at least one letter and one number",
+
+  "errorNetworkTimeout": "Connection timeout. Please check your internet connection.",
+  "errorNetworkNoInternet": "No internet connection. Please check your network settings.",
+  "errorNetworkGeneral": "Network error. Please try again.",
+  
+  "errorFileNotFound": "File not found. It may have been moved or deleted.",
+  "errorFilePermissionDenied": "Permission denied. Please grant the necessary permissions.",
+  "errorFileInsufficientStorage": "Insufficient storage. Please free up space and try again.",
+  "errorFileCorrupted": "File is corrupted. Please try a different file.",
+  "errorFileGeneral": "File error. Please try again.",
+  
+  "errorDatabaseLocked": "Database is busy. Please try again in a moment.",
+  "errorDatabaseConstraint": "Data validation error. Please check your input.",
+  "errorDatabaseMigration": "Database update failed. Please restart the app.",
+  "errorDatabaseGeneral": "Database error. Please try again.",
+  
+  "errorValidationInvalid": "Invalid data. Please check your input.",
+  
+  "errorApiUnauthorized": "Authentication failed. Please check your API credentials.",
+  "errorApiForbidden": "Access denied. You do not have permission for this action.",
+  "errorApiNotFound": "Resource not found. The data may no longer exist.",
+  "errorApiGeneral": "API error. Please try again.",
+  
+  "errorRateLimitExceeded": "Rate limit exceeded. Please wait a moment.",
+  
+  "errorUnknown": "An unexpected error occurred. Please try again."
 }

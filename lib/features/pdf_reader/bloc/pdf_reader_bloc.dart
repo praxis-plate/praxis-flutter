@@ -1,3 +1,6 @@
+import 'package:codium/core/exceptions/app_error.dart';
+import 'package:codium/core/exceptions/app_exception.dart';
+import 'package:codium/core/utils/retry_logic.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/domain/models/pdf_reader/bookmark.dart';
 import 'package:codium/domain/usecases/get_pdf_book_by_id_usecase.dart';
@@ -5,6 +8,8 @@ import 'package:codium/domain/usecases/save_bookmark_usecase.dart';
 import 'package:codium/domain/usecases/update_reading_progress_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 part 'pdf_reader_event.dart';
@@ -35,14 +40,32 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
   ) async {
     emit(PdfReaderLoadingState());
     try {
-      final book = await _getPdfBookByIdUseCase.execute(event.bookId);
+      final book = await RetryLogic.retry(
+        operation: () => _getPdfBookByIdUseCase.execute(event.bookId),
+        maxAttempts: 2,
+        shouldRetry: (e) => e is DatabaseError,
+      );
       if (book == null) {
-        emit(const PdfReaderErrorState('PDF book not found'));
+        emit(
+          const PdfReaderErrorState(
+            errorCode: AppErrorCode.fileNotFound,
+            message: 'PDF book not found',
+            canRetry: false,
+          ),
+        );
         return;
       }
       emit(PdfReaderLoadedState(book: book, currentPage: book.currentPage));
-    } catch (e) {
-      emit(PdfReaderErrorState(e.toString()));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError ? e : const UnknownError();
+      emit(
+        PdfReaderErrorState(
+          errorCode: error.code,
+          message: error.message,
+          canRetry: error.canRetry,
+        ),
+      );
     }
   }
 
@@ -60,8 +83,16 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
           bookId: currentState.book.id,
           currentPage: event.pageNumber,
         );
-      } catch (e) {
-        emit(PdfReaderErrorState(e.toString()));
+      } catch (e, st) {
+        GetIt.I<Talker>().handle(e, st);
+        final error = e is AppError ? e : const UnknownError();
+        emit(
+          PdfReaderErrorState(
+            errorCode: error.code,
+            message: error.message,
+            canRetry: error.canRetry,
+          ),
+        );
       }
     }
   }
@@ -93,8 +124,16 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
         );
 
         await _saveBookmarkUseCase.execute(bookmark);
-      } catch (e) {
-        emit(PdfReaderErrorState(e.toString()));
+      } catch (e, st) {
+        GetIt.I<Talker>().handle(e, st);
+        final error = e is AppError ? e : const UnknownError();
+        emit(
+          PdfReaderErrorState(
+            errorCode: error.code,
+            message: error.message,
+            canRetry: error.canRetry,
+          ),
+        );
       }
     }
   }

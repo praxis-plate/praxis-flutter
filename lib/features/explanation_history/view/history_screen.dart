@@ -1,3 +1,4 @@
+import 'package:codium/core/exceptions/app_error_extensions.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/repositories/pdf_repository.dart';
 import 'package:codium/features/explanation_history/bloc/explanation_history_bloc.dart';
@@ -117,6 +118,8 @@ class _HistoryScreenContent extends StatelessWidget {
     ExplanationHistoryErrorState state,
   ) {
     final theme = Theme.of(context);
+    final errorMessage =
+        state.message ?? state.errorCode.localizedMessage(context);
 
     return Center(
       child: Column(
@@ -127,7 +130,7 @@ class _HistoryScreenContent extends StatelessWidget {
           Text('Error loading history', style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Text(
-            state.message,
+            errorMessage,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),

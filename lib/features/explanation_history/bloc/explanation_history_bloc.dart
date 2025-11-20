@@ -1,9 +1,14 @@
+import 'package:codium/core/exceptions/app_error.dart';
+import 'package:codium/core/exceptions/app_exception.dart';
+import 'package:codium/core/utils/retry_logic.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/usecases/delete_explanation_usecase.dart';
 import 'package:codium/domain/usecases/get_explanation_history_usecase.dart';
 import 'package:codium/domain/usecases/search_explanation_history_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 part 'explanation_history_event.dart';
 part 'explanation_history_state.dart';
@@ -33,7 +38,11 @@ class ExplanationHistoryBloc
   ) async {
     emit(ExplanationHistoryLoadingState());
     try {
-      final explanations = await _getExplanationHistoryUseCase.execute();
+      final explanations = await RetryLogic.retry(
+        operation: () => _getExplanationHistoryUseCase.execute(),
+        maxAttempts: 2,
+        shouldRetry: (e) => e is DatabaseError,
+      );
       final grouped = _groupExplanationsByPdf(explanations);
       emit(
         ExplanationHistoryLoadedState(
@@ -41,8 +50,16 @@ class ExplanationHistoryBloc
           allExplanations: explanations,
         ),
       );
-    } catch (e) {
-      emit(ExplanationHistoryErrorState(e.toString()));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError ? e : const UnknownError();
+      emit(
+        ExplanationHistoryErrorState(
+          errorCode: error.code,
+          message: error.message,
+          canRetry: error.canRetry,
+        ),
+      );
     }
   }
 
@@ -76,8 +93,16 @@ class ExplanationHistoryBloc
               searchQuery: query,
             ),
           );
-        } catch (e) {
-          emit(ExplanationHistoryErrorState(e.toString()));
+        } catch (e, st) {
+          GetIt.I<Talker>().handle(e, st);
+          final error = e is AppError ? e : const UnknownError();
+          emit(
+            ExplanationHistoryErrorState(
+              errorCode: error.code,
+              message: error.message,
+              canRetry: error.canRetry,
+            ),
+          );
         }
       }
     }
@@ -90,8 +115,16 @@ class ExplanationHistoryBloc
     try {
       await _deleteExplanationUseCase.execute(event.explanationId);
       add(LoadHistoryEvent());
-    } catch (e) {
-      emit(ExplanationHistoryErrorState(e.toString()));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError ? e : const UnknownError();
+      emit(
+        ExplanationHistoryErrorState(
+          errorCode: error.code,
+          message: error.message,
+          canRetry: error.canRetry,
+        ),
+      );
     }
   }
 

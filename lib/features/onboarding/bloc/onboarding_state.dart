@@ -25,3 +25,13 @@ final class OnboardingCompleteState extends OnboardingState {
   @override
   List<Object?> get props => [selectedLanguage];
 }
+
+final class OnboardingErrorState extends OnboardingState {
+  final AppErrorCode errorCode;
+  final String? message;
+
+  const OnboardingErrorState({required this.errorCode, this.message});
+
+  @override
+  List<Object?> get props => [errorCode, message];
+}
