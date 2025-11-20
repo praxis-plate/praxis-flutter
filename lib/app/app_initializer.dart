@@ -7,10 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class AppInitializer extends StatelessWidget {
-  const AppInitializer({
-    super.key,
-    required this.child,
-  });
+  const AppInitializer({super.key, required this.child});
 
   final Widget child;
 
@@ -24,12 +21,10 @@ class AppInitializer extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) => GetIt.I<AuthBloc>(),
+          create: (context) => GetIt.I<AuthBloc>()..add(AuthCheckStatus()),
           lazy: false,
         ),
-        BlocProvider(
-          create: (context) => GetIt.I<CoursePurchasingBloc>(),
-        ),
+        BlocProvider(create: (context) => GetIt.I<CoursePurchasingBloc>()),
       ],
       child: child,
     );

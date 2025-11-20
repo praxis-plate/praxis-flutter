@@ -1,4 +1,6 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:codium/core/services/connectivity_service.dart';
+import 'package:codium/core/services/session_service.dart';
 import 'package:codium/data/datasources/datasources.dart';
 import 'package:codium/data/repositories/ai_repository_impl.dart';
 import 'package:codium/data/repositories/repositories.dart';
@@ -22,18 +24,31 @@ class DependencyInjection {
   void initialize() {
     GetIt.I.registerSingleton(TalkerFlutter.init());
 
+    _registerServices();
     _registerDataSources();
     _registerRepositories();
     _registerUseCases();
     _registerBlocs();
   }
 
+  void _registerServices() {
+    GetIt.I.registerLazySingleton<ConnectivityService>(
+      () => ConnectivityService(),
+    );
+  }
+
   void _registerDataSources() {
     GetIt.I
-      ..registerSingleton<IAuthDataSource>(GoAuthDatasource())
+      ..registerLazySingleton<SessionService>(() => SessionService())
       ..registerSingleton<ICourseDataSource>(GoCourseDatasource())
       ..registerSingleton<IUserDataSource>(GoUserDatasource())
       ..registerLazySingleton<AppDatabase>(() => AppDatabase())
+      ..registerLazySingleton<IAuthDataSource>(
+        () => LocalAuthDataSource(
+          GetIt.I<AppDatabase>(),
+          GetIt.I<SessionService>(),
+        ),
+      )
       ..registerLazySingleton<PdfLocalDataSource>(
         () => PdfLocalDataSource(GetIt.I<AppDatabase>()),
       )
@@ -56,7 +71,10 @@ class DependencyInjection {
         () => CourseRepository(GetIt.I<ICourseDataSource>()),
       )
       ..registerLazySingleton<IUserRepository>(
-        () => UserRepository(GetIt.I<IUserDataSource>()),
+        () => UserRepository(
+          GetIt.I<IUserDataSource>(),
+          GetIt.I<IAuthDataSource>(),
+        ),
       )
       ..registerLazySingleton<IPdfRepository>(
         () => PdfRepositoryImpl(
@@ -74,6 +92,7 @@ class DependencyInjection {
         () => AiRepositoryImpl(
           geminiDataSource: GetIt.I<GeminiDataSource>(),
           searchDataSource: GetIt.I<SearchDataSource>(),
+          connectivityService: GetIt.I<ConnectivityService>(),
         ),
       );
   }
