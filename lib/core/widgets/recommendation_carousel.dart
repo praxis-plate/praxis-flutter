@@ -10,32 +10,27 @@ class RecommendationCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocProvider(
       create: (context) =>
           GetIt.I<MainCarouselBloc>()..add(MainCarouselLoadEvent()),
-      child: 
-
-          BlocBuilder<MainCarouselBloc, MainCarouselState>(
-            builder: (context, state) {
-              return switch (state) {
-                MainCarouselLoadSuccessState() => CourseCarousel(
-                    courseCards: state.courses
-                        .map(
-                          (e) => CourseCard(
-                            course: e,
-                            onPressed: () => context.push('/course/${e.id}'),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                MainCarouselLoadErrorState() => Text(state.message),
-                _ => const Center(child: CircularProgressIndicator()),
-              };
-            },
-          ),
-        
+      child: BlocBuilder<MainCarouselBloc, MainCarouselState>(
+        builder: (context, state) {
+          return switch (state) {
+            MainCarouselLoadSuccessState() => CourseCarousel(
+              courseCards: state.courses
+                  .map(
+                    (e) => CourseCard(
+                      course: e,
+                      onPressed: () => context.push('/course/${e.id}'),
+                    ),
+                  )
+                  .toList(),
+            ),
+            MainCarouselLoadErrorState() => Text(state.message),
+            _ => const Center(child: CircularProgressIndicator()),
+          };
+        },
+      ),
     );
   }
 }
