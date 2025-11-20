@@ -1,4 +1,6 @@
 import 'package:codium/core/exceptions/app_error_extensions.dart';
+import 'package:codium/core/services/connectivity_service.dart';
+import 'package:codium/core/widgets/feedback/offline_indicator.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:codium/features/ai_explanation/widgets/explanation_bottom_sheet.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:codium/features/pdf_reader/widgets/bookmarks_panel.dart';
 import 'package:codium/features/pdf_reader/widgets/text_selection_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pdfx/pdfx.dart';
 
 class PdfReaderScreen extends StatefulWidget {
@@ -25,11 +28,23 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
   Offset _menuPosition = Offset.zero;
   String _selectedText = '';
   double _lastScrollPosition = 0;
+  bool _isConnected = true;
 
   @override
   void initState() {
     super.initState();
     context.read<PdfReaderBloc>().add(OpenPdfEvent(widget.bookId));
+
+    final connectivityService = GetIt.I<ConnectivityService>();
+    _isConnected = connectivityService.isConnected;
+
+    connectivityService.connectivityStream.listen((isConnected) {
+      if (mounted) {
+        setState(() {
+          _isConnected = isConnected;
+        });
+      }
+    });
   }
 
   @override
@@ -148,6 +163,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                 children: [
                   Column(
                     children: [
+                      if (!_isConnected) const OfflineIndicator(),
                       if (state.useLazyLoading)
                         Container(
                           padding: const EdgeInsets.all(8),
@@ -206,6 +222,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                       top: _menuPosition.dy,
                       child: TextSelectionMenu(
                         selectedText: _selectedText,
+                        isOffline: !_isConnected,
                         onExplain: () {
                           context.read<PdfReaderBloc>().add(
                             SelectTextEvent(

@@ -4,12 +4,14 @@ class TextSelectionMenu extends StatelessWidget {
   final String selectedText;
   final VoidCallback onExplain;
   final VoidCallback onDismiss;
+  final bool isOffline;
 
   const TextSelectionMenu({
     super.key,
     required this.selectedText,
     required this.onExplain,
     required this.onDismiss,
+    this.isOffline = false,
   });
 
   @override
@@ -28,9 +30,12 @@ class TextSelectionMenu extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: const Icon(Icons.lightbulb_outline),
-              tooltip: 'Explain',
-              onPressed: onExplain,
+              icon: Icon(
+                Icons.lightbulb_outline,
+                color: isOffline ? Colors.grey : null,
+              ),
+              tooltip: isOffline ? 'Offline - AI features disabled' : 'Explain',
+              onPressed: isOffline ? null : onExplain,
             ),
             const SizedBox(width: 4),
             IconButton(
