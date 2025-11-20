@@ -44,3 +44,12 @@ class AddBookmarkEvent extends PdfReaderEvent {
   @override
   List<Object?> get props => [pageNumber, note];
 }
+
+class SaveScrollPositionEvent extends PdfReaderEvent {
+  final double scrollPosition;
+
+  const SaveScrollPositionEvent(this.scrollPosition);
+
+  @override
+  List<Object?> get props => [scrollPosition];
+}
