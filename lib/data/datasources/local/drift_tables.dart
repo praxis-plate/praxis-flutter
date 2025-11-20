@@ -42,3 +42,14 @@ class Explanations extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+@DataClassName('UserEntity')
+class Users extends Table {
+  TextColumn get id => text()();
+  TextColumn get email => text().unique()();
+  TextColumn get passwordHash => text()();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
