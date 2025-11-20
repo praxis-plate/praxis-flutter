@@ -23,7 +23,7 @@ class SignInScreen extends StatelessWidget {
           }
         },
         child: Scaffold(
-          appBar: AppBar(backgroundColor: Colors.black),
+          appBar: AppBar(),
           body: SafeArea(
             child: GestureDetector(
               onTap: FocusScope.of(context).unfocus,

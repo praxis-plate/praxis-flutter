@@ -142,10 +142,10 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.error_outline,
                       size: 64,
-                      color: Colors.red,
+                      color: Theme.of(context).colorScheme.error,
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -167,21 +167,23 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                       if (state.useLazyLoading)
                         Container(
                           padding: const EdgeInsets.all(8),
-                          color: Colors.blue.withOpacity(0.1),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.1),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
                                 Icons.speed,
                                 size: 16,
-                                color: Colors.blue[700],
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 'Lazy loading enabled for large PDF',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.blue[700],
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                             ],
@@ -286,13 +288,16 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
   Widget _buildPageIndicator(PdfReaderLoadedState state) {
     return Container(
       padding: const EdgeInsets.all(16),
-      color: Colors.black87,
+      color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             'Page ${state.currentPage + 1} of ${state.book.totalPages}',
-            style: const TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontSize: 16,
+            ),
           ),
         ],
       ),
