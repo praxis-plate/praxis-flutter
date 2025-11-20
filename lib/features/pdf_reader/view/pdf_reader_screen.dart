@@ -10,8 +10,9 @@ import 'package:pdfx/pdfx.dart';
 
 class PdfReaderScreen extends StatefulWidget {
   final String bookId;
+  final int? initialPage;
 
-  const PdfReaderScreen({super.key, required this.bookId});
+  const PdfReaderScreen({super.key, required this.bookId, this.initialPage});
 
   @override
   State<PdfReaderScreen> createState() => _PdfReaderScreenState();
@@ -23,7 +24,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
   bool _showTextSelectionMenu = false;
   Offset _menuPosition = Offset.zero;
   String _selectedText = '';
-  double _lastScrollPosition = 0.0;
+  double _lastScrollPosition = 0;
 
   @override
   void initState() {
