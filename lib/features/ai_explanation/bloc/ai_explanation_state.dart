@@ -11,11 +11,15 @@ final class AiExplanationInitialState extends AiExplanationState {}
 
 final class AiExplanationLoadingState extends AiExplanationState {
   final String selectedText;
+  final int? pageNumber;
 
-  const AiExplanationLoadingState({required this.selectedText});
+  const AiExplanationLoadingState({
+    required this.selectedText,
+    this.pageNumber,
+  });
 
   @override
-  List<Object?> get props => [selectedText];
+  List<Object?> get props => [selectedText, pageNumber];
 }
 
 final class AiExplanationLoadedState extends AiExplanationState {

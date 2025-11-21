@@ -11,10 +11,9 @@ part 'learning_state.dart';
 class LearningBloc extends Bloc<LearningEvent, LearningState> {
   final GetLearningDataUseCase _getLearningDataUseCase;
 
-  LearningBloc({
-    required GetLearningDataUseCase getLearningDataUseCase,
-  })  : _getLearningDataUseCase = getLearningDataUseCase,
-        super(LearningInitialState()) {
+  LearningBloc({required GetLearningDataUseCase getLearningDataUseCase})
+    : _getLearningDataUseCase = getLearningDataUseCase,
+      super(LearningInitialState()) {
     on<LearningLoadEvent>(_onLoadData);
   }
 
@@ -26,14 +25,14 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
     try {
       final learningData = await _getLearningDataUseCase.execute(event.userId);
 
-      emit(
-        LearningLoadSuccessState(
-          learningData: learningData,
-        ),
-      );
+      emit(LearningLoadSuccessState(learningData: learningData));
     } catch (e) {
-      GetIt.I<Talker>().error('LearningBloc error: ${e.toString()}');
-      emit(LearningLoadErrorState(message: e.toString()));
+      // TODO: переписать с заменой на языковые фразы и использованием handle
+      GetIt.I<Talker>().error('LearningBloc error: $e');
+      final errorMessage = e is Exception
+          ? e.toString().replaceFirst('Exception: ', '')
+          : 'Ошибка загрузки данных';
+      emit(LearningLoadErrorState(message: errorMessage));
     }
   }
 }

@@ -48,7 +48,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navigationMainTitle => 'Main';
 
   @override
+  String get navigationLibraryTitle => 'Library';
+
+  @override
   String get navigationLearningTitle => 'Learning';
+
+  @override
+  String get navigationHistoryTitle => 'History';
 
   @override
   String get navigationProfileTitle => 'Profile';
@@ -213,10 +219,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get libraryTitle => 'PDF Library';
 
   @override
+  String get libraryTabAll => 'All';
+
+  @override
+  String get libraryTabFavorites => 'Favorites';
+
+  @override
   String get libraryNoBooksFound => 'No books found';
 
   @override
   String get libraryNoPdfs => 'No PDFs in library';
+
+  @override
+  String get libraryNoFavorites => 'No favorites yet';
+
+  @override
+  String get libraryAddFavoritesHint => 'Long press on a book to add to favorites';
 
   @override
   String get libraryTapToImport => 'Tap + to import your first PDF';
@@ -284,6 +302,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pdfReaderErrorLoading => 'Error loading PDF';
 
   @override
+  String get pdfReaderErrorOpeningTitle => 'Error Opening PDF';
+
+  @override
+  String get pdfReaderErrorCorrupted => 'The file is corrupted or has an invalid format. Please try re-importing it.';
+
+  @override
+  String get pdfReaderErrorGeneral => 'Failed to open PDF file';
+
+  @override
+  String get pdfReaderBackToLibrary => 'Back to Library';
+
+  @override
+  String get pdfReaderClose => 'Close';
+
+  @override
   String get pdfReaderLazyLoading => 'Lazy loading enabled for large PDF';
 
   @override
@@ -310,6 +343,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfReaderBookmarkAdded => 'Bookmark added';
+
+  @override
+  String get pdfReaderExplainPage => 'Ask AI';
+
+  @override
+  String get pdfReaderExplainPageTitle => 'Ask AI about this page';
+
+  @override
+  String get pdfReaderExplainPageHint => 'Enter text or question to get AI explanation';
+
+  @override
+  String get pdfReaderExplainPageLabel => 'Text or question';
+
+  @override
+  String get pdfReaderExplainPagePlaceholder => 'e.g., What is recursion?';
+
+  @override
+  String get pdfReaderCancel => 'Cancel';
+
+  @override
+  String get pdfReaderExplain => 'Explain';
+
+  @override
+  String get pdfReaderSelectText => 'Select Text to Explain';
+
+  @override
+  String get pdfReaderSelectTextHint => 'Since native text selection is not available, please copy and paste the text you want to explain.';
+
+  @override
+  String get pdfReaderEnterText => 'Enter text';
+
+  @override
+  String get pdfReaderEnterTextPlaceholder => 'Paste or type the text you want to explain...';
+
+  @override
+  String get pdfReaderAskAi => 'Ask AI';
+
+  @override
+  String get pdfReaderAskAiTooltip => 'Tap here to ask AI about any text';
+
+  @override
+  String get pdfReaderPasteFromClipboard => 'Paste from Clipboard';
+
+  @override
+  String get pdfReaderClipboardPreview => 'Clipboard:';
+
+  @override
+  String get pdfReaderNoClipboardContent => 'No text in clipboard';
 
   @override
   String get bookmarksTitle => 'Bookmarks';
@@ -343,6 +424,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get explanationGenerating => 'Generating explanation...';
 
   @override
+  String explanationAnalyzingPage(Object page) {
+    return 'Analyzing text from page $page...';
+  }
+
+  @override
   String explanationSelected(Object text) {
     return 'Selected: \"$text\"';
   }
@@ -357,6 +443,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get explanationNoInternet => 'No Internet Connection';
 
   @override
+  String get explanationNoInternetMessage => 'Please check your internet connection and try again.';
+
+  @override
   String get explanationError => 'Error';
 
   @override
@@ -369,6 +458,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfBookOpen => 'Open';
+
+  @override
+  String pdfBookOpening(Object title) {
+    return 'Opening \"$title\"...';
+  }
 
   @override
   String get pdfBookAddToFavorites => 'Add to favorites';

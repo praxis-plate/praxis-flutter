@@ -20,3 +20,4 @@ export 'purchase_course.dart';
 export 'save_bookmark_usecase.dart';
 export 'search_explanation_history_usecase.dart';
 export 'update_reading_progress_usecase.dart';
+export 'validate_and_open_pdf_usecase.dart';

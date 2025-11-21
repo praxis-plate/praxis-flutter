@@ -92,6 +92,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: _elevatedButtonTheme(palette),
       navigationBarTheme: _navigationBarTheme(palette),
+      tabBarTheme: _tabBarTheme(palette),
       chipTheme: _chipTheme(palette),
       dividerTheme: _dividerTheme(palette),
       listTileTheme: _listTileTheme(palette),
@@ -154,8 +155,10 @@ class AppTheme {
       labelStyle: TextStyle(color: p.onSurface),
       floatingLabelStyle: TextStyle(color: p.primary),
       hintStyle: text.bodyMedium?.copyWith(
-        color: p.onSurface.withValues(alpha: .5),
+        color: p.onSurface.withValues(alpha: 0.4),
       ),
+      prefixIconColor: p.onSurface.withValues(alpha: 0.7),
+      suffixIconColor: p.onSurface.withValues(alpha: 0.7),
     );
   }
 
@@ -174,20 +177,40 @@ class AppTheme {
     final icon = _iconTheme(p);
 
     return NavigationBarThemeData(
-      backgroundColor: p.surface,
+      backgroundColor: p.card,
       elevation: 0,
-      indicatorColor: p.primary,
+      indicatorColor: p.primary.withValues(alpha: 0.2),
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         final selected = states.contains(WidgetState.selected);
         return text.bodySmall?.copyWith(
-          color: selected ? p.primary : p.onCard,
+          color: selected ? p.primary : p.onSurface.withValues(alpha: 0.6),
           fontWeight: selected ? FontWeight.bold : FontWeight.w400,
         );
       }),
       iconTheme: WidgetStateProperty.resolveWith((states) {
         final selected = states.contains(WidgetState.selected);
-        return icon.copyWith(color: selected ? p.primary : icon.color);
+        return icon.copyWith(
+          color: selected ? p.primary : p.onSurface.withValues(alpha: 0.6),
+        );
       }),
+    );
+  }
+
+  static TabBarThemeData _tabBarTheme(AppPalette p) {
+    final text = _textTheme(p);
+
+    return TabBarThemeData(
+      labelColor: p.primary,
+      unselectedLabelColor: p.onSurface.withValues(alpha: 0.6),
+      labelStyle: text.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+      unselectedLabelStyle: text.bodyMedium?.copyWith(
+        fontWeight: FontWeight.normal,
+      ),
+      indicator: UnderlineTabIndicator(
+        borderSide: BorderSide(color: p.primary, width: 3),
+      ),
+      indicatorSize: TabBarIndicatorSize.tab,
+      dividerColor: Colors.transparent,
     );
   }
 

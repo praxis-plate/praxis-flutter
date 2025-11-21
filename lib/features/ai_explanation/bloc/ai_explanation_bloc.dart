@@ -25,7 +25,12 @@ class AiExplanationBloc extends Bloc<AiExplanationEvent, AiExplanationState> {
     RequestExplanationEvent event,
     Emitter<AiExplanationState> emit,
   ) async {
-    emit(AiExplanationLoadingState(selectedText: event.selectedText));
+    emit(
+      AiExplanationLoadingState(
+        selectedText: event.selectedText,
+        pageNumber: event.pageNumber,
+      ),
+    );
 
     try {
       final explanation = await RetryLogic.retry(

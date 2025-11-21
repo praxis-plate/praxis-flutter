@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:codium/core/exceptions/app_exception.dart';
 import 'package:codium/data/datasources/local/bookmark_local_datasource.dart';
 import 'package:codium/data/datasources/local/pdf_local_datasource.dart';
 import 'package:codium/domain/models/pdf_library/pdf_library.dart';
 import 'package:codium/domain/models/pdf_reader/pdf_reader.dart';
 import 'package:codium/domain/repositories/pdf_repository.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pdfx/pdfx.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class PdfRepositoryImpl implements IPdfRepository {
@@ -15,7 +19,22 @@ class PdfRepositoryImpl implements IPdfRepository {
   @override
   Future<List<PdfBook>> getAllBooks() async {
     try {
-      return await _pdfDataSource.getAllBooks();
+      final allBooks = await _pdfDataSource.getAllBooks();
+      final validBooks = <PdfBook>[];
+
+      for (final book in allBooks) {
+        final file = File(book.filePath);
+        if (await file.exists()) {
+          validBooks.add(book);
+        } else {
+          GetIt.I<Talker>().warning(
+            'Book file not found, removing from library: ${book.title} (${book.filePath})',
+          );
+          await _pdfDataSource.deleteBook(book.id);
+        }
+      }
+
+      return validBooks;
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
       throw Exception('Failed to get all books: $e');
@@ -25,7 +44,19 @@ class PdfRepositoryImpl implements IPdfRepository {
   @override
   Future<PdfBook?> getBookById(String id) async {
     try {
-      return await _pdfDataSource.getBookById(id);
+      final book = await _pdfDataSource.getBookById(id);
+      if (book == null) return null;
+
+      final file = File(book.filePath);
+      if (!await file.exists()) {
+        GetIt.I<Talker>().warning(
+          'Book file not found, removing from library: ${book.title} (${book.filePath})',
+        );
+        await _pdfDataSource.deleteBook(book.id);
+        return null;
+      }
+
+      return book;
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
       throw Exception('Failed to get book by id: $e');
@@ -35,16 +66,34 @@ class PdfRepositoryImpl implements IPdfRepository {
   @override
   Future<void> importPdf(String filePath) async {
     try {
+      final document = await PdfDocument.openFile(filePath);
+      final totalPages = document.pagesCount;
+      await document.close();
+
       final book = PdfBook(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         title: _extractTitleFromPath(filePath),
         filePath: filePath,
-        totalPages: 0,
+        totalPages: totalPages,
       );
       await _pdfDataSource.insertBook(book);
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
+      if (e.toString().contains('Invalid PDF format') ||
+          e.toString().contains('RENDER_ERROR')) {
+        throw const FileSystemError.corrupted();
+      }
       throw Exception('Failed to import PDF: $e');
+    }
+  }
+
+  @override
+  Future<void> updateBook(PdfBook book) async {
+    try {
+      await _pdfDataSource.updateBook(book);
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      throw Exception('Failed to update book: $e');
     }
   }
 

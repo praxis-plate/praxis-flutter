@@ -1,5 +1,5 @@
+import 'package:codium/core/widgets/common_search_bar.dart';
 import 'package:codium/core/widgets/course_card.dart';
-import 'package:codium/core/widgets/course_search_bar.dart';
 import 'package:codium/core/widgets/dumb/section.dart';
 import 'package:codium/core/widgets/smart/user_balance_card.dart';
 import 'package:codium/core/widgets/user_provider.dart';
@@ -23,8 +23,9 @@ class MainScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GetIt.I<UserStatisticsBloc>()
-            ..add(UserStatisticsLoadEvent(userId: user.id)),
+          create: (context) =>
+              GetIt.I<UserStatisticsBloc>()
+                ..add(UserStatisticsLoadEvent(userId: user.id)),
         ),
         BlocProvider(
           create: (context) => GetIt.I<MainBloc>()..add(MainLoadCoursesEvent()),
@@ -46,10 +47,7 @@ class _MainScreenContent extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          S.of(context).mainTitle,
-          style: theme.textTheme.titleLarge,
-        ),
+        title: Text(S.of(context).mainTitle, style: theme.textTheme.titleLarge),
       ),
       body: _MainScreenBody(user: user),
     );
@@ -68,10 +66,7 @@ class _MainScreenBody extends StatelessWidget {
     return Wrapper(
       child: ListView(
         children: [
-          Section(
-            title: s.balance,
-            widget: const UserBalanceCard(),
-          ),
+          Section(title: s.balance, widget: const UserBalanceCard()),
           const SizedBox(height: 8),
           const _CoursesSection(),
         ],
@@ -90,31 +85,36 @@ class _CoursesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          S.of(context).courses,
-          style: theme.textTheme.titleSmall,
-        ),
+        Text(S.of(context).courses, style: theme.textTheme.titleSmall),
         const SizedBox(height: 8),
-        const CourseSearchBar(),
+        CommonSearchBar(
+          hintText: S.of(context).searchCourse,
+          onChanged: (value) {
+            context.read<MainBloc>().add(SearchCoursesEvent(value));
+          },
+          onClear: () {
+            context.read<MainBloc>().add(const SearchCoursesEvent(''));
+          },
+        ),
         const SizedBox(height: 16),
         BlocBuilder<MainBloc, MainState>(
           builder: (context, state) {
             return switch (state) {
               MainCoursesLoadSuccessState() => ListView(
-                  physics: const ClampingScrollPhysics(),
-                  shrinkWrap: true,
-                  children: state.courses
-                      .map(
-                        (e) => Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: CourseCard(
-                            course: e,
-                            onPressed: () => context.push('/course/${e.id}'),
-                          ),
+                physics: const ClampingScrollPhysics(),
+                shrinkWrap: true,
+                children: state.filteredCourses
+                    .map(
+                      (e) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: CourseCard(
+                          course: e,
+                          onPressed: () => context.push('/course/${e.id}'),
                         ),
-                      )
-                      .toList(),
-                ),
+                      ),
+                    )
+                    .toList(),
+              ),
               MainCoursesLoadErrorState() => Text(state.message),
               _ => const Center(child: CircularProgressIndicator()),
             };

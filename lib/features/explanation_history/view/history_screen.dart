@@ -1,7 +1,9 @@
 import 'package:codium/core/exceptions/app_error_extensions.dart';
+import 'package:codium/core/widgets/common_search_bar.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/repositories/pdf_repository.dart';
 import 'package:codium/features/explanation_history/bloc/explanation_history_bloc.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -29,11 +31,29 @@ class _HistoryScreenContent extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Explanation History', style: theme.textTheme.titleLarge),
+        title: Text(
+          S.of(context).historyTitle,
+          style: theme.textTheme.titleLarge,
+        ),
       ),
       body: Column(
         children: [
-          Padding(padding: const EdgeInsets.all(16), child: _SearchBar()),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: CommonSearchBar(
+              hintText: S.of(context).historySearchHint,
+              onChanged: (value) {
+                context.read<ExplanationHistoryBloc>().add(
+                  SearchHistoryEvent(value),
+                );
+              },
+              onClear: () {
+                context.read<ExplanationHistoryBloc>().add(
+                  const SearchHistoryEvent(''),
+                );
+              },
+            ),
+          ),
           Expanded(
             child: BlocBuilder<ExplanationHistoryBloc, ExplanationHistoryState>(
               builder: (context, state) {
@@ -95,7 +115,9 @@ class _HistoryScreenContent extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            isSearching ? 'No explanations found' : 'No explanation history',
+            isSearching
+                ? S.of(context).historyNoExplanationsFound
+                : S.of(context).historyNoHistory,
             style: theme.textTheme.titleMedium?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
@@ -103,7 +125,7 @@ class _HistoryScreenContent extends StatelessWidget {
           const SizedBox(height: 8),
           if (!isSearching)
             Text(
-              'Start reading and ask for explanations',
+              S.of(context).historyStartReading,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
               ),
@@ -127,7 +149,10 @@ class _HistoryScreenContent extends StatelessWidget {
         children: [
           Icon(Icons.error_outline, size: 64, color: theme.colorScheme.error),
           const SizedBox(height: 16),
-          Text('Error loading history', style: theme.textTheme.titleMedium),
+          Text(
+            S.of(context).historyErrorLoading,
+            style: theme.textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           Text(
             errorMessage,
@@ -141,51 +166,10 @@ class _HistoryScreenContent extends StatelessWidget {
             onPressed: () {
               context.read<ExplanationHistoryBloc>().add(LoadHistoryEvent());
             },
-            child: const Text('Retry'),
+            child: Text(S.of(context).historyRetry),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SearchBar extends StatefulWidget {
-  @override
-  State<_SearchBar> createState() => _SearchBarState();
-}
-
-class _SearchBarState extends State<_SearchBar> {
-  final _controller = TextEditingController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      decoration: InputDecoration(
-        hintText: 'Search explanations...',
-        prefixIcon: const Icon(Icons.search),
-        suffixIcon: _controller.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  _controller.clear();
-                  context.read<ExplanationHistoryBloc>().add(
-                    const SearchHistoryEvent(''),
-                  );
-                },
-              )
-            : null,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      onChanged: (value) {
-        context.read<ExplanationHistoryBloc>().add(SearchHistoryEvent(value));
-      },
     );
   }
 }
@@ -216,14 +200,14 @@ class _PdfGroupCardState extends State<_PdfGroupCard> {
       final book = await pdfRepository.getBookById(widget.pdfId);
       if (mounted) {
         setState(() {
-          _pdfTitle = book?.title ?? 'Unknown PDF';
+          _pdfTitle = book?.title;
           _isLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _pdfTitle = 'Unknown PDF';
+          _pdfTitle = null;
           _isLoading = false;
         });
       }
@@ -253,14 +237,14 @@ class _PdfGroupCardState extends State<_PdfGroupCard> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : Text(
-                          _pdfTitle ?? 'Unknown PDF',
+                          _pdfTitle ?? S.of(context).historyUnknownPdf,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                 ),
                 Text(
-                  '${widget.explanations.length} ${widget.explanations.length == 1 ? 'explanation' : 'explanations'}',
+                  '${widget.explanations.length} ${widget.explanations.length == 1 ? S.of(context).historyExplanation : S.of(context).historyExplanations}',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
@@ -337,7 +321,7 @@ class _ExplanationItem extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Text(
-                'Page ${explanation.pageNumber}',
+                S.of(context).bookmarksPage(explanation.pageNumber),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
@@ -358,14 +342,12 @@ class _ExplanationItem extends StatelessWidget {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete Explanation'),
-        content: const Text(
-          'Are you sure you want to delete this explanation from history?',
-        ),
+        title: Text(S.of(context).historyDeleteTitle),
+        content: Text(S.of(context).historyDeleteMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
+            child: Text(S.of(context).historyDeleteCancel),
           ),
           TextButton(
             onPressed: () {
@@ -374,7 +356,7 @@ class _ExplanationItem extends StatelessWidget {
               );
               Navigator.of(dialogContext).pop();
             },
-            child: const Text('Delete'),
+            child: Text(S.of(context).historyDeleteConfirm),
           ),
         ],
       ),
@@ -382,13 +364,12 @@ class _ExplanationItem extends StatelessWidget {
   }
 
   void _navigateToPdfLocation(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Navigate to ${explanation.selectedText} on page ${explanation.pageNumber}',
-        ),
-        duration: const Duration(seconds: 2),
-      ),
+    Navigator.of(context).pushNamed(
+      '/pdf-reader',
+      arguments: {
+        'bookId': explanation.pdfBookId,
+        'initialPage': explanation.pageNumber,
+      },
     );
   }
 }

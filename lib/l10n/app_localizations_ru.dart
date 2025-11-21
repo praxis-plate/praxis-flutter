@@ -48,7 +48,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navigationMainTitle => 'Обзор';
 
   @override
+  String get navigationLibraryTitle => 'Библиотека';
+
+  @override
   String get navigationLearningTitle => 'Прохожу';
+
+  @override
+  String get navigationHistoryTitle => 'История';
 
   @override
   String get navigationProfileTitle => 'Профиль';
@@ -213,10 +219,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get libraryTitle => 'Библиотека PDF';
 
   @override
+  String get libraryTabAll => 'Все';
+
+  @override
+  String get libraryTabFavorites => 'Избранное';
+
+  @override
   String get libraryNoBooksFound => 'Книги не найдены';
 
   @override
   String get libraryNoPdfs => 'Нет PDF в библиотеке';
+
+  @override
+  String get libraryNoFavorites => 'Пока нет избранного';
+
+  @override
+  String get libraryAddFavoritesHint => 'Долгое нажатие на книгу, чтобы добавить в избранное';
 
   @override
   String get libraryTapToImport => 'Нажмите +, чтобы импортировать первый PDF';
@@ -284,6 +302,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get pdfReaderErrorLoading => 'Ошибка загрузки PDF';
 
   @override
+  String get pdfReaderErrorOpeningTitle => 'Ошибка открытия PDF';
+
+  @override
+  String get pdfReaderErrorCorrupted => 'Файл поврежден или имеет неверный формат. Попробуйте импортировать его заново.';
+
+  @override
+  String get pdfReaderErrorGeneral => 'Не удалось открыть PDF файл';
+
+  @override
+  String get pdfReaderBackToLibrary => 'Вернуться к библиотеке';
+
+  @override
+  String get pdfReaderClose => 'Закрыть';
+
+  @override
   String get pdfReaderLazyLoading => 'Включена ленивая загрузка для большого PDF';
 
   @override
@@ -310,6 +343,54 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get pdfReaderBookmarkAdded => 'Закладка добавлена';
+
+  @override
+  String get pdfReaderExplainPage => 'Спросить AI';
+
+  @override
+  String get pdfReaderExplainPageTitle => 'Спросить AI об этой странице';
+
+  @override
+  String get pdfReaderExplainPageHint => 'Введите текст или вопрос для получения объяснения AI';
+
+  @override
+  String get pdfReaderExplainPageLabel => 'Текст или вопрос';
+
+  @override
+  String get pdfReaderExplainPagePlaceholder => 'например, Что такое рекурсия?';
+
+  @override
+  String get pdfReaderCancel => 'Отмена';
+
+  @override
+  String get pdfReaderExplain => 'Объяснить';
+
+  @override
+  String get pdfReaderSelectText => 'Выберите текст для объяснения';
+
+  @override
+  String get pdfReaderSelectTextHint => 'Поскольку нативное выделение текста недоступно, пожалуйста, скопируйте и вставьте текст, который хотите объяснить.';
+
+  @override
+  String get pdfReaderEnterText => 'Введите текст';
+
+  @override
+  String get pdfReaderEnterTextPlaceholder => 'Вставьте или введите текст для объяснения...';
+
+  @override
+  String get pdfReaderAskAi => 'Спросить AI';
+
+  @override
+  String get pdfReaderAskAiTooltip => 'Нажмите здесь, чтобы спросить AI о любом тексте';
+
+  @override
+  String get pdfReaderPasteFromClipboard => 'Вставить из буфера обмена';
+
+  @override
+  String get pdfReaderClipboardPreview => 'Буфер обмена:';
+
+  @override
+  String get pdfReaderNoClipboardContent => 'Нет текста в буфере обмена';
 
   @override
   String get bookmarksTitle => 'Закладки';
@@ -343,6 +424,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get explanationGenerating => 'Генерация объяснения...';
 
   @override
+  String explanationAnalyzingPage(Object page) {
+    return 'Анализ текста со страницы $page...';
+  }
+
+  @override
   String explanationSelected(Object text) {
     return 'Выбрано: \"$text\"';
   }
@@ -357,6 +443,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get explanationNoInternet => 'Нет подключения к интернету';
 
   @override
+  String get explanationNoInternetMessage => 'Пожалуйста, проверьте подключение к интернету и попробуйте снова.';
+
+  @override
   String get explanationError => 'Ошибка';
 
   @override
@@ -369,6 +458,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get pdfBookOpen => 'Открыть';
+
+  @override
+  String pdfBookOpening(Object title) {
+    return 'Открытие \"$title\"...';
+  }
 
   @override
   String get pdfBookAddToFavorites => 'Добавить в избранное';

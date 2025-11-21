@@ -10,9 +10,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   final GetCoursesUseCase _getCoursesUseCase;
 
   MainBloc({required GetCoursesUseCase getCoursesUseCase})
-      : _getCoursesUseCase = getCoursesUseCase,
-        super(MainCoursesInitialState()) {
+    : _getCoursesUseCase = getCoursesUseCase,
+      super(MainCoursesInitialState()) {
     on<MainLoadCoursesEvent>(_onLoadCourses);
+    on<SearchCoursesEvent>(_onSearchCourses);
   }
 
   Future<void> _onLoadCourses(
@@ -25,6 +26,31 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       emit(MainCoursesLoadSuccessState(courses));
     } catch (e) {
       emit(MainCoursesLoadErrorState(e.toString()));
+    }
+  }
+
+  void _onSearchCourses(SearchCoursesEvent event, Emitter<MainState> emit) {
+    if (state is MainCoursesLoadSuccessState) {
+      final currentState = state as MainCoursesLoadSuccessState;
+      final query = event.query.toLowerCase();
+
+      if (query.isEmpty) {
+        emit(
+          currentState.copyWith(
+            filteredCourses: currentState.courses,
+            searchQuery: '',
+          ),
+        );
+      } else {
+        final filtered = currentState.courses.where((course) {
+          return course.title.toLowerCase().contains(query) ||
+              course.description.toLowerCase().contains(query);
+        }).toList();
+
+        emit(
+          currentState.copyWith(filteredCourses: filtered, searchQuery: query),
+        );
+      }
     }
   }
 }

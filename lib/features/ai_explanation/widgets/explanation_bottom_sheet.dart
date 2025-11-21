@@ -1,3 +1,4 @@
+import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_error_extensions.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
@@ -52,6 +53,8 @@ class ExplanationBottomSheet extends StatelessWidget {
   }
 
   Widget _buildLoading(BuildContext context, AiExplanationLoadingState state) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -60,16 +63,16 @@ class ExplanationBottomSheet extends StatelessWidget {
           const CircularProgressIndicator(),
           const SizedBox(height: 16),
           Text(
-            'Generating explanation...',
-            style: Theme.of(context).textTheme.titleMedium,
+            state.pageNumber != null
+                ? 'Analyzing text from page ${state.pageNumber! + 1}...'
+                : 'Generating explanation...',
+            style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
           Text(
             'Selected: "${state.selectedText}"',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(
-                context,
-              ).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -82,6 +85,7 @@ class ExplanationBottomSheet extends StatelessWidget {
 
   Widget _buildLoaded(BuildContext context, AiExplanationLoadedState state) {
     final explanation = state.explanation;
+    // TODO: Вынести Theme.of в переменную theme
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -97,14 +101,37 @@ class ExplanationBottomSheet extends StatelessWidget {
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text(
-              '"${explanation.selectedText}"',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontStyle: FontStyle.italic,
-                color: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.color?.withValues(alpha: 0.8),
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '"${explanation.selectedText}"',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.color?.withValues(alpha: 0.8),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.bookmark_outline,
+                      size: 14,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Page ${explanation.pageNumber + 1}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 16),
@@ -197,8 +224,18 @@ class ExplanationBottomSheet extends StatelessWidget {
   }
 
   Widget _buildError(BuildContext context, AiExplanationErrorState state) {
+    final theme = Theme.of(context);
     final errorMessage =
         state.message ?? state.errorCode.localizedMessage(context);
+
+    String actionableMessage = errorMessage;
+    if (state.isOffline) {
+      actionableMessage =
+          'Please check your internet connection and try again.';
+    } else if (state.errorCode == AppErrorCode.rateLimitExceeded) {
+      actionableMessage =
+          'API rate limit exceeded. Please wait a moment and try again.';
+    }
 
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -208,19 +245,19 @@ class ExplanationBottomSheet extends StatelessWidget {
           Icon(
             state.isOffline ? Icons.wifi_off : Icons.error_outline,
             size: 48,
-            color: Theme.of(context).colorScheme.error,
+            color: theme.colorScheme.error,
           ),
           const SizedBox(height: 16),
           Text(
             state.isOffline ? 'No Internet Connection' : 'Error',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).colorScheme.error,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.error,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            errorMessage,
-            style: Theme.of(context).textTheme.bodyMedium,
+            actionableMessage,
+            style: theme.textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
           if (state.canRetry) ...[

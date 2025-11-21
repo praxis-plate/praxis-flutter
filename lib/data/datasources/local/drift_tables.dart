@@ -53,3 +53,17 @@ class Users extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+@DataClassName('UserStatisticsEntity')
+class UserStatisticsTable extends Table {
+  TextColumn get userId =>
+      text().references(Users, #id, onDelete: KeyAction.cascade)();
+  IntColumn get currentStreak => integer().withDefault(const Constant(0))();
+  IntColumn get maxStreak => integer().withDefault(const Constant(0))();
+  IntColumn get points => integer().withDefault(const Constant(0))();
+  DateTimeColumn get lastActiveDate => dateTime()();
+  TextColumn get coursesJson => text()();
+
+  @override
+  Set<Column> get primaryKey => {userId};
+}

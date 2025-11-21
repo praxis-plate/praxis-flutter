@@ -1,8 +1,9 @@
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
-import 'package:codium/generated/l10n.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class PdfBookCard extends StatelessWidget {
   final PdfBook book;
@@ -14,6 +15,7 @@ class PdfBookCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return GestureDetector(
+      onTap: () => _openBook(context),
       onLongPress: () => _showContextMenu(context),
       child: Card(
         elevation: 2,
@@ -109,57 +111,68 @@ class PdfBookCard extends StatelessWidget {
     );
   }
 
+  void _openBook(BuildContext context) {
+    context.push('/pdf/${book.id}');
+  }
+
   void _showContextMenu(BuildContext context) {
+    final localizations = S.of(context);
+    final theme = Theme.of(context);
+
     showModalBottomSheet(
       context: context,
       builder: (bottomSheetContext) {
         return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.open_in_new),
-                title: Text(S.of(context).pdfBookOpen),
-                onTap: () {
-                  Navigator.pop(bottomSheetContext);
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  book.isFavorite ? Icons.favorite : Icons.favorite_border,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.open_in_new),
+                  title: Text(localizations.pdfBookOpen),
+                  onTap: () {
+                    Navigator.pop(bottomSheetContext);
+                    _openBook(context);
+                  },
                 ),
-                title: Text(
-                  book.isFavorite
-                      ? S.of(context).pdfBookRemoveFromFavorites
-                      : S.of(context).pdfBookAddToFavorites,
+                ListTile(
+                  leading: Icon(
+                    book.isFavorite ? Icons.favorite : Icons.favorite_border,
+                  ),
+                  title: Text(
+                    book.isFavorite
+                        ? localizations.pdfBookRemoveFromFavorites
+                        : localizations.pdfBookAddToFavorites,
+                  ),
+                  onTap: () {
+                    Navigator.pop(bottomSheetContext);
+                    context.read<LibraryBloc>().add(
+                      ToggleFavoriteEvent(book.id),
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.pop(bottomSheetContext);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.edit),
-                title: Text(S.of(context).pdfBookRename),
-                onTap: () {
-                  Navigator.pop(bottomSheetContext);
-                  _showRenameDialog(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.delete,
-                  color: Theme.of(context).colorScheme.error,
+                ListTile(
+                  leading: const Icon(Icons.edit),
+                  title: Text(localizations.pdfBookRename),
+                  onTap: () {
+                    Navigator.pop(bottomSheetContext);
+                    _showRenameDialog(context);
+                  },
                 ),
-                title: Text(
-                  S.of(context).pdfBookDelete,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ListTile(
+                  leading: Icon(Icons.delete, color: theme.colorScheme.error),
+                  title: Text(
+                    localizations.pdfBookDelete,
+                    style: TextStyle(color: theme.colorScheme.error),
+                  ),
+                  onTap: () {
+                    Navigator.pop(bottomSheetContext);
+                    _showDeleteConfirmation(context);
+                  },
                 ),
-                onTap: () {
-                  Navigator.pop(bottomSheetContext);
-                  _showDeleteConfirmation(context);
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -168,12 +181,13 @@ class PdfBookCard extends StatelessWidget {
 
   void _showRenameDialog(BuildContext context) {
     final controller = TextEditingController(text: book.title);
+    final localizations = S.of(context);
 
     showDialog(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(S.of(context).pdfBookRenameTitle),
+          title: Text(localizations.pdfBookRenameTitle),
           content: TextField(
             controller: controller,
             decoration: const InputDecoration(
@@ -185,13 +199,13 @@ class PdfBookCard extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: Text(S.of(context).pdfBookRenameCancel),
+              child: Text(localizations.pdfBookRenameCancel),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(dialogContext);
               },
-              child: Text(S.of(context).pdfBookRenameSave),
+              child: Text(localizations.pdfBookRenameSave),
             ),
           ],
         );
@@ -200,16 +214,19 @@ class PdfBookCard extends StatelessWidget {
   }
 
   void _showDeleteConfirmation(BuildContext context) {
+    final localizations = S.of(context);
+    final theme = Theme.of(context);
+
     showDialog(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(S.of(context).pdfBookDeleteTitle),
-          content: Text(S.of(context).pdfBookDeleteMessage(book.title)),
+          title: Text(localizations.pdfBookDeleteTitle),
+          content: Text(localizations.pdfBookDeleteMessage(book.title)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: Text(S.of(context).pdfBookDeleteCancel),
+              child: Text(localizations.pdfBookDeleteCancel),
             ),
             TextButton(
               onPressed: () {
@@ -217,9 +234,9 @@ class PdfBookCard extends StatelessWidget {
                 Navigator.pop(dialogContext);
               },
               style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor: theme.colorScheme.error,
               ),
-              child: Text(S.of(context).pdfBookDeleteConfirm),
+              child: Text(localizations.pdfBookDeleteConfirm),
             ),
           ],
         );
