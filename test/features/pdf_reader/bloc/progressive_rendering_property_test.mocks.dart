@@ -5,16 +5,16 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:codium/domain/models/pdf_library/pdf_book.dart' as _i4;
-import 'package:codium/domain/models/pdf_reader/bookmark.dart' as _i7;
-import 'package:codium/domain/usecases/get_pdf_book_by_id_usecase.dart' as _i2;
-import 'package:codium/domain/usecases/save_bookmark_usecase.dart' as _i6;
+import 'package:codium/domain/models/pdf_reader/bookmark.dart' as _i6;
+import 'package:codium/domain/usecases/save_bookmark_usecase.dart' as _i5;
 import 'package:codium/domain/usecases/update_reading_progress_usecase.dart'
-    as _i5;
+    as _i4;
+import 'package:codium/domain/usecases/validate_and_open_pdf_usecase.dart'
+    as _i2;
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart'
-    as _i8;
+    as _i7;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:pdfx/pdfx.dart' as _i9;
+import 'package:pdfx/pdfx.dart' as _i8;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -31,29 +31,40 @@ import 'package:pdfx/pdfx.dart' as _i9;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-/// A class which mocks [GetPdfBookByIdUseCase].
+class _FakeValidatedPdfResult_0 extends _i1.SmartFake
+    implements _i2.ValidatedPdfResult {
+  _FakeValidatedPdfResult_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+/// A class which mocks [ValidateAndOpenPdfUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGetPdfBookByIdUseCase extends _i1.Mock
-    implements _i2.GetPdfBookByIdUseCase {
-  MockGetPdfBookByIdUseCase() {
+class MockValidateAndOpenPdfUseCase extends _i1.Mock
+    implements _i2.ValidateAndOpenPdfUseCase {
+  MockValidateAndOpenPdfUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<_i4.PdfBook?> execute(String? bookId) =>
+  _i3.Future<_i2.ValidatedPdfResult> execute(String? bookId) =>
       (super.noSuchMethod(
             Invocation.method(#execute, [bookId]),
-            returnValue: _i3.Future<_i4.PdfBook?>.value(),
+            returnValue: _i3.Future<_i2.ValidatedPdfResult>.value(
+              _FakeValidatedPdfResult_0(
+                this,
+                Invocation.method(#execute, [bookId]),
+              ),
+            ),
           )
-          as _i3.Future<_i4.PdfBook?>);
+          as _i3.Future<_i2.ValidatedPdfResult>);
 }
 
 /// A class which mocks [UpdateReadingProgressUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockUpdateReadingProgressUseCase extends _i1.Mock
-    implements _i5.UpdateReadingProgressUseCase {
+    implements _i4.UpdateReadingProgressUseCase {
   MockUpdateReadingProgressUseCase() {
     _i1.throwOnMissingStub(this);
   }
@@ -78,13 +89,13 @@ class MockUpdateReadingProgressUseCase extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSaveBookmarkUseCase extends _i1.Mock
-    implements _i6.SaveBookmarkUseCase {
+    implements _i5.SaveBookmarkUseCase {
   MockSaveBookmarkUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<void> execute(_i7.Bookmark? bookmark) =>
+  _i3.Future<void> execute(_i6.Bookmark? bookmark) =>
       (super.noSuchMethod(
             Invocation.method(#execute, [bookmark]),
             returnValue: _i3.Future<void>.value(),
@@ -96,18 +107,18 @@ class MockSaveBookmarkUseCase extends _i1.Mock
 /// A class which mocks [PdfCacheService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPdfCacheService extends _i1.Mock implements _i8.PdfCacheService {
+class MockPdfCacheService extends _i1.Mock implements _i7.PdfCacheService {
   MockPdfCacheService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i9.PdfPageImage? getCachedPage(int? pageNumber) =>
+  _i8.PdfPageImage? getCachedPage(int? pageNumber) =>
       (super.noSuchMethod(Invocation.method(#getCachedPage, [pageNumber]))
-          as _i9.PdfPageImage?);
+          as _i8.PdfPageImage?);
 
   @override
-  void cachePage(int? pageNumber, _i9.PdfPageImage? pageImage) =>
+  void cachePage(int? pageNumber, _i8.PdfPageImage? pageImage) =>
       super.noSuchMethod(
         Invocation.method(#cachePage, [pageNumber, pageImage]),
         returnValueForMissingStub: null,

@@ -35,3 +35,12 @@ class SearchLibraryEvent extends LibraryEvent {
   @override
   List<Object> get props => [query];
 }
+
+class ToggleFavoriteEvent extends LibraryEvent {
+  final String bookId;
+
+  const ToggleFavoriteEvent(this.bookId);
+
+  @override
+  List<Object> get props => [bookId];
+}

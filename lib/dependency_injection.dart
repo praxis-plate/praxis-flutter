@@ -58,6 +58,12 @@ class DependencyInjection {
       ..registerLazySingleton<ExplanationLocalDataSource>(
         () => ExplanationLocalDataSource(GetIt.I<AppDatabase>()),
       )
+      ..registerLazySingleton<IUserStatisticsLocalDataSource>(
+        () => UserStatisticsLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<IUserStatisticsDataSource>(
+        () => UserStatisticsRemoteDataSource(),
+      )
       ..registerLazySingleton<GeminiDataSource>(() => GeminiDataSource())
       ..registerLazySingleton<SearchDataSource>(() => SearchDataSource());
   }
@@ -74,6 +80,12 @@ class DependencyInjection {
         () => UserRepository(
           GetIt.I<IUserDataSource>(),
           GetIt.I<IAuthDataSource>(),
+        ),
+      )
+      ..registerLazySingleton<IUserStatisticsRepository>(
+        () => UserStatisticsRepository(
+          localDataSource: GetIt.I<IUserStatisticsLocalDataSource>(),
+          remoteDataSource: GetIt.I<IUserStatisticsDataSource>(),
         ),
       )
       ..registerLazySingleton<IPdfRepository>(
@@ -137,6 +149,9 @@ class DependencyInjection {
       ..registerFactory(() => GetPdfListUseCase(GetIt.I<IPdfRepository>()))
       ..registerFactory(() => ImportPdfUseCase(GetIt.I<IPdfRepository>()))
       ..registerFactory(() => GetPdfBookByIdUseCase(GetIt.I<IPdfRepository>()))
+      ..registerFactory(
+        () => ValidateAndOpenPdfUseCase(GetIt.I<IPdfRepository>()),
+      )
       ..registerFactory(
         () => UpdateReadingProgressUseCase(GetIt.I<IPdfRepository>()),
       )
@@ -217,7 +232,7 @@ class DependencyInjection {
       )
       ..registerFactory(
         () => PdfReaderBloc(
-          getPdfBookByIdUseCase: GetIt.I<GetPdfBookByIdUseCase>(),
+          validateAndOpenPdfUseCase: GetIt.I<ValidateAndOpenPdfUseCase>(),
           updateReadingProgressUseCase: GetIt.I<UpdateReadingProgressUseCase>(),
           saveBookmarkUseCase: GetIt.I<SaveBookmarkUseCase>(),
         ),

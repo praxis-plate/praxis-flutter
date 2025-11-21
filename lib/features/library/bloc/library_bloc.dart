@@ -30,6 +30,7 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     on<ImportPdfEvent>(_onImportPdf);
     on<DeletePdfEvent>(_onDeletePdf);
     on<SearchLibraryEvent>(_onSearchLibrary);
+    on<ToggleFavoriteEvent>(_onToggleFavorite);
   }
 
   Future<void> _onLoadLibrary(
@@ -129,6 +130,30 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
           ),
         );
       }
+    }
+  }
+
+  Future<void> _onToggleFavorite(
+    ToggleFavoriteEvent event,
+    Emitter<LibraryState> emit,
+  ) async {
+    try {
+      final book = await _pdfRepository.getBookById(event.bookId);
+      if (book != null) {
+        final updatedBook = book.copyWith(isFavorite: !book.isFavorite);
+        await _pdfRepository.updateBook(updatedBook);
+        add(LoadLibraryEvent());
+      }
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      final error = e is AppError ? e : const UnknownError();
+      emit(
+        LibraryErrorState(
+          errorCode: error.code,
+          message: error.message,
+          canRetry: error.canRetry,
+        ),
+      );
     }
   }
 }

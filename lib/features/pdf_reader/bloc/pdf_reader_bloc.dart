@@ -1,11 +1,12 @@
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_exception.dart';
+import 'package:codium/core/utils/pdf_validator.dart';
 import 'package:codium/core/utils/retry_logic.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/domain/models/pdf_reader/bookmark.dart';
-import 'package:codium/domain/usecases/get_pdf_book_by_id_usecase.dart';
 import 'package:codium/domain/usecases/save_bookmark_usecase.dart';
 import 'package:codium/domain/usecases/update_reading_progress_usecase.dart';
+import 'package:codium/domain/usecases/validate_and_open_pdf_usecase.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_rendering_config.dart';
 import 'package:equatable/equatable.dart';
@@ -18,19 +19,19 @@ part 'pdf_reader_event.dart';
 part 'pdf_reader_state.dart';
 
 class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
-  final GetPdfBookByIdUseCase _getPdfBookByIdUseCase;
+  final ValidateAndOpenPdfUseCase _validateAndOpenPdfUseCase;
   final UpdateReadingProgressUseCase _updateReadingProgressUseCase;
   final SaveBookmarkUseCase _saveBookmarkUseCase;
   final PdfCacheService _cacheService;
   final PdfRenderingConfig _renderingConfig;
 
   PdfReaderBloc({
-    required GetPdfBookByIdUseCase getPdfBookByIdUseCase,
+    required ValidateAndOpenPdfUseCase validateAndOpenPdfUseCase,
     required UpdateReadingProgressUseCase updateReadingProgressUseCase,
     required SaveBookmarkUseCase saveBookmarkUseCase,
     PdfCacheService? cacheService,
     PdfRenderingConfig? renderingConfig,
-  }) : _getPdfBookByIdUseCase = getPdfBookByIdUseCase,
+  }) : _validateAndOpenPdfUseCase = validateAndOpenPdfUseCase,
        _updateReadingProgressUseCase = updateReadingProgressUseCase,
        _saveBookmarkUseCase = saveBookmarkUseCase,
        _cacheService = cacheService ?? PdfCacheService(),
@@ -55,22 +56,18 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
   ) async {
     emit(PdfReaderLoadingState());
     try {
-      final book = await RetryLogic.retry(
-        operation: () => _getPdfBookByIdUseCase.execute(event.bookId),
+      final result = await RetryLogic.retry(
+        operation: () => _validateAndOpenPdfUseCase.execute(event.bookId),
         maxAttempts: 2,
         shouldRetry: (e) => e is DatabaseError,
       );
-      if (book == null) {
-        emit(
-          const PdfReaderErrorState(
-            errorCode: AppErrorCode.fileNotFound,
-            message: 'PDF book not found',
-            canRetry: false,
-          ),
-        );
+
+      if (!result.isValid) {
+        emit(_mapValidationErrorToState(result));
         return;
       }
 
+      final book = result.book!;
       _cacheService.clearCache();
 
       final useLazyLoading = _renderingConfig.shouldUseLazyLoading(
@@ -91,6 +88,7 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
       }
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
+
       final error = e is AppError ? e : const UnknownError();
       emit(
         PdfReaderErrorState(
@@ -99,6 +97,44 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
           canRetry: error.canRetry,
         ),
       );
+    }
+  }
+
+  PdfReaderErrorState _mapValidationErrorToState(ValidatedPdfResult result) {
+    switch (result.status) {
+      case ValidatedPdfStatus.notFound:
+        return const PdfReaderErrorState(
+          errorCode: AppErrorCode.fileNotFound,
+          message: null,
+          canRetry: false,
+        );
+      case ValidatedPdfStatus.invalid:
+        final errorCode = _mapValidationErrorToAppError(result.validationError);
+        return PdfReaderErrorState(
+          errorCode: errorCode,
+          message: null,
+          canRetry: false,
+        );
+      case ValidatedPdfStatus.success:
+        return const PdfReaderErrorState(
+          errorCode: AppErrorCode.unknown,
+          message: null,
+          canRetry: false,
+        );
+    }
+  }
+
+  AppErrorCode _mapValidationErrorToAppError(PdfValidationError? error) {
+    switch (error) {
+      case PdfValidationError.fileNotFound:
+        return AppErrorCode.fileNotFound;
+      case PdfValidationError.emptyFile:
+      case PdfValidationError.tooSmall:
+      case PdfValidationError.invalidFormat:
+        return AppErrorCode.fileCorrupted;
+      case PdfValidationError.unknown:
+      case null:
+        return AppErrorCode.fileCorrupted;
     }
   }
 

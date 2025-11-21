@@ -50,7 +50,29 @@ class _LearningScreenContent extends StatelessWidget {
         child: BlocBuilder<LearningBloc, LearningState>(
           builder: (context, state) {
             if (state is LearningLoadErrorState) {
-              return Center(child: Text(state.message));
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 64,
+                      color: theme.colorScheme.error,
+                    ),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        state.message.isNotEmpty
+                            ? state.message
+                            : S.of(context).errorNetworkGeneral,
+                        style: theme.textTheme.bodyLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              );
             }
             if (state is LearningLoadSuccessState) {
               return ListView(
@@ -92,9 +114,7 @@ class _LearningScreenContent extends StatelessWidget {
                       state.learningData.addedCoursesStatistics.isEmpty)
                     SizedBox(
                       height: 300,
-                      child: Center(
-                        child: Text(S.of(context).noData),
-                      ),
+                      child: Center(child: Text(S.of(context).noData)),
                     ),
                 ],
               );

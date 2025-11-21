@@ -173,11 +173,23 @@ abstract class AppLocalizations {
   /// **'Main'**
   String get navigationMainTitle;
 
+  /// No description provided for @navigationLibraryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get navigationLibraryTitle;
+
   /// No description provided for @navigationLearningTitle.
   ///
   /// In en, this message translates to:
   /// **'Learning'**
   String get navigationLearningTitle;
+
+  /// No description provided for @navigationHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get navigationHistoryTitle;
 
   /// No description provided for @navigationProfileTitle.
   ///
@@ -503,6 +515,18 @@ abstract class AppLocalizations {
   /// **'PDF Library'**
   String get libraryTitle;
 
+  /// No description provided for @libraryTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get libraryTabAll;
+
+  /// No description provided for @libraryTabFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get libraryTabFavorites;
+
   /// No description provided for @libraryNoBooksFound.
   ///
   /// In en, this message translates to:
@@ -514,6 +538,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No PDFs in library'**
   String get libraryNoPdfs;
+
+  /// No description provided for @libraryNoFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet'**
+  String get libraryNoFavorites;
+
+  /// No description provided for @libraryAddFavoritesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long press on a book to add to favorites'**
+  String get libraryAddFavoritesHint;
 
   /// No description provided for @libraryTapToImport.
   ///
@@ -641,6 +677,36 @@ abstract class AppLocalizations {
   /// **'Error loading PDF'**
   String get pdfReaderErrorLoading;
 
+  /// No description provided for @pdfReaderErrorOpeningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Opening PDF'**
+  String get pdfReaderErrorOpeningTitle;
+
+  /// No description provided for @pdfReaderErrorCorrupted.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is corrupted or has an invalid format. Please try re-importing it.'**
+  String get pdfReaderErrorCorrupted;
+
+  /// No description provided for @pdfReaderErrorGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to open PDF file'**
+  String get pdfReaderErrorGeneral;
+
+  /// No description provided for @pdfReaderBackToLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Library'**
+  String get pdfReaderBackToLibrary;
+
+  /// No description provided for @pdfReaderClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get pdfReaderClose;
+
   /// No description provided for @pdfReaderLazyLoading.
   ///
   /// In en, this message translates to:
@@ -688,6 +754,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bookmark added'**
   String get pdfReaderBookmarkAdded;
+
+  /// No description provided for @pdfReaderExplainPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI'**
+  String get pdfReaderExplainPage;
+
+  /// No description provided for @pdfReaderExplainPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI about this page'**
+  String get pdfReaderExplainPageTitle;
+
+  /// No description provided for @pdfReaderExplainPageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter text or question to get AI explanation'**
+  String get pdfReaderExplainPageHint;
+
+  /// No description provided for @pdfReaderExplainPageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Text or question'**
+  String get pdfReaderExplainPageLabel;
+
+  /// No description provided for @pdfReaderExplainPagePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., What is recursion?'**
+  String get pdfReaderExplainPagePlaceholder;
+
+  /// No description provided for @pdfReaderCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get pdfReaderCancel;
+
+  /// No description provided for @pdfReaderExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain'**
+  String get pdfReaderExplain;
+
+  /// No description provided for @pdfReaderSelectText.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Text to Explain'**
+  String get pdfReaderSelectText;
+
+  /// No description provided for @pdfReaderSelectTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Since native text selection is not available, please copy and paste the text you want to explain.'**
+  String get pdfReaderSelectTextHint;
+
+  /// No description provided for @pdfReaderEnterText.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter text'**
+  String get pdfReaderEnterText;
+
+  /// No description provided for @pdfReaderEnterTextPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste or type the text you want to explain...'**
+  String get pdfReaderEnterTextPlaceholder;
+
+  /// No description provided for @pdfReaderAskAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI'**
+  String get pdfReaderAskAi;
+
+  /// No description provided for @pdfReaderAskAiTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap here to ask AI about any text'**
+  String get pdfReaderAskAiTooltip;
+
+  /// No description provided for @pdfReaderPasteFromClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste from Clipboard'**
+  String get pdfReaderPasteFromClipboard;
+
+  /// No description provided for @pdfReaderClipboardPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard:'**
+  String get pdfReaderClipboardPreview;
+
+  /// No description provided for @pdfReaderNoClipboardContent.
+  ///
+  /// In en, this message translates to:
+  /// **'No text in clipboard'**
+  String get pdfReaderNoClipboardContent;
 
   /// No description provided for @bookmarksTitle.
   ///
@@ -743,6 +905,12 @@ abstract class AppLocalizations {
   /// **'Generating explanation...'**
   String get explanationGenerating;
 
+  /// No description provided for @explanationAnalyzingPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing text from page {page}...'**
+  String explanationAnalyzingPage(Object page);
+
   /// No description provided for @explanationSelected.
   ///
   /// In en, this message translates to:
@@ -767,6 +935,12 @@ abstract class AppLocalizations {
   /// **'No Internet Connection'**
   String get explanationNoInternet;
 
+  /// No description provided for @explanationNoInternetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your internet connection and try again.'**
+  String get explanationNoInternetMessage;
+
   /// No description provided for @explanationError.
   ///
   /// In en, this message translates to:
@@ -790,6 +964,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open'**
   String get pdfBookOpen;
+
+  /// No description provided for @pdfBookOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening \"{title}\"...'**
+  String pdfBookOpening(Object title);
 
   /// No description provided for @pdfBookAddToFavorites.
   ///

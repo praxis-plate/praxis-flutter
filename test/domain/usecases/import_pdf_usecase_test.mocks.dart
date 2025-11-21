@@ -59,6 +59,15 @@ class MockIPdfRepository extends _i1.Mock implements _i2.IPdfRepository {
           as _i3.Future<void>);
 
   @override
+  _i3.Future<void> updateBook(_i4.PdfBook? book) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateBook, [book]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
   _i3.Future<void> updateReadingProgress(String? bookId, int? page) =>
       (super.noSuchMethod(
             Invocation.method(#updateReadingProgress, [bookId, page]),

@@ -58,21 +58,47 @@ class UserStatisticsRepository implements IUserStatisticsRepository {
   }
 
   @override
-  Future<bool> exists(String userId) {
-    // TODO: implement exists
-    throw UnimplementedError();
+  Future<bool> exists(String userId) async {
+    try {
+      final stats = await _localDataSource.getStatistics(userId);
+      return stats != null;
+    } catch (e) {
+      throw UserStatisticsException(
+        'Failed to check statistics existence: ${e.toString()}',
+      );
+    }
   }
 
   @override
   Future<UserStatistics> get(String userId) async {
     try {
-      final remoteStats = await _remoteDataSource.fetchStatisticsByUserId(
-        userId,
-      );
-      await _localDataSource.saveStatistics(remoteStats);
-      return remoteStats;
+      final localStats = await _localDataSource.getStatistics(userId);
+      if (localStats != null) {
+        return localStats;
+      }
+
+      try {
+        final remoteStats = await _remoteDataSource.fetchStatisticsByUserId(
+          userId,
+        );
+        await _localDataSource.saveStatistics(remoteStats);
+        return remoteStats;
+      } catch (remoteError) {
+        final newStats = UserStatistics(
+          userId: userId,
+          courses: {},
+          currentStreak: 0,
+          maxStreak: 0,
+          points: 0,
+          lastActiveDate: DateTime.now(),
+        );
+        await _localDataSource.saveStatistics(newStats);
+        return newStats;
+      }
     } catch (e) {
-      throw UserStatisticsException('Ошибка загрузки статистики');
+      throw UserStatisticsException(
+        'Ошибка загрузки статистики: ${e.toString()}',
+      );
     }
   }
 
@@ -80,20 +106,43 @@ class UserStatisticsRepository implements IUserStatisticsRepository {
   Future<UserCourseStatistics> getUserCourseStatistics({
     required String userId,
     required String courseId,
-  }) {
-    // TODO: implement getUserCourseStatistics
-    throw UnimplementedError();
+  }) async {
+    try {
+      final stats = await _localDataSource.getStatistics(userId);
+
+      if (stats == null || !stats.courses.containsKey(courseId)) {
+        throw UserStatisticsException('Course statistics not found');
+      }
+
+      return stats.courses[courseId]!;
+    } on UserStatisticsException {
+      rethrow;
+    } catch (e) {
+      throw UserStatisticsException(
+        'Failed to get course statistics: ${e.toString()}',
+      );
+    }
   }
 
   @override
-  Future<void> reset(String userId) {
-    // TODO: implement reset
-    throw UnimplementedError();
+  Future<void> reset(String userId) async {
+    try {
+      await _localDataSource.clearStatistics(userId);
+    } catch (e) {
+      throw UserStatisticsException(
+        'Failed to reset statistics: ${e.toString()}',
+      );
+    }
   }
 
   @override
-  Future<void> update(UserStatistics stats) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<void> update(UserStatistics stats) async {
+    try {
+      await _localDataSource.saveStatistics(stats);
+    } catch (e) {
+      throw UserStatisticsException(
+        'Failed to update statistics: ${e.toString()}',
+      );
+    }
   }
 }

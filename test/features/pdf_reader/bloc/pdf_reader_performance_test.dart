@@ -1,8 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
-import 'package:codium/domain/usecases/get_pdf_book_by_id_usecase.dart';
 import 'package:codium/domain/usecases/save_bookmark_usecase.dart';
 import 'package:codium/domain/usecases/update_reading_progress_usecase.dart';
+import 'package:codium/domain/usecases/validate_and_open_pdf_usecase.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_rendering_config.dart';
@@ -11,7 +11,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 @GenerateMocks([
-  GetPdfBookByIdUseCase,
+  ValidateAndOpenPdfUseCase,
   UpdateReadingProgressUseCase,
   SaveBookmarkUseCase,
   PdfCacheService,
@@ -20,13 +20,13 @@ import 'pdf_reader_performance_test.mocks.dart';
 
 void main() {
   group('PdfReaderBloc Performance Features', () {
-    late MockGetPdfBookByIdUseCase mockGetPdfBookByIdUseCase;
+    late MockValidateAndOpenPdfUseCase mockValidateAndOpenPdfUseCase;
     late MockUpdateReadingProgressUseCase mockUpdateReadingProgressUseCase;
     late MockSaveBookmarkUseCase mockSaveBookmarkUseCase;
     late MockPdfCacheService mockCacheService;
 
     setUp(() {
-      mockGetPdfBookByIdUseCase = MockGetPdfBookByIdUseCase();
+      mockValidateAndOpenPdfUseCase = MockValidateAndOpenPdfUseCase();
       mockUpdateReadingProgressUseCase = MockUpdateReadingProgressUseCase();
       mockSaveBookmarkUseCase = MockSaveBookmarkUseCase();
       mockCacheService = MockPdfCacheService();
@@ -44,10 +44,10 @@ void main() {
       'should enable lazy loading for large PDFs',
       build: () {
         when(
-          mockGetPdfBookByIdUseCase.execute(any),
-        ).thenAnswer((_) async => testBook);
+          mockValidateAndOpenPdfUseCase.execute(any),
+        ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         return PdfReaderBloc(
-          getPdfBookByIdUseCase: mockGetPdfBookByIdUseCase,
+          validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
           updateReadingProgressUseCase: mockUpdateReadingProgressUseCase,
           saveBookmarkUseCase: mockSaveBookmarkUseCase,
           cacheService: mockCacheService,
@@ -68,10 +68,10 @@ void main() {
       build: () {
         final smallBook = testBook.copyWith(totalPages: 50);
         when(
-          mockGetPdfBookByIdUseCase.execute(any),
-        ).thenAnswer((_) async => smallBook);
+          mockValidateAndOpenPdfUseCase.execute(any),
+        ).thenAnswer((_) async => ValidatedPdfResult.success(book: smallBook));
         return PdfReaderBloc(
-          getPdfBookByIdUseCase: mockGetPdfBookByIdUseCase,
+          validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
           updateReadingProgressUseCase: mockUpdateReadingProgressUseCase,
           saveBookmarkUseCase: mockSaveBookmarkUseCase,
           cacheService: mockCacheService,
@@ -93,10 +93,10 @@ void main() {
       'should clear cache when opening PDF',
       build: () {
         when(
-          mockGetPdfBookByIdUseCase.execute(any),
-        ).thenAnswer((_) async => testBook);
+          mockValidateAndOpenPdfUseCase.execute(any),
+        ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         return PdfReaderBloc(
-          getPdfBookByIdUseCase: mockGetPdfBookByIdUseCase,
+          validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
           updateReadingProgressUseCase: mockUpdateReadingProgressUseCase,
           saveBookmarkUseCase: mockSaveBookmarkUseCase,
           cacheService: mockCacheService,
@@ -112,10 +112,10 @@ void main() {
       'should preload adjacent pages when progressive rendering is enabled',
       build: () {
         when(
-          mockGetPdfBookByIdUseCase.execute(any),
-        ).thenAnswer((_) async => testBook);
+          mockValidateAndOpenPdfUseCase.execute(any),
+        ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         return PdfReaderBloc(
-          getPdfBookByIdUseCase: mockGetPdfBookByIdUseCase,
+          validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
           updateReadingProgressUseCase: mockUpdateReadingProgressUseCase,
           saveBookmarkUseCase: mockSaveBookmarkUseCase,
           cacheService: mockCacheService,
@@ -134,10 +134,10 @@ void main() {
       'should save scroll position',
       build: () {
         when(
-          mockGetPdfBookByIdUseCase.execute(any),
-        ).thenAnswer((_) async => testBook);
+          mockValidateAndOpenPdfUseCase.execute(any),
+        ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         return PdfReaderBloc(
-          getPdfBookByIdUseCase: mockGetPdfBookByIdUseCase,
+          validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
           updateReadingProgressUseCase: mockUpdateReadingProgressUseCase,
           saveBookmarkUseCase: mockSaveBookmarkUseCase,
           cacheService: mockCacheService,
@@ -158,8 +158,8 @@ void main() {
       'should preload adjacent pages on page change',
       build: () {
         when(
-          mockGetPdfBookByIdUseCase.execute(any),
-        ).thenAnswer((_) async => testBook);
+          mockValidateAndOpenPdfUseCase.execute(any),
+        ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         when(
           mockUpdateReadingProgressUseCase.execute(
             bookId: anyNamed('bookId'),
@@ -167,7 +167,7 @@ void main() {
           ),
         ).thenAnswer((_) async {});
         return PdfReaderBloc(
-          getPdfBookByIdUseCase: mockGetPdfBookByIdUseCase,
+          validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
           updateReadingProgressUseCase: mockUpdateReadingProgressUseCase,
           saveBookmarkUseCase: mockSaveBookmarkUseCase,
           cacheService: mockCacheService,
@@ -185,7 +185,7 @@ void main() {
 
     test('should clear cache on close', () async {
       final bloc = PdfReaderBloc(
-        getPdfBookByIdUseCase: mockGetPdfBookByIdUseCase,
+        validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
         updateReadingProgressUseCase: mockUpdateReadingProgressUseCase,
         saveBookmarkUseCase: mockSaveBookmarkUseCase,
         cacheService: mockCacheService,

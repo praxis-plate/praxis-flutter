@@ -22,9 +22,27 @@ final class MainCoursesLoadErrorState extends MainState {
 
 final class MainCoursesLoadSuccessState extends MainState {
   final List<Course> courses;
+  final List<Course> filteredCourses;
+  final String searchQuery;
 
-  const MainCoursesLoadSuccessState(this.courses);
+  const MainCoursesLoadSuccessState(
+    this.courses, {
+    List<Course>? filteredCourses,
+    this.searchQuery = '',
+  }) : filteredCourses = filteredCourses ?? courses;
+
+  MainCoursesLoadSuccessState copyWith({
+    List<Course>? courses,
+    List<Course>? filteredCourses,
+    String? searchQuery,
+  }) {
+    return MainCoursesLoadSuccessState(
+      courses ?? this.courses,
+      filteredCourses: filteredCourses ?? this.filteredCourses,
+      searchQuery: searchQuery ?? this.searchQuery,
+    );
+  }
 
   @override
-  List<Object> get props => [courses];
+  List<Object> get props => [courses, filteredCourses, searchQuery];
 }
