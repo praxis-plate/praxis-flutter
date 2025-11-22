@@ -27,39 +27,35 @@ class LocalAuthDataSource implements IAuthDataSource {
     required String email,
     required String password,
   }) async {
-    try {
-      final existingUser = await _db.managers.users
-          .filter((f) => f.email(email))
-          .getSingleOrNull();
+    final existingUser = await _db.managers.users
+        .filter((f) => f.email(email))
+        .getSingleOrNull();
 
-      if (existingUser != null) {
-        throw Exception('User with this email already exists');
-      }
-
-      final userId = _uuid.v4();
-      final passwordHash = _hashPassword(password);
-
-      await _db.managers.users.create(
-        (o) => o(
-          id: userId,
-          email: email,
-          passwordHash: passwordHash,
-          createdAt: DateTime.now(),
-        ),
-      );
-
-      await _sessionService.saveSession(userId: userId, email: email);
-
-      return User(
-        id: userId,
-        name: email.split('@').first,
-        email: email,
-        balance: Money(amount: Decimal.zero, currency: Currency.usd),
-        purchasedCourseIds: const [],
-      );
-    } catch (e) {
-      return null;
+    if (existingUser != null) {
+      throw Exception('Пользователь с таким email уже существует');
     }
+
+    final userId = _uuid.v4();
+    final passwordHash = _hashPassword(password);
+
+    await _db.managers.users.create(
+      (o) => o(
+        id: userId,
+        email: email,
+        passwordHash: passwordHash,
+        createdAt: DateTime.now(),
+      ),
+    );
+
+    await _sessionService.saveSession(userId: userId, email: email);
+
+    return User(
+      id: userId,
+      name: email.split('@').first,
+      email: email,
+      balance: Money(amount: Decimal.zero, currency: Currency.usd),
+      purchasedCourseIds: const [],
+    );
   }
 
   @override
@@ -67,32 +63,28 @@ class LocalAuthDataSource implements IAuthDataSource {
     required String email,
     required String password,
   }) async {
-    try {
-      final passwordHash = _hashPassword(password);
+    final passwordHash = _hashPassword(password);
 
-      final userEntity = await _db.managers.users
-          .filter((f) => f.email(email) & f.passwordHash(passwordHash))
-          .getSingleOrNull();
+    final userEntity = await _db.managers.users
+        .filter((f) => f.email(email) & f.passwordHash(passwordHash))
+        .getSingleOrNull();
 
-      if (userEntity == null) {
-        return null;
-      }
-
-      await _sessionService.saveSession(
-        userId: userEntity.id,
-        email: userEntity.email,
-      );
-
-      return User(
-        id: userEntity.id,
-        name: email.split('@').first,
-        email: userEntity.email,
-        balance: Money(amount: Decimal.zero, currency: Currency.usd),
-        purchasedCourseIds: const [],
-      );
-    } catch (e) {
+    if (userEntity == null) {
       return null;
     }
+
+    await _sessionService.saveSession(
+      userId: userEntity.id,
+      email: userEntity.email,
+    );
+
+    return User(
+      id: userEntity.id,
+      name: email.split('@').first,
+      email: userEntity.email,
+      balance: Money(amount: Decimal.zero, currency: Currency.usd),
+      purchasedCourseIds: const [],
+    );
   }
 
   @override

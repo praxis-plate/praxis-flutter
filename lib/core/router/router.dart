@@ -1,8 +1,5 @@
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:codium/core/config/feature_flags.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
-import 'package:codium/features/auth/view/phone_sign_up_screen.dart';
-import 'package:codium/features/auth/view/sign_in_screen.dart';
-import 'package:codium/features/auth/view/sign_up_screen.dart';
 import 'package:codium/features/course_details/view/course_detail_screen.dart';
 import 'package:codium/features/explanation_history/view/history_screen.dart';
 import 'package:codium/features/library/view/library_screen.dart';
@@ -15,73 +12,46 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-// TODO: Раскомментировать роуты после разработки фичи курсов
 class AppRouter {
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'root');
   static final GlobalKey<NavigatorState> _shellNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'shell');
 
-  // static Future<bool> _checkOnboardingComplete() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   return prefs.getBool('onboarding_complete') ?? false;
-  // }
-
-  static bool _isAuthenticated(BuildContext context) {
-    final authState = context.read<AuthBloc>().state;
-    return authState is AuthAuthenticatedState;
-  }
-
   static final _router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
     debugLogDiagnostics: true,
-    redirect: (BuildContext context, GoRouterState state) async {
-      final isOnAuthPage =
-          state.matchedLocation == '/sign-in' ||
-          state.matchedLocation == '/sign-up' ||
-          state.matchedLocation == '/phone-sign-up';
-
-      if (!context.mounted) return null;
-
-      final isAuthenticated = _isAuthenticated(context);
-
-      if (!isAuthenticated && !isOnAuthPage) {
-        return '/sign-in';
-      }
-
-      if (isAuthenticated && isOnAuthPage) {
-        return '/navigation';
-      }
-
-      return null;
-    },
     routes: [
       GoRoute(path: '/', redirect: (context, state) => '/navigation'),
-      // GoRoute(
-      //   path: '/onboarding',
-      //   name: 'onboarding',
-      //   pageBuilder: (context, state) =>
-      //       MaterialPage(key: state.pageKey, child: const OnboardingScreen()),
-      // ),
-      GoRoute(
-        path: '/sign-up',
-        name: 'sign-up',
-        pageBuilder: (context, state) =>
-            MaterialPage(key: state.pageKey, child: const SignUpScreen()),
-      ),
-      GoRoute(
-        path: '/phone-sign-up',
-        name: 'phone-sign-up',
-        pageBuilder: (context, state) =>
-            MaterialPage(key: state.pageKey, child: const PhoneSignUpScreen()),
-      ),
-      GoRoute(
-        path: '/sign-in',
-        name: 'sign-in',
-        pageBuilder: (context, state) =>
-            MaterialPage(key: state.pageKey, child: const SignInScreen()),
-      ),
+      if (FeatureFlags.enableOnboarding)
+        GoRoute(
+          path: '/onboarding',
+          name: 'onboarding',
+          pageBuilder: (context, state) =>
+              MaterialPage(key: state.pageKey, child: const Placeholder()),
+        ),
+      if (FeatureFlags.enableOnboarding)
+        GoRoute(
+          path: '/sign-up',
+          name: 'sign-up',
+          pageBuilder: (context, state) =>
+              MaterialPage(key: state.pageKey, child: const Placeholder()),
+        ),
+      if (FeatureFlags.enableOnboarding)
+        GoRoute(
+          path: '/phone-sign-up',
+          name: 'phone-sign-up',
+          pageBuilder: (context, state) =>
+              MaterialPage(key: state.pageKey, child: const Placeholder()),
+        ),
+      if (FeatureFlags.enableOnboarding)
+        GoRoute(
+          path: '/sign-in',
+          name: 'sign-in',
+          pageBuilder: (context, state) =>
+              MaterialPage(key: state.pageKey, child: const Placeholder()),
+        ),
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         pageBuilder: (context, state, child) {
@@ -93,12 +63,15 @@ class AppRouter {
             name: 'navigation',
             redirect: (context, state) => '/library',
           ),
-          // GoRoute(
-          //   path: '/home',
-          //   name: 'home',
-          //   pageBuilder: (context, state) =>
-          //       NoTransitionPage(key: state.pageKey, child: const MainScreen()),
-          // ),
+          if (FeatureFlags.enableCourses)
+            GoRoute(
+              path: '/home',
+              name: 'home',
+              pageBuilder: (context, state) => NoTransitionPage(
+                key: state.pageKey,
+                child: const Placeholder(),
+              ),
+            ),
           GoRoute(
             path: '/library',
             name: 'library',
@@ -107,14 +80,15 @@ class AppRouter {
               child: const LibraryScreen(),
             ),
           ),
-          // GoRoute(
-          //   path: '/learning',
-          //   name: 'learning',
-          //   pageBuilder: (context, state) => NoTransitionPage(
-          //     key: state.pageKey,
-          //     child: const LearningScreen(),
-          //   ),
-          // ),
+          if (FeatureFlags.enableCourses)
+            GoRoute(
+              path: '/learning',
+              name: 'learning',
+              pageBuilder: (context, state) => NoTransitionPage(
+                key: state.pageKey,
+                child: const Placeholder(),
+              ),
+            ),
           GoRoute(
             path: '/history',
             name: 'history',
@@ -123,14 +97,15 @@ class AppRouter {
               child: const HistoryScreen(),
             ),
           ),
-          // GoRoute(
-          //   path: '/profile',
-          //   name: 'profile',
-          //   pageBuilder: (context, state) => NoTransitionPage(
-          //     key: state.pageKey,
-          //     child: const ProfileScreen(),
-          //   ),
-          // ),
+          if (FeatureFlags.enableProfile)
+            GoRoute(
+              path: '/profile',
+              name: 'profile',
+              pageBuilder: (context, state) => NoTransitionPage(
+                key: state.pageKey,
+                child: const Placeholder(),
+              ),
+            ),
         ],
       ),
       GoRoute(

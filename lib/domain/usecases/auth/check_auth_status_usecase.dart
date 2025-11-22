@@ -1,4 +1,3 @@
-import 'package:codium/core/exceptions/auth_exceptions.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/abstract_auth_repository.dart';
 import 'package:codium/domain/repositories/abstract_user_repository.dart';
@@ -7,10 +6,7 @@ class CheckAuthStatusUseCase {
   final IAuthRepository _authRepository;
   final IUserRepository _userRepository;
 
-  CheckAuthStatusUseCase(
-    this._authRepository,
-    this._userRepository,
-  );
+  CheckAuthStatusUseCase(this._authRepository, this._userRepository);
 
   Future<User?> execute() async {
     try {
@@ -22,7 +18,7 @@ class CheckAuthStatusUseCase {
 
       return await _userRepository.getCurrentUser();
     } catch (e) {
-      throw AuthException('Ошибка проверки статуса аутентификации');
+      return null;
     }
   }
 }

@@ -1,7 +1,9 @@
 import 'package:codium/core/config/env_config.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 class GeminiDataSource {
   GeminiDataSource() : _model = _initializeModel();
@@ -10,6 +12,12 @@ class GeminiDataSource {
     return GenerativeModel(
       model: 'gemini-1.5-flash',
       apiKey: EnvConfig.geminiApiKey,
+      generationConfig: GenerationConfig(
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 2048,
+      ),
     );
   }
 
@@ -35,13 +43,40 @@ class GeminiDataSource {
 
       return response.text!;
     } on GenerativeAIException catch (e) {
-      if (e.message.contains('quota') || e.message.contains('rate limit')) {
+      final errorMessage = e.message.toLowerCase();
+
+      final talker = GetIt.I<Talker>();
+      talker.error('Gemini API error: ${e.message}');
+
+      if (errorMessage.contains('quota') ||
+          errorMessage.contains('rate limit') ||
+          errorMessage.contains('resource_exhausted')) {
         throw dio.DioException(
           requestOptions: dio.RequestOptions(path: ''),
           type: dio.DioExceptionType.unknown,
-          message: 'Rate limit exceeded. Please try again later.',
+          message: 'Rate limit exceeded. Error: ${e.message}',
         );
       }
+
+      if (errorMessage.contains('api key') ||
+          errorMessage.contains('api_key') ||
+          errorMessage.contains('invalid')) {
+        throw dio.DioException(
+          requestOptions: dio.RequestOptions(path: ''),
+          type: dio.DioExceptionType.unknown,
+          message: 'Invalid API key. Please check your .env configuration.',
+        );
+      }
+
+      if (errorMessage.contains('not found') ||
+          errorMessage.contains('not supported')) {
+        throw dio.DioException(
+          requestOptions: dio.RequestOptions(path: ''),
+          type: dio.DioExceptionType.unknown,
+          message: 'Model not available. Original error: ${e.message}',
+        );
+      }
+
       throw dio.DioException(
         requestOptions: dio.RequestOptions(path: ''),
         type: dio.DioExceptionType.unknown,

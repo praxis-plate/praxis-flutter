@@ -105,32 +105,37 @@ class _HistoryScreenContent extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            isSearching ? Icons.search_off : Icons.history,
-            size: 64,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            isSearching
-                ? S.of(context).historyNoExplanationsFound
-                : S.of(context).historyNoHistory,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isSearching ? Icons.search_off : Icons.history,
+              size: 64,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
             ),
-          ),
-          const SizedBox(height: 8),
-          if (!isSearching)
+            const SizedBox(height: 16),
             Text(
-              S.of(context).historyStartReading,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+              isSearching
+                  ? S.of(context).historyNoExplanationsFound
+                  : S.of(context).historyNoHistory,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
+              textAlign: TextAlign.center,
             ),
-        ],
+            const SizedBox(height: 8),
+            if (!isSearching)
+              Text(
+                S.of(context).historyStartReading,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                ),
+                textAlign: TextAlign.center,
+              ),
+          ],
+        ),
       ),
     );
   }

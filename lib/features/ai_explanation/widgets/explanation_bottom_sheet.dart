@@ -1,11 +1,10 @@
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_error_extensions.dart';
-import 'package:codium/domain/models/ai_explanation/search_source.dart';
+import 'package:codium/domain/models/ai_explanation/ai_explanation.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ExplanationBottomSheet extends StatelessWidget {
   const ExplanationBottomSheet({super.key});
@@ -85,7 +84,7 @@ class ExplanationBottomSheet extends StatelessWidget {
 
   Widget _buildLoaded(BuildContext context, AiExplanationLoadedState state) {
     final explanation = state.explanation;
-    // TODO: Вынести Theme.of в переменную theme
+    final theme = Theme.of(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -93,12 +92,12 @@ class ExplanationBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Explanation', style: Theme.of(context).textTheme.titleMedium),
+          Text('Explanation', style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
+              color: theme.cardColor,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
@@ -106,11 +105,11 @@ class ExplanationBottomSheet extends StatelessWidget {
               children: [
                 Text(
                   '"${explanation.selectedText}"',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  style: theme.textTheme.bodySmall?.copyWith(
                     fontStyle: FontStyle.italic,
-                    color: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.color?.withValues(alpha: 0.8),
+                    color: theme.textTheme.bodySmall?.color?.withValues(
+                      alpha: 0.8,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -119,13 +118,13 @@ class ExplanationBottomSheet extends StatelessWidget {
                     Icon(
                       Icons.bookmark_outline,
                       size: 14,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: theme.colorScheme.primary,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       'Page ${explanation.pageNumber + 1}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.primary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -138,15 +137,15 @@ class ExplanationBottomSheet extends StatelessWidget {
           MarkdownBody(
             data: explanation.explanation,
             styleSheet: MarkdownStyleSheet(
-              p: Theme.of(context).textTheme.bodyMedium,
-              h1: Theme.of(context).textTheme.titleMedium,
-              h2: Theme.of(context).textTheme.titleSmall,
-              code: Theme.of(context).textTheme.bodySmall?.copyWith(
+              p: theme.textTheme.bodyMedium,
+              h1: theme.textTheme.titleMedium,
+              h2: theme.textTheme.titleSmall,
+              code: theme.textTheme.bodySmall?.copyWith(
                 fontFamily: 'monospace',
-                backgroundColor: Theme.of(context).cardColor,
+                backgroundColor: theme.cardColor,
               ),
               codeblockDecoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
@@ -155,7 +154,7 @@ class ExplanationBottomSheet extends StatelessWidget {
             const SizedBox(height: 24),
             const Divider(),
             const SizedBox(height: 16),
-            Text('Sources', style: Theme.of(context).textTheme.titleSmall),
+            Text('Sources', style: theme.textTheme.titleSmall),
             const SizedBox(height: 12),
             ...explanation.sources.map(
               (source) => _buildSourceCard(context, source),
@@ -168,10 +167,11 @@ class ExplanationBottomSheet extends StatelessWidget {
   }
 
   Widget _buildSourceCard(BuildContext context, SearchSource source) {
+    final theme = Theme.of(context);
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: () => _launchUrl(source.url),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -183,9 +183,9 @@ class ExplanationBottomSheet extends StatelessWidget {
                   Expanded(
                     child: Text(
                       source.title,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: theme.colorScheme.primary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -194,24 +194,24 @@ class ExplanationBottomSheet extends StatelessWidget {
                   Icon(
                     Icons.open_in_new,
                     size: 16,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: theme.colorScheme.primary,
                   ),
                 ],
               ),
               const SizedBox(height: 4),
               Text(
                 source.snippet,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: theme.textTheme.bodySmall,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
               Text(
                 source.url,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withValues(
+                    alpha: 0.6,
+                  ),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -276,12 +276,5 @@ class ExplanationBottomSheet extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _launchUrl(String urlString) async {
-    final url = Uri.parse(urlString);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    }
   }
 }

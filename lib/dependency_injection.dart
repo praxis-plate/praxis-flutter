@@ -1,11 +1,12 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/services/connectivity_service.dart';
+import 'package:codium/core/services/mock_connectivity_service.dart';
 import 'package:codium/core/services/session_service.dart';
 import 'package:codium/data/datasources/datasources.dart';
 import 'package:codium/data/repositories/ai_repository_impl.dart';
 import 'package:codium/data/repositories/repositories.dart';
 import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/repositories/repositories.dart';
+import 'package:codium/domain/services/connectivity_service.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/ai_explanation/ai_explanation.dart';
 import 'package:codium/features/auth/auth.dart';
@@ -32,8 +33,8 @@ class DependencyInjection {
   }
 
   void _registerServices() {
-    GetIt.I.registerLazySingleton<ConnectivityService>(
-      () => ConnectivityService(),
+    GetIt.I.registerLazySingleton<IConnectivityService>(
+      () => MockConnectivityService(),
     );
   }
 
@@ -104,7 +105,7 @@ class DependencyInjection {
         () => AiRepositoryImpl(
           geminiDataSource: GetIt.I<GeminiDataSource>(),
           searchDataSource: GetIt.I<SearchDataSource>(),
-          connectivityService: GetIt.I<ConnectivityService>(),
+          connectivityService: GetIt.I<IConnectivityService>(),
         ),
       );
   }

@@ -63,7 +63,7 @@ class ApiError extends AppError {
 
 class RateLimitError extends AppError {
   const RateLimitError({super.message})
-    : super(code: AppErrorCode.rateLimitExceeded, canRetry: true);
+    : super(code: AppErrorCode.rateLimitExceeded, canRetry: false);
 }
 
 class UnknownError extends AppError {

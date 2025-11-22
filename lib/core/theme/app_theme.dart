@@ -167,8 +167,12 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: p.primary,
           foregroundColor: p.onPrimary,
-          textStyle: _textTheme(p).bodyLarge,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          minimumSize: const Size(0, 46),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       );
 
@@ -232,6 +236,8 @@ class AppTheme {
   static ListTileThemeData _listTileTheme(AppPalette p) => ListTileThemeData(
     titleTextStyle: _textTheme(p).labelLarge,
     subtitleTextStyle: _textTheme(p).labelSmall,
+    iconColor: p.onSurface,
+    leadingAndTrailingTextStyle: _textTheme(p).bodyMedium,
   );
 
   static CardThemeData _cardTheme(AppPalette p) => CardThemeData(

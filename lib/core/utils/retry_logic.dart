@@ -52,10 +52,12 @@ class RetryLogic {
   static bool shouldRetryException(Exception exception) {
     final message = exception.toString().toLowerCase();
 
+    // Never retry rate limit errors
+    if (message.contains('rate limit')) return false;
+
     if (message.contains('timeout')) return true;
     if (message.contains('network')) return true;
     if (message.contains('connection')) return true;
-    if (message.contains('rate limit')) return true;
     if (message.contains('locked')) return true;
 
     return false;

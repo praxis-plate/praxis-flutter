@@ -20,6 +20,13 @@ class SignUpScreen extends StatelessWidget {
           if (state is AuthAuthenticatedState) {
             context.go('/home');
             context.read<SignUpCubit>().reset();
+          } else if (state is AuthErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
           }
         },
         child: Scaffold(
@@ -52,23 +59,25 @@ class _SignUpForm extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Form(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            S.of(context).displaySignUp,
-            style: theme.textTheme.displayLarge,
-          ),
-          const SizedBox(height: 32),
-          const _EmailInput(),
-          const SizedBox(height: 16),
-          const _PasswordInput(),
-          const SizedBox(height: 16),
-          const _SubmitButton(),
-          const SizedBox(height: 16),
-          const _SignInRedirect(),
-          const SizedBox(height: 32),
-        ],
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              S.of(context).displaySignUp,
+              style: theme.textTheme.displayLarge,
+            ),
+            const SizedBox(height: 32),
+            const _EmailInput(),
+            const SizedBox(height: 16),
+            const _PasswordInput(),
+            const SizedBox(height: 16),
+            const _SubmitButton(),
+            const SizedBox(height: 16),
+            const _SignInRedirect(),
+          ],
+        ),
       ),
     );
   }
@@ -180,11 +189,14 @@ class _SubmitButton extends StatelessWidget {
 
             return isLoading
                 ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: formState.isValid
-                        ? () => _handleSignIn(context, formState)
-                        : null,
-                    child: Text(S.of(context).displaySignUp),
+                : SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: formState.isValid
+                          ? () => _handleSignIn(context, formState)
+                          : null,
+                      child: Text(S.of(context).displaySignUp),
+                    ),
                   );
           },
         );
@@ -197,11 +209,8 @@ class _SubmitButton extends StatelessWidget {
     final password = formState.password.value;
 
     context.read<AuthBloc>().add(
-          AuthSignUpEvent(
-            email: email,
-            password: password,
-          ),
-        );
+      AuthSignUpEvent(email: email, password: password),
+    );
 
     context.read<SignUpCubit>().setSubmissionInProgress();
   }

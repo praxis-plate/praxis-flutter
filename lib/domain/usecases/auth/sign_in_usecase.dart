@@ -14,8 +14,8 @@ class SignInUseCase {
     try {
       final user = await _authRepository.signIn(email, password);
       return user;
-    } on AuthServerException catch (e) {
-      throw AuthException(e.message);
+    } on AuthException {
+      rethrow;
     } catch (e) {
       throw AuthException('Ошибка входа');
     }
