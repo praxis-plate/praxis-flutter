@@ -80,41 +80,59 @@ class _CourseDetail extends StatelessWidget {
   }
 }
 
-class _CourseTabSection extends StatelessWidget {
+class _CourseTabSection extends StatefulWidget {
   final Course course;
 
   const _CourseTabSection({required this.course});
 
   @override
+  State<_CourseTabSection> createState() => _CourseTabSectionState();
+}
+
+class _CourseTabSectionState extends State<_CourseTabSection>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 1);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return DefaultTabController(
-      length: 2,
-      initialIndex:
-          1, // По умолчанию активна вторая вкладка (Table of Contents)
-      child: Column(
-        children: [
-          TabBar(
-            tabs: const [
-              Tab(text: 'Описание'),
-              Tab(text: 'Содержание'),
+    final s = S.of(context);
+    return Column(
+      children: [
+        TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: s.courseDetailsDescriptionTab),
+            Tab(text: s.courseDetailsContentsTab),
+          ],
+          dividerHeight: 0,
+          labelColor: theme.primaryColor,
+          indicatorColor: theme.primaryColor,
+          labelStyle: theme.textTheme.labelMedium,
+        ),
+        SizedBox(
+          height: 400,
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _DescriptionContent(course: widget.course),
+              _TableOfContentsContent(course: widget.course),
             ],
-            dividerHeight: 0,
-            labelColor: theme.primaryColor,
-            indicatorColor: theme.primaryColor,
-            labelStyle: theme.textTheme.labelMedium,
           ),
-          SizedBox(
-            height: 400, // Фиксированная высота или использовать LayoutBuilder
-            child: TabBarView(
-              children: [
-                _DescriptionContent(course: course),
-                _TableOfContentsContent(course: course),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
