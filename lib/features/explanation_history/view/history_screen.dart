@@ -58,16 +58,14 @@ class _HistoryScreenContent extends StatelessWidget {
             child: BlocBuilder<ExplanationHistoryBloc, ExplanationHistoryState>(
               builder: (context, state) {
                 return switch (state) {
-                  ExplanationHistoryLoadedState() => _buildHistoryContent(
-                    context,
-                    state,
+                  ExplanationHistoryLoadedState() => _HistoryContent(
+                    state: state,
                   ),
                   ExplanationHistoryLoadingState() => const Center(
                     child: CircularProgressIndicator(),
                   ),
-                  ExplanationHistoryErrorState() => _buildErrorState(
-                    context,
-                    state,
+                  ExplanationHistoryErrorState() => _HistoryErrorState(
+                    state: state,
                   ),
                   ExplanationHistoryInitialState() => const Center(
                     child: CircularProgressIndicator(),
@@ -80,13 +78,17 @@ class _HistoryScreenContent extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildHistoryContent(
-    BuildContext context,
-    ExplanationHistoryLoadedState state,
-  ) {
+class _HistoryContent extends StatelessWidget {
+  final ExplanationHistoryLoadedState state;
+
+  const _HistoryContent({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
     if (state.groupedExplanations.isEmpty) {
-      return _buildEmptyState(context, state.searchQuery.isNotEmpty);
+      return _HistoryEmptyState(isSearching: state.searchQuery.isNotEmpty);
     }
 
     return ListView.builder(
@@ -100,8 +102,15 @@ class _HistoryScreenContent extends StatelessWidget {
       },
     );
   }
+}
 
-  Widget _buildEmptyState(BuildContext context, bool isSearching) {
+class _HistoryEmptyState extends StatelessWidget {
+  final bool isSearching;
+
+  const _HistoryEmptyState({required this.isSearching});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Center(
@@ -139,11 +148,15 @@ class _HistoryScreenContent extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildErrorState(
-    BuildContext context,
-    ExplanationHistoryErrorState state,
-  ) {
+class _HistoryErrorState extends StatelessWidget {
+  final ExplanationHistoryErrorState state;
+
+  const _HistoryErrorState({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final errorMessage =
         state.message ?? state.errorCode.localizedMessage(context);

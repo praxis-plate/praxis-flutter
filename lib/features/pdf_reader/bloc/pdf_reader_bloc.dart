@@ -4,9 +4,7 @@ import 'package:codium/core/utils/pdf_validator.dart';
 import 'package:codium/core/utils/retry_logic.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/domain/models/pdf_reader/bookmark.dart';
-import 'package:codium/domain/usecases/save_bookmark_usecase.dart';
-import 'package:codium/domain/usecases/update_reading_progress_usecase.dart';
-import 'package:codium/domain/usecases/validate_and_open_pdf_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_rendering_config.dart';
 import 'package:equatable/equatable.dart';
@@ -57,7 +55,7 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
     emit(PdfReaderLoadingState());
     try {
       final result = await RetryLogic.retry(
-        operation: () => _validateAndOpenPdfUseCase.execute(event.bookId),
+        operation: () => _validateAndOpenPdfUseCase(event.bookId),
         maxAttempts: 2,
         shouldRetry: (e) => e is DatabaseError,
       );
@@ -155,7 +153,7 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
       }
 
       try {
-        await _updateReadingProgressUseCase.execute(
+        await _updateReadingProgressUseCase(
           bookId: currentState.book.id,
           currentPage: event.pageNumber,
         );
@@ -199,7 +197,7 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
           createdAt: DateTime.now(),
         );
 
-        await _saveBookmarkUseCase.execute(bookmark);
+        await _saveBookmarkUseCase(bookmark);
       } catch (e, st) {
         GetIt.I<Talker>().handle(e, st);
         final error = e is AppError ? e : const UnknownError();

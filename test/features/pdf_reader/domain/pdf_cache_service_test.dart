@@ -1,7 +1,6 @@
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:pdfx/pdfx.dart';
 
 @GenerateMocks([PdfPageImage])

@@ -1,13 +1,13 @@
 import 'package:codium/core/widgets/course_card.dart';
 import 'package:codium/core/widgets/course_carousel.dart';
-import 'package:codium/core/widgets/course_search_bar.dart';
-import 'package:codium/core/widgets/smart/user_balance_card.dart';
 import 'package:codium/core/widgets/user_provider.dart';
 import 'package:codium/core/widgets/wrapper.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/main/bloc/main/main_bloc.dart';
 import 'package:codium/features/main/bloc/main_carousel/main_carousel_bloc.dart';
 import 'package:codium/features/main/bloc/user_statistics/user_statistics_bloc.dart';
+import 'package:codium/features/main/view/widgets/course_search_bar.dart';
+import 'package:codium/features/main/view/widgets/user_balance_card.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,8 +24,9 @@ class MainScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GetIt.I<UserStatisticsBloc>()
-            ..add(UserStatisticsLoadEvent(userId: user.id)),
+          create: (context) =>
+              GetIt.I<UserStatisticsBloc>()
+                ..add(UserStatisticsLoadEvent(userId: user.id)),
         ),
         BlocProvider(
           create: (context) =>
@@ -51,10 +52,7 @@ class _MainScreenContent extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          S.of(context).mainTitle,
-          style: theme.textTheme.titleLarge,
-        ),
+        title: Text(S.of(context).mainTitle, style: theme.textTheme.titleLarge),
       ),
       body: _MainScreenBody(user: user),
     );
@@ -90,8 +88,7 @@ class _UserStatisticsSection extends StatelessWidget {
     return BlocBuilder<UserStatisticsBloc, UserStatisticsState>(
       builder: (context, state) {
         return switch (state) {
-          UserStatisticsLoadSuccessState() =>
-            const UserBalanceCard(),
+          UserStatisticsLoadSuccessState() => const UserBalanceCard(),
           UserStatisticsLoadErrorState() => ErrorWidget(state.message),
           _ => const Center(child: CircularProgressIndicator()),
         };
@@ -110,24 +107,21 @@ class _RecommendationsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          S.of(context).recommend,
-          style: theme.textTheme.titleSmall,
-        ),
+        Text(S.of(context).recommend, style: theme.textTheme.titleSmall),
         const SizedBox(height: 8),
         BlocBuilder<MainCarouselBloc, MainCarouselState>(
           builder: (context, state) {
             return switch (state) {
               MainCarouselLoadSuccessState() => CourseCarousel(
-                  courseCards: state.courses
-                      .map(
-                        (e) => CourseCard(
-                          course: e,
-                          onPressed: () => context.push('/course/${e.id}'),
-                        ),
-                      )
-                      .toList(),
-                ),
+                courseCards: state.courses
+                    .map(
+                      (e) => CourseCard(
+                        course: e,
+                        onPressed: () => context.push('/course/${e.id}'),
+                      ),
+                    )
+                    .toList(),
+              ),
               MainCarouselLoadErrorState() => Text(state.message),
               _ => const Center(child: CircularProgressIndicator()),
             };
@@ -148,10 +142,7 @@ class _CoursesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          S.of(context).courses,
-          style: theme.textTheme.titleSmall,
-        ),
+        Text(S.of(context).courses, style: theme.textTheme.titleSmall),
         const SizedBox(height: 8),
         const CourseSearchBar(),
         const SizedBox(height: 16),
@@ -159,20 +150,20 @@ class _CoursesSection extends StatelessWidget {
           builder: (context, state) {
             return switch (state) {
               MainCoursesLoadSuccessState() => ListView(
-                  physics: const ClampingScrollPhysics(),
-                  shrinkWrap: true,
-                  children: state.courses
-                      .map(
-                        (e) => Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: CourseCard(
-                            course: e,
-                            onPressed: () => context.push('/course/${e.id}'),
-                          ),
+                physics: const ClampingScrollPhysics(),
+                shrinkWrap: true,
+                children: state.courses
+                    .map(
+                      (e) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: CourseCard(
+                          course: e,
+                          onPressed: () => context.push('/course/${e.id}'),
                         ),
-                      )
-                      .toList(),
-                ),
+                      ),
+                    )
+                    .toList(),
+              ),
               MainCoursesLoadErrorState() => Text(state.message),
               _ => const Center(child: CircularProgressIndicator()),
             };

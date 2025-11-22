@@ -1,5 +1,5 @@
 import 'package:codium/domain/models/course/course.dart';
-import 'package:codium/domain/usecases/get_courses_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +22,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   ) async {
     emit(MainCoursesLoadingState());
     try {
-      final courses = await _getCoursesUseCase.execute();
+      final courses = await _getCoursesUseCase();
       emit(MainCoursesLoadSuccessState(courses));
     } catch (e) {
       emit(MainCoursesLoadErrorState(e.toString()));

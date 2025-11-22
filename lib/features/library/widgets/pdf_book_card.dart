@@ -198,9 +198,9 @@ class PdfBookCard extends StatelessWidget {
           title: Text(localizations.pdfBookRenameTitle),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(
-              labelText: 'Title',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: localizations.pdfBookRenameLabel,
+              border: const OutlineInputBorder(),
             ),
             autofocus: true,
           ),

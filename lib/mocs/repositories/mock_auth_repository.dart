@@ -17,7 +17,7 @@ class MockAuthRepository implements IAuthRepository {
     await Future.delayed(const Duration(seconds: 3)); // Имитация задержки
 
     if (_shouldFail) {
-      throw AuthException('Ошибка регистрации');
+      throw AuthException('Sign up error');
     }
 
     _currentUser = mockUser;
@@ -32,7 +32,7 @@ class MockAuthRepository implements IAuthRepository {
     await Future.delayed(const Duration(seconds: 1));
 
     if (_shouldFail) {
-      throw AuthException('Неверные учетные данные');
+      throw AuthException('Invalid credentials');
     }
 
     _currentUser = mockUser;

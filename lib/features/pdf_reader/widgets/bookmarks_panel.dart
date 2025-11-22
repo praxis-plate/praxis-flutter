@@ -89,55 +89,89 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
       ),
       child: Column(
         children: [
-          _buildHeader(),
-          Expanded(child: _buildContent()),
+          _BookmarksPanelHeader(onClose: widget.onClose),
+          Expanded(
+            child: _BookmarksPanelContent(
+              isLoading: _isLoading,
+              error: _error,
+              bookmarks: _bookmarks,
+              onRetry: _loadBookmarks,
+              onBookmarkTap: widget.onBookmarkTap,
+              onDeleteBookmark: _deleteBookmark,
+            ),
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildHeader() {
-    final l10n = S.of(context);
+class _BookmarksPanelHeader extends StatelessWidget {
+  final VoidCallback onClose;
+
+  const _BookmarksPanelHeader({required this.onClose});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
+        color: theme.colorScheme.primaryContainer,
         border: Border(
           bottom: BorderSide(
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+            color: theme.colorScheme.primary.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.bookmark,
-            color: Theme.of(context).colorScheme.onPrimaryContainer,
-          ),
+          Icon(Icons.bookmark, color: theme.colorScheme.onPrimaryContainer),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              l10n.bookmarksTitle,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              s.bookmarksTitle,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: theme.colorScheme.onPrimaryContainer,
               ),
             ),
           ),
-          IconButton(icon: const Icon(Icons.close), onPressed: widget.onClose),
+          IconButton(icon: const Icon(Icons.close), onPressed: onClose),
         ],
       ),
     );
   }
+}
 
-  Widget _buildContent() {
-    final l10n = S.of(context);
+class _BookmarksPanelContent extends StatelessWidget {
+  final bool isLoading;
+  final String? error;
+  final List<Bookmark> bookmarks;
+  final VoidCallback onRetry;
+  final Function(int) onBookmarkTap;
+  final Function(String) onDeleteBookmark;
 
-    if (_isLoading) {
+  const _BookmarksPanelContent({
+    required this.isLoading,
+    required this.error,
+    required this.bookmarks,
+    required this.onRetry,
+    required this.onBookmarkTap,
+    required this.onDeleteBookmark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+
+    if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_error != null) {
+    if (error != null) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -151,22 +185,19 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
               ),
               const SizedBox(height: 16),
               Text(
-                l10n.bookmarksErrorLoading,
+                s.bookmarksErrorLoading,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _loadBookmarks,
-                child: Text(l10n.bookmarksRetry),
-              ),
+              ElevatedButton(onPressed: onRetry, child: Text(s.bookmarksRetry)),
             ],
           ),
         ),
       );
     }
 
-    if (_bookmarks.isEmpty) {
+    if (bookmarks.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -180,14 +211,14 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
               ),
               const SizedBox(height: 16),
               Text(
-                l10n.bookmarksNoBookmarks,
+                s.bookmarksNoBookmarks,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                l10n.bookmarksTapToAdd,
+                s.bookmarksTapToAdd,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -200,15 +231,32 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
     }
 
     return ListView.builder(
-      itemCount: _bookmarks.length,
+      itemCount: bookmarks.length,
       itemBuilder: (context, index) {
-        final bookmark = _bookmarks[index];
-        return _buildBookmarkItem(bookmark);
+        final bookmark = bookmarks[index];
+        return _BookmarkItem(
+          bookmark: bookmark,
+          onTap: onBookmarkTap,
+          onDelete: onDeleteBookmark,
+        );
       },
     );
   }
+}
 
-  Widget _buildBookmarkItem(Bookmark bookmark) {
+class _BookmarkItem extends StatelessWidget {
+  final Bookmark bookmark;
+  final Function(int) onTap;
+  final Function(String) onDelete;
+
+  const _BookmarkItem({
+    required this.bookmark,
+    required this.onTap,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = S.of(context);
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -229,14 +277,14 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
             : null,
         trailing: IconButton(
           icon: const Icon(Icons.delete_outline),
-          onPressed: () => _showDeleteConfirmation(bookmark),
+          onPressed: () => _showDeleteConfirmation(context, bookmark),
         ),
-        onTap: () => widget.onBookmarkTap(bookmark.pageNumber),
+        onTap: () => onTap(bookmark.pageNumber),
       ),
     );
   }
 
-  void _showDeleteConfirmation(Bookmark bookmark) {
+  void _showDeleteConfirmation(BuildContext context, Bookmark bookmark) {
     final l10n = S.of(context);
     showDialog(
       context: context,
@@ -251,7 +299,7 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
           TextButton(
             onPressed: () {
               Navigator.of(dialogContext).pop();
-              _deleteBookmark(bookmark.id);
+              onDelete(bookmark.id);
             },
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.error,

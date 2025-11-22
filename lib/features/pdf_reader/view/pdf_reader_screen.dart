@@ -1,10 +1,10 @@
 import 'package:codium/core/config/feature_flags.dart';
 import 'package:codium/core/exceptions/app_error_extensions.dart';
-import 'package:codium/core/widgets/feedback/offline_indicator.dart';
-import 'package:codium/domain/services/connectivity_service.dart';
+import 'package:codium/domain/services/services.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:codium/features/ai_explanation/widgets/explanation_bottom_sheet.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
+import 'package:codium/features/pdf_reader/view/widgets/offline_indicator.dart';
 import 'package:codium/features/pdf_reader/widgets/bookmarks_panel.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +95,9 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
     return KeyboardListener(
       focusNode: _focusNode,
       autofocus: true,
@@ -119,7 +122,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
               if (state is PdfReaderLoadedState) {
                 return Text(state.book.title);
               }
-              return const Text('PDF Reader');
+              return Text(s.pdfReaderTitleDefault);
             },
           ),
           actions: [
@@ -129,7 +132,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                   if (state is PdfReaderLoadedState) {
                     return IconButton(
                       icon: const Icon(Icons.lightbulb_outline),
-                      tooltip: S.of(context).pdfReaderExplainPage,
+                      tooltip: s.pdfReaderExplainPage,
                       onPressed: _isConnected
                           ? () => _showExplainPageDialog(context, state)
                           : null,
@@ -139,10 +142,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                 },
               ),
             IconButton(
-              icon: Icon(
-                Icons.bookmark,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              icon: Icon(Icons.bookmark, color: theme.colorScheme.primary),
               onPressed: () {
                 setState(() {
                   _showBookmarksPanel = !_showBookmarksPanel;
@@ -348,7 +348,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                             ),
                           ),
                         ),
-                        _buildPageIndicator(state),
+                        _PageIndicator(state: state),
                       ],
                     ),
                     if (_showBookmarksPanel)
@@ -375,29 +375,12 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                 );
               }
 
-              return const Center(child: Text('No PDF loaded'));
+              return Center(
+                child: Text(S.of(context).pdfReaderNoPdfLoadedMessage),
+              );
             },
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildPageIndicator(PdfReaderLoadedState state) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Page ${state.currentPage + 1} of ${state.book.totalPages}',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 16,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -478,11 +461,14 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
             SelectTextEvent(selectedText: text, pageNumber: state.currentPage),
           );
 
+          final s = S.of(context);
           context.read<AiExplanationBloc>().add(
             RequestExplanationEvent(
               selectedText: text,
-              context:
-                  'From ${state.book.title}, page ${state.currentPage + 1}',
+              context: s.pdfReaderContextInfo(
+                state.book.title,
+                state.currentPage + 1,
+              ),
               pdfBookId: state.book.id,
               pageNumber: state.currentPage,
             ),
@@ -764,6 +750,32 @@ class _EnhancedTextSelectionDialogState
           ],
         ),
       ],
+    );
+  }
+}
+
+class _PageIndicator extends StatelessWidget {
+  final PdfReaderLoadedState state;
+
+  const _PageIndicator({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Page ${state.currentPage + 1} of ${state.book.totalPages}',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,18 +1,6 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/domain/repositories/abstract_user_statistics_repository.dart';
 import 'package:codium/domain/repositories/repositories.dart';
-import 'package:codium/domain/usecases/auth/check_auth_status_usecase.dart';
-import 'package:codium/domain/usecases/auth/sign_in_usecase.dart';
-import 'package:codium/domain/usecases/auth/sign_out_usecase.dart';
-import 'package:codium/domain/usecases/auth/sign_up_usecase.dart';
-import 'package:codium/domain/usecases/generate_activity_usecase.dart';
-import 'package:codium/domain/usecases/get_course_detail_usecase.dart';
-import 'package:codium/domain/usecases/get_courses_usecase.dart';
-import 'package:codium/domain/usecases/get_learning_data_usecase.dart';
-import 'package:codium/domain/usecases/get_main_carousel_courses.dart';
-import 'package:codium/domain/usecases/get_profile_usecase.dart';
-import 'package:codium/domain/usecases/get_user_statistics_usecase.dart';
-import 'package:codium/domain/usecases/purchase_course.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/auth/bloc/sign_in/sign_in_cubit.dart';
 import 'package:codium/features/auth/bloc/sign_up/sign_up_cubit.dart';
 import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
@@ -49,15 +37,9 @@ class MockDependencyInjection {
 
   void _registerMockRepositories() {
     GetIt.I
-      ..registerLazySingleton<IAuthRepository>(
-        () => MockAuthRepository(),
-      )
-      ..registerLazySingleton<ICourseRepository>(
-        () => MockCourseRepository(),
-      )
-      ..registerLazySingleton<IUserRepository>(
-        () => MockUserRepository(),
-      )
+      ..registerLazySingleton<IAuthRepository>(() => MockAuthRepository())
+      ..registerLazySingleton<ICourseRepository>(() => MockCourseRepository())
+      ..registerLazySingleton<IUserRepository>(() => MockUserRepository())
       ..registerLazySingleton<IUserStatisticsRepository>(
         () => MockUserStatisticsRepository(),
       );
@@ -71,30 +53,18 @@ class MockDependencyInjection {
           GetIt.I<IUserRepository>(),
         ),
       )
-      ..registerFactory(
-        () => SignInUseCase(GetIt.I<IAuthRepository>()),
-      )
-      ..registerFactory(
-        () => SignUpUseCase(GetIt.I<IAuthRepository>()),
-      )
-      ..registerFactory(
-        () => SignOutUseCase(GetIt.I<IAuthRepository>()),
-      )
-      ..registerFactory(
-        () => GetProfileUseCase(GetIt.I<IUserRepository>()),
-      )
-      ..registerFactory(
-        () => GetCoursesUseCase(GetIt.I<ICourseRepository>()),
-      )
+      ..registerFactory(() => SignInUseCase(GetIt.I<IAuthRepository>()))
+      ..registerFactory(() => SignUpUseCase(GetIt.I<IAuthRepository>()))
+      ..registerFactory(() => SignOutUseCase(GetIt.I<IAuthRepository>()))
+      ..registerFactory(() => GetProfileUseCase(GetIt.I<IUserRepository>()))
+      ..registerFactory(() => GetCoursesUseCase(GetIt.I<ICourseRepository>()))
       ..registerFactory(
         () => GetMainCarouselCoursesUseCase(GetIt.I<ICourseRepository>()),
       )
       ..registerFactory(
         () => GetUserStatisticsUseCase(GetIt.I<IUserStatisticsRepository>()),
       )
-      ..registerFactory(
-        () => GenerateActivityUsecase(),
-      )
+      ..registerFactory(() => GenerateActivityUsecase())
       ..registerFactory(
         () => GetCourseDetailUseCase(GetIt.I<ICourseRepository>()),
       )
@@ -125,14 +95,10 @@ class MockDependencyInjection {
         ),
       )
       ..registerFactory(
-        () => ProfileBloc(
-          getProfileUseCase: GetIt.I<GetProfileUseCase>(),
-        ),
+        () => ProfileBloc(getProfileUseCase: GetIt.I<GetProfileUseCase>()),
       )
       ..registerFactory(
-        () => MainBloc(
-          getCoursesUseCase: GetIt.I<GetCoursesUseCase>(),
-        ),
+        () => MainBloc(getCoursesUseCase: GetIt.I<GetCoursesUseCase>()),
       )
       ..registerFactory(
         () => MainCarouselBloc(
@@ -161,11 +127,7 @@ class MockDependencyInjection {
           purchaseCourseUseCase: GetIt.I<PurchaseCourseUseCase>(),
         ),
       )
-      ..registerFactory(
-        () => SignUpCubit(),
-      )
-      ..registerFactory(
-        () => SignInCubit(),
-      );
+      ..registerFactory(() => SignUpCubit())
+      ..registerFactory(() => SignInCubit());
   }
 }

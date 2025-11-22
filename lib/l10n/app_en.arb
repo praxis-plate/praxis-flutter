@@ -189,5 +189,17 @@
   "courseDetailsUnknown": "Unknown",
   "courseDetailsLessons": "{count} уроков",
   "courseDetailsGet": "Get",
-  "courseDetailsContinue": "Continue"
+  "courseDetailsContinue": "Continue",
+  "courseDetailsTitle": "Course Details",
+  "courseDetailsPrice": "Price",
+  "courseDetailsAuthor": "Author",
+  "courseDetailsRating": "Rating",
+  "courseDetailsLessonsLabel": "Lessons",
+  "courseDetailsRecommend": "Recommend",
+  "pdfBookRenameLabel": "Title",
+  "pdfReaderTitleDefault": "PDF Reader",
+  "pdfReaderNoPdfLoadedMessage": "No PDF loaded",
+  "pdfReaderContextInfo": "From {title}, page {page}",
+  "learningContinue": "Continue",
+  "errorRateLimitMessage": "API rate limit exceeded. Please wait a moment and try again."
 }

@@ -1,8 +1,5 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
-import 'package:codium/domain/usecases/save_bookmark_usecase.dart';
-import 'package:codium/domain/usecases/update_reading_progress_usecase.dart';
-import 'package:codium/domain/usecases/validate_and_open_pdf_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_rendering_config.dart';
@@ -61,7 +58,7 @@ void main() {
         );
 
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: book));
 
         final bloc = PdfReaderBloc(
@@ -114,7 +111,7 @@ void main() {
           );
 
           when(
-            mockValidateAndOpenPdfUseCase.execute(any),
+            mockValidateAndOpenPdfUseCase(argThat(anything)),
           ).thenAnswer((_) async => ValidatedPdfResult.success(book: book));
 
           final bloc = PdfReaderBloc(
@@ -165,7 +162,7 @@ void main() {
         );
 
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: book));
 
         final bloc = PdfReaderBloc(

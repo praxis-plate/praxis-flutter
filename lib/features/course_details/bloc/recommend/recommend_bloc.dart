@@ -1,5 +1,5 @@
 import 'package:codium/domain/models/models.dart';
-import 'package:codium/domain/usecases/get_recommended_courses_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -13,8 +13,8 @@ class RecommendBloc extends Bloc<RecommendEvent, RecommendState> {
 
   RecommendBloc({
     required GetRecommendedCoursesUseCase getRecommendedCoursesUseCase,
-  })  : _getRecommendedCoursesUseCase = getRecommendedCoursesUseCase,
-        super(RecommendInitialState()) {
+  }) : _getRecommendedCoursesUseCase = getRecommendedCoursesUseCase,
+       super(RecommendInitialState()) {
     on<RecommendLoadEvent>(_onRecommendLoadEvent);
   }
 
@@ -24,13 +24,10 @@ class RecommendBloc extends Bloc<RecommendEvent, RecommendState> {
   ) async {
     emit(RecommendLoadingState());
     try {
-      final coursesStatistics =
-          await _getRecommendedCoursesUseCase.execute(event.userId);
-      emit(
-        RecommendLoadSuccessState(
-          recommendCourses: coursesStatistics,
-        ),
+      final coursesStatistics = await _getRecommendedCoursesUseCase(
+        event.userId,
       );
+      emit(RecommendLoadSuccessState(recommendCourses: coursesStatistics));
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
       emit(RecommendLoadErrorState(message: e.toString()));

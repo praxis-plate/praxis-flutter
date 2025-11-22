@@ -15,12 +15,13 @@ class AuthValidator {
 
   static void validateCredentials(String email, String password) {
     if (!isValidEmail(email)) {
-      throw AuthValidationException('Некорректный формат email');
+      throw AuthValidationException('Invalid email format');
     }
 
     if (!isValidPassword(password)) {
       throw AuthValidationException(
-          'Пароль должен содержать минимум $_minPasswordLength символов',);
+        'Password must contain at least $_minPasswordLength characters',
+      );
     }
   }
 }

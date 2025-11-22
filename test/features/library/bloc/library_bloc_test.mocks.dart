@@ -6,10 +6,11 @@
 import 'dart:async' as _i4;
 
 import 'package:codium/domain/models/pdf_library/pdf_book.dart' as _i5;
-import 'package:codium/domain/models/pdf_reader/bookmark.dart' as _i6;
-import 'package:codium/domain/repositories/pdf_repository.dart' as _i3;
-import 'package:codium/domain/usecases/get_pdf_list_usecase.dart' as _i7;
-import 'package:codium/domain/usecases/import_pdf_usecase.dart' as _i8;
+import 'package:codium/domain/usecases/pdf/delete_pdf_usecase.dart' as _i7;
+import 'package:codium/domain/usecases/pdf/get_pdf_list_usecase.dart' as _i3;
+import 'package:codium/domain/usecases/pdf/import_pdf_usecase.dart' as _i6;
+import 'package:codium/domain/usecases/pdf/toggle_favorite_pdf_usecase.dart'
+    as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:talker_flutter/talker_flutter.dart' as _i2;
 
@@ -39,105 +40,18 @@ class _FakeTalkerFilter_1 extends _i1.SmartFake implements _i2.TalkerFilter {
     : super(parent, parentInvocation);
 }
 
-/// A class which mocks [IPdfRepository].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockIPdfRepository extends _i1.Mock implements _i3.IPdfRepository {
-  MockIPdfRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i4.Future<List<_i5.PdfBook>> getAllBooks() =>
-      (super.noSuchMethod(
-            Invocation.method(#getAllBooks, []),
-            returnValue: _i4.Future<List<_i5.PdfBook>>.value(<_i5.PdfBook>[]),
-          )
-          as _i4.Future<List<_i5.PdfBook>>);
-
-  @override
-  _i4.Future<_i5.PdfBook?> getBookById(String? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#getBookById, [id]),
-            returnValue: _i4.Future<_i5.PdfBook?>.value(),
-          )
-          as _i4.Future<_i5.PdfBook?>);
-
-  @override
-  _i4.Future<void> importPdf(String? filePath) =>
-      (super.noSuchMethod(
-            Invocation.method(#importPdf, [filePath]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
-  _i4.Future<void> updateBook(_i5.PdfBook? book) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateBook, [book]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
-  _i4.Future<void> updateReadingProgress(String? bookId, int? page) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateReadingProgress, [bookId, page]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
-  _i4.Future<void> deleteBook(String? bookId) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteBook, [bookId]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
-  _i4.Future<List<_i6.Bookmark>> getBookmarks(String? bookId) =>
-      (super.noSuchMethod(
-            Invocation.method(#getBookmarks, [bookId]),
-            returnValue: _i4.Future<List<_i6.Bookmark>>.value(<_i6.Bookmark>[]),
-          )
-          as _i4.Future<List<_i6.Bookmark>>);
-
-  @override
-  _i4.Future<void> addBookmark(_i6.Bookmark? bookmark) =>
-      (super.noSuchMethod(
-            Invocation.method(#addBookmark, [bookmark]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
-  _i4.Future<void> deleteBookmark(String? bookmarkId) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteBookmark, [bookmarkId]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-}
-
 /// A class which mocks [GetPdfListUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGetPdfListUseCase extends _i1.Mock implements _i7.GetPdfListUseCase {
+class MockGetPdfListUseCase extends _i1.Mock implements _i3.GetPdfListUseCase {
   MockGetPdfListUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<List<_i5.PdfBook>> execute() =>
+  _i4.Future<List<_i5.PdfBook>> call() =>
       (super.noSuchMethod(
-            Invocation.method(#execute, []),
+            Invocation.method(#call, []),
             returnValue: _i4.Future<List<_i5.PdfBook>>.value(<_i5.PdfBook>[]),
           )
           as _i4.Future<List<_i5.PdfBook>>);
@@ -146,15 +60,52 @@ class MockGetPdfListUseCase extends _i1.Mock implements _i7.GetPdfListUseCase {
 /// A class which mocks [ImportPdfUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockImportPdfUseCase extends _i1.Mock implements _i8.ImportPdfUseCase {
+class MockImportPdfUseCase extends _i1.Mock implements _i6.ImportPdfUseCase {
   MockImportPdfUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<void> execute(String? filePath) =>
+  _i4.Future<void> call(String? filePath) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, [filePath]),
+            Invocation.method(#call, [filePath]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+}
+
+/// A class which mocks [DeletePdfUseCase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDeletePdfUseCase extends _i1.Mock implements _i7.DeletePdfUseCase {
+  MockDeletePdfUseCase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<void> call(String? bookId) =>
+      (super.noSuchMethod(
+            Invocation.method(#call, [bookId]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+}
+
+/// A class which mocks [ToggleFavoritePdfUseCase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockToggleFavoritePdfUseCase extends _i1.Mock
+    implements _i8.ToggleFavoritePdfUseCase {
+  MockToggleFavoritePdfUseCase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<void> call(String? bookId) =>
+      (super.noSuchMethod(
+            Invocation.method(#call, [bookId]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )

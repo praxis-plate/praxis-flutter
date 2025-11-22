@@ -2,7 +2,7 @@ import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
 import 'package:codium/domain/repositories/ai_repository.dart';
 import 'package:codium/domain/repositories/storage_repository.dart';
-import 'package:codium/domain/usecases/explain_text_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mockito/annotations.dart';
@@ -56,7 +56,7 @@ void main() {
             mockStorageRepository.saveExplanation(any),
           ).thenAnswer((_) async => {});
 
-          final result = await useCase.execute(
+          final result = await useCase(
             selectedText: testCase.selectedText,
             context: testCase.context,
             pdfBookId: testCase.pdfBookId,
@@ -152,7 +152,7 @@ void main() {
             mockStorageRepository.saveExplanation(any),
           ).thenAnswer((_) async => {});
 
-          final result = await useCase.execute(
+          final result = await useCase(
             selectedText: testCase.selectedText,
             context: testCase.context,
             pdfBookId: testCase.pdfBookId,
@@ -198,7 +198,7 @@ void main() {
           mockStorageRepository.saveExplanation(any),
         ).thenAnswer((_) async => {});
 
-        final result = await useCase.execute(
+        final result = await useCase(
           selectedText: 'test text',
           context: 'test context',
           pdfBookId: 'book-boundary-test',
@@ -238,7 +238,7 @@ void main() {
 
         final results = <Explanation>[];
         for (var i = 0; i < 10; i++) {
-          final result = await useCase.execute(
+          final result = await useCase(
             selectedText: selectedText,
             context: context,
             pdfBookId: pdfBookId,

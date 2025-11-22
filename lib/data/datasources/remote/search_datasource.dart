@@ -1,8 +1,9 @@
 import 'package:codium/core/config/env_config.dart';
+import 'package:codium/domain/datasources/i_search_datasource.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
 import 'package:dio/dio.dart';
 
-class SearchDataSource {
+class SearchDataSource implements ISearchDataSource {
   SearchDataSource() : _dio = _initializeDio();
 
   static Dio _initializeDio() {
@@ -18,6 +19,7 @@ class SearchDataSource {
 
   final Dio _dio;
 
+  @override
   Future<List<SearchSource>> searchWeb(String query) async {
     try {
       final response = await _dio.get(

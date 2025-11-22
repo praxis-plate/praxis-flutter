@@ -1,7 +1,6 @@
 import 'package:codium/core/exceptions/user_statistics_exception.dart';
 import 'package:codium/data/repositories/user_statistics_repository.dart';
-import 'package:codium/domain/datasources/abstract_user_statistics_datasource.dart';
-import 'package:codium/domain/datasources/abstract_user_statistics_local_datasource.dart';
+import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

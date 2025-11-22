@@ -1,5 +1,5 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/domain/usecases/purchase_course.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -16,9 +16,9 @@ class CoursePurchasingBloc
   CoursePurchasingBloc({
     required AuthBloc authBloc,
     required PurchaseCourseUseCase purchaseCourseUseCase,
-  })  : _authBloc = authBloc,
-        _purchaseCourseUseCase = purchaseCourseUseCase,
-        super(CoursePurchasingInitialState()) {
+  }) : _authBloc = authBloc,
+       _purchaseCourseUseCase = purchaseCourseUseCase,
+       super(CoursePurchasingInitialState()) {
     on<CoursePurchasingRequestEvent>(_onPurchasingRequestEvent);
   }
 
@@ -28,7 +28,7 @@ class CoursePurchasingBloc
   ) async {
     emit(CoursePurchasingLoadingState(event.courseId));
     try {
-      final updatedUser = await _purchaseCourseUseCase.execute(event.courseId);
+      final updatedUser = await _purchaseCourseUseCase(event.courseId);
       _authBloc.add(AuthUpdateUserEvent(updatedUser: updatedUser));
       emit(CoursePurchasingLoadSuccessState(event.courseId));
     } catch (e, st) {

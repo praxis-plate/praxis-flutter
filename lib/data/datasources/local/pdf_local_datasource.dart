@@ -1,17 +1,20 @@
 import 'package:codium/data/datasources/local/app_database.dart';
+import 'package:codium/domain/datasources/i_pdf_local_datasource.dart';
 import 'package:codium/domain/models/pdf_library/pdf_library.dart';
 import 'package:drift/drift.dart';
 
-class PdfLocalDataSource {
+class PdfLocalDataSource implements IPdfLocalDataSource {
   final AppDatabase _db;
 
   PdfLocalDataSource(this._db);
 
+  @override
   Future<List<PdfBook>> getAllBooks() async {
     final entities = await _db.managers.pdfBooks.get();
     return entities.map(_entityToDomain).toList();
   }
 
+  @override
   Future<PdfBook?> getBookById(String id) async {
     final entity = await _db.managers.pdfBooks
         .filter((f) => f.id(id))
@@ -21,6 +24,7 @@ class PdfLocalDataSource {
     return _entityToDomain(entity);
   }
 
+  @override
   Future<void> insertBook(PdfBook book) async {
     await _db.managers.pdfBooks.create(
       (o) => o(
@@ -36,6 +40,7 @@ class PdfLocalDataSource {
     );
   }
 
+  @override
   Future<void> updateBook(PdfBook book) async {
     await _db.managers.pdfBooks
         .filter((f) => f.id(book.id))
@@ -52,6 +57,7 @@ class PdfLocalDataSource {
         );
   }
 
+  @override
   Future<void> deleteBook(String id) async {
     await _db.managers.pdfBooks.filter((f) => f.id(id)).delete();
   }

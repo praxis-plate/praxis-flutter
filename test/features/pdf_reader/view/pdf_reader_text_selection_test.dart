@@ -13,7 +13,6 @@ void main() {
 
         for (final testCase in testCases) {
           bool explainCalled = false;
-          bool dismissCalled = false;
 
           await tester.pumpWidget(
             MaterialApp(
@@ -23,9 +22,7 @@ void main() {
                   onExplain: () {
                     explainCalled = true;
                   },
-                  onDismiss: () {
-                    dismissCalled = true;
-                  },
+                  onDismiss: () {},
                 ),
               ),
             ),

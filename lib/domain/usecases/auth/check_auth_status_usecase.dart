@@ -8,7 +8,7 @@ class CheckAuthStatusUseCase {
 
   CheckAuthStatusUseCase(this._authRepository, this._userRepository);
 
-  Future<User?> execute() async {
+  Future<User?> call() async {
     try {
       final isAuth = await _authRepository.isAuthenticated();
 

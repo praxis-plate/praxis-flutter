@@ -1,8 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
-import 'package:codium/domain/usecases/save_bookmark_usecase.dart';
-import 'package:codium/domain/usecases/update_reading_progress_usecase.dart';
-import 'package:codium/domain/usecases/validate_and_open_pdf_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_rendering_config.dart';
@@ -32,7 +30,7 @@ void main() {
       mockCacheService = MockPdfCacheService();
     });
 
-    final testBook = PdfBook(
+    const testBook = PdfBook(
       id: 'test-id',
       title: 'Test Book',
       filePath: '/path/to/test.pdf',
@@ -44,7 +42,7 @@ void main() {
       'should enable lazy loading for large PDFs',
       build: () {
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         return PdfReaderBloc(
           validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
@@ -68,7 +66,7 @@ void main() {
       build: () {
         final smallBook = testBook.copyWith(totalPages: 50);
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: smallBook));
         return PdfReaderBloc(
           validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
@@ -93,7 +91,7 @@ void main() {
       'should clear cache when opening PDF',
       build: () {
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         return PdfReaderBloc(
           validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
@@ -112,7 +110,7 @@ void main() {
       'should preload adjacent pages when progressive rendering is enabled',
       build: () {
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         return PdfReaderBloc(
           validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
@@ -134,7 +132,7 @@ void main() {
       'should save scroll position',
       build: () {
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         return PdfReaderBloc(
           validateAndOpenPdfUseCase: mockValidateAndOpenPdfUseCase,
@@ -143,7 +141,7 @@ void main() {
           cacheService: mockCacheService,
         );
       },
-      seed: () => PdfReaderLoadedState(book: testBook, currentPage: 5),
+      seed: () => const PdfReaderLoadedState(book: testBook, currentPage: 5),
       act: (bloc) => bloc.add(const SaveScrollPositionEvent(123.45)),
       expect: () => [
         isA<PdfReaderLoadedState>().having(
@@ -158,12 +156,12 @@ void main() {
       'should preload adjacent pages on page change',
       build: () {
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: testBook));
         when(
-          mockUpdateReadingProgressUseCase.execute(
-            bookId: anyNamed('bookId'),
-            currentPage: anyNamed('currentPage'),
+          mockUpdateReadingProgressUseCase(
+            bookId: argThat(anything, named: 'bookId'),
+            currentPage: argThat(anything, named: 'currentPage'),
           ),
         ).thenAnswer((_) async {});
         return PdfReaderBloc(
@@ -176,7 +174,7 @@ void main() {
           ),
         );
       },
-      seed: () => PdfReaderLoadedState(book: testBook, currentPage: 5),
+      seed: () => const PdfReaderLoadedState(book: testBook, currentPage: 5),
       act: (bloc) => bloc.add(const ChangePageEvent(10)),
       verify: (_) {
         verify(mockCacheService.preloadAdjacentPages(10, 150)).called(1);

@@ -1,6 +1,6 @@
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:codium/domain/repositories/pdf_repository.dart';
-import 'package:codium/domain/usecases/import_pdf_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mockito/annotations.dart';
@@ -50,7 +50,7 @@ void main() {
             ],
           );
 
-          await useCase.execute(testCase.filePath);
+          await useCase(testCase.filePath);
 
           verify(mockRepository.importPdf(testCase.filePath)).called(1);
 
@@ -74,7 +74,7 @@ void main() {
 
       when(mockRepository.importPdf(filePath)).thenAnswer((_) async {});
 
-      await useCase.execute(filePath);
+      await useCase(filePath);
 
       verify(mockRepository.importPdf(filePath)).called(1);
     });
@@ -82,7 +82,7 @@ void main() {
     test('should throw ArgumentError when file path is empty', () async {
       const filePath = '';
 
-      expect(() => useCase.execute(filePath), throwsA(isA<ArgumentError>()));
+      expect(() => useCase(filePath), throwsA(isA<ArgumentError>()));
 
       verifyNever(mockRepository.importPdf(any));
     });
@@ -90,7 +90,7 @@ void main() {
     test('should throw ArgumentError when file is not a PDF', () async {
       const filePath = '/path/to/document.txt';
 
-      expect(() => useCase.execute(filePath), throwsA(isA<ArgumentError>()));
+      expect(() => useCase(filePath), throwsA(isA<ArgumentError>()));
 
       verifyNever(mockRepository.importPdf(any));
     });
@@ -102,7 +102,7 @@ void main() {
         mockRepository.importPdf(filePath),
       ).thenThrow(Exception('Database error'));
 
-      expect(() => useCase.execute(filePath), throwsA(isA<Exception>()));
+      expect(() => useCase(filePath), throwsA(isA<Exception>()));
     });
   });
 }

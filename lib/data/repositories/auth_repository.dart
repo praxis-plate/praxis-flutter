@@ -1,6 +1,6 @@
 import 'package:codium/core/exceptions/auth_exceptions.dart';
 import 'package:codium/data/datasources/local/local_auth_datasource.dart';
-import 'package:codium/domain/datasources/abstract_auth_datasource.dart';
+import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/abstract_auth_repository.dart';
 import 'package:get_it/get_it.dart';
@@ -17,26 +17,27 @@ final class AuthRepository implements IAuthRepository {
       final user = await _dataSource.signUp(email: email, password: password);
 
       if (user == null) {
-        throw AuthException('Не удалось создать пользователя');
+        throw AuthException('Failed to create user');
       }
 
       GetIt.I<Talker>().info('User registered successfully: ${user.email}');
 
       return user;
+    } on AuthUserAlreadyExistsException {
+      rethrow;
+    } on AuthException {
+      rethrow;
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
 
-      if (e is AuthException) {
-        rethrow;
-      }
-
       final errorMessage = e.toString();
-      if (errorMessage.contains('already exists') ||
-          errorMessage.contains('уже существует')) {
-        throw AuthException('Пользователь с таким email уже зарегистрирован');
+      if (errorMessage.contains('already exists')) {
+        throw AuthUserAlreadyExistsException(
+          'User with this email is already registered',
+        );
       }
 
-      throw AuthException('Не удалось зарегистрироваться. Попробуйте позже');
+      throw AuthException('Failed to sign up. Please try again later');
     }
   }
 
@@ -46,7 +47,7 @@ final class AuthRepository implements IAuthRepository {
       final user = await _dataSource.signIn(email: email, password: password);
 
       if (user == null) {
-        throw AuthException('Неверный email или пароль');
+        throw AuthException('Invalid email or password');
       }
 
       GetIt.I<Talker>().info('User signed in successfully: ${user.email}');
@@ -59,7 +60,7 @@ final class AuthRepository implements IAuthRepository {
         rethrow;
       }
 
-      throw AuthException('Не удалось войти. Попробуйте позже');
+      throw AuthException('Failed to sign in. Please try again later');
     }
   }
 
@@ -70,7 +71,7 @@ final class AuthRepository implements IAuthRepository {
       GetIt.I<Talker>().info('User signed out successfully');
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
-      throw AuthException('Не удалось выйти. Попробуйте позже');
+      throw AuthException('Failed to sign out. Please try again later');
     }
   }
 

@@ -77,22 +77,19 @@ class ErrorBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.all(16),
-      color: Theme.of(context).colorScheme.errorContainer,
+      color: theme.colorScheme.errorContainer,
       child: Row(
         children: [
-          Icon(
-            Icons.error_outline,
-            color: Theme.of(context).colorScheme.onErrorContainer,
-          ),
+          Icon(Icons.error_outline, color: theme.colorScheme.onErrorContainer),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onErrorContainer,
-              ),
+              style: TextStyle(color: theme.colorScheme.onErrorContainer),
             ),
           ),
           if (canRetry)
@@ -100,9 +97,7 @@ class ErrorBanner extends StatelessWidget {
               onPressed: onRetry,
               child: Text(
                 'Retry',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onErrorContainer,
-                ),
+                style: TextStyle(color: theme.colorScheme.onErrorContainer),
               ),
             ),
           if (onDismiss != null)

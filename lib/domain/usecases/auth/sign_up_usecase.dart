@@ -8,15 +8,15 @@ class SignUpUseCase {
 
   SignUpUseCase(this._authRepository);
 
-  Future<User> execute(String email, String password) async {
+  Future<User> call(String email, String password) async {
     AuthValidator.validateCredentials(email, password);
-    
+
     try {
       return await _authRepository.signUp(email, password);
     } on AuthException {
       rethrow;
     } catch (e) {
-      throw AuthException('Ошибка регистрации');
+      throw AuthException('Sign up error');
     }
   }
 }
