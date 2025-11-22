@@ -78,10 +78,7 @@ class DependencyInjection {
         () => CourseRepository(GetIt.I<ICourseDataSource>()),
       )
       ..registerLazySingleton<IUserRepository>(
-        () => UserRepository(
-          GetIt.I<IUserDataSource>(),
-          GetIt.I<IAuthDataSource>(),
-        ),
+        () => UserRepository(GetIt.I<IAuthDataSource>()),
       )
       ..registerLazySingleton<IUserStatisticsRepository>(
         () => UserStatisticsRepository(
