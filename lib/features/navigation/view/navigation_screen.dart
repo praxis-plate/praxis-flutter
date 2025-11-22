@@ -13,8 +13,10 @@ class NavigationScreen extends StatefulWidget {
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
-  int _calculateSelectedIndex(BuildContext context) {
-    final String location = GoRouterState.of(context).uri.path;
+  int _selectedIndex = 0;
+  String _lastLocation = '';
+
+  int _calculateSelectedIndex(String location) {
     if (FeatureFlags.enableCourses && location.startsWith('/home')) return 0;
     if (location.startsWith('/library')) {
       return FeatureFlags.enableCourses ? 1 : 0;
@@ -29,6 +31,23 @@ class _NavigationScreenState extends State<NavigationScreen> {
       return FeatureFlags.enableCourses ? 4 : 2;
     }
     return 0;
+  }
+
+  void _updateSelectedIndex(BuildContext context) {
+    final location = GoRouterState.of(context).uri.path;
+    if (location != _lastLocation) {
+      _lastLocation = location;
+      final newIndex = _calculateSelectedIndex(location);
+      if (newIndex != _selectedIndex) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            setState(() {
+              _selectedIndex = newIndex;
+            });
+          }
+        });
+      }
+    }
   }
 
   void _onItemTapped(BuildContext context, int index) {
@@ -72,7 +91,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final selectedIndex = _calculateSelectedIndex(context);
+    _updateSelectedIndex(context);
 
     final destinations = <NavigationDestination>[
       if (FeatureFlags.enableCourses)
@@ -108,7 +127,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (index) => _onItemTapped(context, index),
-        selectedIndex: selectedIndex,
+        selectedIndex: _selectedIndex,
         destinations: destinations,
       ),
       body: widget.child,
