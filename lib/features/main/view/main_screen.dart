@@ -1,12 +1,12 @@
 import 'package:codium/core/widgets/common_search_bar.dart';
 import 'package:codium/core/widgets/course_card.dart';
 import 'package:codium/core/widgets/dumb/section.dart';
-import 'package:codium/core/widgets/smart/user_balance_card.dart';
 import 'package:codium/core/widgets/user_provider.dart';
 import 'package:codium/core/widgets/wrapper.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/main/bloc/main/main_bloc.dart';
 import 'package:codium/features/main/bloc/user_statistics/user_statistics_bloc.dart';
+import 'package:codium/features/main/view/widgets/user_balance_card.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

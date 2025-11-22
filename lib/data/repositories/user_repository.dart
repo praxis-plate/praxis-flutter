@@ -1,6 +1,6 @@
 import 'package:codium/core/exceptions/user_exceptions.dart';
 import 'package:codium/data/datasources/local/local_auth_datasource.dart';
-import 'package:codium/domain/datasources/abstract_auth_datasource.dart';
+import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/abstract_user_repository.dart';
 

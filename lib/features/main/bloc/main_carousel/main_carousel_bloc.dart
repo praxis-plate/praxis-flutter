@@ -1,5 +1,5 @@
 import 'package:codium/domain/models/course/course.dart';
-import 'package:codium/domain/usecases/get_main_carousel_courses.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,8 +11,8 @@ class MainCarouselBloc extends Bloc<MainCarouselEvent, MainCarouselState> {
 
   MainCarouselBloc({
     required GetMainCarouselCoursesUseCase getMainCarouselCoursesUseCase,
-  })  : _getMainCarouselCoursesUseCase = getMainCarouselCoursesUseCase,
-        super(MainCarouselInitialState()) {
+  }) : _getMainCarouselCoursesUseCase = getMainCarouselCoursesUseCase,
+       super(MainCarouselInitialState()) {
     on<MainCarouselLoadEvent>(_onCarouselLoadCourses);
   }
 
@@ -22,7 +22,7 @@ class MainCarouselBloc extends Bloc<MainCarouselEvent, MainCarouselState> {
   ) async {
     emit(MainCarouselLoadingState());
     try {
-      final courses = await _getMainCarouselCoursesUseCase.execute();
+      final courses = await _getMainCarouselCoursesUseCase();
       emit(MainCarouselLoadSuccessState(courses));
     } catch (e) {
       emit(MainCarouselLoadErrorState(e.toString()));

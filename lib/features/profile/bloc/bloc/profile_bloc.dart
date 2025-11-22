@@ -1,5 +1,5 @@
-import 'package:codium/domain/models/user.dart';
-import 'package:codium/domain/usecases/get_profile_usecase.dart';
+import 'package:codium/domain/models/models.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -12,8 +12,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetProfileUseCase _getProfileUseCase;
 
   ProfileBloc({required GetProfileUseCase getProfileUseCase})
-      : _getProfileUseCase = getProfileUseCase,
-        super(ProfileInitial()) {
+    : _getProfileUseCase = getProfileUseCase,
+      super(ProfileInitial()) {
     on<ProfileLoadEvent>(_onProfileLoadEvent);
   }
 
@@ -23,7 +23,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     emit(ProfileLoadingState());
     try {
-      final user = await _getProfileUseCase.execute();
+      final user = await _getProfileUseCase();
       emit(ProfileLoadSuccessState(user: user));
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);

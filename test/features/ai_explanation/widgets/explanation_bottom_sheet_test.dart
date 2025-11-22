@@ -3,6 +3,7 @@ import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:codium/features/ai_explanation/widgets/explanation_bottom_sheet.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -26,6 +27,8 @@ void main() {
     when(mockBloc.stream).thenAnswer((_) => Stream.value(state));
 
     return MaterialApp(
+      localizationsDelegates: S.localizationDelegates,
+      supportedLocales: S.supportedLocales,
       home: Scaffold(
         body: BlocProvider<AiExplanationBloc>.value(
           value: mockBloc,
@@ -53,6 +56,8 @@ void main() {
 
           await tester.pumpWidget(
             MaterialApp(
+              localizationsDelegates: S.localizationDelegates,
+              supportedLocales: S.supportedLocales,
               home: Scaffold(
                 body: BlocProvider<AiExplanationBloc>.value(
                   value: testBloc,

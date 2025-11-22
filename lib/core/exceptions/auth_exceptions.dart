@@ -13,3 +13,7 @@ class AuthValidationException extends AuthException {
 class AuthServerException extends AuthException {
   AuthServerException(super.message);
 }
+
+class AuthUserAlreadyExistsException extends AuthException {
+  AuthUserAlreadyExistsException(super.message);
+}

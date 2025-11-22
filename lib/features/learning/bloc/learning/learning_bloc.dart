@@ -1,5 +1,5 @@
 import 'package:codium/domain/models/models.dart';
-import 'package:codium/domain/usecases/get_learning_data_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -23,7 +23,7 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
   ) async {
     emit(LearningLoadingState());
     try {
-      final learningData = await _getLearningDataUseCase.execute(event.userId);
+      final learningData = await _getLearningDataUseCase(event.userId);
 
       emit(LearningLoadSuccessState(learningData: learningData));
     } catch (e) {

@@ -5,9 +5,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:codium/data/datasources/local/bookmark_local_datasource.dart'
+import 'package:codium/domain/datasources/i_bookmark_local_datasource.dart'
     as _i6;
-import 'package:codium/data/datasources/local/pdf_local_datasource.dart' as _i3;
+import 'package:codium/domain/datasources/i_pdf_local_datasource.dart' as _i3;
 import 'package:codium/domain/models/pdf_library/pdf_library.dart' as _i5;
 import 'package:codium/domain/models/pdf_reader/pdf_reader.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
@@ -39,12 +39,12 @@ class _FakeTalkerFilter_1 extends _i1.SmartFake implements _i2.TalkerFilter {
     : super(parent, parentInvocation);
 }
 
-/// A class which mocks [PdfLocalDataSource].
+/// A class which mocks [IPdfLocalDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPdfLocalDataSource extends _i1.Mock
-    implements _i3.PdfLocalDataSource {
-  MockPdfLocalDataSource() {
+class MockIPdfLocalDataSource extends _i1.Mock
+    implements _i3.IPdfLocalDataSource {
+  MockIPdfLocalDataSource() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -92,12 +92,12 @@ class MockPdfLocalDataSource extends _i1.Mock
           as _i4.Future<void>);
 }
 
-/// A class which mocks [BookmarkLocalDataSource].
+/// A class which mocks [IBookmarkLocalDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBookmarkLocalDataSource extends _i1.Mock
-    implements _i6.BookmarkLocalDataSource {
-  MockBookmarkLocalDataSource() {
+class MockIBookmarkLocalDataSource extends _i1.Mock
+    implements _i6.IBookmarkLocalDataSource {
+  MockIBookmarkLocalDataSource() {
     _i1.throwOnMissingStub(this);
   }
 

@@ -1,8 +1,5 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
-import 'package:codium/domain/usecases/save_bookmark_usecase.dart';
-import 'package:codium/domain/usecases/update_reading_progress_usecase.dart';
-import 'package:codium/domain/usecases/validate_and_open_pdf_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -45,7 +42,7 @@ void main() {
       for (final testCase in testCases) {
         final scrollPosition = testCase['scrollPosition'] as double;
 
-        final book = PdfBook(
+        const book = PdfBook(
           id: 'test-id',
           title: 'Test Book',
           filePath: '/path/to/test.pdf',
@@ -54,7 +51,7 @@ void main() {
         );
 
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: book));
 
         final bloc = PdfReaderBloc(
@@ -87,7 +84,7 @@ void main() {
 
     test('For any PDF switch, '
         'the previous scroll position should be preserved in state', () async {
-      final book1 = PdfBook(
+      const book1 = PdfBook(
         id: 'book-1',
         title: 'Book 1',
         filePath: '/path/to/book1.pdf',
@@ -95,7 +92,7 @@ void main() {
         currentPage: 10,
       );
 
-      final book2 = PdfBook(
+      const book2 = PdfBook(
         id: 'book-2',
         title: 'Book 2',
         filePath: '/path/to/book2.pdf',
@@ -104,10 +101,10 @@ void main() {
       );
 
       when(
-        mockValidateAndOpenPdfUseCase.execute('book-1'),
+        mockValidateAndOpenPdfUseCase('book-1'),
       ).thenAnswer((_) async => ValidatedPdfResult.success(book: book1));
       when(
-        mockValidateAndOpenPdfUseCase.execute('book-2'),
+        mockValidateAndOpenPdfUseCase('book-2'),
       ).thenAnswer((_) async => ValidatedPdfResult.success(book: book2));
 
       final bloc = PdfReaderBloc(
@@ -147,7 +144,7 @@ void main() {
       for (final testCase in testCases) {
         final scrollPosition = testCase['scrollPosition'] as double;
 
-        final book = PdfBook(
+        const book = PdfBook(
           id: 'test-id',
           title: 'Test Book',
           filePath: '/path/to/test.pdf',
@@ -156,7 +153,7 @@ void main() {
         );
 
         when(
-          mockValidateAndOpenPdfUseCase.execute(any),
+          mockValidateAndOpenPdfUseCase(argThat(anything)),
         ).thenAnswer((_) async => ValidatedPdfResult.success(book: book));
 
         final bloc = PdfReaderBloc(
@@ -182,7 +179,7 @@ void main() {
 
     test('For any multiple scroll position updates, '
         'only the latest position should be preserved', () async {
-      final book = PdfBook(
+      const book = PdfBook(
         id: 'test-id',
         title: 'Test Book',
         filePath: '/path/to/test.pdf',
@@ -191,7 +188,7 @@ void main() {
       );
 
       when(
-        mockValidateAndOpenPdfUseCase.execute(any),
+        mockValidateAndOpenPdfUseCase(argThat(anything)),
       ).thenAnswer((_) async => ValidatedPdfResult.success(book: book));
 
       final bloc = PdfReaderBloc(
@@ -221,7 +218,7 @@ void main() {
 
     test('For any PDF with null scroll position initially, '
         'scroll position should be null until explicitly set', () async {
-      final book = PdfBook(
+      const book = PdfBook(
         id: 'test-id',
         title: 'Test Book',
         filePath: '/path/to/test.pdf',
@@ -230,7 +227,7 @@ void main() {
       );
 
       when(
-        mockValidateAndOpenPdfUseCase.execute(any),
+        mockValidateAndOpenPdfUseCase(argThat(anything)),
       ).thenAnswer((_) async => ValidatedPdfResult.success(book: book));
 
       final bloc = PdfReaderBloc(

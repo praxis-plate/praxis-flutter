@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:codium/core/exceptions/exceptions.dart';
+
 class RetryLogic {
   static Future<T> retry<T>({
     required Future<T> Function() operation,
@@ -50,15 +52,21 @@ class RetryLogic {
   }
 
   static bool shouldRetryException(Exception exception) {
-    final message = exception.toString().toLowerCase();
+    if (exception is RateLimitError) {
+      return false;
+    }
 
-    // Never retry rate limit errors
-    if (message.contains('rate limit')) return false;
+    if (exception is NetworkError) {
+      return exception.canRetry;
+    }
 
-    if (message.contains('timeout')) return true;
-    if (message.contains('network')) return true;
-    if (message.contains('connection')) return true;
-    if (message.contains('locked')) return true;
+    if (exception is DatabaseError) {
+      return exception.canRetry;
+    }
+
+    if (exception is AppError) {
+      return exception.canRetry;
+    }
 
     return false;
   }

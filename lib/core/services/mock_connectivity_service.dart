@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:codium/domain/services/connectivity_service.dart';
+import 'package:codium/domain/services/services.dart';
 
 class MockConnectivityService implements IConnectivityService {
   final _connectivityController = StreamController<bool>.broadcast();

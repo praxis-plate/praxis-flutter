@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:codium/domain/datasources/abstract_user_statistics_local_datasource.dart';
+import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:drift/drift.dart';
 
@@ -13,16 +13,16 @@ class UserStatisticsLocalDataSource implements IUserStatisticsLocalDataSource {
 
   @override
   Future<void> clearStatistics(String userId) async {
-    await (_db.delete(
-      _db.userStatisticsTable,
-    )..where((tbl) => tbl.userId.equals(userId))).go();
+    await _db.managers.userStatisticsTable
+        .filter((f) => f.userId.id(userId))
+        .delete();
   }
 
   @override
   Future<UserStatistics?> getStatistics(String userId) async {
-    final entity = await (_db.select(
-      _db.userStatisticsTable,
-    )..where((tbl) => tbl.userId.equals(userId))).getSingleOrNull();
+    final entity = await _db.managers.userStatisticsTable
+        .filter((f) => f.userId.id(userId))
+        .getSingleOrNull();
 
     if (entity == null) return null;
 
@@ -68,35 +68,33 @@ class UserStatisticsLocalDataSource implements IUserStatisticsLocalDataSource {
       ),
     );
 
-    final existing = await (_db.select(
-      _db.userStatisticsTable,
-    )..where((tbl) => tbl.userId.equals(statistics.userId))).getSingleOrNull();
+    final existing = await _db.managers.userStatisticsTable
+        .filter((f) => f.userId.id(statistics.userId))
+        .getSingleOrNull();
 
     if (existing == null) {
-      await _db
-          .into(_db.userStatisticsTable)
-          .insert(
-            UserStatisticsTableCompanion.insert(
-              userId: statistics.userId,
-              currentStreak: Value(statistics.currentStreak),
-              maxStreak: Value(statistics.maxStreak),
-              points: Value(statistics.points),
-              lastActiveDate: statistics.lastActiveDate,
-              coursesJson: coursesJson,
-            ),
-          );
-    } else {
-      await (_db.update(
-        _db.userStatisticsTable,
-      )..where((tbl) => tbl.userId.equals(statistics.userId))).write(
-        UserStatisticsTableCompanion(
+      await _db.managers.userStatisticsTable.create(
+        (o) => o(
+          userId: statistics.userId,
           currentStreak: Value(statistics.currentStreak),
           maxStreak: Value(statistics.maxStreak),
           points: Value(statistics.points),
-          lastActiveDate: Value(statistics.lastActiveDate),
-          coursesJson: Value(coursesJson),
+          lastActiveDate: statistics.lastActiveDate,
+          coursesJson: coursesJson,
         ),
       );
+    } else {
+      await _db.managers.userStatisticsTable
+          .filter((f) => f.userId.id(statistics.userId))
+          .update(
+            (o) => o(
+              currentStreak: Value(statistics.currentStreak),
+              maxStreak: Value(statistics.maxStreak),
+              points: Value(statistics.points),
+              lastActiveDate: Value(statistics.lastActiveDate),
+              coursesJson: Value(coursesJson),
+            ),
+          );
     }
   }
 }

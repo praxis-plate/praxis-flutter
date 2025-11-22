@@ -2,7 +2,7 @@ import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
 import 'package:codium/domain/repositories/ai_repository.dart';
 import 'package:codium/domain/repositories/storage_repository.dart';
-import 'package:codium/domain/usecases/explain_text_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mockito/annotations.dart';
@@ -52,7 +52,7 @@ void main() {
         mockStorageRepository.saveExplanation(any),
       ).thenAnswer((_) async => {});
 
-      final result = await useCase.execute(
+      final result = await useCase(
         selectedText: selectedText,
         context: context,
         pdfBookId: pdfBookId,
@@ -90,7 +90,7 @@ void main() {
       ).thenAnswer((_) async => {});
 
       for (final testCase in testCases) {
-        final result = await useCase.execute(
+        final result = await useCase(
           selectedText: testCase['text'] as String,
           context: 'Context',
           pdfBookId: 'book-123',
@@ -123,7 +123,7 @@ void main() {
         mockStorageRepository.saveExplanation(any),
       ).thenAnswer((_) async => {});
 
-      final result = await useCase.execute(
+      final result = await useCase(
         selectedText: selectedText,
         context: context,
         pdfBookId: pdfBookId,
@@ -158,7 +158,7 @@ void main() {
         mockStorageRepository.saveExplanation(any),
       ).thenAnswer((_) async => {});
 
-      final result = await useCase.execute(
+      final result = await useCase(
         selectedText: selectedText,
         context: context,
         pdfBookId: pdfBookId,
@@ -192,7 +192,7 @@ void main() {
         mockStorageRepository.saveExplanation(any),
       ).thenAnswer((_) async => {});
 
-      final result = await useCase.execute(
+      final result = await useCase(
         selectedText: 'test',
         context: 'context',
         pdfBookId: 'book-id',
@@ -220,7 +220,7 @@ void main() {
         mockStorageRepository.saveExplanation(any),
       ).thenAnswer((_) async => {});
 
-      final result = await useCase.execute(
+      final result = await useCase(
         selectedText: 'test',
         context: 'context',
         pdfBookId: 'book-id',
@@ -250,7 +250,7 @@ void main() {
         mockStorageRepository.saveExplanation(any),
       ).thenAnswer((_) async => {});
 
-      await useCase.execute(
+      await useCase(
         selectedText: selectedText,
         context: 'context',
         pdfBookId: pdfBookId,

@@ -75,10 +75,10 @@ class _LibraryScreenContent extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
-            _buildTabContent(context, showFavoritesOnly: false),
-            _buildTabContent(context, showFavoritesOnly: true),
+            _LibraryTabContent(showFavoritesOnly: false),
+            _LibraryTabContent(showFavoritesOnly: true),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -91,10 +91,29 @@ class _LibraryScreenContent extends StatelessWidget {
     );
   }
 
-  Widget _buildTabContent(
-    BuildContext context, {
-    required bool showFavoritesOnly,
-  }) {
+  Future<void> _importPdf(BuildContext context) async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      if (context.mounted) {
+        context.read<LibraryBloc>().add(
+          ImportPdfEvent(result.files.single.path!),
+        );
+      }
+    }
+  }
+}
+
+class _LibraryTabContent extends StatelessWidget {
+  final bool showFavoritesOnly;
+
+  const _LibraryTabContent({required this.showFavoritesOnly});
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
@@ -113,15 +132,14 @@ class _LibraryScreenContent extends StatelessWidget {
           child: BlocBuilder<LibraryBloc, LibraryState>(
             builder: (context, state) {
               return switch (state) {
-                LibraryLoadedState() => _buildLibraryContent(
-                  context,
-                  state,
+                LibraryLoadedState() => _LibraryContent(
+                  state: state,
                   showFavoritesOnly: showFavoritesOnly,
                 ),
                 LibraryLoadingState() => const Center(
                   child: CircularProgressIndicator(),
                 ),
-                LibraryErrorState() => _buildErrorState(context, state),
+                LibraryErrorState() => _LibraryErrorState(state: state),
                 LibraryInitialState() => const Center(
                   child: CircularProgressIndicator(),
                 ),
@@ -132,20 +150,23 @@ class _LibraryScreenContent extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildLibraryContent(
-    BuildContext context,
-    LibraryLoadedState state, {
-    required bool showFavoritesOnly,
-  }) {
+class _LibraryContent extends StatelessWidget {
+  final LibraryLoadedState state;
+  final bool showFavoritesOnly;
+
+  const _LibraryContent({required this.state, required this.showFavoritesOnly});
+
+  @override
+  Widget build(BuildContext context) {
     final books = showFavoritesOnly
         ? state.filteredBooks.where((book) => book.isFavorite).toList()
         : state.filteredBooks;
 
     if (books.isEmpty) {
-      return _buildEmptyState(
-        context,
-        state.searchQuery.isNotEmpty,
+      return _LibraryEmptyState(
+        isSearching: state.searchQuery.isNotEmpty,
         showFavoritesOnly: showFavoritesOnly,
       );
     }
@@ -164,12 +185,19 @@ class _LibraryScreenContent extends StatelessWidget {
       },
     );
   }
+}
 
-  Widget _buildEmptyState(
-    BuildContext context,
-    bool isSearching, {
-    required bool showFavoritesOnly,
-  }) {
+class _LibraryEmptyState extends StatelessWidget {
+  final bool isSearching;
+  final bool showFavoritesOnly;
+
+  const _LibraryEmptyState({
+    required this.isSearching,
+    required this.showFavoritesOnly,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     IconData icon;
@@ -223,8 +251,15 @@ class _LibraryScreenContent extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildErrorState(BuildContext context, LibraryErrorState state) {
+class _LibraryErrorState extends StatelessWidget {
+  final LibraryErrorState state;
+
+  const _LibraryErrorState({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final errorMessage =
         state.message ?? state.errorCode.localizedMessage(context);
@@ -261,20 +296,5 @@ class _LibraryScreenContent extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _importPdf(BuildContext context) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
-
-    if (result != null && result.files.single.path != null) {
-      if (context.mounted) {
-        context.read<LibraryBloc>().add(
-          ImportPdfEvent(result.files.single.path!),
-        );
-      }
-    }
   }
 }

@@ -39,6 +39,8 @@ dependencies:
   uuid: ^4.5.1
   shared_preferences: ^2.3.3
   flutter_svg: ^2.0.10+1
+  crypto: ^3.0.3
+  mocktail: ^1.0.4
 
 dev_dependencies:
   flutter_test:

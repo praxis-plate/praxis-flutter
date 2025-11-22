@@ -8,7 +8,7 @@ import 'dart:async' as _i3;
 import 'package:codium/data/datasources/remote/gemini_datasource.dart' as _i2;
 import 'package:codium/data/datasources/remote/search_datasource.dart' as _i5;
 import 'package:codium/domain/models/ai_explanation/search_source.dart' as _i6;
-import 'package:codium/domain/services/connectivity_service.dart' as _i7;
+import 'package:codium/domain/services/i_connectivity_service.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i4;
 

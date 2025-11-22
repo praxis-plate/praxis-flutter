@@ -1,6 +1,6 @@
 import 'package:codium/core/exceptions/app_exception.dart';
 import 'package:codium/data/repositories/course_repository.dart';
-import 'package:codium/domain/datasources/abstract_course_datasource.dart';
+import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/mocs/data/mock_courses.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';

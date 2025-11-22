@@ -1,9 +1,10 @@
 import 'dart:convert';
 
-import 'package:codium/core/services/session_service.dart';
+import 'package:codium/core/exceptions/exceptions.dart';
 import 'package:codium/data/datasources/local/app_database.dart';
-import 'package:codium/domain/datasources/abstract_auth_datasource.dart';
+import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
+import 'package:codium/domain/services/i_session_service.dart';
 import 'package:crypto/crypto.dart';
 import 'package:decimal/decimal.dart';
 import 'package:drift/drift.dart';
@@ -11,7 +12,7 @@ import 'package:uuid/uuid.dart';
 
 class LocalAuthDataSource implements IAuthDataSource {
   final AppDatabase _db;
-  final SessionService _sessionService;
+  final ISessionService _sessionService;
   final Uuid _uuid = const Uuid();
 
   LocalAuthDataSource(this._db, this._sessionService);
@@ -32,7 +33,9 @@ class LocalAuthDataSource implements IAuthDataSource {
         .getSingleOrNull();
 
     if (existingUser != null) {
-      throw Exception('Пользователь с таким email уже существует');
+      throw AuthUserAlreadyExistsException(
+        'User with this email already exists',
+      );
     }
 
     final userId = _uuid.v4();

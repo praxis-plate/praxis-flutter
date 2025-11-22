@@ -16,15 +16,17 @@ class TextSelectionMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Material(
       elevation: 8,
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Theme.of(context).colorScheme.outline),
+          border: Border.all(color: theme.colorScheme.outline),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -32,7 +34,7 @@ class TextSelectionMenu extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.lightbulb_outline,
-                color: isOffline ? Theme.of(context).disabledColor : null,
+                color: isOffline ? theme.disabledColor : null,
               ),
               tooltip: isOffline ? 'Offline - AI features disabled' : 'Explain',
               onPressed: isOffline ? null : onExplain,

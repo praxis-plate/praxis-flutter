@@ -2,6 +2,7 @@ import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_error_extensions.dart';
 import 'package:codium/domain/models/ai_explanation/ai_explanation.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -21,16 +22,21 @@ class ExplanationBottomSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildHandle(context),
-              Flexible(child: _buildContent(context, state)),
+              const _BottomSheetHandle(),
+              Flexible(child: _BottomSheetContent(state: state)),
             ],
           ),
         );
       },
     );
   }
+}
 
-  Widget _buildHandle(BuildContext context) {
+class _BottomSheetHandle extends StatelessWidget {
+  const _BottomSheetHandle();
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 12, bottom: 8),
       width: 40,
@@ -41,17 +47,38 @@ class ExplanationBottomSheet extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildContent(BuildContext context, AiExplanationState state) {
+class _BottomSheetContent extends StatelessWidget {
+  final AiExplanationState state;
+
+  const _BottomSheetContent({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
     return switch (state) {
       AiExplanationInitialState() => const SizedBox.shrink(),
-      AiExplanationLoadingState() => _buildLoading(context, state),
-      AiExplanationLoadedState() => _buildLoaded(context, state),
-      AiExplanationErrorState() => _buildError(context, state),
+      AiExplanationLoadingState() => _LoadingContent(
+        state: state as AiExplanationLoadingState,
+      ),
+      AiExplanationLoadedState() => _LoadedContent(
+        state: state as AiExplanationLoadedState,
+      ),
+      AiExplanationErrorState() => _ErrorContent(
+        state: state as AiExplanationErrorState,
+      ),
     };
   }
+}
 
-  Widget _buildLoading(BuildContext context, AiExplanationLoadingState state) {
+class _LoadingContent extends StatelessWidget {
+  final AiExplanationLoadingState state;
+
+  const _LoadingContent({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return Padding(
@@ -63,13 +90,13 @@ class ExplanationBottomSheet extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             state.pageNumber != null
-                ? 'Analyzing text from page ${state.pageNumber! + 1}...'
-                : 'Generating explanation...',
+                ? s.explanationAnalyzingPage(state.pageNumber! + 1)
+                : s.explanationGenerating,
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
           Text(
-            'Selected: "${state.selectedText}"',
+            s.explanationSelected(state.selectedText),
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
             ),
@@ -81,8 +108,16 @@ class ExplanationBottomSheet extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildLoaded(BuildContext context, AiExplanationLoadedState state) {
+class _LoadedContent extends StatelessWidget {
+  final AiExplanationLoadedState state;
+
+  const _LoadedContent({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
     final explanation = state.explanation;
     final theme = Theme.of(context);
 
@@ -92,7 +127,7 @@ class ExplanationBottomSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Explanation', style: theme.textTheme.titleMedium),
+          Text(s.explanationTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.all(12),
@@ -154,19 +189,24 @@ class ExplanationBottomSheet extends StatelessWidget {
             const SizedBox(height: 24),
             const Divider(),
             const SizedBox(height: 16),
-            Text('Sources', style: theme.textTheme.titleSmall),
+            Text(s.explanationSources, style: theme.textTheme.titleSmall),
             const SizedBox(height: 12),
-            ...explanation.sources.map(
-              (source) => _buildSourceCard(context, source),
-            ),
+            ...explanation.sources.map((source) => _SourceCard(source: source)),
           ],
           const SizedBox(height: 16),
         ],
       ),
     );
   }
+}
 
-  Widget _buildSourceCard(BuildContext context, SearchSource source) {
+class _SourceCard extends StatelessWidget {
+  final SearchSource source;
+
+  const _SourceCard({required this.source});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Card(
@@ -222,19 +262,25 @@ class ExplanationBottomSheet extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildError(BuildContext context, AiExplanationErrorState state) {
+class _ErrorContent extends StatelessWidget {
+  final AiExplanationErrorState state;
+
+  const _ErrorContent({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
     final errorMessage =
         state.message ?? state.errorCode.localizedMessage(context);
 
     String actionableMessage = errorMessage;
     if (state.isOffline) {
-      actionableMessage =
-          'Please check your internet connection and try again.';
+      actionableMessage = s.explanationNoInternetMessage;
     } else if (state.errorCode == AppErrorCode.rateLimitExceeded) {
-      actionableMessage =
-          'API rate limit exceeded. Please wait a moment and try again.';
+      actionableMessage = errorMessage;
     }
 
     return Padding(
@@ -249,7 +295,7 @@ class ExplanationBottomSheet extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            state.isOffline ? 'No Internet Connection' : 'Error',
+            state.isOffline ? s.explanationNoInternet : s.explanationError,
             style: theme.textTheme.titleMedium?.copyWith(
               color: theme.colorScheme.error,
             ),
@@ -269,7 +315,7 @@ class ExplanationBottomSheet extends StatelessWidget {
                 );
               },
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(s.explanationRetry),
             ),
           ],
           const SizedBox(height: 16),

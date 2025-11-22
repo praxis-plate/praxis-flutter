@@ -1,19 +1,22 @@
 import 'dart:convert';
 
 import 'package:codium/data/datasources/local/app_database.dart';
+import 'package:codium/domain/datasources/i_explanation_local_datasource.dart';
 import 'package:codium/domain/models/ai_explanation/ai_explanation.dart';
 import 'package:drift/drift.dart';
 
-class ExplanationLocalDataSource {
+class ExplanationLocalDataSource implements IExplanationLocalDataSource {
   final AppDatabase _db;
 
   ExplanationLocalDataSource(this._db);
 
+  @override
   Future<List<Explanation>> getAllExplanations() async {
     final entities = await _db.managers.explanations.get();
     return entities.map(_entityToDomain).toList();
   }
 
+  @override
   Future<Explanation?> getExplanationById(String id) async {
     final entity = await _db.managers.explanations
         .filter((f) => f.id(id))
@@ -23,6 +26,7 @@ class ExplanationLocalDataSource {
     return _entityToDomain(entity);
   }
 
+  @override
   Future<List<Explanation>> getExplanationsByPdfId(String pdfBookId) async {
     final entities = await _db.managers.explanations
         .filter((f) => f.pdfBookId.id(pdfBookId))
@@ -31,6 +35,7 @@ class ExplanationLocalDataSource {
     return entities.map(_entityToDomain).toList();
   }
 
+  @override
   Future<List<Explanation>> searchExplanations(String query) async {
     final lowercaseQuery = query.toLowerCase();
     final allExplanations = await getAllExplanations();
@@ -41,6 +46,7 @@ class ExplanationLocalDataSource {
     }).toList();
   }
 
+  @override
   Future<void> insertExplanation(Explanation explanation) async {
     await _db.managers.explanations.create(
       (o) => o(
@@ -55,6 +61,7 @@ class ExplanationLocalDataSource {
     );
   }
 
+  @override
   Future<void> updateExplanation(Explanation explanation) async {
     await _db.managers.explanations
         .filter((f) => f.id(explanation.id))
@@ -70,6 +77,7 @@ class ExplanationLocalDataSource {
         );
   }
 
+  @override
   Future<void> deleteExplanation(String id) async {
     await _db.managers.explanations.filter((f) => f.id(id)).delete();
   }

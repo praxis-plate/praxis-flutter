@@ -6,10 +6,10 @@
 import 'dart:async' as _i3;
 
 import 'package:codium/domain/models/pdf_reader/bookmark.dart' as _i6;
-import 'package:codium/domain/usecases/save_bookmark_usecase.dart' as _i5;
-import 'package:codium/domain/usecases/update_reading_progress_usecase.dart'
+import 'package:codium/domain/usecases/pdf/save_bookmark_usecase.dart' as _i5;
+import 'package:codium/domain/usecases/pdf/update_reading_progress_usecase.dart'
     as _i4;
-import 'package:codium/domain/usecases/validate_and_open_pdf_usecase.dart'
+import 'package:codium/domain/usecases/pdf/validate_and_open_pdf_usecase.dart'
     as _i2;
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart'
     as _i7;
@@ -47,13 +47,13 @@ class MockValidateAndOpenPdfUseCase extends _i1.Mock
   }
 
   @override
-  _i3.Future<_i2.ValidatedPdfResult> execute(String? bookId) =>
+  _i3.Future<_i2.ValidatedPdfResult> call(String? bookId) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, [bookId]),
+            Invocation.method(#call, [bookId]),
             returnValue: _i3.Future<_i2.ValidatedPdfResult>.value(
               _FakeValidatedPdfResult_0(
                 this,
-                Invocation.method(#execute, [bookId]),
+                Invocation.method(#call, [bookId]),
               ),
             ),
           )
@@ -70,12 +70,9 @@ class MockUpdateReadingProgressUseCase extends _i1.Mock
   }
 
   @override
-  _i3.Future<void> execute({
-    required String? bookId,
-    required int? currentPage,
-  }) =>
+  _i3.Future<void> call({required String? bookId, required int? currentPage}) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, [], {
+            Invocation.method(#call, [], {
               #bookId: bookId,
               #currentPage: currentPage,
             }),
@@ -95,9 +92,9 @@ class MockSaveBookmarkUseCase extends _i1.Mock
   }
 
   @override
-  _i3.Future<void> execute(_i6.Bookmark? bookmark) =>
+  _i3.Future<void> call(_i6.Bookmark? bookmark) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, [bookmark]),
+            Invocation.method(#call, [bookmark]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

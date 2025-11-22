@@ -2,11 +2,10 @@ import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/services/mock_connectivity_service.dart';
 import 'package:codium/core/services/session_service.dart';
 import 'package:codium/data/datasources/datasources.dart';
-import 'package:codium/data/repositories/ai_repository_impl.dart';
 import 'package:codium/data/repositories/repositories.dart';
 import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/repositories/repositories.dart';
-import 'package:codium/domain/services/connectivity_service.dart';
+import 'package:codium/domain/services/services.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/ai_explanation/ai_explanation.dart';
 import 'package:codium/features/auth/auth.dart';
@@ -33,30 +32,31 @@ class DependencyInjection {
   }
 
   void _registerServices() {
-    GetIt.I.registerLazySingleton<IConnectivityService>(
-      () => MockConnectivityService(),
-    );
+    GetIt.I
+      ..registerLazySingleton<IConnectivityService>(
+        () => MockConnectivityService(),
+      )
+      ..registerLazySingleton<ISessionService>(() => SessionService());
   }
 
   void _registerDataSources() {
     GetIt.I
-      ..registerLazySingleton<SessionService>(() => SessionService())
       ..registerSingleton<ICourseDataSource>(GoCourseDatasource())
       ..registerSingleton<IUserDataSource>(GoUserDatasource())
       ..registerLazySingleton<AppDatabase>(() => AppDatabase())
       ..registerLazySingleton<IAuthDataSource>(
         () => LocalAuthDataSource(
           GetIt.I<AppDatabase>(),
-          GetIt.I<SessionService>(),
+          GetIt.I<ISessionService>(),
         ),
       )
-      ..registerLazySingleton<PdfLocalDataSource>(
+      ..registerLazySingleton<IPdfLocalDataSource>(
         () => PdfLocalDataSource(GetIt.I<AppDatabase>()),
       )
-      ..registerLazySingleton<BookmarkLocalDataSource>(
+      ..registerLazySingleton<IBookmarkLocalDataSource>(
         () => BookmarkLocalDataSource(GetIt.I<AppDatabase>()),
       )
-      ..registerLazySingleton<ExplanationLocalDataSource>(
+      ..registerLazySingleton<IExplanationLocalDataSource>(
         () => ExplanationLocalDataSource(GetIt.I<AppDatabase>()),
       )
       ..registerLazySingleton<IUserStatisticsLocalDataSource>(
@@ -65,8 +65,8 @@ class DependencyInjection {
       ..registerLazySingleton<IUserStatisticsDataSource>(
         () => UserStatisticsRemoteDataSource(),
       )
-      ..registerLazySingleton<GeminiDataSource>(() => GeminiDataSource())
-      ..registerLazySingleton<SearchDataSource>(() => SearchDataSource());
+      ..registerLazySingleton<IGeminiDataSource>(() => GeminiDataSource())
+      ..registerLazySingleton<ISearchDataSource>(() => SearchDataSource());
   }
 
   void _registerRepositories() {
@@ -87,21 +87,21 @@ class DependencyInjection {
         ),
       )
       ..registerLazySingleton<IPdfRepository>(
-        () => PdfRepositoryImpl(
-          GetIt.I<PdfLocalDataSource>(),
-          GetIt.I<BookmarkLocalDataSource>(),
+        () => PdfRepository(
+          GetIt.I<IPdfLocalDataSource>(),
+          GetIt.I<IBookmarkLocalDataSource>(),
         ),
       )
       ..registerLazySingleton<IStorageRepository>(
-        () => StorageRepositoryImpl(
-          GetIt.I<BookmarkLocalDataSource>(),
-          GetIt.I<ExplanationLocalDataSource>(),
+        () => StorageRepository(
+          GetIt.I<IBookmarkLocalDataSource>(),
+          GetIt.I<IExplanationLocalDataSource>(),
         ),
       )
       ..registerLazySingleton<IAiRepository>(
-        () => AiRepositoryImpl(
-          geminiDataSource: GetIt.I<GeminiDataSource>(),
-          searchDataSource: GetIt.I<SearchDataSource>(),
+        () => AiRepository(
+          geminiDataSource: GetIt.I<IGeminiDataSource>(),
+          searchDataSource: GetIt.I<ISearchDataSource>(),
           connectivityService: GetIt.I<IConnectivityService>(),
         ),
       );
@@ -146,6 +146,10 @@ class DependencyInjection {
       )
       ..registerFactory(() => GetPdfListUseCase(GetIt.I<IPdfRepository>()))
       ..registerFactory(() => ImportPdfUseCase(GetIt.I<IPdfRepository>()))
+      ..registerFactory(() => DeletePdfUseCase(GetIt.I<IPdfRepository>()))
+      ..registerFactory(
+        () => ToggleFavoritePdfUseCase(GetIt.I<IPdfRepository>()),
+      )
       ..registerFactory(() => GetPdfBookByIdUseCase(GetIt.I<IPdfRepository>()))
       ..registerFactory(
         () => ValidateAndOpenPdfUseCase(GetIt.I<IPdfRepository>()),
@@ -225,7 +229,8 @@ class DependencyInjection {
         () => LibraryBloc(
           getPdfListUseCase: GetIt.I<GetPdfListUseCase>(),
           importPdfUseCase: GetIt.I<ImportPdfUseCase>(),
-          pdfRepository: GetIt.I<IPdfRepository>(),
+          deletePdfUseCase: GetIt.I<DeletePdfUseCase>(),
+          toggleFavoritePdfUseCase: GetIt.I<ToggleFavoritePdfUseCase>(),
         ),
       )
       ..registerFactory(

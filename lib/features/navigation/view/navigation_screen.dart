@@ -71,6 +71,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final selectedIndex = _calculateSelectedIndex(context);
 
     final destinations = <NavigationDestination>[
@@ -78,29 +79,29 @@ class _NavigationScreenState extends State<NavigationScreen> {
         NavigationDestination(
           selectedIcon: const Icon(Icons.home_rounded),
           icon: const Icon(Icons.home_outlined),
-          label: S.of(context).navigationHomeTitle,
+          label: s.navigationHomeTitle,
         ),
       NavigationDestination(
         selectedIcon: const Icon(Icons.library_books_rounded),
         icon: const Icon(Icons.library_books_outlined),
-        label: S.of(context).navigationLibraryTitle,
+        label: s.navigationLibraryTitle,
       ),
       if (FeatureFlags.enableCourses)
         NavigationDestination(
           selectedIcon: const Icon(Icons.science_rounded),
           icon: const Icon(Icons.science_rounded),
-          label: S.of(context).navigationLearningTitle,
+          label: s.navigationLearningTitle,
         ),
       NavigationDestination(
         selectedIcon: const Icon(Icons.history_rounded),
         icon: const Icon(Icons.history_outlined),
-        label: S.of(context).navigationHistoryTitle,
+        label: s.navigationHistoryTitle,
       ),
       if (FeatureFlags.enableProfile)
         NavigationDestination(
           selectedIcon: const Icon(Icons.person_rounded),
           icon: const Icon(Icons.person_outlined),
-          label: S.of(context).navigationProfileTitle,
+          label: s.navigationProfileTitle,
         ),
     ];
 

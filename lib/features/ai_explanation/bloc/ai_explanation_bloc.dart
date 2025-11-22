@@ -1,7 +1,7 @@
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_exception.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
-import 'package:codium/domain/usecases/explain_text_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -32,7 +32,7 @@ class AiExplanationBloc extends Bloc<AiExplanationEvent, AiExplanationState> {
     );
 
     try {
-      final explanation = await _explainTextUseCase.execute(
+      final explanation = await _explainTextUseCase(
         selectedText: event.selectedText,
         context: event.context,
         pdfBookId: event.pdfBookId,

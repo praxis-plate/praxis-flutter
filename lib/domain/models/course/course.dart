@@ -3,7 +3,6 @@ import 'package:codium/domain/models/course/course_module.dart';
 import 'package:codium/domain/models/course/course_pricing.dart';
 import 'package:codium/domain/models/course/course_statistics.dart';
 import 'package:codium/domain/models/models.dart';
-import 'package:codium/domain/models/task/course_task.dart';
 import 'package:decimal/decimal.dart';
 
 class Course {
@@ -33,13 +32,13 @@ class Course {
     required this.modules,
     required this.pricing,
     this.tasks = const [],
-  })  : createdAt = DateTime.now(),
-        totalDuration = _calculateTotalDuration(modules),
-        statistics = CourseStatistics(
-          averageRating: 0,
-          totalEnrollments: 0,
-          completionRate: 0,
-        ) {
+  }) : createdAt = DateTime.now(),
+       totalDuration = _calculateTotalDuration(modules),
+       statistics = CourseStatistics(
+         averageRating: 0,
+         totalEnrollments: 0,
+         completionRate: 0,
+       ) {
     _validateCourse();
   }
 
@@ -56,15 +55,14 @@ class Course {
   }
 
   static Duration _calculateTotalDuration(List<CourseModule> modules) {
-    return modules.fold(
-      Duration.zero,
-      (sum, module) => sum + module.duration,
-    );
+    return modules.fold(Duration.zero, (sum, module) => sum + module.duration);
   }
 
   void _validateCourse() {
     if (title.isEmpty) throw ArgumentError('Title cannot be empty');
-    if (pricing.price.amount < Decimal.zero) throw ArgumentError('Price cannot be negative');
+    if (pricing.price.amount < Decimal.zero) {
+      throw ArgumentError('Price cannot be negative');
+    }
   }
 
   String get tableOfContents {

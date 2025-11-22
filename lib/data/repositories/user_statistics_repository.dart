@@ -1,6 +1,5 @@
 import 'package:codium/core/exceptions/user_statistics_exception.dart';
-import 'package:codium/domain/datasources/abstract_user_statistics_datasource.dart';
-import 'package:codium/domain/datasources/abstract_user_statistics_local_datasource.dart';
+import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/abstract_user_statistics_repository.dart';
 

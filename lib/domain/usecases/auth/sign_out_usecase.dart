@@ -6,11 +6,11 @@ class SignOutUseCase {
 
   SignOutUseCase(this._authRepository);
 
-  Future<void> execute() async {
+  Future<void> call() async {
     try {
       await _authRepository.signOut();
     } catch (e) {
-      throw AuthException('Ошибка выхода');
+      throw AuthException('Sign out error');
     }
   }
 }

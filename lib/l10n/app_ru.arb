@@ -189,5 +189,17 @@
   "courseDetailsUnknown": "Неизвестно",
   "courseDetailsLessons": "{count} уроков",
   "courseDetailsGet": "Получить",
-  "courseDetailsContinue": "Продолжить"
+  "courseDetailsContinue": "Продолжить",
+  "courseDetailsTitle": "Детали курса",
+  "courseDetailsPrice": "Цена",
+  "courseDetailsAuthor": "Автор",
+  "courseDetailsRating": "Рейтинг",
+  "courseDetailsLessonsLabel": "Уроки",
+  "courseDetailsRecommend": "Рекомендации",
+  "pdfBookRenameLabel": "Название",
+  "pdfReaderTitleDefault": "Просмотр PDF",
+  "pdfReaderNoPdfLoadedMessage": "PDF не загружен",
+  "pdfReaderContextInfo": "Из {title}, страница {page}",
+  "learningContinue": "Продолжить",
+  "errorRateLimitMessage": "Превышен лимит запросов API. Подождите немного и попробуйте снова."
 }

@@ -1,17 +1,20 @@
 import 'package:codium/data/datasources/local/app_database.dart';
+import 'package:codium/domain/datasources/i_bookmark_local_datasource.dart';
 import 'package:codium/domain/models/pdf_reader/pdf_reader.dart';
 import 'package:drift/drift.dart';
 
-class BookmarkLocalDataSource {
+class BookmarkLocalDataSource implements IBookmarkLocalDataSource {
   final AppDatabase _db;
 
   BookmarkLocalDataSource(this._db);
 
+  @override
   Future<List<Bookmark>> getAllBookmarks() async {
     final entities = await _db.managers.bookmarks.get();
     return entities.map(_entityToDomain).toList();
   }
 
+  @override
   Future<Bookmark?> getBookmarkById(String id) async {
     final entity = await _db.managers.bookmarks
         .filter((f) => f.id(id))
@@ -21,6 +24,7 @@ class BookmarkLocalDataSource {
     return _entityToDomain(entity);
   }
 
+  @override
   Future<List<Bookmark>> getBookmarksByPdfId(String pdfBookId) async {
     final entities = await _db.managers.bookmarks
         .filter((f) => f.pdfBookId.id(pdfBookId))
@@ -29,6 +33,7 @@ class BookmarkLocalDataSource {
     return entities.map(_entityToDomain).toList();
   }
 
+  @override
   Future<void> insertBookmark(Bookmark bookmark) async {
     await _db.managers.bookmarks.create(
       (o) => o(
@@ -41,6 +46,7 @@ class BookmarkLocalDataSource {
     );
   }
 
+  @override
   Future<void> updateBookmark(Bookmark bookmark) async {
     await _db.managers.bookmarks
         .filter((f) => f.id(bookmark.id))
@@ -54,6 +60,7 @@ class BookmarkLocalDataSource {
         );
   }
 
+  @override
   Future<void> deleteBookmark(String id) async {
     await _db.managers.bookmarks.filter((f) => f.id(id)).delete();
   }

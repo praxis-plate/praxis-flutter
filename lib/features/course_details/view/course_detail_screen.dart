@@ -2,6 +2,7 @@ import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/course/course.dart';
 import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
 import 'package:codium/features/course_details/bloc/recommend/recommend_bloc.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -24,13 +25,14 @@ class CourseDetailScreen extends StatelessWidget {
 class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return AppBar(
       title: BlocBuilder<CourseDetailBloc, CourseDetailState>(
         builder: (context, state) {
           return Text(
             state is CourseDetailLoadSuccessState
                 ? state.course.title
-                : 'Course Details',
+                : s.courseDetailsTitle,
           );
         },
       ),
@@ -70,14 +72,21 @@ class _CourseDetail extends StatelessWidget {
         children: [
           CourseHeader(course: course),
           CourseMetaInfo(course: course),
-          _buildTabSection(context),
-          _buildRecommendations(),
+          _CourseTabSection(course: course),
+          const _CourseRecommendations(),
         ],
       ),
     );
   }
+}
 
-  Widget _buildTabSection(BuildContext context) {
+class _CourseTabSection extends StatelessWidget {
+  final Course course;
+
+  const _CourseTabSection({required this.course});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return DefaultTabController(
       length: 2,
@@ -99,8 +108,8 @@ class _CourseDetail extends StatelessWidget {
             height: 400, // Фиксированная высота или использовать LayoutBuilder
             child: TabBarView(
               children: [
-                _buildDescriptionContent(context),
-                _buildTableOfContentsContent(context),
+                _DescriptionContent(course: course),
+                _TableOfContentsContent(course: course),
               ],
             ),
           ),
@@ -108,8 +117,15 @@ class _CourseDetail extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildDescriptionContent(BuildContext context) {
+class _DescriptionContent extends StatelessWidget {
+  final Course course;
+
+  const _DescriptionContent({required this.course});
+
+  @override
+  Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -117,8 +133,15 @@ class _CourseDetail extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildTableOfContentsContent(BuildContext context) {
+class _TableOfContentsContent extends StatelessWidget {
+  final Course course;
+
+  const _TableOfContentsContent({required this.course});
+
+  @override
+  Widget build(BuildContext context) {
     final parsedContent = _parseTableOfContents(
       context,
       course.tableOfContents,
@@ -135,16 +158,23 @@ class _CourseDetail extends StatelessWidget {
       if (trimmedLine.isEmpty) continue;
 
       if (trimmedLine.startsWith('#')) {
-        result.add(_buildModuleTitle(context, trimmedLine.substring(1).trim()));
+        result.add(_ModuleTitle(text: trimmedLine.substring(1).trim()));
       } else if (trimmedLine.startsWith('*')) {
-        result.add(_buildTaskItem(context, trimmedLine.substring(1).trim()));
+        result.add(_TaskItem(text: trimmedLine.substring(1).trim()));
       }
     }
 
     return result;
   }
+}
 
-  Widget _buildModuleTitle(BuildContext context, String text) {
+class _ModuleTitle extends StatelessWidget {
+  final String text;
+
+  const _ModuleTitle({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: 16, bottom: 8),
@@ -157,8 +187,15 @@ class _CourseDetail extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildTaskItem(BuildContext context, String text) {
+class _TaskItem extends StatelessWidget {
+  final String text;
+
+  const _TaskItem({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -183,9 +220,13 @@ class _CourseDetail extends StatelessWidget {
       ),
     );
   }
+}
 
-  // TODO: Create a recommendation widget and add it
-  Widget _buildRecommendations() {
+class _CourseRecommendations extends StatelessWidget {
+  const _CourseRecommendations();
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => GetIt.I<RecommendBloc>(),
       child: const SizedBox(),
@@ -221,17 +262,31 @@ class CourseMetaInfo extends StatelessWidget {
       height: 100,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            MetaItem(value: course.pricing.price.format(), label: 'Price'),
-            MetaItem(value: course.author.name, label: 'Author'),
-            MetaItem(
-              value: '${course.statistics.averageRating}/5',
-              label: 'Rating',
-            ),
-            MetaItem(value: '${course.totalTasks}', label: 'Lessons'),
-          ],
+        child: Builder(
+          builder: (context) {
+            final s = S.of(context);
+            return ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                MetaItem(
+                  value: course.pricing.price.format(),
+                  label: s.courseDetailsPrice,
+                ),
+                MetaItem(
+                  value: course.author.name,
+                  label: s.courseDetailsAuthor,
+                ),
+                MetaItem(
+                  value: '${course.statistics.averageRating}/5',
+                  label: s.courseDetailsRating,
+                ),
+                MetaItem(
+                  value: '${course.totalTasks}',
+                  label: s.courseDetailsLessonsLabel,
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -265,10 +320,11 @@ class RecommendationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionTitle(title: 'Recommend'),
+        SectionTitle(title: s.courseDetailsRecommend),
         const SizedBox(height: 16),
         BlocBuilder<RecommendBloc, RecommendState>(
           builder: (context, state) {

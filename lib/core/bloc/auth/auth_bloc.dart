@@ -22,11 +22,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required SignUpUseCase signUpUseCase,
     required SignInUseCase signInUseCase,
     required SignOutUseCase signOutUseCase,
-  })  : _checkAuthStatusUseCase = checkAuthStatusUseCase,
-        _signUpUseCase = signUpUseCase,
-        _signInUseCase = signInUseCase,
-        _signOutUseCase = signOutUseCase,
-        super(const AuthInitialState()) {
+  }) : _checkAuthStatusUseCase = checkAuthStatusUseCase,
+       _signUpUseCase = signUpUseCase,
+       _signInUseCase = signInUseCase,
+       _signOutUseCase = signOutUseCase,
+       super(const AuthInitialState()) {
     on<AuthSignUpEvent>(_onSignUp);
     on<AuthSignInEvent>(_onSignIn);
     on<AuthSignOutEvent>(_onSignOut);
@@ -34,13 +34,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthUpdateUserEvent>(_onUpdateUser);
   }
 
-  Future<void> _onSignUp(
-    AuthSignUpEvent event,
-    Emitter<AuthState> emit,
-  ) async {
+  Future<void> _onSignUp(AuthSignUpEvent event, Emitter<AuthState> emit) async {
     try {
       emit(const AuthLoadingState());
-      final user = await _signUpUseCase.execute(event.email, event.password);
+      final user = await _signUpUseCase(event.email, event.password);
       emit(AuthAuthenticatedState(user));
     } catch (e, st) {
       emit(AuthErrorState(e.toString()));
@@ -48,13 +45,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onSignIn(
-    AuthSignInEvent event,
-    Emitter<AuthState> emit,
-  ) async {
+  Future<void> _onSignIn(AuthSignInEvent event, Emitter<AuthState> emit) async {
     try {
       emit(const AuthLoadingState());
-      final user = await _signInUseCase.execute(event.email, event.password);
+      final user = await _signInUseCase(event.email, event.password);
       emit(AuthAuthenticatedState(user));
     } catch (e, st) {
       emit(AuthErrorState(e.toString()));
@@ -68,7 +62,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(const AuthLoadingState());
-      await _signOutUseCase.execute();
+      await _signOutUseCase();
       emit(const AuthUnauthenticatedState());
     } catch (e, st) {
       emit(AuthErrorState(e.toString()));
@@ -82,7 +76,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoadingState());
     try {
-      final currentUser = await _checkAuthStatusUseCase.execute();
+      final currentUser = await _checkAuthStatusUseCase();
       if (currentUser != null) {
         emit(AuthAuthenticatedState(currentUser));
       } else {
@@ -94,10 +88,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void _onUpdateUser(
-    AuthUpdateUserEvent event,
-    Emitter<AuthState> emit,
-  ) {
+  void _onUpdateUser(AuthUpdateUserEvent event, Emitter<AuthState> emit) {
     if (state is AuthAuthenticatedState) {
       emit(AuthAuthenticatedState(event.updatedUser));
     }

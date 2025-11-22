@@ -2,9 +2,7 @@ import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_exception.dart';
 import 'package:codium/core/utils/retry_logic.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
-import 'package:codium/domain/repositories/pdf_repository.dart';
-import 'package:codium/domain/usecases/get_pdf_list_usecase.dart';
-import 'package:codium/domain/usecases/import_pdf_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -16,15 +14,18 @@ part 'library_state.dart';
 class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
   final GetPdfListUseCase _getPdfListUseCase;
   final ImportPdfUseCase _importPdfUseCase;
-  final IPdfRepository _pdfRepository;
+  final DeletePdfUseCase _deletePdfUseCase;
+  final ToggleFavoritePdfUseCase _toggleFavoritePdfUseCase;
 
   LibraryBloc({
     required GetPdfListUseCase getPdfListUseCase,
     required ImportPdfUseCase importPdfUseCase,
-    required IPdfRepository pdfRepository,
+    required DeletePdfUseCase deletePdfUseCase,
+    required ToggleFavoritePdfUseCase toggleFavoritePdfUseCase,
   }) : _getPdfListUseCase = getPdfListUseCase,
        _importPdfUseCase = importPdfUseCase,
-       _pdfRepository = pdfRepository,
+       _deletePdfUseCase = deletePdfUseCase,
+       _toggleFavoritePdfUseCase = toggleFavoritePdfUseCase,
        super(LibraryInitialState()) {
     on<LoadLibraryEvent>(_onLoadLibrary);
     on<ImportPdfEvent>(_onImportPdf);
@@ -40,7 +41,7 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     emit(LibraryLoadingState());
     try {
       final books = await RetryLogic.retry(
-        operation: () => _getPdfListUseCase.execute(),
+        operation: () => _getPdfListUseCase(),
         maxAttempts: 2,
         shouldRetry: (e) => e is DatabaseError,
       );
@@ -63,7 +64,7 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     Emitter<LibraryState> emit,
   ) async {
     try {
-      await _importPdfUseCase.execute(event.filePath);
+      await _importPdfUseCase(event.filePath);
       add(LoadLibraryEvent());
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
@@ -83,7 +84,7 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     Emitter<LibraryState> emit,
   ) async {
     try {
-      await _pdfRepository.deleteBook(event.bookId);
+      await _deletePdfUseCase(event.bookId);
       add(LoadLibraryEvent());
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
@@ -138,12 +139,8 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     Emitter<LibraryState> emit,
   ) async {
     try {
-      final book = await _pdfRepository.getBookById(event.bookId);
-      if (book != null) {
-        final updatedBook = book.copyWith(isFavorite: !book.isFavorite);
-        await _pdfRepository.updateBook(updatedBook);
-        add(LoadLibraryEvent());
-      }
+      await _toggleFavoritePdfUseCase(event.bookId);
+      add(LoadLibraryEvent());
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
       final error = e is AppError ? e : const UnknownError();

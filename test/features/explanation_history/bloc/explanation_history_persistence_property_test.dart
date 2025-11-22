@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:codium/data/datasources/local/app_database.dart';
 import 'package:codium/data/datasources/local/bookmark_local_datasource.dart';
 import 'package:codium/data/datasources/local/explanation_local_datasource.dart';
-import 'package:codium/data/repositories/storage_repository_impl.dart';
+import 'package:codium/data/repositories/storage_repository.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
 import 'package:codium/domain/repositories/storage_repository.dart';
@@ -21,10 +21,7 @@ void main() {
     database = AppDatabase.forTesting(NativeDatabase.memory());
     final bookmarkDataSource = BookmarkLocalDataSource(database);
     final explanationDataSource = ExplanationLocalDataSource(database);
-    repository = StorageRepositoryImpl(
-      bookmarkDataSource,
-      explanationDataSource,
-    );
+    repository = StorageRepository(bookmarkDataSource, explanationDataSource);
   });
 
   tearDown(() async {

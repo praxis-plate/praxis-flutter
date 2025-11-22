@@ -8,7 +8,7 @@ class SignInUseCase {
 
   SignInUseCase(this._authRepository);
 
-  Future<User> execute(String email, String password) async {
+  Future<User> call(String email, String password) async {
     AuthValidator.validateCredentials(email, password);
 
     try {
@@ -17,7 +17,7 @@ class SignInUseCase {
     } on AuthException {
       rethrow;
     } catch (e) {
-      throw AuthException('Ошибка входа');
+      throw AuthException('Sign in error');
     }
   }
 }

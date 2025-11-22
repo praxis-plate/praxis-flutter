@@ -1,9 +1,9 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/widgets/activity_table.dart';
-import 'package:codium/core/widgets/added_course_card.dart';
 import 'package:codium/core/widgets/user_provider.dart';
 import 'package:codium/core/widgets/wrapper.dart';
 import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
+import 'package:codium/features/learning/view/widgets/activity_table.dart';
+import 'package:codium/features/learning/view/widgets/added_course_card.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

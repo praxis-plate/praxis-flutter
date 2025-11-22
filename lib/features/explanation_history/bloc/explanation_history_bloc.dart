@@ -2,9 +2,7 @@ import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_exception.dart';
 import 'package:codium/core/utils/retry_logic.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
-import 'package:codium/domain/usecases/delete_explanation_usecase.dart';
-import 'package:codium/domain/usecases/get_explanation_history_usecase.dart';
-import 'package:codium/domain/usecases/search_explanation_history_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -39,7 +37,7 @@ class ExplanationHistoryBloc
     emit(ExplanationHistoryLoadingState());
     try {
       final explanations = await RetryLogic.retry(
-        operation: () => _getExplanationHistoryUseCase.execute(),
+        operation: () => _getExplanationHistoryUseCase(),
         maxAttempts: 2,
         shouldRetry: (e) => e is DatabaseError,
       );
@@ -82,9 +80,7 @@ class ExplanationHistoryBloc
         );
       } else {
         try {
-          final filtered = await _searchExplanationHistoryUseCase.execute(
-            query,
-          );
+          final filtered = await _searchExplanationHistoryUseCase(query);
           final grouped = _groupExplanationsByPdf(filtered);
           emit(
             ExplanationHistoryLoadedState(
@@ -113,7 +109,7 @@ class ExplanationHistoryBloc
     Emitter<ExplanationHistoryState> emit,
   ) async {
     try {
-      await _deleteExplanationUseCase.execute(event.explanationId);
+      await _deleteExplanationUseCase(event.explanationId);
       add(LoadHistoryEvent());
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);

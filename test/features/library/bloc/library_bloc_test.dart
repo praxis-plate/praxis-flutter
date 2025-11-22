@@ -1,8 +1,6 @@
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
-import 'package:codium/domain/repositories/pdf_repository.dart';
-import 'package:codium/domain/usecases/get_pdf_list_usecase.dart';
-import 'package:codium/domain/usecases/import_pdf_usecase.dart';
+import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -12,18 +10,26 @@ import 'package:talker_flutter/talker_flutter.dart';
 
 import 'library_bloc_test.mocks.dart';
 
-@GenerateMocks([IPdfRepository, GetPdfListUseCase, ImportPdfUseCase, Talker])
+@GenerateMocks([
+  GetPdfListUseCase,
+  ImportPdfUseCase,
+  DeletePdfUseCase,
+  ToggleFavoritePdfUseCase,
+  Talker,
+])
 void main() {
   late LibraryBloc bloc;
-  late MockIPdfRepository mockPdfRepository;
   late MockGetPdfListUseCase mockGetPdfListUseCase;
   late MockImportPdfUseCase mockImportPdfUseCase;
+  late MockDeletePdfUseCase mockDeletePdfUseCase;
+  late MockToggleFavoritePdfUseCase mockToggleFavoritePdfUseCase;
   late MockTalker mockTalker;
 
   setUp(() {
-    mockPdfRepository = MockIPdfRepository();
     mockGetPdfListUseCase = MockGetPdfListUseCase();
     mockImportPdfUseCase = MockImportPdfUseCase();
+    mockDeletePdfUseCase = MockDeletePdfUseCase();
+    mockToggleFavoritePdfUseCase = MockToggleFavoritePdfUseCase();
     mockTalker = MockTalker();
 
     // Register Talker mock in GetIt
@@ -34,7 +40,8 @@ void main() {
     bloc = LibraryBloc(
       getPdfListUseCase: mockGetPdfListUseCase,
       importPdfUseCase: mockImportPdfUseCase,
-      pdfRepository: mockPdfRepository,
+      deletePdfUseCase: mockDeletePdfUseCase,
+      toggleFavoritePdfUseCase: mockToggleFavoritePdfUseCase,
     );
   });
 
@@ -52,7 +59,7 @@ void main() {
       final testCases = _generatePropertyTestCases(100);
 
       for (final books in testCases) {
-        when(mockGetPdfListUseCase.execute()).thenAnswer((_) async => books);
+        when(mockGetPdfListUseCase()).thenAnswer((_) async => books);
 
         bloc.add(LoadLibraryEvent());
 
@@ -100,7 +107,7 @@ void main() {
         final books = testCase['books'] as List<PdfBook>;
         final query = testCase['query'] as String;
 
-        when(mockGetPdfListUseCase.execute()).thenAnswer((_) async => books);
+        when(mockGetPdfListUseCase()).thenAnswer((_) async => books);
 
         bloc.add(LoadLibraryEvent());
         await bloc.stream.first;
@@ -162,7 +169,7 @@ void main() {
           ),
         ];
 
-        when(mockGetPdfListUseCase.execute()).thenAnswer((_) async => books);
+        when(mockGetPdfListUseCase()).thenAnswer((_) async => books);
 
         bloc.add(LoadLibraryEvent());
 
@@ -183,9 +190,7 @@ void main() {
     );
 
     test('should emit error state when LoadLibraryEvent fails', () async {
-      when(
-        mockGetPdfListUseCase.execute(),
-      ).thenThrow(Exception('Database error'));
+      when(mockGetPdfListUseCase()).thenThrow(Exception('Database error'));
 
       bloc.add(LoadLibraryEvent());
 
@@ -220,7 +225,7 @@ void main() {
           ),
         ];
 
-        when(mockGetPdfListUseCase.execute()).thenAnswer((_) async => books);
+        when(mockGetPdfListUseCase()).thenAnswer((_) async => books);
 
         bloc.add(LoadLibraryEvent());
         await bloc.stream.first;
@@ -267,7 +272,7 @@ void main() {
           ),
         ];
 
-        when(mockGetPdfListUseCase.execute()).thenAnswer((_) async => books);
+        when(mockGetPdfListUseCase()).thenAnswer((_) async => books);
 
         bloc.add(LoadLibraryEvent());
         await bloc.stream.first;
@@ -310,7 +315,7 @@ void main() {
         ),
       ];
 
-      when(mockGetPdfListUseCase.execute()).thenAnswer((_) async => books);
+      when(mockGetPdfListUseCase()).thenAnswer((_) async => books);
 
       bloc.add(LoadLibraryEvent());
       await bloc.stream.first;
@@ -343,8 +348,8 @@ void main() {
         ),
       ];
 
-      when(mockImportPdfUseCase.execute(any)).thenAnswer((_) async => {});
-      when(mockGetPdfListUseCase.execute()).thenAnswer((_) async => books);
+      when(mockImportPdfUseCase(argThat(anything))).thenAnswer((_) async => {});
+      when(mockGetPdfListUseCase()).thenAnswer((_) async => books);
 
       bloc.add(const ImportPdfEvent('/path/to/new.pdf'));
 
@@ -353,14 +358,12 @@ void main() {
         emitsInOrder([isA<LibraryLoadingState>(), isA<LibraryLoadedState>()]),
       );
 
-      verify(mockImportPdfUseCase.execute('/path/to/new.pdf')).called(1);
-      verify(mockGetPdfListUseCase.execute()).called(1);
+      verify(mockImportPdfUseCase('/path/to/new.pdf')).called(1);
+      verify(mockGetPdfListUseCase()).called(1);
     });
 
     test('should emit error state when ImportPdfEvent fails', () async {
-      when(
-        mockImportPdfUseCase.execute(any),
-      ).thenThrow(Exception('Import failed'));
+      when(mockImportPdfUseCase(argThat(anything))).thenThrow(Exception('Import failed'));
 
       bloc.add(const ImportPdfEvent('/path/to/new.pdf'));
 
@@ -386,8 +389,8 @@ void main() {
         ),
       ];
 
-      when(mockPdfRepository.deleteBook(any)).thenAnswer((_) async => {});
-      when(mockGetPdfListUseCase.execute()).thenAnswer((_) async => books);
+      when(mockDeletePdfUseCase(any)).thenAnswer((_) async => {});
+      when(mockGetPdfListUseCase()).thenAnswer((_) async => books);
 
       bloc.add(const DeletePdfEvent('1'));
 
@@ -396,14 +399,12 @@ void main() {
         emitsInOrder([isA<LibraryLoadingState>(), isA<LibraryLoadedState>()]),
       );
 
-      verify(mockPdfRepository.deleteBook('1')).called(1);
-      verify(mockGetPdfListUseCase.execute()).called(1);
+      verify(mockDeletePdfUseCase('1')).called(1);
+      verify(mockGetPdfListUseCase()).called(1);
     });
 
     test('should emit error state when DeletePdfEvent fails', () async {
-      when(
-        mockPdfRepository.deleteBook(any),
-      ).thenThrow(Exception('Delete failed'));
+      when(mockDeletePdfUseCase(any)).thenThrow(Exception('Delete failed'));
 
       bloc.add(const DeletePdfEvent('1'));
 

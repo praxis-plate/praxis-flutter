@@ -1,8 +1,8 @@
 import 'package:codium/data/datasources/remote/gemini_datasource.dart';
 import 'package:codium/data/datasources/remote/search_datasource.dart';
-import 'package:codium/data/repositories/ai_repository_impl.dart';
+import 'package:codium/data/repositories/ai_repository.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
-import 'package:codium/domain/services/connectivity_service.dart';
+import 'package:codium/domain/services/services.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -12,7 +12,7 @@ import 'ai_repository_impl_test.mocks.dart';
 
 @GenerateMocks([GeminiDataSource, SearchDataSource, IConnectivityService])
 void main() {
-  late AiRepositoryImpl repository;
+  late AiRepository repository;
   late MockGeminiDataSource mockGeminiDataSource;
   late MockSearchDataSource mockSearchDataSource;
   late MockIConnectivityService mockConnectivityService;
@@ -24,14 +24,14 @@ void main() {
 
     when(mockConnectivityService.isConnected).thenReturn(true);
 
-    repository = AiRepositoryImpl(
+    repository = AiRepository(
       geminiDataSource: mockGeminiDataSource,
       searchDataSource: mockSearchDataSource,
       connectivityService: mockConnectivityService,
     );
   });
 
-  group('AiRepositoryImpl - Property Tests', () {
+  group('AiRepository - Property Tests', () {
     test(
       'Feature: codium-ai-enhancement, Property 3: Explain Triggers API Call - '
       'For any selected text, when explainText is called, '
@@ -84,7 +84,7 @@ void main() {
     });
   });
 
-  group('AiRepositoryImpl - Unit Tests', () {
+  group('AiRepository - Unit Tests', () {
     test('should return explanation when API call succeeds', () async {
       const text = 'variable';
       const context = 'In programming, a variable is...';

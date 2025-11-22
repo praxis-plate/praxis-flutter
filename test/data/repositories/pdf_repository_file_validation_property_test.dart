@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:codium/data/datasources/local/bookmark_local_datasource.dart';
-import 'package:codium/data/datasources/local/pdf_local_datasource.dart';
-import 'package:codium/data/repositories/pdf_repository_impl.dart';
+import 'package:codium/data/repositories/pdf_repository.dart';
+import 'package:codium/domain/datasources/i_bookmark_local_datasource.dart';
+import 'package:codium/domain/datasources/i_pdf_local_datasource.dart';
 import 'package:codium/domain/models/pdf_library/pdf_book.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -12,28 +12,28 @@ import 'package:talker_flutter/talker_flutter.dart';
 
 import 'pdf_repository_file_validation_property_test.mocks.dart';
 
-@GenerateMocks([PdfLocalDataSource, BookmarkLocalDataSource, Talker])
+@GenerateMocks([IPdfLocalDataSource, IBookmarkLocalDataSource, Talker])
 void main() {
-  late PdfRepositoryImpl repository;
-  late MockPdfLocalDataSource mockPdfDataSource;
-  late MockBookmarkLocalDataSource mockBookmarkDataSource;
+  late PdfRepository repository;
+  late MockIPdfLocalDataSource mockPdfDataSource;
+  late MockIBookmarkLocalDataSource mockBookmarkDataSource;
   late MockTalker mockTalker;
 
   setUp(() {
-    mockPdfDataSource = MockPdfLocalDataSource();
-    mockBookmarkDataSource = MockBookmarkLocalDataSource();
+    mockPdfDataSource = MockIPdfLocalDataSource();
+    mockBookmarkDataSource = MockIBookmarkLocalDataSource();
     mockTalker = MockTalker();
 
     GetIt.I.registerSingleton<Talker>(mockTalker);
 
-    repository = PdfRepositoryImpl(mockPdfDataSource, mockBookmarkDataSource);
+    repository = PdfRepository(mockPdfDataSource, mockBookmarkDataSource);
   });
 
   tearDown(() {
     GetIt.I.reset();
   });
 
-  group('PdfRepositoryImpl - File Validation Property Tests', () {
+  group('PdfRepository - File Validation Property Tests', () {
     test(
       'Feature: codium-ai-enhancement, Property 35: Library File Validation - '
       'For any book in the library, if its file does not exist, '
