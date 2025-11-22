@@ -50,8 +50,7 @@ class ExplainTextUseCase {
       await _storageRepository.saveExplanation(explanation);
 
       return explanation;
-    } catch (e, st) {
-      GetIt.I<Talker>().handle(e, st);
+    } catch (e) {
       rethrow;
     }
   }

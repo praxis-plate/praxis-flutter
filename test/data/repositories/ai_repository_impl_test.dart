@@ -1,8 +1,8 @@
-import 'package:codium/core/services/connectivity_service.dart';
 import 'package:codium/data/datasources/remote/gemini_datasource.dart';
 import 'package:codium/data/datasources/remote/search_datasource.dart';
 import 'package:codium/data/repositories/ai_repository_impl.dart';
 import 'package:codium/domain/models/ai_explanation/search_source.dart';
+import 'package:codium/domain/services/connectivity_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -10,17 +10,17 @@ import 'package:mockito/mockito.dart';
 
 import 'ai_repository_impl_test.mocks.dart';
 
-@GenerateMocks([GeminiDataSource, SearchDataSource, ConnectivityService])
+@GenerateMocks([GeminiDataSource, SearchDataSource, IConnectivityService])
 void main() {
   late AiRepositoryImpl repository;
   late MockGeminiDataSource mockGeminiDataSource;
   late MockSearchDataSource mockSearchDataSource;
-  late MockConnectivityService mockConnectivityService;
+  late MockIConnectivityService mockConnectivityService;
 
   setUp(() {
     mockGeminiDataSource = MockGeminiDataSource();
     mockSearchDataSource = MockSearchDataSource();
-    mockConnectivityService = MockConnectivityService();
+    mockConnectivityService = MockIConnectivityService();
 
     when(mockConnectivityService.isConnected).thenReturn(true);
 

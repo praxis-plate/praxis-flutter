@@ -5,10 +5,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:codium/core/services/connectivity_service.dart' as _i7;
 import 'package:codium/data/datasources/remote/gemini_datasource.dart' as _i2;
 import 'package:codium/data/datasources/remote/search_datasource.dart' as _i5;
 import 'package:codium/domain/models/ai_explanation/search_source.dart' as _i6;
+import 'package:codium/domain/services/connectivity_service.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i4;
 
@@ -77,14 +77,19 @@ class MockSearchDataSource extends _i1.Mock implements _i5.SearchDataSource {
           as _i3.Future<List<_i6.SearchSource>>);
 }
 
-/// A class which mocks [ConnectivityService].
+/// A class which mocks [IConnectivityService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockConnectivityService extends _i1.Mock
-    implements _i7.ConnectivityService {
-  MockConnectivityService() {
+class MockIConnectivityService extends _i1.Mock
+    implements _i7.IConnectivityService {
+  MockIConnectivityService() {
     _i1.throwOnMissingStub(this);
   }
+
+  @override
+  bool get isConnected =>
+      (super.noSuchMethod(Invocation.getter(#isConnected), returnValue: false)
+          as bool);
 
   @override
   _i3.Stream<bool> get connectivityStream =>
@@ -93,15 +98,4 @@ class MockConnectivityService extends _i1.Mock
             returnValue: _i3.Stream<bool>.empty(),
           )
           as _i3.Stream<bool>);
-
-  @override
-  bool get isConnected =>
-      (super.noSuchMethod(Invocation.getter(#isConnected), returnValue: false)
-          as bool);
-
-  @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
 }

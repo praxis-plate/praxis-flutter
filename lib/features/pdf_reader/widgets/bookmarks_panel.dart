@@ -1,5 +1,6 @@
 import 'package:codium/domain/models/pdf_reader/bookmark.dart';
 import 'package:codium/domain/repositories/pdf_repository.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -57,15 +58,17 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
       await repository.deleteBookmark(bookmarkId);
       await _loadBookmarks();
       if (mounted) {
+        final l10n = S.of(context);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('Bookmark deleted')));
+        ).showSnackBar(SnackBar(content: Text(l10n.bookmarksDeleted)));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error deleting bookmark: $e')));
+        final l10n = S.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.bookmarksErrorDeleting(e.toString()))),
+        );
       }
     }
   }
@@ -94,12 +97,16 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
   }
 
   Widget _buildHeader() {
+    final l10n = S.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primaryContainer,
         border: Border(
-          bottom: BorderSide(color: Theme.of(context).colorScheme.outline),
+          bottom: BorderSide(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+            width: 1,
+          ),
         ),
       ),
       child: Row(
@@ -111,7 +118,7 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'Bookmarks',
+              l10n.bookmarksTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onPrimaryContainer,
               ),
@@ -124,6 +131,8 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
   }
 
   Widget _buildContent() {
+    final l10n = S.of(context);
+
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -142,14 +151,14 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
               ),
               const SizedBox(height: 16),
               Text(
-                _error!,
+                l10n.bookmarksErrorLoading,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _loadBookmarks,
-                child: const Text('Retry'),
+                child: Text(l10n.bookmarksRetry),
               ),
             ],
           ),
@@ -171,14 +180,14 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
               ),
               const SizedBox(height: 16),
               Text(
-                'No bookmarks yet',
+                l10n.bookmarksNoBookmarks,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Tap the bookmark icon to add one',
+                l10n.bookmarksTapToAdd,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -200,6 +209,7 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
   }
 
   Widget _buildBookmarkItem(Bookmark bookmark) {
+    final l10n = S.of(context);
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
@@ -213,7 +223,7 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
             ),
           ),
         ),
-        title: Text('Page ${bookmark.pageNumber + 1}'),
+        title: Text(l10n.bookmarksPage(bookmark.pageNumber + 1)),
         subtitle: bookmark.note != null
             ? Text(bookmark.note!, maxLines: 2, overflow: TextOverflow.ellipsis)
             : null,
@@ -227,26 +237,26 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
   }
 
   void _showDeleteConfirmation(Bookmark bookmark) {
+    final l10n = S.of(context);
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Bookmark'),
-        content: Text('Delete bookmark for page ${bookmark.pageNumber + 1}?'),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.bookmarksDeleteTitle),
+        content: Text(l10n.bookmarksDeleteMessage(bookmark.pageNumber + 1)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.bookmarksDeleteCancel),
           ),
-          ElevatedButton(
+          TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(dialogContext).pop();
               _deleteBookmark(bookmark.id);
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Theme.of(context).colorScheme.onError,
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(l10n.bookmarksDeleteConfirm),
           ),
         ],
       ),

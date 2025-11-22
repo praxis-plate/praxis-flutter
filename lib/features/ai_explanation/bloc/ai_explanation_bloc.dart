@@ -1,6 +1,5 @@
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_exception.dart';
-import 'package:codium/core/utils/retry_logic.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/usecases/explain_text_usecase.dart';
 import 'package:equatable/equatable.dart';
@@ -33,15 +32,11 @@ class AiExplanationBloc extends Bloc<AiExplanationEvent, AiExplanationState> {
     );
 
     try {
-      final explanation = await RetryLogic.retry(
-        operation: () => _explainTextUseCase.execute(
-          selectedText: event.selectedText,
-          context: event.context,
-          pdfBookId: event.pdfBookId,
-          pageNumber: event.pageNumber,
-        ),
-        maxAttempts: 2,
-        shouldRetry: (e) => e is NetworkError && e is! RateLimitError,
+      final explanation = await _explainTextUseCase.execute(
+        selectedText: event.selectedText,
+        context: event.context,
+        pdfBookId: event.pdfBookId,
+        pageNumber: event.pageNumber,
       );
 
       emit(AiExplanationLoadedState(explanation: explanation));

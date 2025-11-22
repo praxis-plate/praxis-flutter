@@ -17,15 +17,26 @@ final class AuthRepository implements IAuthRepository {
       final user = await _dataSource.signUp(email: email, password: password);
 
       if (user == null) {
-        throw AuthException('Ошибка при регистрации');
+        throw AuthException('Не удалось создать пользователя');
       }
 
-      GetIt.I<Talker>().log(user);
+      GetIt.I<Talker>().info('User registered successfully: ${user.email}');
 
       return user;
-    } catch (e) {
-      GetIt.I<Talker>().error(e.toString());
-      throw AuthServerException(e.toString());
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+
+      if (e is AuthException) {
+        rethrow;
+      }
+
+      final errorMessage = e.toString();
+      if (errorMessage.contains('already exists') ||
+          errorMessage.contains('уже существует')) {
+        throw AuthException('Пользователь с таким email уже зарегистрирован');
+      }
+
+      throw AuthException('Не удалось зарегистрироваться. Попробуйте позже');
     }
   }
 
@@ -35,25 +46,31 @@ final class AuthRepository implements IAuthRepository {
       final user = await _dataSource.signIn(email: email, password: password);
 
       if (user == null) {
-        throw AuthException('Неверные учетные данные');
+        throw AuthException('Неверный email или пароль');
       }
 
-      GetIt.I<Talker>().log(user);
+      GetIt.I<Talker>().info('User signed in successfully: ${user.email}');
 
       return user;
-    } catch (e) {
-      GetIt.I<Talker>().error(e.toString());
-      throw AuthServerException(e.toString());
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+
+      if (e is AuthException) {
+        rethrow;
+      }
+
+      throw AuthException('Не удалось войти. Попробуйте позже');
     }
   }
 
   @override
   Future<void> signOut() async {
     try {
-      _dataSource.signOut();
-    } catch (e) {
-      GetIt.I<Talker>().error(e.toString());
-      throw AuthServerException(e.toString());
+      await _dataSource.signOut();
+      GetIt.I<Talker>().info('User signed out successfully');
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      throw AuthException('Не удалось выйти. Попробуйте позже');
     }
   }
 

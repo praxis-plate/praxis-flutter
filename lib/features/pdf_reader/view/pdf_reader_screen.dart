@@ -1,6 +1,7 @@
+import 'package:codium/core/config/feature_flags.dart';
 import 'package:codium/core/exceptions/app_error_extensions.dart';
-import 'package:codium/core/services/connectivity_service.dart';
 import 'package:codium/core/widgets/feedback/offline_indicator.dart';
+import 'package:codium/domain/services/connectivity_service.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:codium/features/ai_explanation/widgets/explanation_bottom_sheet.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
@@ -36,7 +37,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
     _pdfReaderBloc = context.read<PdfReaderBloc>();
     _pdfReaderBloc.add(OpenPdfEvent(widget.bookId));
 
-    final connectivityService = GetIt.I<ConnectivityService>();
+    final connectivityService = GetIt.I<IConnectivityService>();
     _isConnected = connectivityService.isConnected;
 
     connectivityService.connectivityStream.listen((isConnected) {
@@ -61,7 +62,6 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
     int initialPage,
     double? scrollPosition,
   ) async {
-    // TODO: улучшить качество кода
     try {
       _pdfController = PdfController(
         document: PdfDocument.openFile(filePath),
@@ -101,7 +101,9 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
       onKeyEvent: (event) {
         if (event is KeyDownEvent) {
           final state = _pdfReaderBloc.state;
-          if (state is PdfReaderLoadedState && _isConnected) {
+          if (state is PdfReaderLoadedState &&
+              _isConnected &&
+              FeatureFlags.enableAiExplanations) {
             if (event.logicalKey == LogicalKeyboardKey.keyE &&
                 (HardwareKeyboard.instance.isControlPressed ||
                     HardwareKeyboard.instance.isMetaPressed)) {
@@ -121,22 +123,26 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
             },
           ),
           actions: [
-            BlocBuilder<PdfReaderBloc, PdfReaderState>(
-              builder: (context, state) {
-                if (state is PdfReaderLoadedState) {
-                  return IconButton(
-                    icon: const Icon(Icons.lightbulb_outline),
-                    tooltip: S.of(context).pdfReaderExplainPage,
-                    onPressed: _isConnected
-                        ? () => _showExplainPageDialog(context, state)
-                        : null,
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
+            if (FeatureFlags.enableAiExplanations)
+              BlocBuilder<PdfReaderBloc, PdfReaderState>(
+                builder: (context, state) {
+                  if (state is PdfReaderLoadedState) {
+                    return IconButton(
+                      icon: const Icon(Icons.lightbulb_outline),
+                      tooltip: S.of(context).pdfReaderExplainPage,
+                      onPressed: _isConnected
+                          ? () => _showExplainPageDialog(context, state)
+                          : null,
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
             IconButton(
-              icon: const Icon(Icons.bookmark),
+              icon: Icon(
+                Icons.bookmark,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               onPressed: () {
                 setState(() {
                   _showBookmarksPanel = !_showBookmarksPanel;
@@ -147,7 +153,10 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
               builder: (context, state) {
                 if (state is PdfReaderLoadedState) {
                   return IconButton(
-                    icon: const Icon(Icons.bookmark_add),
+                    icon: Icon(
+                      Icons.bookmark_add,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     onPressed: () {
                       _showAddBookmarkDialog(context, state.currentPage);
                     },
@@ -158,21 +167,23 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
             ),
           ],
         ),
-        floatingActionButton: BlocBuilder<PdfReaderBloc, PdfReaderState>(
-          builder: (context, state) {
-            if (state is PdfReaderLoadedState && _isConnected) {
-              return FloatingActionButton.extended(
-                onPressed: () =>
-                    _showEnhancedTextSelectionDialog(context, state),
-                icon: const Icon(Icons.lightbulb_outline),
-                label: Text(S.of(context).pdfReaderAskAi),
-                tooltip: S.of(context).pdfReaderAskAiTooltip,
-                heroTag: 'askAiButton',
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
+        floatingActionButton: FeatureFlags.enableAiExplanations
+            ? BlocBuilder<PdfReaderBloc, PdfReaderState>(
+                builder: (context, state) {
+                  if (state is PdfReaderLoadedState && _isConnected) {
+                    return FloatingActionButton.extended(
+                      onPressed: () =>
+                          _showEnhancedTextSelectionDialog(context, state),
+                      icon: const Icon(Icons.lightbulb_outline),
+                      label: Text(S.of(context).pdfReaderAskAi),
+                      tooltip: S.of(context).pdfReaderAskAiTooltip,
+                      heroTag: 'askAiButton',
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              )
+            : null,
         body: MultiBlocListener(
           listeners: [
             BlocListener<AiExplanationBloc, AiExplanationState>(
@@ -252,7 +263,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                     Column(
                       children: [
                         if (!_isConnected) const OfflineIndicator(),
-                        if (_isConnected)
+                        if (_isConnected && FeatureFlags.enableAiExplanations)
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
@@ -300,13 +311,17 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                                 const SizedBox(width: 8),
-                                Text(
-                                  'Lazy loading enabled for large PDF',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
+                                Expanded(
+                                  child: Text(
+                                    S.of(context).pdfReaderLazyLoading,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
@@ -389,32 +404,36 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
 
   void _showAddBookmarkDialog(BuildContext context, int currentPage) {
     final noteController = TextEditingController();
+    final l10n = S.of(context);
 
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Add Bookmark'),
+        title: Text(l10n.pdfReaderAddBookmarkTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Page ${currentPage + 1}'),
+            Text(l10n.pdfReaderAddBookmarkPage(currentPage + 1)),
             const SizedBox(height: 16),
             TextField(
               controller: noteController,
-              decoration: const InputDecoration(
-                labelText: 'Note (optional)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.pdfReaderAddBookmarkNote,
+                border: const OutlineInputBorder(),
+                alignLabelWithHint: true,
               ),
               maxLines: 3,
+              textAlignVertical: TextAlignVertical.top,
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
+            child: Text(l10n.pdfReaderAddBookmarkCancel),
           ),
-          ElevatedButton(
+          TextButton(
             onPressed: () {
               context.read<PdfReaderBloc>().add(
                 AddBookmarkEvent(
@@ -425,15 +444,22 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                 ),
               );
               Navigator.of(dialogContext).pop();
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('Bookmark added')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.pdfReaderBookmarkAdded)),
+              );
             },
-            child: const Text('Add'),
+            child: Text(l10n.pdfReaderAddBookmarkAdd),
           ),
         ],
       ),
     );
+  }
+
+  void _showExplainPageDialog(
+    BuildContext context,
+    PdfReaderLoadedState state,
+  ) {
+    _showEnhancedTextSelectionDialog(context, state);
   }
 
   void _showEnhancedTextSelectionDialog(
@@ -464,13 +490,6 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
         },
       ),
     );
-  }
-
-  void _showExplainPageDialog(
-    BuildContext context,
-    PdfReaderLoadedState state,
-  ) {
-    _showEnhancedTextSelectionDialog(context, state);
   }
 
   void _showExplanationBottomSheet(BuildContext context) {
@@ -508,6 +527,7 @@ class _EnhancedTextSelectionDialogState
     extends State<_EnhancedTextSelectionDialog> {
   String? _clipboardText;
   bool _isLoadingClipboard = true;
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -541,11 +561,24 @@ class _EnhancedTextSelectionDialogState
   }
 
   void _handleExplain() {
-    final text = widget.textController.text.trim();
-    if (text.isNotEmpty) {
-      widget.onExplain(text);
-      Navigator.of(context).pop();
+    if (_isProcessing) {
+      return;
     }
+
+    final text = widget.textController.text.trim();
+    if (text.isEmpty) return;
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    widget.onExplain(text);
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   @override
@@ -566,36 +599,6 @@ class _EnhancedTextSelectionDialogState
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primaryContainer.withValues(
-                  alpha: 0.3,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_outline,
-                    size: 20,
-                    color: theme.colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      l10n.pdfReaderSelectTextHint,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.8,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
             if (_isLoadingClipboard)
               const Center(
                 child: Padding(
@@ -605,7 +608,7 @@ class _EnhancedTextSelectionDialogState
               )
             else if (_clipboardText != null && _clipboardText!.isNotEmpty)
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.secondaryContainer.withValues(
                     alpha: 0.3,
@@ -628,23 +631,34 @@ class _EnhancedTextSelectionDialogState
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            '${l10n.pdfReaderClipboardPreview} ${_clipboardText!.length > 50 ? '${_clipboardText!.substring(0, 50)}...' : _clipboardText!}',
+                            '${l10n.pdfReaderClipboardPreview} ${_clipboardText!.length > 40 ? '${_clipboardText!.substring(0, 40)}...' : _clipboardText!}',
                             style: theme.textTheme.bodySmall?.copyWith(
                               fontWeight: FontWeight.w500,
+                              fontSize: 12,
                             ),
-                            maxLines: 2,
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    ElevatedButton.icon(
-                      onPressed: _pasteFromClipboard,
-                      icon: const Icon(Icons.content_paste, size: 18),
-                      label: Text(l10n.pdfReaderPasteFromClipboard),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 36),
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _pasteFromClipboard,
+                        icon: const Icon(Icons.content_paste, size: 16),
+                        label: Text(
+                          l10n.pdfReaderPasteFromClipboard,
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(0, 32),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -652,7 +666,7 @@ class _EnhancedTextSelectionDialogState
               )
             else
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surfaceContainerHighest.withValues(
                     alpha: 0.3,
@@ -678,7 +692,7 @@ class _EnhancedTextSelectionDialogState
                   ],
                 ),
               ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             TextField(
               controller: widget.textController,
               decoration: InputDecoration(
@@ -686,31 +700,68 @@ class _EnhancedTextSelectionDialogState
                 hintText: l10n.pdfReaderEnterTextPlaceholder,
                 border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.text_fields),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
               ),
-              maxLines: 5,
+              maxLines: 2,
               autofocus: true,
               onSubmitted: (_) => _handleExplain(),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Page ${widget.state.currentPage + 1} of ${widget.state.book.totalPages}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),
       ),
+      actionsPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.pdfReaderCancel),
-        ),
-        ElevatedButton.icon(
-          onPressed: _handleExplain,
-          icon: const Icon(Icons.lightbulb_outline),
-          label: Text(l10n.pdfReaderExplain),
+        Row(
+          children: [
+            IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Icon(Icons.close, color: theme.colorScheme.error),
+              tooltip: l10n.pdfReaderCancel,
+              style: IconButton.styleFrom(minimumSize: const Size(36, 36)),
+            ),
+            const SizedBox(width: 6),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  widget.textController.clear();
+                });
+              },
+              icon: Icon(
+                Icons.backspace_outlined,
+                color: theme.colorScheme.primary,
+              ),
+              style: IconButton.styleFrom(minimumSize: const Size(36, 36)),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: _isProcessing ? null : _handleExplain,
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(0, 36),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
+                ),
+                icon: _isProcessing
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.lightbulb_outline, size: 16),
+                label: Text(
+                  _isProcessing
+                      ? l10n.pdfReaderProcessing
+                      : l10n.pdfReaderExplain,
+                  style: const TextStyle(fontSize: 13),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

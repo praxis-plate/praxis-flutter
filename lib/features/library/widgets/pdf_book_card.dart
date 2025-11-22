@@ -4,6 +4,7 @@ import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pdfx/pdfx.dart';
 
 class PdfBookCard extends StatelessWidget {
   final PdfBook book;
@@ -34,10 +35,11 @@ class PdfBookCard extends StatelessWidget {
                         top: Radius.circular(12),
                       ),
                     ),
-                    child: Icon(
-                      Icons.picture_as_pdf,
-                      size: 64,
-                      color: theme.colorScheme.primary.withValues(alpha: 0.5),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(12),
+                      ),
+                      child: _PdfThumbnail(filePath: book.filePath),
                     ),
                   ),
                   if (book.isFavorite)
@@ -129,7 +131,10 @@ class PdfBookCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
-                  leading: const Icon(Icons.open_in_new),
+                  leading: Icon(
+                    Icons.open_in_new,
+                    color: theme.colorScheme.primary,
+                  ),
                   title: Text(localizations.pdfBookOpen),
                   onTap: () {
                     Navigator.pop(bottomSheetContext);
@@ -139,6 +144,9 @@ class PdfBookCard extends StatelessWidget {
                 ListTile(
                   leading: Icon(
                     book.isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: book.isFavorite
+                        ? theme.colorScheme.error
+                        : theme.colorScheme.onSurface,
                   ),
                   title: Text(
                     book.isFavorite
@@ -265,5 +273,56 @@ class _ProgressBar extends StatelessWidget {
         minHeight: 6,
       ),
     );
+  }
+}
+
+class _PdfThumbnail extends StatelessWidget {
+  final String filePath;
+
+  const _PdfThumbnail({required this.filePath});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return FutureBuilder<Widget>(
+      future: _loadThumbnail(theme),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return snapshot.data!;
+        }
+
+        return Center(
+          child: Icon(
+            Icons.picture_as_pdf,
+            size: 64,
+            color: theme.colorScheme.primary.withValues(alpha: 0.5),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<Widget> _loadThumbnail(ThemeData theme) async {
+    try {
+      final document = await PdfDocument.openFile(filePath);
+      final page = await document.getPage(1);
+      final pageImage = await page.render(
+        width: page.width * 2,
+        height: page.height * 2,
+      );
+      await page.close();
+      await document.close();
+
+      return Image.memory(pageImage!.bytes, fit: BoxFit.cover);
+    } catch (e) {
+      return Center(
+        child: Icon(
+          Icons.picture_as_pdf,
+          size: 64,
+          color: theme.colorScheme.primary.withValues(alpha: 0.5),
+        ),
+      );
+    }
   }
 }
