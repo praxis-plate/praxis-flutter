@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/data/database/tables/pdf_book.dart';
 import 'package:drift/drift.dart';
 
 @DataClassName('ExplanationEntity')
