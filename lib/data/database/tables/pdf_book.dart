@@ -10,7 +10,4 @@ class PdfBook extends Table {
   IntColumn get currentPage => integer().withDefault(const Constant(0))();
   DateTimeColumn get lastRead => dateTime().nullable()();
   BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

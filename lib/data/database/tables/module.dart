@@ -9,7 +9,4 @@ class Module extends Table {
   TextColumn get description => text()();
   IntColumn get orderIndex => integer()();
   DateTimeColumn get createdAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

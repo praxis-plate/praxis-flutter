@@ -6,7 +6,4 @@ class User extends Table {
   TextColumn get email => text().unique()();
   TextColumn get passwordHash => text()();
   DateTimeColumn get createdAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

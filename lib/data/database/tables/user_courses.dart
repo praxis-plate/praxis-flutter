@@ -12,7 +12,4 @@ class UserCourse extends Table {
   DateTimeColumn get enrolledAt => dateTime().withDefault(currentDate)();
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
   DateTimeColumn get completedAt => dateTime().nullable()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

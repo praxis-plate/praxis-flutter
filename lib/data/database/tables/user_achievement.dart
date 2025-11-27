@@ -11,7 +11,4 @@ class UserAchievement extends Table {
       integer().references(Achievement, #id, onDelete: KeyAction.cascade)();
 
   DateTimeColumn get unlockedAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

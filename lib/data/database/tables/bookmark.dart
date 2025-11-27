@@ -9,7 +9,4 @@ class Bookmark extends Table {
   IntColumn get pageNumber => integer()();
   TextColumn get note => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

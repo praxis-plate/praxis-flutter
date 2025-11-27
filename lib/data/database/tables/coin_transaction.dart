@@ -10,7 +10,4 @@ class CoinTransaction extends Table {
   TextColumn get type => text()();
   TextColumn get relatedEntityId => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

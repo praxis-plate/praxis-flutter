@@ -12,7 +12,4 @@ class Lesson extends Table {
   IntColumn get orderIndex => integer()();
   IntColumn get durationMinutes => integer()();
   DateTimeColumn get createdAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }
