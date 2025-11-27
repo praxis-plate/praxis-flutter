@@ -3,8 +3,8 @@ import 'package:drift/drift.dart';
 
 class Module extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get courseId =>
-      text().references(Course, #id, onDelete: KeyAction.cascade)();
+  IntColumn get courseId =>
+      integer().references(Course, #id, onDelete: KeyAction.cascade)();
   TextColumn get title => text()();
   TextColumn get description => text()();
   IntColumn get orderIndex => integer()();
