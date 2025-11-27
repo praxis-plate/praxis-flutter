@@ -10,7 +10,4 @@ class UserStatistic extends Table {
   IntColumn get maxStreak => integer().withDefault(const Constant(0))();
   IntColumn get points => integer().withDefault(const Constant(0))();
   DateTimeColumn get lastActiveDate => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

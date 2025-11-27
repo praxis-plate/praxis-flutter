@@ -11,7 +11,4 @@ class LessonProgress extends Table {
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
   DateTimeColumn get completedAt => dateTime().nullable()();
   IntColumn get timeSpentSeconds => integer().withDefault(const Constant(0))();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

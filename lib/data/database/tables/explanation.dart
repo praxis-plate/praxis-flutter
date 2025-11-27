@@ -11,7 +11,4 @@ class Explanation extends Table {
   TextColumn get explanation => text()();
   TextColumn get sources => text()();
   DateTimeColumn get createdAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

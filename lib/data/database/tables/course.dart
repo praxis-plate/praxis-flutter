@@ -12,7 +12,4 @@ class Course extends Table {
   RealColumn get rating => real().withDefault(const Constant(0))();
   TextColumn get thumbnailUrl => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

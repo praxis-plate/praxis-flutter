@@ -15,7 +15,4 @@ class Achievement extends Table {
   )();
   TextColumn get conditionType => text()();
   TextColumn get conditionValue => text().nullable()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }
