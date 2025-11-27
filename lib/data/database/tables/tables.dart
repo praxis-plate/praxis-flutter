@@ -9,4 +9,5 @@ export 'module.dart';
 export 'pdf_book.dart';
 export 'user.dart';
 export 'user_achievement.dart';
+export 'user_course.dart';
 export 'user_statistic.dart';
