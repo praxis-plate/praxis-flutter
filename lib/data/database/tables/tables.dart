@@ -1,3 +1,4 @@
+export 'achievement.dart';
 export 'bookmark.dart';
 export 'coin_transaction.dart';
 export 'course.dart';

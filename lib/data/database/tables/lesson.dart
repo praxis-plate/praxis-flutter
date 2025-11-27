@@ -3,8 +3,8 @@ import 'package:drift/drift.dart';
 
 class Lesson extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get moduleId =>
-      text().references(Module, #id, onDelete: KeyAction.cascade)();
+  IntColumn get moduleId =>
+      integer().references(Module, #id, onDelete: KeyAction.cascade)();
   TextColumn get title => text()();
   TextColumn get contentText => text()();
   TextColumn get videoUrl => text().nullable()();
