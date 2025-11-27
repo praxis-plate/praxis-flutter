@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 
 @DataClassName('PdfBookEntity')
 class PdfBook extends Table {
-  TextColumn get id => text()();
+  IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();
   TextColumn get author => text().nullable()();
   TextColumn get filePath => text()();

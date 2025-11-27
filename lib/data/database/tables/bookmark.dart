@@ -3,9 +3,9 @@ import 'package:drift/drift.dart';
 
 @DataClassName('BookmarkEntity')
 class Bookmark extends Table {
-  TextColumn get id => text()();
-  TextColumn get pdfBookId =>
-      text().references(PdfBook, #id, onDelete: KeyAction.cascade)();
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get pdfBookId =>
+      integer().references(PdfBook, #id, onDelete: KeyAction.cascade)();
   IntColumn get pageNumber => integer()();
   TextColumn get note => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
