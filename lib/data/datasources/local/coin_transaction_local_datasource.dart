@@ -1,0 +1,23 @@
+import 'package:codium/data/database/app_database.dart';
+import 'package:codium/domain/datasources/i_coin_transaction_local_datasource.dart';
+
+class CoinTransactionLocalDataSource
+    implements ICoinTransactionLocalDataSource {
+  final AppDatabase _db;
+
+  const CoinTransactionLocalDataSource(this._db);
+
+  @override
+  Future<List<CoinTransactionEntity>> getTransactionHistory(int userId) async {
+    return await _db.managers.coinTransaction
+        .filter((f) => f.userId.id(userId))
+        .get();
+  }
+
+  @override
+  Future<CoinTransactionEntity> insertTransaction(
+    CoinTransactionEntity entry,
+  ) async {
+    return await _db.into(_db.coinTransaction).insertReturning(entry);
+  }
+}
