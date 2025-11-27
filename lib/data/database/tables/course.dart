@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 
 @DataClassName('CourseEntity')
 class Course extends Table {
-  TextColumn get id => text()();
+  IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();
   TextColumn get description => text()();
   TextColumn get author => text()();

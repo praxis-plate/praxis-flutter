@@ -3,7 +3,7 @@ import 'package:codium/data/database/tables/user.dart';
 import 'package:drift/drift.dart';
 
 class LessonProgress extends Table {
-  TextColumn get id => text()();
+  IntColumn get id => integer().autoIncrement()();
   TextColumn get lessonId =>
       text().references(Lesson, #id, onDelete: KeyAction.cascade)();
   TextColumn get userId =>

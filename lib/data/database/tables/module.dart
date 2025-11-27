@@ -2,7 +2,7 @@ import 'package:codium/data/database/tables/course.dart';
 import 'package:drift/drift.dart';
 
 class Module extends Table {
-  TextColumn get id => text()();
+  IntColumn get id => integer().autoIncrement()();
   TextColumn get courseId =>
       text().references(Course, #id, onDelete: KeyAction.cascade)();
   TextColumn get title => text()();
