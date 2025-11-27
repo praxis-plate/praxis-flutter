@@ -1,6 +1,7 @@
 import 'package:codium/data/database/tables/course.dart';
 import 'package:drift/drift.dart';
 
+@DataClassName('ModuleEntity')
 class Module extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get courseId =>
