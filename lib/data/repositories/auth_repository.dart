@@ -1,90 +1,112 @@
-import 'package:codium/core/exceptions/auth_exceptions.dart';
-import 'package:codium/data/datasources/local/local_auth_datasource.dart';
+import 'package:codium/core/error/failure.dart';
+import 'package:codium/core/exceptions/app_error.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/data/entities/user_entity_extension.dart';
 import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/abstract_auth_repository.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
+import 'package:codium/domain/services/services.dart';
 
 final class AuthRepository implements IAuthRepository {
-  final IAuthDataSource _dataSource;
+  final IUserDataSource _userDataSource;
+  final ISessionService _sessionService;
 
-  AuthRepository(this._dataSource);
+  AuthRepository(this._userDataSource, this._sessionService);
 
   @override
-  Future<User> signUp(String email, String password) async {
+  Future<Result<UserProfileModel>> signUp(String email, String password) async {
     try {
-      final user = await _dataSource.signUp(email: email, password: password);
+      final existingUser = await _userDataSource.getUserByEmail(email);
 
-      if (user == null) {
-        throw AuthException('Failed to create user');
-      }
-
-      GetIt.I<Talker>().info('User registered successfully: ${user.email}');
-
-      return user;
-    } on AuthUserAlreadyExistsException {
-      rethrow;
-    } on AuthException {
-      rethrow;
-    } catch (e, st) {
-      GetIt.I<Talker>().handle(e, st);
-
-      final errorMessage = e.toString();
-      if (errorMessage.contains('already exists')) {
-        throw AuthUserAlreadyExistsException(
-          'User with this email is already registered',
+      if (existingUser != null) {
+        return const Failure(
+          AppFailure(
+            code: AppErrorCode.validationInvalid,
+            message: 'User with this email is already registered',
+            canRetry: false,
+          ),
         );
       }
 
-      throw AuthException('Failed to sign up. Please try again later');
-    }
-  }
-
-  @override
-  Future<User> signIn(String email, String password) async {
-    try {
-      final user = await _dataSource.signIn(email: email, password: password);
+      final user = await _userDataSource.create(
+        email: email,
+        password: password,
+      );
 
       if (user == null) {
-        throw AuthException('Invalid email or password');
+        return const Failure(
+          AppFailure(
+            code: AppErrorCode.databaseGeneral,
+            message: 'Failed to create user',
+            canRetry: true,
+          ),
+        );
       }
 
-      GetIt.I<Talker>().info('User signed in successfully: ${user.email}');
-
-      return user;
-    } catch (e, st) {
-      GetIt.I<Talker>().handle(e, st);
-
-      if (e is AuthException) {
-        rethrow;
-      }
-
-      throw AuthException('Failed to sign in. Please try again later');
-    }
-  }
-
-  @override
-  Future<void> signOut() async {
-    try {
-      await _dataSource.signOut();
-      GetIt.I<Talker>().info('User signed out successfully');
-    } catch (e, st) {
-      GetIt.I<Talker>().handle(e, st);
-      throw AuthException('Failed to sign out. Please try again later');
-    }
-  }
-
-  @override
-  Future<bool> isAuthenticated() async {
-    try {
-      if (_dataSource is LocalAuthDataSource) {
-        final localDataSource = _dataSource;
-        return await localDataSource.hasActiveSession();
-      }
-      return false;
+      await _sessionService.saveSession(userId: user.id, email: email);
+      return Success(user.toDomain());
+    } on AppError catch (e) {
+      return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return false;
+      return Failure(AppFailure.fromException(e as Exception));
+    }
+  }
+
+  @override
+  Future<Result<UserProfileModel>> signIn(String email, String password) async {
+    try {
+      final user = await _userDataSource.getUserByEmail(email);
+
+      if (user == null) {
+        return const Failure(
+          AppFailure(
+            code: AppErrorCode.apiNotFound,
+            message: 'User with this email is not found',
+            canRetry: false,
+          ),
+        );
+      }
+
+      if (user.passwordHash != _userDataSource.hashPassword(password)) {
+        return const Failure(
+          AppFailure(
+            code: AppErrorCode.apiUnauthorized,
+            message: 'Invalid email or password',
+            canRetry: false,
+          ),
+        );
+      }
+
+      await _sessionService.saveSession(userId: user.id, email: user.email);
+      return Success(user.toDomain());
+    } on AppError catch (e) {
+      return Failure(AppFailure.fromError(e));
+    } catch (e) {
+      return Failure(AppFailure.fromException(e as Exception));
+    }
+  }
+
+  @override
+  Future<Result<void>> signOut() async {
+    try {
+      await _sessionService.clearSession();
+      return const Success(null);
+    } on AppError catch (e) {
+      return Failure(AppFailure.fromError(e));
+    } catch (e) {
+      return Failure(AppFailure.fromException(e as Exception));
+    }
+  }
+
+  @override
+  Future<Result<bool>> isAuthenticated() async {
+    try {
+      final isAuth = await _sessionService.hasActiveSession();
+      return Success(isAuth);
+    } on AppError catch (e) {
+      return Failure(AppFailure.fromError(e));
+    } catch (e) {
+      return Failure(AppFailure.fromException(e as Exception));
     }
   }
 }

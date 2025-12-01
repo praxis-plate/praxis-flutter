@@ -1,7 +1,11 @@
-export 'ai_repository.dart';
+export 'achievement_repository.dart';
 export 'auth_repository.dart';
+export 'bookmark_repository.dart';
+export 'coin_transaction_repository.dart';
 export 'course_repository.dart';
+export 'explanation_repository.dart';
+export 'lesson_progress_repository.dart';
+export 'lesson_repository.dart';
+export 'module_repository.dart';
 export 'pdf_repository.dart';
-export 'storage_repository.dart';
-export 'user_repository.dart';
 export 'user_statistics_repository.dart';
