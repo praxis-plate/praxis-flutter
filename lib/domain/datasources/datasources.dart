@@ -1,8 +1,13 @@
-export 'i_auth_datasource.dart';
+export 'i_achievement_local_datasource.dart';
 export 'i_bookmark_local_datasource.dart';
+export 'i_coin_transaction_local_datasource.dart';
 export 'i_course_datasource.dart';
+export 'i_course_local_datasource.dart';
 export 'i_explanation_local_datasource.dart';
 export 'i_gemini_datasource.dart';
+export 'i_lesson_local_datasource.dart';
+export 'i_lesson_progress_local_datasource.dart';
+export 'i_module_local_datasource.dart';
 export 'i_pdf_local_datasource.dart';
 export 'i_search_datasource.dart';
 export 'i_user_datasource.dart';

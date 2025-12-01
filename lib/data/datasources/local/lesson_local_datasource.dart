@@ -28,8 +28,8 @@ class LessonLocalDataSource implements ILessonLocalDataSource {
   }
 
   @override
-  Future<LessonEntity> insertLesson(LessonEntity lesson) async {
-    return await _db.into(_db.lesson).insertReturning(lesson);
+  Future<LessonEntity> insertLesson(LessonCompanion entry) async {
+    return await _db.into(_db.lesson).insertReturning(entry);
   }
 
   @override

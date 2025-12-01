@@ -17,7 +17,7 @@ class PdfLocalDataSource implements IPdfLocalDataSource {
   }
 
   @override
-  Future<PdfBookEntity> insertBook(PdfBookEntity entry) async {
+  Future<PdfBookEntity> insertBook(PdfBookCompanion entry) async {
     return await _db.into(_db.pdfBook).insertReturning(entry);
   }
 

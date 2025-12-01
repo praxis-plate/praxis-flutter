@@ -39,18 +39,18 @@ class CourseLocalDataSource implements ICourseLocalDataSource {
   }
 
   @override
-  Future<CourseEntity> insertCourse(CourseEntity course) async {
-    return await _db.into(_db.course).insertReturning(course);
+  Future<CourseEntity> insertCourse(CourseCompanion entry) async {
+    return await _db.into(_db.course).insertReturning(entry);
   }
 
   @override
-  Future<void> updateCourse(CourseCompanion course) async {
-    if (!course.id.present) {
+  Future<void> updateCourse(CourseCompanion entry) async {
+    if (!entry.id.present) {
       throw ArgumentError('Course id must be present for update');
     }
 
-    final int id = course.id.value;
+    final int id = entry.id.value;
 
-    await (_db.update(_db.course)..where((t) => t.id.equals(id))).write(course);
+    await (_db.update(_db.course)..where((t) => t.id.equals(id))).write(entry);
   }
 }

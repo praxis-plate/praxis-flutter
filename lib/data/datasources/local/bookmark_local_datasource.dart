@@ -26,7 +26,7 @@ class BookmarkLocalDataSource implements IBookmarkLocalDataSource {
   }
 
   @override
-  Future<BookmarkEntity> insertBookmark(BookmarkEntity entry) async {
+  Future<BookmarkEntity> insertBookmark(BookmarkCompanion entry) async {
     return await _db.into(_db.bookmark).insertReturning(entry);
   }
 

@@ -1,5 +1,7 @@
 import 'package:codium/data/database/app_database.dart';
+import 'package:codium/data/entities/unlocked_achievement_entity.dart';
 import 'package:codium/domain/datasources/i_achievement_local_datasource.dart';
+import 'package:drift/drift.dart';
 
 class AchievementLocalDataSource implements IAchievementLocalDataSource {
   final AppDatabase _db;
@@ -19,20 +21,31 @@ class AchievementLocalDataSource implements IAchievementLocalDataSource {
   }
 
   @override
-  Future<List<AchievementEntity>> getUserAchievements(int userId) async {
-    final userAchievements = await _db.managers.userAchievement
-        .filter((f) => f.userId.id(userId))
-        .get();
+  Future<List<UnlockedAchievementEntity>> getUserAchievements(
+    int userId,
+  ) async {
+    final query = _db.select(_db.userAchievement).join([
+      innerJoin(
+        _db.achievement,
+        _db.achievement.id.equalsExp(_db.userAchievement.achievementId),
+      ),
+    ])..where(_db.userAchievement.userId.equals(userId));
 
-    final userAchievementIds = userAchievements
-        .map((e) => e.achievementId)
-        .toList();
+    final results = await query.get();
 
-    final achievements = await _db.managers.achievement
-        .filter((f) => f.id.isIn(userAchievementIds))
-        .get();
+    return results.map((row) {
+      final userAchievement = row.readTable(_db.userAchievement);
+      final achievement = row.readTable(_db.achievement);
 
-    return achievements;
+      return UnlockedAchievementEntity(
+        id: achievement.id,
+        title: achievement.title,
+        description: achievement.description,
+        iconUrl: achievement.iconUrl,
+        pointsReward: achievement.pointsReward,
+        unlockedAt: userAchievement.unlockedAt,
+      );
+    }).toList();
   }
 
   @override

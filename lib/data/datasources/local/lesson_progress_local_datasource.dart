@@ -30,7 +30,7 @@ class LessonProgressLocalDataSource implements ILessonProgressLocalDataSource {
 
   @override
   Future<LessonProgressEntity> insertLessonProgress(
-    LessonProgressEntity entry,
+    LessonProgressCompanion entry,
   ) async {
     return _db.into(_db.lessonProgress).insertReturning(entry);
   }
