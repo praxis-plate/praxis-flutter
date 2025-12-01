@@ -40,7 +40,9 @@ class ExplanationLocalDataSource implements IExplanationLocalDataSource {
   }
 
   @override
-  Future<ExplanationEntity> insertExplanation(ExplanationEntity entry) async {
+  Future<ExplanationEntity> insertExplanation(
+    ExplanationCompanion entry,
+  ) async {
     return await _db.into(_db.explanation).insertReturning(entry);
   }
 

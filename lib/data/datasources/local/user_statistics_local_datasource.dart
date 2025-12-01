@@ -1,6 +1,5 @@
 import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/datasources/datasources.dart';
-import 'package:drift/drift.dart';
+import 'package:codium/domain/datasources/i_user_statistics_local_datasource.dart';
 
 class UserStatisticsLocalDataSource implements IUserStatisticsLocalDataSource {
   final AppDatabase _db;
@@ -8,16 +7,23 @@ class UserStatisticsLocalDataSource implements IUserStatisticsLocalDataSource {
   const UserStatisticsLocalDataSource(this._db);
 
   @override
-  Future<UserStatisticEntity?> getStatistics(int userId) async {
+  Future<UserStatisticEntity?> getStatisticsByUserId(int userId) async {
     return await _db.managers.userStatistic
         .filter((f) => f.userId.id(userId))
         .getSingleOrNull();
   }
 
   @override
+  Future<UserStatisticEntity> insertStatistics(
+    UserStatisticCompanion entry,
+  ) async {
+    return await _db.into(_db.userStatistic).insertReturning(entry);
+  }
+
+  @override
   Future<void> updateStatistics(UserStatisticCompanion entry) async {
     if (!entry.id.present) {
-      throw ArgumentError('Module id must be present for update');
+      throw ArgumentError('UserStatistic id must be present for update');
     }
 
     final int id = entry.id.value;
@@ -28,17 +34,9 @@ class UserStatisticsLocalDataSource implements IUserStatisticsLocalDataSource {
   }
 
   @override
-  Future<void> clearStatistics(int userId) async {
-    await _db
-        .into(_db.userStatistic)
-        .insertOnConflictUpdate(
-          UserStatisticCompanion(
-            userId: Value(userId),
-            currentStreak: const Value(0),
-            maxStreak: const Value(0),
-            points: const Value(0),
-            lastActiveDate: Value(DateTime.now()),
-          ),
-        );
+  Future<void> deleteStatistics(int userId) async {
+    await _db.managers.userStatistic
+        .filter((f) => f.userId.id(userId))
+        .delete();
   }
 }

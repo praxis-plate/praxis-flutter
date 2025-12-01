@@ -1,17 +1,17 @@
-import 'package:codium/domain/models/ai_explanation/ai_explanation.dart';
+import 'package:codium/data/database/app_database.dart';
 
 abstract interface class IExplanationLocalDataSource {
-  Future<List<Explanation>> getAllExplanations();
+  Future<List<ExplanationEntity>> getAllExplanations();
 
-  Future<Explanation?> getExplanationById(String id);
+  Future<ExplanationEntity?> getExplanationById(int id);
 
-  Future<List<Explanation>> getExplanationsByPdfId(String pdfBookId);
+  Future<List<ExplanationEntity>> getExplanationsByPdfId(int pdfBookId);
 
-  Future<List<Explanation>> searchExplanations(String query);
+  Future<List<ExplanationEntity>> searchExplanations(String query);
 
-  Future<void> insertExplanation(Explanation explanation);
+  Future<ExplanationEntity> insertExplanation(ExplanationCompanion entry);
 
-  Future<void> updateExplanation(Explanation explanation);
+  Future<void> updateExplanation(ExplanationCompanion entry);
 
-  Future<void> deleteExplanation(String id);
+  Future<void> deleteExplanation(int id);
 }

@@ -21,7 +21,7 @@ class ModuleLocalDataSource implements IModuleLocalDataSource {
   }
 
   @override
-  Future<ModuleEntity> insertModule(ModuleEntity entry) async {
+  Future<ModuleEntity> insertModule(ModuleCompanion entry) async {
     return await _db.into(_db.module).insertReturning(entry);
   }
 

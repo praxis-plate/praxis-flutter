@@ -1,7 +1,8 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/data/database/app_database.dart';
 
 abstract interface class IUserStatisticsLocalDataSource {
-  Future<UserStatistics?> getStatistics(String userId);
-  Future<void> saveStatistics(UserStatistics statistics);
-  Future<void> clearStatistics(String userId);
+  Future<UserStatisticEntity?> getStatisticsByUserId(int userId);
+  Future<UserStatisticEntity> insertStatistics(UserStatisticCompanion entry);
+  Future<void> updateStatistics(UserStatisticCompanion entry);
+  Future<void> deleteStatistics(int userId);
 }

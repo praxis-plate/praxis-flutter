@@ -16,7 +16,7 @@ class CoinTransactionLocalDataSource
 
   @override
   Future<CoinTransactionEntity> insertTransaction(
-    CoinTransactionEntity entry,
+    CoinTransactionCompanion entry,
   ) async {
     return await _db.into(_db.coinTransaction).insertReturning(entry);
   }

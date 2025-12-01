@@ -1,5 +1,7 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/data/database/app_database.dart';
 
 abstract interface class IUserDataSource {
-  Future<User?> fetchCourseById({required String id});
+  Future<UserEntity?> create({required String email, required String password});
+  Future<UserEntity?> getUserByEmail(String email);
+  String hashPassword(String password);
 }

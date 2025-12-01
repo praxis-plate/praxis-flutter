@@ -1,15 +1,15 @@
-import 'package:codium/domain/models/pdf_reader/pdf_reader.dart';
+import 'package:codium/data/database/app_database.dart';
 
 abstract interface class IBookmarkLocalDataSource {
-  Future<List<Bookmark>> getAllBookmarks();
+  Future<List<BookmarkEntity>> getAllBookmarks();
 
-  Future<Bookmark?> getBookmarkById(String id);
+  Future<BookmarkEntity?> getBookmarkById(int id);
 
-  Future<List<Bookmark>> getBookmarksByPdfId(String pdfBookId);
+  Future<List<BookmarkEntity>> getBookmarksByPdfId(int pdfBookId);
 
-  Future<void> insertBookmark(Bookmark bookmark);
+  Future<BookmarkEntity> insertBookmark(BookmarkCompanion bookmark);
 
-  Future<void> updateBookmark(Bookmark bookmark);
+  Future<void> updateBookmark(BookmarkCompanion bookmark);
 
-  Future<void> deleteBookmark(String id);
+  Future<void> deleteBookmark(int id);
 }
