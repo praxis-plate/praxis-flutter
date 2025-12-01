@@ -4,7 +4,7 @@ import 'package:codium/core/utils/result.dart';
 import 'package:codium/data/entities/course_entity_extension.dart';
 import 'package:codium/domain/datasources/i_course_local_datasource.dart';
 import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/domain/repositories/abstract_course_repository.dart';
+import 'package:codium/domain/repositories/i_course_repository.dart';
 
 class CourseRepository implements ICourseRepository {
   final ICourseLocalDataSource _localDataSource;

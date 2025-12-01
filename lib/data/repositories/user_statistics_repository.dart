@@ -6,7 +6,7 @@ import 'package:codium/domain/datasources/i_user_statistics_local_datasource.dar
 import 'package:codium/domain/models/user/user_statistic_model.dart';
 import 'package:codium/domain/models/user_statistic/create_user_statistic_model.dart';
 import 'package:codium/domain/models/user_statistic/update_user_statistic_model.dart';
-import 'package:codium/domain/repositories/abstract_user_statistics_repository.dart';
+import 'package:codium/domain/repositories/i_user_statistics_repository.dart';
 
 class UserStatisticsRepository implements IUserStatisticsRepository {
   final IUserStatisticsLocalDataSource _localDataSource;
