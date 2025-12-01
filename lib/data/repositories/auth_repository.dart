@@ -4,7 +4,7 @@ import 'package:codium/core/utils/result.dart';
 import 'package:codium/data/entities/user_entity_extension.dart';
 import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
-import 'package:codium/domain/repositories/abstract_auth_repository.dart';
+import 'package:codium/domain/repositories/i_auth_repository.dart';
 import 'package:codium/domain/services/services.dart';
 
 final class AuthRepository implements IAuthRepository {

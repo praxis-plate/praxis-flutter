@@ -1,8 +1,5 @@
-export 'activity/activity.dart';
+export 'achievement/achievement.dart';
 export 'ai_explanation/ai_explanation.dart';
-export 'course/course.dart';
-export 'learning/learning.dart';
+export 'coin/coin_models.dart';
 export 'pdf_library/pdf_library.dart';
-export 'pdf_reader/pdf_reader.dart';
-export 'task/task.dart';
 export 'user/user.dart';

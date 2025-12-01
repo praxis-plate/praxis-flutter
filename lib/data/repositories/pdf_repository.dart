@@ -8,7 +8,7 @@ import 'package:codium/domain/datasources/i_pdf_local_datasource.dart';
 import 'package:codium/domain/models/pdf_book/create_pdf_book_model.dart';
 import 'package:codium/domain/models/pdf_book/pdf_book_model.dart';
 import 'package:codium/domain/models/pdf_book/update_pdf_book_model.dart';
-import 'package:codium/domain/repositories/pdf_repository.dart';
+import 'package:codium/domain/repositories/i_pdf_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

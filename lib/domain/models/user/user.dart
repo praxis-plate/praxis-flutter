@@ -1,4 +1,8 @@
-export '_user.dart';
+export 'full_user_profile_model.dart';
 export 'money.dart';
+export 'user_course_model.dart';
 export 'user_course_statistics.dart';
+export 'user_model.dart';
+export 'user_profile_model.dart';
+export 'user_statistic_model.dart';
 export 'user_statistics.dart';
