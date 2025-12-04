@@ -4,14 +4,16 @@ class UpdateUserStatisticModel extends Equatable {
   final int id;
   final int? currentStreak;
   final int? maxStreak;
-  final int? points;
+  final int? coinBalance;
+  final int? experiencePoints;
   final DateTime? lastActiveDate;
 
   const UpdateUserStatisticModel({
     required this.id,
     this.currentStreak,
     this.maxStreak,
-    this.points,
+    this.coinBalance,
+    this.experiencePoints,
     this.lastActiveDate,
   });
 
@@ -20,7 +22,8 @@ class UpdateUserStatisticModel extends Equatable {
     id,
     currentStreak,
     maxStreak,
-    points,
+    coinBalance,
+    experiencePoints,
     lastActiveDate,
   ];
 

@@ -1,5 +1,7 @@
 import 'package:codium/data/database/app_database.dart';
+import 'package:codium/domain/models/user/update_user_profile_model.dart';
 import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:drift/drift.dart';
 
 extension UserEntityExtension on UserEntity {
   UserProfileModel toDomain() {
@@ -8,6 +10,15 @@ extension UserEntityExtension on UserEntity {
       email: email,
       name: email.split('@').first,
       createdAt: createdAt,
+    );
+  }
+}
+
+extension UpdateUserProfileModelExtension on UpdateUserProfileModel {
+  UserCompanion toCompanion() {
+    return UserCompanion(
+      id: Value(id),
+      email: email != null ? Value(email!) : const Value.absent(),
     );
   }
 }

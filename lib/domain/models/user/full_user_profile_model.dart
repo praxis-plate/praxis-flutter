@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 class FullUserProfileModel extends Equatable {
   final UserProfileModel profile;
   final Money balance;
-  final List<String> purchasedCourseIds;
+  final List<int> purchasedCourseIds;
   final int currentStreak;
   final int maxStreak;
 
@@ -20,7 +20,7 @@ class FullUserProfileModel extends Equatable {
   FullUserProfileModel copyWith({
     UserProfileModel? profile,
     Money? balance,
-    List<String>? purchasedCourseIds,
+    List<int>? purchasedCourseIds,
     int? currentStreak,
     int? maxStreak,
   }) {
