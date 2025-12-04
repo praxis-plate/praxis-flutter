@@ -1,10 +1,13 @@
+import 'package:codium/core/bloc/achievement_notification_cubit.dart';
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:codium/core/bloc/locale/locale.dart';
 import 'package:codium/core/bloc/theme/theme_cubit.dart';
 import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppInitializer extends StatelessWidget {
   const AppInitializer({super.key, required this.child});
@@ -17,14 +20,21 @@ class AppInitializer extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => ThemeCubit(
-            PlatformDispatcher.instance.platformBrightness == Brightness.dark,
+            GetIt.I<SharedPreferences>(),
+            PlatformDispatcher.instance.platformBrightness,
           ),
+        ),
+        BlocProvider(
+          create: (context) => LocaleCubit(GetIt.I<SharedPreferences>()),
         ),
         BlocProvider(
           create: (context) => GetIt.I<AuthBloc>()..add(AuthCheckStatus()),
           lazy: false,
         ),
         BlocProvider(create: (context) => GetIt.I<CoursePurchasingBloc>()),
+        BlocProvider(
+          create: (context) => GetIt.I<AchievementNotificationCubit>(),
+        ),
       ],
       child: child,
     );
