@@ -5,11 +5,12 @@ class FeatureFlags {
   static const bool enableAiChat = false;
   static const bool enableWebSearch = false;
   static const bool enableBookmarks = true;
-  static const bool enableExplanationHistory = true;
+  static const bool enableExplanationHistory = false;
   static const bool enableOfflineMode = true;
-  static const bool enableCourses = false;
-  static const bool enableProfile = false;
+  static const bool enableCourses = true;
+  static const bool enableProfile = true;
   static const bool enableOnboarding = false;
+  static const bool enableAuthentication = true;
 
   static bool get isDebugMode => kDebugMode;
   static bool get enableLogging => isDebugMode;
