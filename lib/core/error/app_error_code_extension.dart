@@ -60,10 +60,6 @@ extension AppErrorCodeExtension on AppErrorCode {
 
       case AppErrorCode.insufficientBalance:
         return l10n.errorInsufficientBalance;
-      case AppErrorCode.courseNotPurchased:
-        return l10n.errorCourseNotPurchased;
-      case AppErrorCode.lessonNotUnlocked:
-        return l10n.errorLessonNotUnlocked;
 
       case AppErrorCode.unknown:
         return l10n.errorUnknown;

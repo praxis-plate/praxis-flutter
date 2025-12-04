@@ -1,32 +1,7 @@
-enum AppErrorCode {
-  networkTimeout,
-  networkNoInternet,
-  networkGeneral,
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:equatable/equatable.dart';
 
-  fileNotFound,
-  filePermissionDenied,
-  fileInsufficientStorage,
-  fileCorrupted,
-  fileGeneral,
-
-  databaseLocked,
-  databaseConstraint,
-  databaseMigration,
-  databaseGeneral,
-
-  validationInvalid,
-
-  apiUnauthorized,
-  apiForbidden,
-  apiNotFound,
-  apiGeneral,
-
-  rateLimitExceeded,
-
-  unknown,
-}
-
-abstract class AppError implements Exception {
+abstract class AppError extends Equatable implements Exception {
   final AppErrorCode code;
   final String? message;
   final bool canRetry;
@@ -34,5 +9,8 @@ abstract class AppError implements Exception {
   const AppError({required this.code, this.message, this.canRetry = false});
 
   @override
-  String toString() => 'AppError(code: $code, message: $message)';
+  bool? get stringify => true;
+
+  @override
+  List<Object?> get props => [code, message, canRetry];
 }
