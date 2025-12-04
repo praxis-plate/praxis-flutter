@@ -1,5 +1,8 @@
 import 'package:codium/data/database/app_database.dart';
 import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/domain/models/course/course_pricing.dart';
+import 'package:codium/domain/models/course/course_statistics.dart';
+import 'package:codium/domain/models/user/money.dart';
 
 extension CourseEntityExtension on CourseEntity {
   CourseModel toDomain() {
@@ -14,6 +17,15 @@ extension CourseEntityExtension on CourseEntity {
       rating: rating,
       thumbnailUrl: thumbnailUrl,
       createdAt: createdAt,
+      tableOfContents: '',
+      pricing: CoursePricing(price: Money(amount: priceInCoins)),
+      statistics: CourseStatistics(
+        averageRating: rating,
+        totalEnrollments: 0,
+        completionRate: 0,
+      ),
+      totalTasks: 0,
+      coverImage: thumbnailUrl,
     );
   }
 }

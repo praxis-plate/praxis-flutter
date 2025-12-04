@@ -8,6 +8,7 @@ class UserStatistic extends Table {
       integer().references(User, #id, onDelete: KeyAction.cascade)();
   IntColumn get currentStreak => integer().withDefault(const Constant(0))();
   IntColumn get maxStreak => integer().withDefault(const Constant(0))();
-  IntColumn get points => integer().withDefault(const Constant(0))();
+  IntColumn get coinBalance => integer().withDefault(const Constant(0))();
+  IntColumn get experiencePoints => integer().withDefault(const Constant(0))();
   DateTimeColumn get lastActiveDate => dateTime()();
 }

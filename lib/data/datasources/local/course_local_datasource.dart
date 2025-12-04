@@ -12,21 +12,6 @@ class CourseLocalDataSource implements ICourseLocalDataSource {
   }
 
   @override
-  Future<List<CourseEntity>> getUserCourses(int userId) async {
-    final userCourses = await _db.managers.userCourse
-        .filter((f) => f.userId.id(userId))
-        .get();
-
-    final courseIds = userCourses.map((e) => e.courseId).toList();
-
-    final courses = await _db.managers.course
-        .filter((f) => f.id.isIn(courseIds))
-        .get();
-
-    return courses;
-  }
-
-  @override
   Future<CourseEntity?> getCourseById(int courseId) async {
     return await _db.managers.course
         .filter((f) => f.id(courseId))
@@ -52,5 +37,35 @@ class CourseLocalDataSource implements ICourseLocalDataSource {
     final int id = entry.id.value;
 
     await (_db.update(_db.course)..where((t) => t.id.equals(id))).write(entry);
+  }
+
+  @override
+  Future<List<CourseEntity>> getEnrolledCourses(int userId) async {
+    final userCourses = await _db.managers.userCourse
+        .filter((f) => f.userId.id(userId))
+        .get();
+
+    final courseIds = userCourses.map((e) => e.courseId).toList();
+
+    if (courseIds.isEmpty) {
+      return [];
+    }
+
+    return await _db.managers.course.filter((f) => f.id.isIn(courseIds)).get();
+  }
+
+  @override
+  Future<void> enrollUserInCourse(UserCourseCompanion entry) async {
+    await _db.into(_db.userCourse).insert(entry);
+  }
+
+  @override
+  Future<bool> isUserEnrolled(int userId, int courseId) async {
+    final enrollments = await _db.managers.userCourse
+        .filter((f) => f.userId.id(userId))
+        .filter((f) => f.courseId.id(courseId))
+        .get();
+
+    return enrollments.isNotEmpty;
   }
 }
