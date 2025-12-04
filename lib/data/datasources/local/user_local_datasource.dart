@@ -31,6 +31,24 @@ class UserLocalDataSource implements IUserDataSource {
   }
 
   @override
+  Future<UserEntity?> getUserById(int userId) async {
+    return await _db.managers.user
+        .filter((f) => f.id(userId))
+        .getSingleOrNull();
+  }
+
+  @override
+  Future<void> updateUser(UserCompanion entry) async {
+    if (!entry.id.present) {
+      throw ArgumentError('User id must be present for update');
+    }
+
+    final int id = entry.id.value;
+
+    await (_db.update(_db.user)..where((t) => t.id.equals(id))).write(entry);
+  }
+
+  @override
   String hashPassword(String password) {
     final bytes = utf8.encode(password);
     final digest = sha256.convert(bytes);

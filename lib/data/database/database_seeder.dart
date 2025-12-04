@@ -1,15 +1,51 @@
+import 'package:codium/core/config/test_user_config.dart';
+import 'package:codium/domain/datasources/i_user_datasource.dart';
+import 'package:codium/domain/enums/coin_transaction_type.dart';
 import 'package:drift/drift.dart';
 
 import 'app_database.dart';
 
 class DatabaseSeeder {
   final AppDatabase db;
+  final IUserDataSource userDataSource;
 
-  DatabaseSeeder(this.db);
+  DatabaseSeeder(this.db, this.userDataSource);
 
   Future<void> seed() async {
     await db.transaction(() async {
       final now = DateTime.now();
+
+      final testUser = await userDataSource.create(
+        email: TestUserConfig.email,
+        password: TestUserConfig.password,
+      );
+
+      if (testUser != null) {
+        await db
+            .into(db.userStatistic)
+            .insert(
+              UserStatisticCompanion.insert(
+                userId: testUser.id,
+                lastActiveDate: now,
+                currentStreak: const Value(0),
+                maxStreak: const Value(0),
+                coinBalance: const Value(TestUserConfig.initialBalance),
+                experiencePoints: const Value(0),
+              ),
+            );
+
+        await db
+            .into(db.coinTransaction)
+            .insert(
+              CoinTransactionCompanion.insert(
+                userId: testUser.id,
+                amount: TestUserConfig.initialBalance,
+                type: CoinTransactionType.initialGrant.name,
+                relatedEntityId: const Value(null),
+                createdAt: now,
+              ),
+            );
+      }
 
       final flutterCourseId = await db
           .into(db.course)
@@ -174,6 +210,17 @@ class DatabaseSeeder {
               relatedCourseId: const Value(null),
             ),
           );
-    }); // end transaction
+
+      if (testUser != null) {
+        await db
+            .into(db.userCourse)
+            .insert(
+              UserCourseCompanion.insert(
+                userId: testUser.id,
+                courseId: flutterCourseId,
+              ),
+            );
+      }
+    });
   }
 }

@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/utils/result.dart';
@@ -21,7 +22,7 @@ final class AuthRepository implements IAuthRepository {
       if (existingUser != null) {
         return const Failure(
           AppFailure(
-            code: AppErrorCode.validationInvalid,
+            code: AppErrorCode.authUserAlreadyExists,
             message: 'User with this email is already registered',
             canRetry: false,
           ),
@@ -36,7 +37,7 @@ final class AuthRepository implements IAuthRepository {
       if (user == null) {
         return const Failure(
           AppFailure(
-            code: AppErrorCode.databaseGeneral,
+            code: AppErrorCode.authFailedToCreateUser,
             message: 'Failed to create user',
             canRetry: true,
           ),
@@ -60,7 +61,7 @@ final class AuthRepository implements IAuthRepository {
       if (user == null) {
         return const Failure(
           AppFailure(
-            code: AppErrorCode.apiNotFound,
+            code: AppErrorCode.authUserNotFound,
             message: 'User with this email is not found',
             canRetry: false,
           ),
@@ -70,7 +71,7 @@ final class AuthRepository implements IAuthRepository {
       if (user.passwordHash != _userDataSource.hashPassword(password)) {
         return const Failure(
           AppFailure(
-            code: AppErrorCode.apiUnauthorized,
+            code: AppErrorCode.authInvalidCredentials,
             message: 'Invalid email or password',
             canRetry: false,
           ),

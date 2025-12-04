@@ -8,10 +8,12 @@ import 'package:drift/drift.dart';
 extension UserStatisticEntityExtension on UserStatisticEntity {
   UserStatisticModel toDomain() {
     return UserStatisticModel(
+      id: id,
       userId: userId,
       currentStreak: currentStreak,
       maxStreak: maxStreak,
-      balance: Money(amount: points),
+      balance: Money(amount: coinBalance),
+      experiencePoints: experiencePoints,
       lastActiveDate: lastActiveDate,
     );
   }
@@ -34,7 +36,12 @@ extension UpdateUserStatisticModelExtension on UpdateUserStatisticModel {
           ? Value(currentStreak!)
           : const Value.absent(),
       maxStreak: maxStreak != null ? Value(maxStreak!) : const Value.absent(),
-      points: points != null ? Value(points!) : const Value.absent(),
+      coinBalance: coinBalance != null
+          ? Value(coinBalance!)
+          : const Value.absent(),
+      experiencePoints: experiencePoints != null
+          ? Value(experiencePoints!)
+          : const Value.absent(),
       lastActiveDate: lastActiveDate != null
           ? Value(lastActiveDate!)
           : const Value.absent(),
