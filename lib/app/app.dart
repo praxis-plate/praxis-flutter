@@ -1,5 +1,5 @@
 import 'package:codium/app/app_initializer.dart';
-import 'package:codium/core/bloc/achievement_notification_cubit.dart';
+import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
 import 'package:codium/core/bloc/locale/locale.dart';
 import 'package:codium/core/bloc/theme/theme_cubit.dart';
 import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
