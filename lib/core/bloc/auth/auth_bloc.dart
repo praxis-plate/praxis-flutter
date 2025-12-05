@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/usecases/auth/check_auth_status_usecase.dart';
 import 'package:codium/domain/usecases/auth/sign_in_usecase.dart';
 import 'package:codium/domain/usecases/auth/sign_out_usecase.dart';
@@ -26,21 +26,56 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
        _signUpUseCase = signUpUseCase,
        _signInUseCase = signInUseCase,
        _signOutUseCase = signOutUseCase,
-       super(const AuthInitialState()) {
+       super(const AuthLoadingState()) {
+    on<AuthCheckStatusEvent>(_onCheckStatus);
     on<AuthSignUpEvent>(_onSignUp);
     on<AuthSignInEvent>(_onSignIn);
     on<AuthSignOutEvent>(_onSignOut);
-    on<AuthCheckStatus>(_onCheckStatus);
-    on<AuthUpdateUserEvent>(_onUpdateUser);
+  }
+
+  Future<void> _onCheckStatus(
+    AuthCheckStatusEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      final result = await _checkAuthStatusUseCase();
+
+      if (!result.isSuccess) {
+        emit(const AuthUnauthenticatedState());
+        return;
+      }
+
+      final user = result.dataOrNull;
+      if (user == null) {
+        emit(const AuthUnauthenticatedState());
+        return;
+      }
+
+      emit(AuthAuthenticatedState(userId: user.id, email: user.email));
+    } catch (e, st) {
+      emit(const AuthUnauthenticatedState());
+      GetIt.I<Talker>().handle(e, st);
+    }
   }
 
   Future<void> _onSignUp(AuthSignUpEvent event, Emitter<AuthState> emit) async {
     try {
       emit(const AuthLoadingState());
-      final user = await _signUpUseCase(event.email, event.password);
-      emit(AuthAuthenticatedState(user));
+
+      final result = await _signUpUseCase(event.email, event.password);
+
+      if (!result.isSuccess) {
+        emit(const AuthUnauthenticatedState());
+        GetIt.I<Talker>().error(
+          'Sign up failed: ${result.failureOrNull!.message}',
+        );
+        return;
+      }
+
+      final user = result.dataOrNull!;
+      emit(AuthAuthenticatedState(userId: user.id, email: user.email));
     } catch (e, st) {
-      emit(AuthErrorState(e.toString()));
+      emit(const AuthUnauthenticatedState());
       GetIt.I<Talker>().handle(e, st);
     }
   }
@@ -48,10 +83,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onSignIn(AuthSignInEvent event, Emitter<AuthState> emit) async {
     try {
       emit(const AuthLoadingState());
-      final user = await _signInUseCase(event.email, event.password);
-      emit(AuthAuthenticatedState(user));
+
+      final result = await _signInUseCase(event.email, event.password);
+
+      if (!result.isSuccess) {
+        emit(const AuthUnauthenticatedState());
+        GetIt.I<Talker>().error(
+          'Sign in failed: ${result.failureOrNull!.message}',
+        );
+        return;
+      }
+
+      final user = result.dataOrNull!;
+      emit(AuthAuthenticatedState(userId: user.id, email: user.email));
     } catch (e, st) {
-      emit(AuthErrorState(e.toString()));
+      emit(const AuthUnauthenticatedState());
       GetIt.I<Talker>().handle(e, st);
     }
   }
@@ -62,35 +108,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(const AuthLoadingState());
-      await _signOutUseCase();
-      emit(const AuthUnauthenticatedState());
-    } catch (e, st) {
-      emit(AuthErrorState(e.toString()));
-      GetIt.I<Talker>().handle(e, st);
-    }
-  }
 
-  Future<void> _onCheckStatus(
-    AuthCheckStatus event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const AuthLoadingState());
-    try {
-      final currentUser = await _checkAuthStatusUseCase();
-      if (currentUser != null) {
-        emit(AuthAuthenticatedState(currentUser));
-      } else {
-        emit(const AuthUnauthenticatedState());
+      final result = await _signOutUseCase();
+
+      if (!result.isSuccess) {
+        GetIt.I<Talker>().error(
+          'Sign out failed: ${result.failureOrNull!.message}',
+        );
       }
+
+      emit(const AuthUnauthenticatedState());
     } catch (e, st) {
       emit(const AuthUnauthenticatedState());
       GetIt.I<Talker>().handle(e, st);
-    }
-  }
-
-  void _onUpdateUser(AuthUpdateUserEvent event, Emitter<AuthState> emit) {
-    if (state is AuthAuthenticatedState) {
-      emit(AuthAuthenticatedState(event.updatedUser));
     }
   }
 }
