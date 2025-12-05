@@ -1,8 +1,8 @@
 import 'package:codium/app/app_initializer.dart';
 import 'package:codium/core/bloc/achievement_notification_cubit.dart';
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/locale/locale.dart';
 import 'package:codium/core/bloc/theme/theme_cubit.dart';
+import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
 import 'package:codium/core/router/router.dart';
 import 'package:codium/core/theme/app_theme.dart';
 import 'package:codium/core/widgets/achievement_notification.dart';
@@ -32,62 +32,51 @@ class App extends StatelessWidget {
                     : AppTheme.of(Brightness.light),
                 routerConfig: AppRouter.router,
                 debugShowCheckedModeBanner: false,
-                builder: (context, child) => BlocBuilder<AuthBloc, AuthState>(
-                  buildWhen: (prev, curr) {
-                    if (prev.runtimeType != curr.runtimeType) return true;
+                builder: (context, child) =>
+                    BlocBuilder<UserProfileBloc, UserProfileState>(
+                      builder: (context, state) {
+                        Widget content = child!;
 
-                    if (prev is AuthAuthenticatedState &&
-                        curr is AuthAuthenticatedState) {
-                      return prev.user != curr.user;
-                    }
+                        if (state is UserProfileLoadedState) {
+                          final fullUser = FullUserProfileModel(
+                            profile: state.profile,
+                            balance: state.balance,
+                            purchasedCourseIds: state.purchasedCourseIds,
+                            currentStreak: state.currentStreak,
+                            maxStreak: state.maxStreak,
+                          );
+                          content = UserProvider(
+                            user: fullUser,
+                            child: content,
+                          );
+                        }
 
-                    if (prev is AuthUnauthenticatedState &&
-                        curr is AuthUnauthenticatedState) {
-                      return prev.redirectReason != curr.redirectReason;
-                    }
-
-                    return false;
-                  },
-                  builder: (context, state) {
-                    Widget content = child!;
-
-                    if (state is AuthAuthenticatedState) {
-                      final fullUser = FullUserProfileModel(
-                        profile: state.user,
-                        balance: state.balance,
-                        purchasedCourseIds: state.purchasedCourseIds,
-                        currentStreak: state.currentStreak,
-                        maxStreak: state.maxStreak,
-                      );
-                      content = UserProvider(user: fullUser, child: content);
-                    }
-
-                    return Stack(
-                      children: [
-                        content,
-                        BlocBuilder<
-                          AchievementNotificationCubit,
-                          AchievementNotificationState
-                        >(
-                          builder: (context, notificationState) {
-                            if (notificationState
-                                is AchievementNotificationVisible) {
-                              return AchievementNotification(
-                                achievement: notificationState.achievement,
-                                onDismiss: () {
-                                  context
-                                      .read<AchievementNotificationCubit>()
-                                      .hideAchievement();
-                                },
-                              );
-                            }
-                            return const SizedBox.shrink();
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                        return Stack(
+                          children: [
+                            content,
+                            BlocBuilder<
+                              AchievementNotificationCubit,
+                              AchievementNotificationState
+                            >(
+                              builder: (context, notificationState) {
+                                if (notificationState
+                                    is AchievementNotificationVisible) {
+                                  return AchievementNotification(
+                                    achievement: notificationState.achievement,
+                                    onDismiss: () {
+                                      context
+                                          .read<AchievementNotificationCubit>()
+                                          .hideAchievement();
+                                    },
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
               );
             },
           );

@@ -2,6 +2,7 @@ import 'package:codium/core/bloc/achievement_notification_cubit.dart';
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/locale/locale.dart';
 import 'package:codium/core/bloc/theme/theme_cubit.dart';
+import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
 import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +28,9 @@ class AppInitializer extends StatelessWidget {
         BlocProvider(
           create: (context) => LocaleCubit(GetIt.I<SharedPreferences>()),
         ),
+        BlocProvider(create: (context) => GetIt.I<AuthBloc>(), lazy: false),
         BlocProvider(
-          create: (context) => GetIt.I<AuthBloc>()..add(AuthCheckStatus()),
+          create: (context) => GetIt.I<UserProfileBloc>(),
           lazy: false,
         ),
         BlocProvider(create: (context) => GetIt.I<CoursePurchasingBloc>()),
