@@ -1,12 +1,30 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'theme_state.dart';
 
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit(bool value) : super(ThemeState(value));
+  static const _themeKey = 'app_theme_is_dark';
+  final SharedPreferences _prefs;
 
-  void setDarkTheme(bool value) {
+  ThemeCubit(this._prefs, Brightness platformBrightness)
+    : super(ThemeState(_getInitialTheme(_prefs, platformBrightness)));
+
+  static bool _getInitialTheme(
+    SharedPreferences prefs,
+    Brightness platformBrightness,
+  ) {
+    final savedTheme = prefs.getBool(_themeKey);
+    if (savedTheme != null) {
+      return savedTheme;
+    }
+    return platformBrightness == Brightness.dark;
+  }
+
+  Future<void> setDarkTheme(bool value) async {
+    await _prefs.setBool(_themeKey, value);
     emit(ThemeState(value));
   }
 }

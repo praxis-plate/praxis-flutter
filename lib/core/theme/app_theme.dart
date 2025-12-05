@@ -40,14 +40,14 @@ class AppPalette {
   );
 
   static const light = AppPalette(
-    primary: Color.fromARGB(255, 43, 230, 188),
-    primaryVariant: Color.fromARGB(255, 30, 180, 150),
-    card: Color.fromARGB(255, 255, 255, 255),
+    primary: Color.fromARGB(255, 16, 185, 129),
+    primaryVariant: Color.fromARGB(255, 5, 150, 105),
+    card: Color.fromARGB(255, 245, 245, 247),
     onSurface: Color.fromARGB(255, 33, 33, 33),
     onCard: Color.fromARGB(255, 66, 66, 66),
     divider: Color.fromARGB(255, 224, 224, 224),
-    onPrimary: Color.fromARGB(255, 0, 0, 0),
-    surface: Color.fromARGB(255, 250, 250, 250),
+    onPrimary: Color.fromARGB(255, 255, 255, 255),
+    surface: Color.fromARGB(255, 238, 238, 240),
     error: Color.fromARGB(255, 211, 47, 47),
     onError: Color.fromARGB(255, 255, 255, 255),
   );
@@ -146,13 +146,16 @@ class AppTheme {
 
   static InputDecorationTheme _inputDecorationTheme(AppPalette p) {
     final text = _textTheme(p);
+    final neutralBorderColor = p.onSurface.withValues(alpha: 0.3);
+
     return InputDecorationTheme(
       contentPadding: const EdgeInsets.all(16),
-      border: _border(p),
-      enabledBorder: _border(p),
+      border: _border(p, neutralBorderColor),
+      enabledBorder: _border(p, neutralBorderColor),
       focusedBorder: _border(p, p.primary),
       errorBorder: _border(p, p.error),
-      labelStyle: TextStyle(color: p.onSurface),
+      focusedErrorBorder: _border(p, p.error),
+      labelStyle: TextStyle(color: p.onSurface.withValues(alpha: 0.6)),
       floatingLabelStyle: TextStyle(color: p.primary),
       hintStyle: text.bodyMedium?.copyWith(
         color: p.onSurface.withValues(alpha: 0.4),
