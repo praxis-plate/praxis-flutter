@@ -1,5 +1,3 @@
-import 'package:codium/core/exceptions/auth_exceptions.dart';
-
 class AuthValidator {
   static const int _minPasswordLength = 8;
 
@@ -15,11 +13,11 @@ class AuthValidator {
 
   static void validateCredentials(String email, String password) {
     if (!isValidEmail(email)) {
-      throw AuthValidationException('Invalid email format');
+      throw ArgumentError('Invalid email format');
     }
 
     if (!isValidPassword(password)) {
-      throw AuthValidationException(
+      throw ArgumentError(
         'Password must contain at least $_minPasswordLength characters',
       );
     }
