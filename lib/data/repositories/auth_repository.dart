@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/exceptions/app_error.dart';
@@ -7,6 +9,7 @@ import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/i_auth_repository.dart';
 import 'package:codium/domain/services/services.dart';
+import 'package:crypto/crypto.dart';
 
 final class AuthRepository implements IAuthRepository {
   final IUserDataSource _userDataSource;
@@ -44,7 +47,14 @@ final class AuthRepository implements IAuthRepository {
         );
       }
 
-      await _sessionService.saveSession(userId: user.id, email: email);
+      final session = SessionModel(
+        userId: user.id,
+        email: email,
+        accessToken: _generateToken(user.id, email),
+        refreshToken: _generateToken(user.id, email, isRefresh: true),
+        tokenExpiresAt: DateTime.now().add(const Duration(hours: 24)),
+      );
+      await _sessionService.saveSession(session);
       return Success(user.toDomain());
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
@@ -78,7 +88,14 @@ final class AuthRepository implements IAuthRepository {
         );
       }
 
-      await _sessionService.saveSession(userId: user.id, email: user.email);
+      final session = SessionModel(
+        userId: user.id,
+        email: user.email,
+        accessToken: _generateToken(user.id, user.email),
+        refreshToken: _generateToken(user.id, user.email, isRefresh: true),
+        tokenExpiresAt: DateTime.now().add(const Duration(hours: 24)),
+      );
+      await _sessionService.saveSession(session);
       return Success(user.toDomain());
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
@@ -109,5 +126,14 @@ final class AuthRepository implements IAuthRepository {
     } catch (e) {
       return Failure(AppFailure.fromException(e as Exception));
     }
+  }
+
+  String _generateToken(int userId, String email, {bool isRefresh = false}) {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final type = isRefresh ? 'refresh' : 'access';
+    final payload = '$userId:$email:$type:$timestamp';
+    final bytes = utf8.encode(payload);
+    final hash = sha256.convert(bytes);
+    return base64Url.encode(hash.bytes);
   }
 }
