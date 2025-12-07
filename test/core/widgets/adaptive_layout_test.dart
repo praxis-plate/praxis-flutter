@@ -1,4 +1,4 @@
-import 'package:codium/core/widgets/adaptive_layout.dart';
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

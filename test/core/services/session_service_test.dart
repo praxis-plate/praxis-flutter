@@ -1,45 +1,60 @@
 import 'package:codium/core/services/session_service.dart';
+import 'package:codium/domain/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   late SessionService sessionService;
+  late SharedPreferences prefs;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    sessionService = SessionService();
+    prefs = await SharedPreferences.getInstance();
+    sessionService = SessionService(prefs);
   });
 
   group('SessionService - Session Persistence', () {
     test('should save session with userId and email', () async {
-      const userId = 'user123';
+      const userId = 123;
       const email = 'test@example.com';
+      final tokenExpiresAt = DateTime.now().add(const Duration(hours: 24));
+      final session = SessionModel(
+        userId: userId,
+        email: email,
+        accessToken: 'test_access_token',
+        refreshToken: 'test_refresh_token',
+        tokenExpiresAt: tokenExpiresAt,
+      );
 
-      await sessionService.saveSession(userId: userId, email: email);
+      await sessionService.saveSession(session);
 
       final hasSession = await sessionService.hasActiveSession();
-      final savedUserId = await sessionService.getUserId();
-      final savedEmail = await sessionService.getUserEmail();
+      final savedSession = await sessionService.getSession();
 
       expect(hasSession, true);
-      expect(savedUserId, userId);
-      expect(savedEmail, email);
+      expect(savedSession, isNotNull);
+      expect(savedSession!.userId, userId);
+      expect(savedSession.email, email);
     });
 
     test('should clear all session data', () async {
-      const userId = 'user123';
-      const email = 'test@example.com';
+      final tokenExpiresAt = DateTime.now().add(const Duration(hours: 24));
+      final session = SessionModel(
+        userId: 123,
+        email: 'test@example.com',
+        accessToken: 'test_access_token',
+        refreshToken: 'test_refresh_token',
+        tokenExpiresAt: tokenExpiresAt,
+      );
 
-      await sessionService.saveSession(userId: userId, email: email);
+      await sessionService.saveSession(session);
       await sessionService.clearSession();
 
       final hasSession = await sessionService.hasActiveSession();
-      final savedUserId = await sessionService.getUserId();
-      final savedEmail = await sessionService.getUserEmail();
+      final savedSession = await sessionService.getSession();
 
       expect(hasSession, false);
-      expect(savedUserId, isNull);
-      expect(savedEmail, isNull);
+      expect(savedSession, isNull);
     });
 
     test('should return false when no session exists', () async {
@@ -48,46 +63,58 @@ void main() {
       expect(hasSession, false);
     });
 
-    test('should return null for userId when no session', () async {
-      final userId = await sessionService.getUserId();
+    test('should return null for session when no session exists', () async {
+      final session = await sessionService.getSession();
 
-      expect(userId, isNull);
-    });
-
-    test('should return null for email when no session', () async {
-      final email = await sessionService.getUserEmail();
-
-      expect(email, isNull);
+      expect(session, isNull);
     });
 
     test('should persist session across service instances', () async {
-      const userId = 'user123';
-      const email = 'test@example.com';
+      final tokenExpiresAt = DateTime.now().add(const Duration(hours: 24));
+      final session = SessionModel(
+        userId: 123,
+        email: 'test@example.com',
+        accessToken: 'test_access_token',
+        refreshToken: 'test_refresh_token',
+        tokenExpiresAt: tokenExpiresAt,
+      );
 
-      await sessionService.saveSession(userId: userId, email: email);
+      await sessionService.saveSession(session);
 
-      final newSessionService = SessionService();
+      final newSessionService = SessionService(prefs);
       final hasSession = await newSessionService.hasActiveSession();
-      final savedUserId = await newSessionService.getUserId();
+      final savedSession = await newSessionService.getSession();
 
       expect(hasSession, true);
-      expect(savedUserId, userId);
+      expect(savedSession, isNotNull);
+      expect(savedSession!.userId, 123);
     });
 
     test('should overwrite existing session', () async {
-      const userId1 = 'user123';
-      const email1 = 'test1@example.com';
-      const userId2 = 'user456';
-      const email2 = 'test2@example.com';
+      final tokenExpiresAt = DateTime.now().add(const Duration(hours: 24));
+      final session1 = SessionModel(
+        userId: 123,
+        email: 'test1@example.com',
+        accessToken: 'test_access_token_1',
+        refreshToken: 'test_refresh_token_1',
+        tokenExpiresAt: tokenExpiresAt,
+      );
+      final session2 = SessionModel(
+        userId: 456,
+        email: 'test2@example.com',
+        accessToken: 'test_access_token_2',
+        refreshToken: 'test_refresh_token_2',
+        tokenExpiresAt: tokenExpiresAt,
+      );
 
-      await sessionService.saveSession(userId: userId1, email: email1);
-      await sessionService.saveSession(userId: userId2, email: email2);
+      await sessionService.saveSession(session1);
+      await sessionService.saveSession(session2);
 
-      final savedUserId = await sessionService.getUserId();
-      final savedEmail = await sessionService.getUserEmail();
+      final savedSession = await sessionService.getSession();
 
-      expect(savedUserId, userId2);
-      expect(savedEmail, email2);
+      expect(savedSession, isNotNull);
+      expect(savedSession!.userId, 456);
+      expect(savedSession.email, 'test2@example.com');
     });
   });
 }

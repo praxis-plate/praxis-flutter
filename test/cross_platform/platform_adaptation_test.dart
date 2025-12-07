@@ -1,6 +1,5 @@
 import 'package:codium/core/utils/screen_size.dart';
-import 'package:codium/core/widgets/adaptive_layout.dart';
-import 'package:codium/core/widgets/platform_widget.dart';
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
