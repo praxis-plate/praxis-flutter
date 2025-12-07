@@ -1,5 +1,4 @@
-import 'package:codium/domain/models/session/session_model.dart';
-import 'package:codium/domain/models/session/update_session_model.dart';
+import 'package:codium/domain/models/session/session.dart';
 
 abstract interface class ISessionService {
   Future<void> saveSession(SessionModel session);
