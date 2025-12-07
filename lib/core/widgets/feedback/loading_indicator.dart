@@ -1,3 +1,5 @@
+import 'package:codium/core/utils/duration.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
 class LoadingIndicator extends StatelessWidget {
@@ -14,6 +16,9 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -23,34 +28,22 @@ class LoadingIndicator extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               message!,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: theme.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
           ],
           if (showEstimatedTime && estimatedTime != null) ...[
             const SizedBox(height: 8),
             Text(
-              'Estimated time: ${_formatDuration(estimatedTime!)}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.6),
+              DurationFormatter.formatEstimated(estimatedTime!, s),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ],
         ],
       ),
     );
-  }
-
-  String _formatDuration(Duration duration) {
-    if (duration.inSeconds < 60) {
-      return '${duration.inSeconds} seconds';
-    } else if (duration.inMinutes < 60) {
-      return '${duration.inMinutes} minute${duration.inMinutes > 1 ? 's' : ''}';
-    } else {
-      return '${duration.inHours} hour${duration.inHours > 1 ? 's' : ''}';
-    }
   }
 }
 

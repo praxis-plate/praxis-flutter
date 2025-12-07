@@ -1,16 +1,12 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/domain/models/user/full_user_profile_model.dart';
 import 'package:flutter/material.dart';
 
 class UserProvider extends InheritedWidget {
-  final User user;
+  final FullUserProfileModel user;
 
-  const UserProvider({
-    super.key,
-    required this.user,
-    required super.child,
-  });
+  const UserProvider({super.key, required this.user, required super.child});
 
-  static User of(BuildContext context) {
+  static FullUserProfileModel of(BuildContext context) {
     final provider = context.dependOnInheritedWidgetOfExactType<UserProvider>();
     return provider!.user;
   }

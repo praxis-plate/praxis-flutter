@@ -1,7 +1,8 @@
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
 class ErrorDialog extends StatelessWidget {
-  final String title;
+  final String? title;
   final String message;
   final bool canRetry;
   final VoidCallback? onRetry;
@@ -9,7 +10,7 @@ class ErrorDialog extends StatelessWidget {
 
   const ErrorDialog({
     super.key,
-    this.title = 'Error',
+    this.title,
     required this.message,
     this.canRetry = false,
     this.onRetry,
@@ -18,7 +19,7 @@ class ErrorDialog extends StatelessWidget {
 
   static Future<bool?> show({
     required BuildContext context,
-    String title = 'Error',
+    String? title,
     required String message,
     bool canRetry = false,
   }) {
@@ -31,12 +32,15 @@ class ErrorDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
     return AlertDialog(
       title: Row(
         children: [
-          Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error),
+          Icon(Icons.error_outline, color: theme.colorScheme.error),
           const SizedBox(width: 8),
-          Text(title),
+          Text(title ?? s.error),
         ],
       ),
       content: Text(message),
@@ -47,14 +51,14 @@ class ErrorDialog extends StatelessWidget {
               Navigator.of(context).pop(true);
               onRetry?.call();
             },
-            child: const Text('Retry'),
+            child: Text(s.retry),
           ),
         TextButton(
           onPressed: () {
             Navigator.of(context).pop(false);
             onDismiss?.call();
           },
-          child: Text(canRetry ? 'Cancel' : 'OK'),
+          child: Text(canRetry ? s.cancel : s.ok),
         ),
       ],
     );
@@ -77,6 +81,7 @@ class ErrorBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return Container(
@@ -96,7 +101,7 @@ class ErrorBanner extends StatelessWidget {
             TextButton(
               onPressed: onRetry,
               child: Text(
-                'Retry',
+                s.retry,
                 style: TextStyle(color: theme.colorScheme.onErrorContainer),
               ),
             ),
@@ -104,7 +109,7 @@ class ErrorBanner extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.close,
-                color: Theme.of(context).colorScheme.onErrorContainer,
+                color: theme.colorScheme.onErrorContainer,
               ),
               onPressed: onDismiss,
             ),
