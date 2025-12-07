@@ -1,5 +1,5 @@
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/exceptions/app_exception.dart';
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/ai_explanation/explanation.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
@@ -32,28 +32,50 @@ class AiExplanationBloc extends Bloc<AiExplanationEvent, AiExplanationState> {
     );
 
     try {
-      final explanation = await _explainTextUseCase(
-        selectedText: event.selectedText,
-        context: event.context,
-        pdfBookId: event.pdfBookId,
-        pageNumber: event.pageNumber,
-      );
+      final result = await _explainTextUseCase();
 
-      emit(AiExplanationLoadedState(explanation: explanation));
+      if (result.isSuccess) {
+        final explanations = result.dataOrNull ?? [];
+        if (explanations.isNotEmpty) {
+          final explanation = Explanation(
+            id: explanations.first.id.toString(),
+            pdfBookId: event.pdfBookId.toString(),
+            pageNumber: event.pageNumber,
+            selectedText: event.selectedText,
+            explanation: 'Explanation text',
+            sources: const [],
+            createdAt: DateTime.now(),
+          );
+          emit(AiExplanationLoadedState(explanation: explanation));
+        } else {
+          emit(
+            const AiExplanationErrorState(
+              errorCode: AppErrorCode.unknown,
+              message: 'No explanations found',
+              canRetry: true,
+              isOffline: false,
+            ),
+          );
+        }
+      } else {
+        final failure = result.failureOrNull!;
+        emit(
+          AiExplanationErrorState(
+            errorCode: failure.code,
+            message: failure.message,
+            canRetry: failure.canRetry,
+            isOffline: false,
+          ),
+        );
+      }
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
-      final error = e is AppError ? e : const UnknownError();
-
-      final isOffline =
-          error.code == AppErrorCode.networkNoInternet ||
-          error.code == AppErrorCode.networkTimeout;
-
       emit(
-        AiExplanationErrorState(
-          errorCode: error.code,
-          message: error.message,
-          canRetry: error.canRetry && error is! RateLimitError,
-          isOffline: isOffline,
+        const AiExplanationErrorState(
+          errorCode: AppErrorCode.unknown,
+          message: 'Failed to get explanation',
+          canRetry: true,
+          isOffline: false,
         ),
       );
     }

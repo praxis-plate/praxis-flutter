@@ -1,6 +1,10 @@
+import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
 import 'package:codium/core/services/mock_connectivity_service.dart';
 import 'package:codium/core/services/session_service.dart';
+import 'package:codium/data/database/app_database.dart';
+import 'package:codium/data/database/database_seeder.dart';
 import 'package:codium/data/datasources/datasources.dart';
 import 'package:codium/data/repositories/repositories.dart';
 import 'package:codium/domain/datasources/datasources.dart';
@@ -10,45 +14,79 @@ import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/ai_explanation/ai_explanation.dart';
 import 'package:codium/features/auth/auth.dart';
 import 'package:codium/features/course_details/course_details.dart';
+import 'package:codium/features/course_learning/bloc/course_learning_bloc.dart';
 import 'package:codium/features/explanation_history/explanation_history.dart';
 import 'package:codium/features/learning/learning.dart';
+import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
 import 'package:codium/features/library/library.dart';
 import 'package:codium/features/main/main.dart';
 import 'package:codium/features/onboarding/onboarding.dart';
 import 'package:codium/features/pdf_reader/pdf_reader.dart';
 import 'package:codium/features/profile/profile.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class DependencyInjection {
-  void initialize() {
+  Future<void> initialize() async {
     GetIt.I.registerSingleton(TalkerFlutter.init());
 
-    _registerServices();
+    await _registerServices();
     _registerDataSources();
     _registerRepositories();
     _registerUseCases();
     _registerBlocs();
+
+    await _seedDatabaseIfNeeded();
   }
 
-  void _registerServices() {
+  Future<void> _seedDatabaseIfNeeded() async {
+    try {
+      final db = GetIt.I<AppDatabase>();
+      final userDataSource = GetIt.I<IUserDataSource>();
+
+      final existingUsers = await db.managers.user.count();
+
+      if (existingUsers == 0) {
+        GetIt.I<Talker>().info('Database is empty, seeding...');
+        final seeder = DatabaseSeeder(db, userDataSource);
+        await seeder.seed();
+        GetIt.I<Talker>().info('Database seeded successfully');
+      } else {
+        GetIt.I<Talker>().info(
+          'Database already contains $existingUsers users',
+        );
+      }
+    } catch (e, st) {
+      GetIt.I<Talker>().error('Failed to seed database', e, st);
+    }
+  }
+
+  Future<void> _registerServices() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+
     GetIt.I
+      ..registerSingleton(sharedPreferences)
       ..registerLazySingleton<IConnectivityService>(
         () => MockConnectivityService(),
       )
-      ..registerLazySingleton<ISessionService>(() => SessionService());
+      ..registerLazySingleton<ISessionService>(
+        () => SessionService(GetIt.I<SharedPreferences>()),
+      );
   }
 
   void _registerDataSources() {
     GetIt.I
-      ..registerSingleton<ICourseDataSource>(GoCourseDatasource())
-      ..registerSingleton<IUserDataSource>(GoUserDatasource())
-      ..registerLazySingleton<AppDatabase>(() => AppDatabase())
-      ..registerLazySingleton<IAuthDataSource>(
-        () => LocalAuthDataSource(
-          GetIt.I<AppDatabase>(),
-          GetIt.I<ISessionService>(),
-        ),
+      ..registerLazySingleton<AppDatabase>(() {
+        try {
+          return AppDatabase();
+        } catch (e, st) {
+          GetIt.I<Talker>().error('Failed to initialize database', e, st);
+          rethrow;
+        }
+      })
+      ..registerLazySingleton<IUserDataSource>(
+        () => UserLocalDataSource(GetIt.I<AppDatabase>()),
       )
       ..registerLazySingleton<IPdfLocalDataSource>(
         () => PdfLocalDataSource(GetIt.I<AppDatabase>()),
@@ -62,47 +100,72 @@ class DependencyInjection {
       ..registerLazySingleton<IUserStatisticsLocalDataSource>(
         () => UserStatisticsLocalDataSource(GetIt.I<AppDatabase>()),
       )
-      ..registerLazySingleton<IUserStatisticsDataSource>(
-        () => UserStatisticsRemoteDataSource(),
+      ..registerLazySingleton<ICourseLocalDataSource>(
+        () => CourseLocalDataSource(GetIt.I<AppDatabase>()),
       )
-      ..registerLazySingleton<IGeminiDataSource>(() => GeminiDataSource())
-      ..registerLazySingleton<ISearchDataSource>(() => SearchDataSource());
+      ..registerLazySingleton<IModuleLocalDataSource>(
+        () => ModuleLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<ILessonLocalDataSource>(
+        () => LessonLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<ILessonProgressLocalDataSource>(
+        () => LessonProgressLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<IAchievementLocalDataSource>(
+        () => AchievementLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<ICoinTransactionLocalDataSource>(
+        () => CoinTransactionLocalDataSource(GetIt.I<AppDatabase>()),
+      );
   }
 
   void _registerRepositories() {
     GetIt.I
       ..registerLazySingleton<IAuthRepository>(
-        () => AuthRepository(GetIt.I<IAuthDataSource>()),
+        () => AuthRepository(
+          GetIt.I<IUserDataSource>(),
+          GetIt.I<ISessionService>(),
+        ),
       )
       ..registerLazySingleton<ICourseRepository>(
-        () => CourseRepository(GetIt.I<ICourseDataSource>()),
+        () => CourseRepository(GetIt.I<ICourseLocalDataSource>()),
       )
       ..registerLazySingleton<IUserRepository>(
-        () => UserRepository(GetIt.I<IAuthDataSource>()),
+        () => UserRepository(
+          GetIt.I<IUserDataSource>(),
+          GetIt.I<ISessionService>(),
+        ),
       )
       ..registerLazySingleton<IUserStatisticsRepository>(
-        () => UserStatisticsRepository(
-          localDataSource: GetIt.I<IUserStatisticsLocalDataSource>(),
-          remoteDataSource: GetIt.I<IUserStatisticsDataSource>(),
-        ),
+        () =>
+            UserStatisticsRepository(GetIt.I<IUserStatisticsLocalDataSource>()),
       )
       ..registerLazySingleton<IPdfRepository>(
-        () => PdfRepository(
-          GetIt.I<IPdfLocalDataSource>(),
-          GetIt.I<IBookmarkLocalDataSource>(),
-        ),
+        () => PdfRepository(GetIt.I<IPdfLocalDataSource>()),
       )
-      ..registerLazySingleton<IStorageRepository>(
-        () => StorageRepository(
-          GetIt.I<IBookmarkLocalDataSource>(),
-          GetIt.I<IExplanationLocalDataSource>(),
-        ),
+      ..registerLazySingleton<IBookmarkRepository>(
+        () => BookmarkRepository(GetIt.I<IBookmarkLocalDataSource>()),
       )
-      ..registerLazySingleton<IAiRepository>(
-        () => AiRepository(
-          geminiDataSource: GetIt.I<IGeminiDataSource>(),
-          searchDataSource: GetIt.I<ISearchDataSource>(),
-          connectivityService: GetIt.I<IConnectivityService>(),
+      ..registerLazySingleton<IExplanationRepository>(
+        () => ExplanationRepository(GetIt.I<IExplanationLocalDataSource>()),
+      )
+      ..registerLazySingleton<IModuleRepository>(
+        () => ModuleRepository(GetIt.I<IModuleLocalDataSource>()),
+      )
+      ..registerLazySingleton<ILessonRepository>(
+        () => LessonRepository(GetIt.I<ILessonLocalDataSource>()),
+      )
+      ..registerLazySingleton<ILessonProgressRepository>(
+        () =>
+            LessonProgressRepository(GetIt.I<ILessonProgressLocalDataSource>()),
+      )
+      ..registerLazySingleton<IAchievementRepository>(
+        () => AchievementRepository(GetIt.I<IAchievementLocalDataSource>()),
+      )
+      ..registerLazySingleton<ICoinTransactionRepository>(
+        () => CoinTransactionRepository(
+          GetIt.I<ICoinTransactionLocalDataSource>(),
         ),
       );
   }
@@ -116,9 +179,20 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(() => SignInUseCase(GetIt.I<IAuthRepository>()))
-      ..registerFactory(() => SignUpUseCase(GetIt.I<IAuthRepository>()))
+      ..registerFactory(
+        () => SignUpUseCase(
+          GetIt.I<IAuthRepository>(),
+          GetIt.I<ICoinTransactionRepository>(),
+        ),
+      )
       ..registerFactory(() => SignOutUseCase(GetIt.I<IAuthRepository>()))
       ..registerFactory(() => GetProfileUseCase(GetIt.I<IUserRepository>()))
+      ..registerFactory(
+        () => GetFullUserProfileUseCase(
+          GetIt.I<IUserStatisticsRepository>(),
+          GetIt.I<ICourseRepository>(),
+        ),
+      )
       ..registerFactory(() => GetCoursesUseCase(GetIt.I<ICourseRepository>()))
       ..registerFactory(
         () => GetMainCarouselCoursesUseCase(GetIt.I<ICourseRepository>()),
@@ -133,15 +207,24 @@ class DependencyInjection {
       ..registerFactory(
         () => GetLearningDataUseCase(
           GetIt.I<IUserStatisticsRepository>(),
-          GetIt.I<ICourseRepository>(),
           GetIt.I<GenerateActivityUsecase>(),
         ),
       )
       ..registerFactory(
         () => PurchaseCourseUseCase(
           courseRepository: GetIt.I<ICourseRepository>(),
-          userRepository: GetIt.I<IUserRepository>(),
           userStatisticsRepository: GetIt.I<IUserStatisticsRepository>(),
+          coinTransactionRepository: GetIt.I<ICoinTransactionRepository>(),
+        ),
+      )
+      ..registerFactory(
+        () => GetEnrolledCoursesUseCase(
+          courseRepository: GetIt.I<ICourseRepository>(),
+        ),
+      )
+      ..registerFactory(
+        () => CheckCourseEnrollmentUseCase(
+          courseRepository: GetIt.I<ICourseRepository>(),
         ),
       )
       ..registerFactory(() => GetPdfListUseCase(GetIt.I<IPdfRepository>()))
@@ -158,25 +241,41 @@ class DependencyInjection {
         () => UpdateReadingProgressUseCase(GetIt.I<IPdfRepository>()),
       )
       ..registerFactory(
-        () => SaveBookmarkUseCase(GetIt.I<IStorageRepository>()),
+        () => SaveBookmarkUseCase(GetIt.I<IBookmarkRepository>()),
       )
       ..registerFactory(
-        () => ExplainTextUseCase(
-          GetIt.I<IAiRepository>(),
-          GetIt.I<IStorageRepository>(),
-        ),
+        () => ExplainTextUseCase(GetIt.I<IExplanationRepository>()),
       )
       ..registerFactory(
-        () => GetExplanationHistoryUseCase(GetIt.I<IStorageRepository>()),
+        () => GetExplanationHistoryUseCase(GetIt.I<IExplanationRepository>()),
       )
       ..registerFactory(
-        () => SearchExplanationHistoryUseCase(GetIt.I<IStorageRepository>()),
+        () =>
+            SearchExplanationHistoryUseCase(GetIt.I<IExplanationRepository>()),
       )
       ..registerFactory(
-        () => DeleteExplanationUseCase(GetIt.I<IStorageRepository>()),
+        () => DeleteExplanationUseCase(GetIt.I<IExplanationRepository>()),
       )
       ..registerFactory(
         () => GetRecommendedCoursesUseCase(GetIt.I<ICourseRepository>()),
+      )
+      ..registerFactory(
+        () => CompleteLessonUseCase(
+          lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
+        ),
+      )
+      ..registerFactory(
+        () => GetUserProfileDataUseCase(
+          userRepository: GetIt.I<IUserRepository>(),
+          userStatisticsRepository: GetIt.I<IUserStatisticsRepository>(),
+          achievementRepository: GetIt.I<IAchievementRepository>(),
+        ),
+      )
+      ..registerFactory(
+        () => CheckStreakAndAwardAchievementUseCase(
+          userStatisticsRepository: GetIt.I<IUserStatisticsRepository>(),
+          achievementRepository: GetIt.I<IAchievementRepository>(),
+        ),
       );
   }
 
@@ -190,11 +289,22 @@ class DependencyInjection {
           signOutUseCase: GetIt.I<SignOutUseCase>(),
         ),
       )
-      ..registerFactory(
-        () => ProfileBloc(getProfileUseCase: GetIt.I<GetProfileUseCase>()),
+      ..registerLazySingleton(
+        () => UserProfileBloc(
+          getFullUserProfileUseCase: GetIt.I<GetFullUserProfileUseCase>(),
+        ),
       )
       ..registerFactory(
-        () => MainBloc(getCoursesUseCase: GetIt.I<GetCoursesUseCase>()),
+        () => ProfileBloc(
+          getProfileUseCase: GetIt.I<GetProfileUseCase>(),
+          getUserProfileDataUseCase: GetIt.I<GetUserProfileDataUseCase>(),
+        ),
+      )
+      ..registerFactory(
+        () => MainBloc(
+          getCoursesUseCase: GetIt.I<GetCoursesUseCase>(),
+          getEnrolledCoursesUseCase: GetIt.I<GetEnrolledCoursesUseCase>(),
+        ),
       )
       ..registerFactory(
         () => MainCarouselBloc(
@@ -210,16 +320,17 @@ class DependencyInjection {
       ..registerFactory(
         () => LearningBloc(
           getLearningDataUseCase: GetIt.I<GetLearningDataUseCase>(),
+          getEnrolledCoursesUseCase: GetIt.I<GetEnrolledCoursesUseCase>(),
         ),
       )
       ..registerFactory<CourseDetailBloc>(
         () => CourseDetailBloc(
           getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
+          checkCourseEnrollmentUseCase: GetIt.I<CheckCourseEnrollmentUseCase>(),
         ),
       )
       ..registerLazySingleton(
         () => CoursePurchasingBloc(
-          authBloc: GetIt.I<AuthBloc>(),
           purchaseCourseUseCase: GetIt.I<PurchaseCourseUseCase>(),
         ),
       )
@@ -258,6 +369,20 @@ class DependencyInjection {
           getRecommendedCoursesUseCase: GetIt.I<GetRecommendedCoursesUseCase>(),
         ),
       )
-      ..registerFactory(() => OnboardingBloc());
+      ..registerFactory(() => OnboardingBloc())
+      ..registerFactory(
+        () => CourseLearningBloc(
+          courseRepository: GetIt.I<ICourseRepository>(),
+          lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
+        ),
+      )
+      ..registerFactory(
+        () => LessonContentBloc(
+          lessonRepository: GetIt.I<ILessonRepository>(),
+          lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
+          completeLessonUseCase: GetIt.I<CompleteLessonUseCase>(),
+        ),
+      )
+      ..registerLazySingleton(() => AchievementNotificationCubit());
   }
 }

@@ -1,6 +1,8 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/auth/bloc/sign_up/sign_up_cubit.dart';
+import 'package:codium/features/auth/widgets/widgets.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,15 +20,21 @@ class SignUpScreen extends StatelessWidget {
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticatedState) {
-            context.go('/home');
+            context.read<UserProfileBloc>().add(
+              UserProfileLoadEvent(userId: state.userId),
+            );
+            context.go('/navigation');
             context.read<SignUpCubit>().reset();
           } else if (state is AuthErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
                 backgroundColor: Theme.of(context).colorScheme.error,
+                behavior: SnackBarBehavior.floating,
               ),
             );
+            context.read<SignUpCubit>().reset();
+            context.read<AuthBloc>().add(const AuthResetErrorEvent());
           }
         },
         child: Scaffold(
@@ -56,6 +64,7 @@ class _SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return Form(
@@ -64,10 +73,7 @@ class _SignUpForm extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              S.of(context).displaySignUp,
-              style: theme.textTheme.displayLarge,
-            ),
+            Text(s.displaySignUp, style: theme.textTheme.displayLarge),
             const SizedBox(height: 32),
             const _EmailInput(),
             const SizedBox(height: 16),
@@ -88,22 +94,15 @@ class _EmailInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final s = S.of(context);
 
     return BlocBuilder<SignUpCubit, SignUpState>(
-      buildWhen: (previous, current) =>
-          previous.email != current.email || previous.status != current.status,
+      buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
-        return TextFormField(
+        return AuthEmailInput(
+          errorText: state.email.stringDisplayError(s),
           enabled: state.status != FormzSubmissionStatus.inProgress,
-          keyboardType: TextInputType.emailAddress,
-          style: theme.textTheme.bodyMedium,
-          decoration: InputDecoration(
-            labelText: S.of(context).labelEmail,
-            hintText: S.of(context).displayEmailHint,
-            errorText: state.email.stringDisplayError(S.of(context)),
-          ),
-          onChanged: (value) => context.read<SignUpCubit>().emailChanged(value),
+          onChanged: context.read<SignUpCubit>().emailChanged,
         );
       },
     );
@@ -115,65 +114,50 @@ class _PasswordInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cubit = context.read<SignUpCubit>();
+    final s = S.of(context);
 
-    return BlocBuilder<SignUpCubit, SignUpState>(
-      buildWhen: (previous, current) =>
-          previous.password != current.password ||
-          previous.obscurePassword != current.obscurePassword ||
-          previous.status != current.status,
+    return BlocSelector<SignUpCubit, SignUpState, _PasswordState>(
+      selector: (state) => _PasswordState(
+        password: state.password,
+        obscurePassword: state.obscurePassword,
+        status: state.status,
+      ),
       builder: (context, state) {
-        return TextFormField(
+        final cubit = context.read<SignUpCubit>();
+        return AuthPasswordInput(
+          errorText: state.password.stringDisplayError(s),
           enabled: state.status != FormzSubmissionStatus.inProgress,
           obscureText: state.obscurePassword,
-          style: theme.textTheme.bodyMedium,
-          decoration: InputDecoration(
-            labelText: S.of(context).labelPassword,
-            hintText: S.of(context).displayPasswordHint,
-            errorText: state.password.stringDisplayError(S.of(context)),
-            suffixIcon: _PasswordVisibilityButton(
-              visible: !state.obscurePassword,
-              onPressed: cubit.togglePasswordVisibility,
-              enabled: state.status != FormzSubmissionStatus.inProgress,
-            ),
-          ),
-          onChanged: (value) =>
-              context.read<SignUpCubit>().passwordChanged(value),
+          onChanged: cubit.passwordChanged,
+          onToggleVisibility: cubit.togglePasswordVisibility,
         );
       },
     );
   }
 }
 
-class _PasswordVisibilityButton extends StatelessWidget {
-  final bool visible;
-  final VoidCallback onPressed;
-  final bool enabled;
+class _PasswordState {
+  final dynamic password;
+  final bool obscurePassword;
+  final FormzSubmissionStatus status;
 
-  const _PasswordVisibilityButton({
-    required this.visible,
-    required this.onPressed,
-    required this.enabled,
+  const _PasswordState({
+    required this.password,
+    required this.obscurePassword,
+    required this.status,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _PasswordState &&
+          password == other.password &&
+          obscurePassword == other.obscurePassword &&
+          status == other.status;
 
-    return IconButton(
-      icon: Icon(
-        visible ? Icons.visibility_off : Icons.visibility,
-        color: theme.colorScheme.onSurfaceVariant,
-      ),
-      color: enabled
-          ? Theme.of(context).colorScheme.onSurface
-          : Theme.of(context).disabledColor,
-      splashRadius: 20,
-      padding: const EdgeInsets.only(right: 16),
-      onPressed: enabled ? onPressed : null,
-    );
-  }
+  @override
+  int get hashCode =>
+      password.hashCode ^ obscurePassword.hashCode ^ status.hashCode;
 }
 
 class _SubmitButton extends StatelessWidget {
@@ -221,25 +205,11 @@ class _SignInRedirect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return GestureDetector(
-      onTap: () => context.go('/sign-in'),
-      child: RichText(
-        text: TextSpan(
-          style: theme.textTheme.bodySmall,
-          text: S.of(context).displayAlreadyHaveAnAccount,
-          children: [
-            TextSpan(
-              text: ' ${S.of(context).displaySignIn}',
-              style: theme.textTheme.titleSmall?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
+    final s = S.of(context);
+    return AuthRedirectText(
+      questionText: s.displayAlreadyHaveAnAccount,
+      actionText: s.displaySignIn,
+      route: '/sign-in',
     );
   }
 }

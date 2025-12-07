@@ -1,17 +1,14 @@
-import 'package:codium/core/widgets/common_search_bar.dart';
-import 'package:codium/core/widgets/course_card.dart';
-import 'package:codium/core/widgets/dumb/section.dart';
-import 'package:codium/core/widgets/user_provider.dart';
-import 'package:codium/core/widgets/wrapper.dart';
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/core/widgets/widgets.dart';
+import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:codium/features/main/bloc/main/main_bloc.dart';
 import 'package:codium/features/main/bloc/user_statistics/user_statistics_bloc.dart';
-import 'package:codium/features/main/view/widgets/user_balance_card.dart';
+import 'package:codium/features/profile/bloc/bloc/profile_bloc.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -23,23 +20,25 @@ class MainScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              GetIt.I<UserStatisticsBloc>()
-                ..add(UserStatisticsLoadEvent(userId: user.id)),
+          create: (context) => GetIt.I<UserStatisticsBloc>()
+            ..add(UserStatisticsLoadEvent(userId: user.profile.id.toString())),
         ),
         BlocProvider(
-          create: (context) => GetIt.I<MainBloc>()..add(MainLoadCoursesEvent()),
+          create: (context) =>
+              GetIt.I<MainBloc>()
+                ..add(MainLoadCoursesEvent(userId: user.profile.id)),
+        ),
+        BlocProvider(
+          create: (context) => GetIt.I<ProfileBloc>()..add(ProfileLoadEvent()),
         ),
       ],
-      child: _MainScreenContent(user: user),
+      child: const _MainScreenContent(),
     );
   }
 }
 
 class _MainScreenContent extends StatelessWidget {
-  final User user;
-
-  const _MainScreenContent({required this.user});
+  const _MainScreenContent();
 
   @override
   Widget build(BuildContext context) {
@@ -48,28 +47,82 @@ class _MainScreenContent extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).mainTitle, style: theme.textTheme.titleLarge),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Center(
+              child: BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, state) {
+                  final amount = state is ProfileLoadSuccessState
+                      ? state.coinBalance
+                      : 0;
+
+                  GetIt.I<Talker>().warning('Coin balance: $amount');
+
+                  return CoinAmount(
+                    amount: amount,
+                    iconSize: 20,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.primary,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
-      body: _MainScreenBody(user: user),
+      body: const _MainScreenBody(),
     );
   }
 }
 
 class _MainScreenBody extends StatelessWidget {
-  final User user;
-
-  const _MainScreenBody({required this.user});
+  const _MainScreenBody();
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
+    final user = UserProvider.of(context);
 
     return Wrapper(
-      child: ListView(
-        children: [
-          Section(title: s.balance, widget: const UserBalanceCard()),
-          const SizedBox(height: 8),
-          const _CoursesSection(),
-        ],
+      child: BlocListener<CoursePurchasingBloc, CoursePurchasingState>(
+        listener: (context, state) {
+          if (state is CoursePurchasingLoadSuccessState) {
+            context.read<MainBloc>().add(
+              MainLoadCoursesEvent(userId: user.profile.id),
+            );
+            context.read<ProfileBloc>().add(ProfileLoadEvent());
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(S.of(context).coursePurchaseSuccess),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          } else if (state is CoursePurchasingLoadErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error),
+                backgroundColor: Theme.of(context).colorScheme.error,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          } else if (state is CoursePurchasingInsufficientBalanceState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Недостаточно монет. Нужно: ${state.required}, '
+                  'Доступно: ${state.available}',
+                ),
+                backgroundColor: Theme.of(context).colorScheme.error,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
+        },
+        child: const _CoursesSection(),
       ),
     );
   }
@@ -109,6 +162,7 @@ class _CoursesSection extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 16),
                         child: CourseCard(
                           course: e,
+                          isPurchased: state.enrolledCourseIds.contains(e.id),
                           onPressed: () => context.push('/course/${e.id}'),
                         ),
                       ),

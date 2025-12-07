@@ -21,7 +21,7 @@ final class MainCarouselLoadErrorState extends MainCarouselState {
 }
 
 final class MainCarouselLoadSuccessState extends MainCarouselState {
-  final List<Course> courses;
+  final List<CourseModel> courses;
 
   const MainCarouselLoadSuccessState(this.courses);
 

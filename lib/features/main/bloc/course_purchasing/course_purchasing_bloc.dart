@@ -1,4 +1,5 @@
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,14 +12,10 @@ part 'course_purchasing_state.dart';
 class CoursePurchasingBloc
     extends Bloc<CoursePurchasingEvent, CoursePurchasingState> {
   final PurchaseCourseUseCase _purchaseCourseUseCase;
-  final AuthBloc _authBloc;
 
-  CoursePurchasingBloc({
-    required AuthBloc authBloc,
-    required PurchaseCourseUseCase purchaseCourseUseCase,
-  }) : _authBloc = authBloc,
-       _purchaseCourseUseCase = purchaseCourseUseCase,
-       super(CoursePurchasingInitialState()) {
+  CoursePurchasingBloc({required PurchaseCourseUseCase purchaseCourseUseCase})
+    : _purchaseCourseUseCase = purchaseCourseUseCase,
+      super(CoursePurchasingInitialState()) {
     on<CoursePurchasingRequestEvent>(_onPurchasingRequestEvent);
   }
 
@@ -26,14 +23,37 @@ class CoursePurchasingBloc
     CoursePurchasingRequestEvent event,
     Emitter<CoursePurchasingState> emit,
   ) async {
+    final talker = GetIt.I<Talker>();
+    talker.info(
+      '💳 Starting course purchase: userId=${event.userId}, courseId=${event.courseId}',
+    );
+
     emit(CoursePurchasingLoadingState(event.courseId));
-    try {
-      final updatedUser = await _purchaseCourseUseCase(event.courseId);
-      _authBloc.add(AuthUpdateUserEvent(updatedUser: updatedUser));
-      emit(CoursePurchasingLoadSuccessState(event.courseId));
-    } catch (e, st) {
-      GetIt.I<Talker>().handle(e, st);
-      emit(CoursePurchasingLoadErrorState(event.courseId, e.toString()));
-    }
+
+    talker.debug('Calling PurchaseCourseUseCase...');
+    final result = await _purchaseCourseUseCase(event.userId, event.courseId);
+
+    result.when(
+      success: (_) {
+        talker.info('✅ Course purchased successfully: ${event.courseId}');
+        emit(CoursePurchasingLoadSuccessState(event.courseId));
+      },
+      failure: (failure) {
+        if (failure.code == AppErrorCode.insufficientBalance) {
+          talker.warning('💰 Insufficient balance: ${failure.message}');
+          emit(
+            CoursePurchasingInsufficientBalanceState(
+              event.courseId,
+              required: 0,
+              available: 0,
+            ),
+          );
+          return;
+        }
+
+        talker.warning('⚠️ Course purchase failed: ${failure.message}');
+        emit(CoursePurchasingLoadErrorState(event.courseId, failure.message));
+      },
+    );
   }
 }

@@ -1,4 +1,5 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,10 +11,14 @@ part 'course_detail_state.dart';
 
 class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
   final GetCourseDetailUseCase _getCourseDetailUseCase;
+  final CheckCourseEnrollmentUseCase _checkCourseEnrollmentUseCase;
 
-  CourseDetailBloc({required GetCourseDetailUseCase getCourseDetailUseCase})
-    : _getCourseDetailUseCase = getCourseDetailUseCase,
-      super(CourseDetailInitialState()) {
+  CourseDetailBloc({
+    required GetCourseDetailUseCase getCourseDetailUseCase,
+    required CheckCourseEnrollmentUseCase checkCourseEnrollmentUseCase,
+  }) : _getCourseDetailUseCase = getCourseDetailUseCase,
+       _checkCourseEnrollmentUseCase = checkCourseEnrollmentUseCase,
+       super(CourseDetailInitialState()) {
     on<CourseDetailLoadEvent>(_onLoadCourseDetail);
   }
 
@@ -23,9 +28,41 @@ class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
   ) async {
     emit(CourseDetailLoadingState());
     try {
-      GetIt.I<Talker>().log('event.courseId: ${event.courseId}');
-      final course = await _getCourseDetailUseCase(event.courseId);
-      emit(CourseDetailLoadSuccessState(course: course));
+      GetIt.I<Talker>().log(
+        'Loading course detail: courseId=${event.courseId}, userId=${event.userId}',
+      );
+
+      final courseResult = await _getCourseDetailUseCase(event.courseId);
+
+      if (!courseResult.isSuccess) {
+        emit(
+          CourseDetailLoadErrorState(
+            courseResult.failureOrNull?.message ?? 'Unknown error',
+          ),
+        );
+        return;
+      }
+
+      final course = courseResult.dataOrNull;
+      if (course == null) {
+        emit(const CourseDetailLoadErrorState('Course not found'));
+        return;
+      }
+
+      final enrollmentResult = await _checkCourseEnrollmentUseCase(
+        userId: event.userId,
+        courseId: event.courseId,
+      );
+
+      final isPurchased = enrollmentResult.dataOrNull ?? false;
+
+      GetIt.I<Talker>().info(
+        'Course enrollment status: isPurchased=$isPurchased',
+      );
+
+      emit(
+        CourseDetailLoadSuccessState(course: course, isPurchased: isPurchased),
+      );
     } catch (e) {
       emit(CourseDetailLoadErrorState(e.toString()));
     }

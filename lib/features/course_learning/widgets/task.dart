@@ -1,4 +1,3 @@
-import 'package:codium/domain/enums/task_type.dart';
 import 'package:codium/domain/models/task/course_task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -6,10 +5,11 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 class TaskWidgetFactory {
   static Widget create(CourseTask task) {
     return switch (task.type) {
-      TaskType.theory => TheoryBody(task: task),
-      TaskType.practice => PracticeBody(task: task),
-      TaskType.quiz => QuizBody(task: task),
-      TaskType.project => ProjectBody(task: task),
+      'theory' => TheoryBody(task: task),
+      'practice' => PracticeBody(task: task),
+      'quiz' => QuizBody(task: task),
+      'project' => ProjectBody(task: task),
+      _ => const SizedBox(),
     };
   }
 }

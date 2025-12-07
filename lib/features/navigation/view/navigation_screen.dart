@@ -17,19 +17,39 @@ class _NavigationScreenState extends State<NavigationScreen> {
   String _lastLocation = '';
 
   int _calculateSelectedIndex(String location) {
-    if (FeatureFlags.enableCourses && location.startsWith('/home')) return 0;
-    if (location.startsWith('/library')) {
-      return FeatureFlags.enableCourses ? 1 : 0;
+    int index = 0;
+
+    if (FeatureFlags.enableCourses && location.startsWith('/home')) {
+      return index;
     }
+    if (FeatureFlags.enableCourses) {
+      index++;
+    }
+
     if (FeatureFlags.enableCourses && location.startsWith('/learning')) {
-      return 2;
+      return index;
     }
-    if (location.startsWith('/history')) {
-      return FeatureFlags.enableCourses ? 3 : 1;
+    if (FeatureFlags.enableCourses) {
+      index++;
     }
+
+    if (location.startsWith('/library')) {
+      return index;
+    }
+    index++;
+
+    if (FeatureFlags.enableExplanationHistory &&
+        location.startsWith('/history')) {
+      return index;
+    }
+    if (FeatureFlags.enableExplanationHistory) {
+      index++;
+    }
+
     if (FeatureFlags.enableProfile && location.startsWith('/profile')) {
-      return FeatureFlags.enableCourses ? 4 : 2;
+      return index;
     }
+
     return 0;
   }
 
@@ -51,39 +71,42 @@ class _NavigationScreenState extends State<NavigationScreen> {
   }
 
   void _onItemTapped(BuildContext context, int index) {
+    int currentIndex = 0;
+
     if (FeatureFlags.enableCourses) {
-      switch (index) {
-        case 0:
-          context.go('/home');
-          break;
-        case 1:
-          context.go('/library');
-          break;
-        case 2:
-          context.go('/learning');
-          break;
-        case 3:
-          context.go('/history');
-          break;
-        case 4:
-          if (FeatureFlags.enableProfile) {
-            context.go('/profile');
-          }
-          break;
+      if (index == currentIndex) {
+        context.go('/home');
+        return;
       }
-    } else {
-      switch (index) {
-        case 0:
-          context.go('/library');
-          break;
-        case 1:
-          context.go('/history');
-          break;
-        case 2:
-          if (FeatureFlags.enableProfile) {
-            context.go('/profile');
-          }
-          break;
+      currentIndex++;
+    }
+
+    if (FeatureFlags.enableCourses) {
+      if (index == currentIndex) {
+        context.go('/learning');
+        return;
+      }
+      currentIndex++;
+    }
+
+    if (index == currentIndex) {
+      context.go('/library');
+      return;
+    }
+    currentIndex++;
+
+    if (FeatureFlags.enableExplanationHistory) {
+      if (index == currentIndex) {
+        context.go('/history');
+        return;
+      }
+      currentIndex++;
+    }
+
+    if (FeatureFlags.enableProfile) {
+      if (index == currentIndex) {
+        context.go('/profile');
+        return;
       }
     }
   }
@@ -100,11 +123,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
           icon: const Icon(Icons.home_outlined),
           label: s.navigationHomeTitle,
         ),
-      NavigationDestination(
-        selectedIcon: const Icon(Icons.library_books_rounded),
-        icon: const Icon(Icons.library_books_outlined),
-        label: s.navigationLibraryTitle,
-      ),
       if (FeatureFlags.enableCourses)
         NavigationDestination(
           selectedIcon: const Icon(Icons.science_rounded),
@@ -112,10 +130,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
           label: s.navigationLearningTitle,
         ),
       NavigationDestination(
-        selectedIcon: const Icon(Icons.history_rounded),
-        icon: const Icon(Icons.history_outlined),
-        label: s.navigationHistoryTitle,
+        selectedIcon: const Icon(Icons.library_books_rounded),
+        icon: const Icon(Icons.library_books_outlined),
+        label: s.navigationLibraryTitle,
       ),
+      if (FeatureFlags.enableExplanationHistory)
+        NavigationDestination(
+          selectedIcon: const Icon(Icons.history_rounded),
+          icon: const Icon(Icons.history_outlined),
+          label: s.navigationHistoryTitle,
+        ),
       if (FeatureFlags.enableProfile)
         NavigationDestination(
           selectedIcon: const Icon(Icons.person_rounded),

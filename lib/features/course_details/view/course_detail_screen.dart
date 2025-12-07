@@ -1,23 +1,40 @@
+import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/course/course.dart';
+import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
 import 'package:codium/features/course_details/bloc/recommend/recommend_bloc.dart';
+import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
 class CourseDetailScreen extends StatelessWidget {
-  final String courseId;
+  final int courseId;
 
   const CourseDetailScreen({required this.courseId, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.read<AuthBloc>().state;
+    final userId = authState is AuthAuthenticatedState ? authState.userId : 0;
+
     return BlocProvider(
       create: (context) =>
-          GetIt.I<CourseDetailBloc>()..add(CourseDetailLoadEvent(courseId)),
-      child: Scaffold(appBar: _CourseAppBar(), body: _CourseBody()),
+          GetIt.I<CourseDetailBloc>()
+            ..add(CourseDetailLoadEvent(courseId: courseId, userId: userId)),
+      child: BlocListener<CoursePurchasingBloc, CoursePurchasingState>(
+        listener: (context, state) {
+          if (state is CoursePurchasingLoadSuccessState &&
+              state.courseId == courseId) {
+            context.read<CourseDetailBloc>().add(
+              CourseDetailLoadEvent(courseId: courseId, userId: userId),
+            );
+          }
+        },
+        child: Scaffold(appBar: _CourseAppBar(), body: _CourseBody()),
+      ),
     );
   }
 }
@@ -49,9 +66,8 @@ class _CourseBody extends StatelessWidget {
     return BlocBuilder<CourseDetailBloc, CourseDetailState>(
       builder: (context, state) {
         return switch (state) {
-          CourseDetailLoadSuccessState(:final course) => _CourseDetail(
-            course: course,
-          ),
+          CourseDetailLoadSuccessState(:final course, :final isPurchased) =>
+            _CourseDetail(course: course, isPurchased: isPurchased),
           CourseDetailLoadErrorState(:final message) => ErrorWidget(message),
           _ => const Center(child: CircularProgressIndicator()),
         };
@@ -61,16 +77,17 @@ class _CourseBody extends StatelessWidget {
 }
 
 class _CourseDetail extends StatelessWidget {
-  final Course course;
+  final CourseModel course;
+  final bool isPurchased;
 
-  const _CourseDetail({required this.course});
+  const _CourseDetail({required this.course, required this.isPurchased});
 
   @override
   Widget build(BuildContext context) {
     return Wrapper(
       child: ListView(
         children: [
-          CourseHeader(course: course),
+          CourseHeader(course: course, isPurchased: isPurchased),
           CourseMetaInfo(course: course),
           _CourseTabSection(course: course),
           const _CourseRecommendations(),
@@ -81,7 +98,7 @@ class _CourseDetail extends StatelessWidget {
 }
 
 class _CourseTabSection extends StatefulWidget {
-  final Course course;
+  final CourseModel course;
 
   const _CourseTabSection({required this.course});
 
@@ -107,7 +124,6 @@ class _CourseTabSectionState extends State<_CourseTabSection>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final s = S.of(context);
     return Column(
       children: [
@@ -117,10 +133,6 @@ class _CourseTabSectionState extends State<_CourseTabSection>
             Tab(text: s.courseDetailsDescriptionTab),
             Tab(text: s.courseDetailsContentsTab),
           ],
-          dividerHeight: 0,
-          labelColor: theme.primaryColor,
-          indicatorColor: theme.primaryColor,
-          labelStyle: theme.textTheme.labelMedium,
         ),
         SizedBox(
           height: 400,
@@ -138,7 +150,7 @@ class _CourseTabSectionState extends State<_CourseTabSection>
 }
 
 class _DescriptionContent extends StatelessWidget {
-  final Course course;
+  final CourseModel course;
 
   const _DescriptionContent({required this.course});
 
@@ -154,7 +166,7 @@ class _DescriptionContent extends StatelessWidget {
 }
 
 class _TableOfContentsContent extends StatelessWidget {
-  final Course course;
+  final CourseModel course;
 
   const _TableOfContentsContent({required this.course});
 
@@ -253,15 +265,24 @@ class _CourseRecommendations extends StatelessWidget {
 }
 
 class CourseHeader extends StatelessWidget {
-  final Course course;
+  final CourseModel course;
+  final bool isPurchased;
 
-  const CourseHeader({super.key, required this.course});
+  const CourseHeader({
+    super.key,
+    required this.course,
+    required this.isPurchased,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CourseCard(course: course, onPressed: null),
+        CourseCard(course: course, onPressed: null, isPurchased: isPurchased),
+        if (isPurchased) ...[
+          const SizedBox(height: 12),
+          _StartLearningButton(courseId: course.id),
+        ],
         const SizedBox(height: 16),
         const Divider(indent: 0, endIndent: 0),
       ],
@@ -269,10 +290,42 @@ class CourseHeader extends StatelessWidget {
   }
 }
 
+class _StartLearningButton extends StatelessWidget {
+  final int courseId;
+
+  const _StartLearningButton({required this.courseId});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () => context.push('/course/$courseId/learn'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: theme.colorScheme.primary,
+          foregroundColor: theme.colorScheme.onPrimary,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        child: Text(
+          s.startLearning,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onPrimary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CourseMetaInfo extends StatelessWidget {
   const CourseMetaInfo({super.key, required this.course});
 
-  final Course course;
+  final CourseModel course;
 
   @override
   Widget build(BuildContext context) {
@@ -287,13 +340,10 @@ class CourseMetaInfo extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: [
                 MetaItem(
-                  value: course.pricing.price.format(),
+                  value: '${course.pricing.price.amount}',
                   label: s.courseDetailsPrice,
                 ),
-                MetaItem(
-                  value: course.author.name,
-                  label: s.courseDetailsAuthor,
-                ),
+                MetaItem(value: course.author, label: s.courseDetailsAuthor),
                 MetaItem(
                   value: '${course.statistics.averageRating}/5',
                   label: s.courseDetailsRating,

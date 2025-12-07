@@ -1,5 +1,5 @@
-import 'package:codium/core/exceptions/app_error_extensions.dart';
-import 'package:codium/core/widgets/common_search_bar.dart';
+import 'package:codium/core/error/app_error_code_extension.dart';
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
 import 'package:codium/features/library/widgets/pdf_book_card.dart';
 import 'package:codium/s.dart';

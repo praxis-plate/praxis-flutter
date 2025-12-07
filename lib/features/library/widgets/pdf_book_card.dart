@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/pdf_library/pdf_book.dart';
+import 'package:codium/domain/models/pdf_book/pdf_book_model.dart';
 import 'package:codium/features/library/bloc/library_bloc.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pdfx/pdfx.dart';
 
 class PdfBookCard extends StatelessWidget {
-  final PdfBook book;
+  final PdfBookModel book;
 
   const PdfBookCard({required this.book, super.key});
 

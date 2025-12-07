@@ -7,7 +7,14 @@ sealed class MainEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class MainLoadCoursesEvent extends MainEvent {}
+class MainLoadCoursesEvent extends MainEvent {
+  final int userId;
+
+  const MainLoadCoursesEvent({required this.userId});
+
+  @override
+  List<Object> get props => [userId];
+}
 
 class SearchCoursesEvent extends MainEvent {
   final String query;

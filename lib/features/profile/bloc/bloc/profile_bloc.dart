@@ -1,4 +1,6 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/achievement/achievement_data_model.dart';
+import 'package:codium/domain/models/user/user_profile_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,10 +12,14 @@ part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetProfileUseCase _getProfileUseCase;
+  final GetUserProfileDataUseCase _getUserProfileDataUseCase;
 
-  ProfileBloc({required GetProfileUseCase getProfileUseCase})
-    : _getProfileUseCase = getProfileUseCase,
-      super(ProfileInitial()) {
+  ProfileBloc({
+    required GetProfileUseCase getProfileUseCase,
+    required GetUserProfileDataUseCase getUserProfileDataUseCase,
+  }) : _getProfileUseCase = getProfileUseCase,
+       _getUserProfileDataUseCase = getUserProfileDataUseCase,
+       super(ProfileInitial()) {
     on<ProfileLoadEvent>(_onProfileLoadEvent);
   }
 
@@ -23,8 +29,43 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     emit(ProfileLoadingState());
     try {
-      final user = await _getProfileUseCase();
-      emit(ProfileLoadSuccessState(user: user));
+      final profileResult = await _getProfileUseCase();
+      if (profileResult.isFailure) {
+        emit(
+          ProfileLoadErrorState(
+            message:
+                profileResult.failureOrNull?.message ??
+                'Failed to load profile',
+          ),
+        );
+        return;
+      }
+
+      final profileDataResult = await _getUserProfileDataUseCase(
+        profileResult.dataOrNull!.id,
+      );
+      if (profileDataResult.isFailure) {
+        emit(
+          ProfileLoadErrorState(
+            message:
+                profileDataResult.failureOrNull?.message ??
+                'Failed to load profile data',
+          ),
+        );
+        return;
+      }
+
+      final profileData = profileDataResult.dataOrNull!;
+      emit(
+        ProfileLoadSuccessState(
+          user: profileData.user,
+          coinBalance: profileData.coinBalance,
+          totalCoursesCompleted: profileData.totalCoursesCompleted,
+          totalLessonsCompleted: profileData.totalLessonsCompleted,
+          achievements: profileData.achievements,
+          currentStreak: profileData.currentStreak,
+        ),
+      );
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
       emit(ProfileLoadErrorState(message: e.toString()));

@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:codium/core/utils/constants.dart';
-import 'package:codium/core/widgets/course_info.dart';
+import 'package:codium/core/widgets/widgets.dart';
+import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/models.dart';
-import 'package:codium/features/course_learning/view/widgets/course_progress_bar.dart';
+import 'package:codium/features/course_learning/widgets/widgets.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +15,7 @@ class AddedCourseCard extends StatelessWidget {
     super.key,
   });
 
-  final Course course;
+  final CourseModel course;
   final UserCourseStatistics userCourseStatistics;
 
   @override
@@ -32,7 +33,7 @@ class AddedCourseCard extends StatelessWidget {
               width: 120,
               alignment: Alignment.topCenter,
               fit: BoxFit.cover,
-              imageUrl: course.coverImage,
+              imageUrl: course.coverImage ?? '',
               placeholder: (context, url) =>
                   const Center(child: CircularProgressIndicator()),
               errorWidget: (context, url, error) =>

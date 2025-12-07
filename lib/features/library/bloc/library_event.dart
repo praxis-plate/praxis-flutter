@@ -19,7 +19,7 @@ class ImportPdfEvent extends LibraryEvent {
 }
 
 class DeletePdfEvent extends LibraryEvent {
-  final String bookId;
+  final int bookId;
 
   const DeletePdfEvent(this.bookId);
 
@@ -37,7 +37,7 @@ class SearchLibraryEvent extends LibraryEvent {
 }
 
 class ToggleFavoriteEvent extends LibraryEvent {
-  final String bookId;
+  final int bookId;
 
   const ToggleFavoriteEvent(this.bookId);
 

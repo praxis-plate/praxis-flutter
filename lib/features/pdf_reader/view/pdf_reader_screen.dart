@@ -1,11 +1,10 @@
 import 'package:codium/core/config/feature_flags.dart';
-import 'package:codium/core/exceptions/app_error_extensions.dart';
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/domain/services/services.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:codium/features/ai_explanation/widgets/explanation_bottom_sheet.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
-import 'package:codium/features/pdf_reader/view/widgets/offline_indicator.dart';
-import 'package:codium/features/pdf_reader/widgets/bookmarks_panel.dart';
+import 'package:codium/features/pdf_reader/widgets/widgets.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +13,7 @@ import 'package:get_it/get_it.dart';
 import 'package:pdfx/pdfx.dart';
 
 class PdfReaderScreen extends StatefulWidget {
-  final String bookId;
+  final int bookId;
   final int? initialPage;
 
   const PdfReaderScreen({super.key, required this.bookId, this.initialPage});

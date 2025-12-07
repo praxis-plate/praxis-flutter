@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_exception.dart';
 import 'package:equatable/equatable.dart';

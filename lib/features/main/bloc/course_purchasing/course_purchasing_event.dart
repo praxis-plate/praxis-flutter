@@ -8,10 +8,14 @@ sealed class CoursePurchasingEvent extends Equatable {
 }
 
 class CoursePurchasingRequestEvent extends CoursePurchasingEvent {
-  final String courseId;
+  final int userId;
+  final int courseId;
 
-  const CoursePurchasingRequestEvent(this.courseId);
+  const CoursePurchasingRequestEvent({
+    required this.userId,
+    required this.courseId,
+  });
 
   @override
-  List<Object> get props => [courseId];
+  List<Object> get props => [userId, courseId];
 }

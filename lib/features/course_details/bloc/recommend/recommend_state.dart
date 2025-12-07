@@ -12,7 +12,7 @@ final class RecommendInitialState extends RecommendState {}
 final class RecommendLoadingState extends RecommendState {}
 
 final class RecommendLoadSuccessState extends RecommendState {
-  final List<Course> recommendCourses;
+  final List<CourseModel> recommendCourses;
 
   const RecommendLoadSuccessState({required this.recommendCourses});
 
