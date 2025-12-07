@@ -35,23 +35,19 @@ class AppDatabase extends _$AppDatabase {
   int get schemaVersion => 1;
 
   @override
-  MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (Migrator m) async {
-      await m.createAll();
-    },
-  );
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      beforeOpen: (details) async {
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
 
   static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(p.join(dbFolder.path, EnvConfig.dbPath));
-
-      return NativeDatabase.createInBackground(
-        file,
-        setup: (database) {
-          database.execute('PRAGMA foreign_keys = ON');
-        },
-      );
+      return NativeDatabase(file);
     });
   }
 }
