@@ -1,4 +1,4 @@
-import 'package:codium/core/widgets/platform_widget.dart';
+import 'package:codium/core/widgets/layout/platform_widget.dart';
 import 'package:flutter/material.dart';
 
 class PlatformGestureDetector extends StatefulWidget {

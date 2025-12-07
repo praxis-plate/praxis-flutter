@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({
-    required this.child,
-    super.key,
-  });
+  const Wrapper({required this.child, super.key});
 
   final Widget child;
 

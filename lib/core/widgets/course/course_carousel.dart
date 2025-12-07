@@ -1,12 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:codium/core/widgets/course_card.dart';
+import 'package:codium/core/widgets/course/course_card.dart';
 import 'package:flutter/material.dart';
 
 class CourseCarousel extends StatelessWidget {
-  const CourseCarousel({
-    required this.courseCards,
-    super.key,
-  });
+  const CourseCarousel({required this.courseCards, super.key});
 
   final List<CourseCard> courseCards;
 

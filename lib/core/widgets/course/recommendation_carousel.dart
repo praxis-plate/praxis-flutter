@@ -1,4 +1,5 @@
-import 'package:codium/core/widgets/widgets.dart';
+import 'package:codium/core/widgets/course/course_card.dart';
+import 'package:codium/core/widgets/course/course_carousel.dart';
 import 'package:codium/features/main/bloc/main_carousel/main_carousel_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,20 +16,24 @@ class RecommendationCarousel extends StatelessWidget {
           GetIt.I<MainCarouselBloc>()..add(MainCarouselLoadEvent()),
       child: BlocBuilder<MainCarouselBloc, MainCarouselState>(
         builder: (context, state) {
-          return switch (state) {
-            MainCarouselLoadSuccessState() => CourseCarousel(
+          if (state is MainCarouselLoadSuccessState) {
+            return CourseCarousel(
               courseCards: state.courses
                   .map(
-                    (e) => CourseCard(
-                      course: e,
-                      onPressed: () => context.push('/course/${e.id}'),
+                    (course) => CourseCard(
+                      course: course,
+                      onPressed: () => context.push('/course/${course.id}'),
                     ),
                   )
                   .toList(),
-            ),
-            MainCarouselLoadErrorState() => Text(state.message),
-            _ => const Center(child: CircularProgressIndicator()),
-          };
+            );
+          }
+
+          if (state is MainCarouselLoadErrorState) {
+            return Text(state.message);
+          }
+
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
