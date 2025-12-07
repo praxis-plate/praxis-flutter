@@ -12,8 +12,8 @@ final class ExplanationHistoryInitialState extends ExplanationHistoryState {}
 final class ExplanationHistoryLoadingState extends ExplanationHistoryState {}
 
 final class ExplanationHistoryLoadedState extends ExplanationHistoryState {
-  final Map<String, List<Explanation>> groupedExplanations;
-  final List<Explanation> allExplanations;
+  final Map<int, List<ExplanationModel>> groupedExplanations;
+  final List<ExplanationModel> allExplanations;
   final String searchQuery;
 
   const ExplanationHistoryLoadedState({

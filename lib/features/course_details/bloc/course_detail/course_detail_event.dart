@@ -5,10 +5,11 @@ sealed class CourseDetailEvent extends Equatable {
 }
 
 class CourseDetailLoadEvent extends CourseDetailEvent {
-  final String courseId;
-  
-  const CourseDetailLoadEvent(this.courseId);
+  final int courseId;
+  final int userId;
+
+  const CourseDetailLoadEvent({required this.courseId, required this.userId});
 
   @override
-  List<Object> get props => [courseId];
+  List<Object> get props => [courseId, userId];
 }

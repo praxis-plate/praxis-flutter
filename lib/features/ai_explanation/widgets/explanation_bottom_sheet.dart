@@ -1,5 +1,5 @@
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/exceptions/app_error_extensions.dart';
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/domain/models/ai_explanation/ai_explanation.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:codium/s.dart';

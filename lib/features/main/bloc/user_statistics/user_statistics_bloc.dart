@@ -1,3 +1,4 @@
+import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
@@ -25,8 +26,31 @@ class UserStatisticsBloc
   ) async {
     emit(UserStatisticsLoadingState());
     try {
-      final statistics = await _getUserStatisticsUseCase(event.userId);
-      emit(UserStatisticsLoadSuccessState(statistics));
+      final result = await _getUserStatisticsUseCase(int.parse(event.userId));
+
+      result.when(
+        success: (statistics) {
+          if (statistics != null) {
+            emit(
+              UserStatisticsLoadSuccessState(
+                UserStatistics(
+                  userId: event.userId,
+                  currentStreak: statistics.currentStreak,
+                  maxStreak: statistics.maxStreak,
+                  points: 0,
+                  lastActiveDate: DateTime.now(),
+                  courses: const {},
+                ),
+              ),
+            );
+          } else {
+            emit(const UserStatisticsLoadErrorState('Statistics not found'));
+          }
+        },
+        failure: (failure) {
+          emit(UserStatisticsLoadErrorState(failure.message));
+        },
+      );
     } catch (e, st) {
       emit(UserStatisticsLoadErrorState(e.toString()));
       GetIt.I<Talker>().handle(e, st);

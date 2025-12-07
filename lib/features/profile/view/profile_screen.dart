@@ -1,8 +1,7 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:codium/core/bloc/locale/locale.dart';
 import 'package:codium/core/bloc/theme/theme_cubit.dart';
-import 'package:codium/core/utils/constants.dart';
-import 'package:codium/features/profile/bloc/bloc/profile_bloc.dart';
-import 'package:codium/features/profile/widgets/settings_profile_card.dart';
+import 'package:codium/features/profile/profile.dart';
 import 'package:codium/features/profile/widgets/settings_switch.dart';
 import 'package:codium/features/profile/widgets/settings_tile.dart';
 import 'package:codium/s.dart';
@@ -11,25 +10,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  late final ProfileBloc _profileBloc;
-
-  @override
-  void initState() {
-    _profileBloc = GetIt.I<ProfileBloc>();
-    _profileBloc.add(ProfileLoadEvent());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return BlocListener<AuthBloc, AuthState>(
@@ -38,81 +24,137 @@ class _ProfileScreenState extends State<ProfileScreen> {
           context.go('/sign-up');
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            S.of(context).profileTitle,
-            style: theme.textTheme.titleLarge,
-          ),
-        ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                BlocBuilder<ProfileBloc, ProfileState>(
-                  bloc: _profileBloc,
-                  builder: (context, state) {
-                    if (state is ProfileLoadSuccessState) {
-                      return SettingsProfileCard(
-                        userProfile: UserProfile(
-                          imagePath: state.user.avatarUrl ??
-                              Constants.placeholderProfileImagePath,
-                          name: state.user.email,
-                          email: state.user.email,
-                        ),
-                      );
-                    }
-        
-                    if (state is ProfileLoadErrorState) {
-                      return Text(state.message);
-                    }
-        
-                    return const CircularProgressIndicator();
-                  },
-                ),
-                const Divider(height: 8),
-                BlocBuilder<ThemeCubit, ThemeState>(
-                  builder: (context, state) {
-                    return SettingsSwitch(
-                      icon: const Icon(
-                        Icons.light_mode_rounded,
-                      ),
-                      title: S.of(context).profileSetDarkMode,
-                      value: state.isDarkTheme,
-                      onChanged: (isDark) =>
-                          context.read<ThemeCubit>().setDarkTheme(isDark),
-                    );
-                  },
-                ),
-                SettingsSwitch(
-                  icon: const Icon(Icons.language),
-                  title: S.of(context).profileSetRussian,
-                  value: true,
-                  onChanged: (value) {},
-                ),
-                const Expanded(
-                  child: SizedBox(),
-                ),
-                const Divider(height: 8),
-                BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    return SettingsTile(
-                      title: S.of(context).profileLogOut,
-                      onTap: () =>
-                          context.read<AuthBloc>().add(AuthSignOutEvent()),
-                      icon: Icon(
-                        Icons.exit_to_app_rounded,
+      child: BlocBuilder<ProfileBloc, ProfileState>(
+        bloc: GetIt.I<ProfileBloc>()..add(ProfileLoadEvent()),
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(s.profileTitle, style: theme.textTheme.titleLarge),
+            ),
+            body: state is ProfileLoadingState
+                ? const Center(child: CircularProgressIndicator())
+                : state is ProfileLoadErrorState
+                ? Center(
+                    child: Text(
+                      s.profileErrorLoading,
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         color: theme.colorScheme.error,
                       ),
-                    );
-                  },
+                    ),
+                  )
+                : state is ProfileLoadSuccessState
+                ? _ProfileContent(state: state)
+                : const SizedBox.shrink(),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ProfileContent extends StatelessWidget {
+  const _ProfileContent({required this.state});
+
+  final ProfileLoadSuccessState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Center(
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundColor: theme.colorScheme.primary.withValues(
+                    alpha: 0.2,
+                  ),
+                  child: Icon(
+                    Icons.person,
+                    size: 50,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  state.user.name,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  state.user.email,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.monetization_on,
+                      color: theme.colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${state.coinBalance}',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-        ),
+          const SizedBox(height: 32),
+          BlocBuilder<ThemeCubit, ThemeState>(
+            builder: (context, themeState) {
+              return SettingsSwitch(
+                icon: const Icon(Icons.light_mode_rounded),
+                title: s.profileSetDarkMode,
+                value: themeState.isDarkTheme,
+                onChanged: (isDark) =>
+                    context.read<ThemeCubit>().setDarkTheme(isDark),
+              );
+            },
+          ),
+          BlocBuilder<LocaleCubit, LocaleState>(
+            builder: (context, localeState) {
+              return SettingsSwitch(
+                icon: const Icon(Icons.language),
+                title: s.profileSetRussian,
+                value: localeState.locale.languageCode == 'ru',
+                onChanged: (value) =>
+                    context.read<LocaleCubit>().toggleLocale(),
+              );
+            },
+          ),
+          const Expanded(child: SizedBox()),
+          const Divider(height: 8),
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, authState) {
+              return SettingsTile(
+                title: s.profileLogOut,
+                onTap: () =>
+                    context.read<AuthBloc>().add(const AuthSignOutEvent()),
+                icon: Icon(
+                  Icons.exit_to_app_rounded,
+                  color: theme.colorScheme.error,
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

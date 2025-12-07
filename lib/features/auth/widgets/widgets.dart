@@ -1,5 +1,5 @@
-export 'auth_button.dart';
-export 'auth_field.dart';
+export 'auth_email_input.dart';
+export 'auth_password_input.dart';
+export 'auth_redirect_text.dart';
 export 'next_button.dart';
-export 'password_field.dart';
 export 'phone_field.dart';

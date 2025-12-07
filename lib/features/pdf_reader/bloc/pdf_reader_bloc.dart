@@ -1,9 +1,10 @@
+import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_exception.dart';
-import 'package:codium/core/utils/pdf_validator.dart';
+import 'package:codium/core/utils/result.dart';
 import 'package:codium/core/utils/retry_logic.dart';
-import 'package:codium/domain/models/pdf_library/pdf_book.dart';
-import 'package:codium/domain/models/pdf_reader/bookmark.dart';
+import 'package:codium/domain/models/bookmark/create_bookmark_model.dart';
+import 'package:codium/domain/models/pdf_book/pdf_book_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_cache_service.dart';
 import 'package:codium/features/pdf_reader/domain/pdf_rendering_config.dart';
@@ -11,7 +12,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-import 'package:uuid/uuid.dart';
 
 part 'pdf_reader_event.dart';
 part 'pdf_reader_state.dart';
@@ -60,12 +60,29 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
         shouldRetry: (e) => e is DatabaseError,
       );
 
-      if (!result.isValid) {
-        emit(_mapValidationErrorToState(result));
+      if (result.isFailure) {
+        emit(
+          PdfReaderErrorState(
+            errorCode: result.failureOrNull?.code ?? AppErrorCode.unknown,
+            message: result.failureOrNull?.message,
+            canRetry: result.failureOrNull?.canRetry ?? false,
+          ),
+        );
         return;
       }
 
-      final book = result.book!;
+      final book = result.dataOrNull;
+      if (book == null) {
+        emit(
+          const PdfReaderErrorState(
+            errorCode: AppErrorCode.fileNotFound,
+            message: null,
+            canRetry: false,
+          ),
+        );
+        return;
+      }
+
       _cacheService.clearCache();
 
       final useLazyLoading = _renderingConfig.shouldUseLazyLoading(
@@ -95,44 +112,6 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
           canRetry: error.canRetry,
         ),
       );
-    }
-  }
-
-  PdfReaderErrorState _mapValidationErrorToState(ValidatedPdfResult result) {
-    switch (result.status) {
-      case ValidatedPdfStatus.notFound:
-        return const PdfReaderErrorState(
-          errorCode: AppErrorCode.fileNotFound,
-          message: null,
-          canRetry: false,
-        );
-      case ValidatedPdfStatus.invalid:
-        final errorCode = _mapValidationErrorToAppError(result.validationError);
-        return PdfReaderErrorState(
-          errorCode: errorCode,
-          message: null,
-          canRetry: false,
-        );
-      case ValidatedPdfStatus.success:
-        return const PdfReaderErrorState(
-          errorCode: AppErrorCode.unknown,
-          message: null,
-          canRetry: false,
-        );
-    }
-  }
-
-  AppErrorCode _mapValidationErrorToAppError(PdfValidationError? error) {
-    switch (error) {
-      case PdfValidationError.fileNotFound:
-        return AppErrorCode.fileNotFound;
-      case PdfValidationError.emptyFile:
-      case PdfValidationError.tooSmall:
-      case PdfValidationError.invalidFormat:
-        return AppErrorCode.fileCorrupted;
-      case PdfValidationError.unknown:
-      case null:
-        return AppErrorCode.fileCorrupted;
     }
   }
 
@@ -189,12 +168,10 @@ class PdfReaderBloc extends Bloc<PdfReaderEvent, PdfReaderState> {
       final currentState = state as PdfReaderLoadedState;
 
       try {
-        final bookmark = Bookmark(
-          id: const Uuid().v4(),
+        final bookmark = CreateBookmarkModel(
           pdfBookId: currentState.book.id,
           pageNumber: event.pageNumber,
           note: event.note,
-          createdAt: DateTime.now(),
         );
 
         await _saveBookmarkUseCase(bookmark);

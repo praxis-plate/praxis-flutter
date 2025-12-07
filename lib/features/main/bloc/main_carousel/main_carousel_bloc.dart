@@ -1,4 +1,5 @@
-import 'package:codium/domain/models/course/course.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,8 +23,17 @@ class MainCarouselBloc extends Bloc<MainCarouselEvent, MainCarouselState> {
   ) async {
     emit(MainCarouselLoadingState());
     try {
-      final courses = await _getMainCarouselCoursesUseCase();
-      emit(MainCarouselLoadSuccessState(courses));
+      final result = await _getMainCarouselCoursesUseCase();
+
+      if (result.isSuccess) {
+        emit(MainCarouselLoadSuccessState(result.dataOrNull ?? []));
+      } else {
+        emit(
+          MainCarouselLoadErrorState(
+            result.failureOrNull?.message ?? 'Unknown error',
+          ),
+        );
+      }
     } catch (e) {
       emit(MainCarouselLoadErrorState(e.toString()));
     }

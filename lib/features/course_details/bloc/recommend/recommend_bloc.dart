@@ -1,4 +1,5 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,10 +25,19 @@ class RecommendBloc extends Bloc<RecommendEvent, RecommendState> {
   ) async {
     emit(RecommendLoadingState());
     try {
-      final coursesStatistics = await _getRecommendedCoursesUseCase(
-        event.userId,
-      );
-      emit(RecommendLoadSuccessState(recommendCourses: coursesStatistics));
+      final result = await _getRecommendedCoursesUseCase(event.userId);
+
+      if (result.isSuccess) {
+        emit(
+          RecommendLoadSuccessState(recommendCourses: result.dataOrNull ?? []),
+        );
+      } else {
+        emit(
+          RecommendLoadErrorState(
+            message: result.failureOrNull?.message ?? 'Unknown error',
+          ),
+        );
+      }
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
       emit(RecommendLoadErrorState(message: e.toString()));

@@ -1,4 +1,5 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,10 +11,14 @@ part 'learning_state.dart';
 
 class LearningBloc extends Bloc<LearningEvent, LearningState> {
   final GetLearningDataUseCase _getLearningDataUseCase;
+  final GetEnrolledCoursesUseCase _getEnrolledCoursesUseCase;
 
-  LearningBloc({required GetLearningDataUseCase getLearningDataUseCase})
-    : _getLearningDataUseCase = getLearningDataUseCase,
-      super(LearningInitialState()) {
+  LearningBloc({
+    required GetLearningDataUseCase getLearningDataUseCase,
+    required GetEnrolledCoursesUseCase getEnrolledCoursesUseCase,
+  }) : _getLearningDataUseCase = getLearningDataUseCase,
+       _getEnrolledCoursesUseCase = getEnrolledCoursesUseCase,
+       super(LearningInitialState()) {
     on<LearningLoadEvent>(_onLoadData);
   }
 
@@ -23,11 +28,34 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
   ) async {
     emit(LearningLoadingState());
     try {
-      final learningData = await _getLearningDataUseCase(event.userId);
+      final userId = int.parse(event.userId);
 
-      emit(LearningLoadSuccessState(learningData: learningData));
+      final statisticsResult = await _getLearningDataUseCase(userId);
+      final coursesResult = await _getEnrolledCoursesUseCase(userId);
+
+      if (statisticsResult.isFailure) {
+        emit(
+          LearningLoadErrorState(
+            message: statisticsResult.failureOrNull!.message,
+          ),
+        );
+        return;
+      }
+
+      if (coursesResult.isFailure) {
+        emit(
+          LearningLoadErrorState(message: coursesResult.failureOrNull!.message),
+        );
+        return;
+      }
+
+      emit(
+        LearningLoadSuccessState(
+          activityData: const [],
+          enrolledCourses: coursesResult.dataOrNull ?? [],
+        ),
+      );
     } catch (e) {
-      // TODO: переписать с заменой на языковые фразы и использованием handle
       GetIt.I<Talker>().error('LearningBloc error: $e');
       final errorMessage = e is Exception
           ? e.toString().replaceFirst('Exception: ', '')

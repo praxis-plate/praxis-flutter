@@ -15,17 +15,21 @@ class CourseDetailLoadingState extends CourseDetailState {
 }
 
 class CourseDetailLoadSuccessState extends CourseDetailState {
-  final Course course;
-  
-  const CourseDetailLoadSuccessState({required this.course});
+  final CourseModel course;
+  final bool isPurchased;
+
+  const CourseDetailLoadSuccessState({
+    required this.course,
+    required this.isPurchased,
+  });
 
   @override
-  List<Object> get props => [course];
+  List<Object> get props => [course, isPurchased];
 }
 
 class CourseDetailLoadErrorState extends CourseDetailState {
   final String message;
-  
+
   const CourseDetailLoadErrorState(this.message);
 
   @override

@@ -10,7 +10,7 @@ sealed class AiExplanationEvent extends Equatable {
 class RequestExplanationEvent extends AiExplanationEvent {
   final String selectedText;
   final String context;
-  final String pdfBookId;
+  final int pdfBookId;
   final int pageNumber;
 
   const RequestExplanationEvent({

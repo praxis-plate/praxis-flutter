@@ -8,7 +8,7 @@ abstract class PdfReaderEvent extends Equatable {
 }
 
 class OpenPdfEvent extends PdfReaderEvent {
-  final String bookId;
+  final int bookId;
 
   const OpenPdfEvent(this.bookId);
 

@@ -1,7 +1,6 @@
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/exceptions/app_exception.dart';
-import 'package:codium/core/utils/retry_logic.dart';
-import 'package:codium/domain/models/ai_explanation/explanation.dart';
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/explanation/explanation_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,26 +35,33 @@ class ExplanationHistoryBloc
   ) async {
     emit(ExplanationHistoryLoadingState());
     try {
-      final explanations = await RetryLogic.retry(
-        operation: () => _getExplanationHistoryUseCase(),
-        maxAttempts: 2,
-        shouldRetry: (e) => e is DatabaseError,
-      );
-      final grouped = _groupExplanationsByPdf(explanations);
-      emit(
-        ExplanationHistoryLoadedState(
-          groupedExplanations: grouped,
-          allExplanations: explanations,
-        ),
-      );
+      final result = await _getExplanationHistoryUseCase();
+
+      if (result.isSuccess) {
+        final explanations = result.dataOrNull ?? [];
+        final grouped = _groupExplanationsByPdf(explanations);
+        emit(
+          ExplanationHistoryLoadedState(
+            groupedExplanations: grouped,
+            allExplanations: explanations,
+          ),
+        );
+      } else {
+        emit(
+          ExplanationHistoryErrorState(
+            errorCode: result.failureOrNull?.code ?? AppErrorCode.unknown,
+            message: result.failureOrNull?.message ?? 'Unknown error',
+            canRetry: result.failureOrNull?.canRetry ?? true,
+          ),
+        );
+      }
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
-      final error = e is AppError ? e : const UnknownError();
       emit(
-        ExplanationHistoryErrorState(
-          errorCode: error.code,
-          message: error.message,
-          canRetry: error.canRetry,
+        const ExplanationHistoryErrorState(
+          errorCode: AppErrorCode.unknown,
+          message: 'Failed to load history',
+          canRetry: true,
         ),
       );
     }
@@ -80,25 +86,21 @@ class ExplanationHistoryBloc
         );
       } else {
         try {
-          final filtered = await _searchExplanationHistoryUseCase(query);
-          final grouped = _groupExplanationsByPdf(filtered);
-          emit(
-            ExplanationHistoryLoadedState(
-              groupedExplanations: grouped,
-              allExplanations: currentState.allExplanations,
-              searchQuery: query,
-            ),
-          );
+          final result = await _searchExplanationHistoryUseCase(query);
+
+          if (result.isSuccess) {
+            final filtered = result.dataOrNull ?? [];
+            final grouped = _groupExplanationsByPdf(filtered);
+            emit(
+              ExplanationHistoryLoadedState(
+                groupedExplanations: grouped,
+                allExplanations: currentState.allExplanations,
+                searchQuery: query,
+              ),
+            );
+          }
         } catch (e, st) {
           GetIt.I<Talker>().handle(e, st);
-          final error = e is AppError ? e : const UnknownError();
-          emit(
-            ExplanationHistoryErrorState(
-              errorCode: error.code,
-              message: error.message,
-              canRetry: error.canRetry,
-            ),
-          );
         }
       }
     }
@@ -113,33 +115,19 @@ class ExplanationHistoryBloc
       add(LoadHistoryEvent());
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
-      final error = e is AppError ? e : const UnknownError();
-      emit(
-        ExplanationHistoryErrorState(
-          errorCode: error.code,
-          message: error.message,
-          canRetry: error.canRetry,
-        ),
-      );
     }
   }
 
-  Map<String, List<Explanation>> _groupExplanationsByPdf(
-    List<Explanation> explanations,
+  Map<int, List<ExplanationModel>> _groupExplanationsByPdf(
+    List<ExplanationModel> explanations,
   ) {
-    final Map<String, List<Explanation>> grouped = {};
-
+    final Map<int, List<ExplanationModel>> grouped = {};
     for (final explanation in explanations) {
       if (!grouped.containsKey(explanation.pdfBookId)) {
         grouped[explanation.pdfBookId] = [];
       }
       grouped[explanation.pdfBookId]!.add(explanation);
     }
-
-    for (final key in grouped.keys) {
-      grouped[key]!.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    }
-
     return grouped;
   }
 }

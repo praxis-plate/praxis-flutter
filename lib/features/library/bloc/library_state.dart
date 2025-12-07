@@ -12,8 +12,8 @@ final class LibraryInitialState extends LibraryState {}
 final class LibraryLoadingState extends LibraryState {}
 
 final class LibraryLoadedState extends LibraryState {
-  final List<PdfBook> books;
-  final List<PdfBook> filteredBooks;
+  final List<PdfBookModel> books;
+  final List<PdfBookModel> filteredBooks;
   final String searchQuery;
 
   const LibraryLoadedState({

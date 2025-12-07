@@ -19,7 +19,7 @@ class SearchHistoryEvent extends ExplanationHistoryEvent {
 }
 
 class DeleteHistoryEvent extends ExplanationHistoryEvent {
-  final String explanationId;
+  final int explanationId;
 
   const DeleteHistoryEvent(this.explanationId);
 

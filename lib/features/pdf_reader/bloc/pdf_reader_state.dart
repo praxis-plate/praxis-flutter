@@ -12,7 +12,7 @@ class PdfReaderInitialState extends PdfReaderState {}
 class PdfReaderLoadingState extends PdfReaderState {}
 
 class PdfReaderLoadedState extends PdfReaderState {
-  final PdfBook book;
+  final PdfBookModel book;
   final int currentPage;
   final String? selectedText;
   final PdfRenderingConfig renderingConfig;
@@ -39,7 +39,7 @@ class PdfReaderLoadedState extends PdfReaderState {
   ];
 
   PdfReaderLoadedState copyWith({
-    PdfBook? book,
+    PdfBookModel? book,
     int? currentPage,
     String? selectedText,
     PdfRenderingConfig? renderingConfig,

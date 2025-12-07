@@ -1,7 +1,9 @@
+import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/exceptions/app_exception.dart';
+import 'package:codium/core/utils/result.dart';
 import 'package:codium/core/utils/retry_logic.dart';
-import 'package:codium/domain/models/pdf_library/pdf_book.dart';
+import 'package:codium/domain/models/pdf_book/pdf_book_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,12 +42,25 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
   ) async {
     emit(LibraryLoadingState());
     try {
-      final books = await RetryLogic.retry(
+      final result = await RetryLogic.retry(
         operation: () => _getPdfListUseCase(),
         maxAttempts: 2,
         shouldRetry: (e) => e is DatabaseError,
       );
-      emit(LibraryLoadedState(books: books, filteredBooks: books));
+
+      result.when(
+        success: (books) {
+          emit(LibraryLoadedState(books: books, filteredBooks: books));
+        },
+        failure: (failure) {
+          emit(
+            LibraryErrorState(
+              errorCode: failure.code,
+              message: failure.message,
+            ),
+          );
+        },
+      );
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
       final error = e is AppError ? e : const UnknownError();
@@ -64,7 +79,8 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     Emitter<LibraryState> emit,
   ) async {
     try {
-      await _importPdfUseCase(event.filePath);
+      final fileName = event.filePath.split('/').last.replaceAll('.pdf', '');
+      await _importPdfUseCase(event.filePath, fileName);
       add(LoadLibraryEvent());
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);

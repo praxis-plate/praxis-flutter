@@ -1,11 +1,12 @@
-import 'package:codium/domain/models/pdf_reader/bookmark.dart';
-import 'package:codium/domain/repositories/pdf_repository.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/bookmark/bookmark_model.dart';
+import 'package:codium/domain/repositories/i_bookmark_repository.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class BookmarksPanel extends StatefulWidget {
-  final String bookId;
+  final int bookId;
   final VoidCallback onClose;
   final Function(int) onBookmarkTap;
 
@@ -21,7 +22,7 @@ class BookmarksPanel extends StatefulWidget {
 }
 
 class _BookmarksPanelState extends State<BookmarksPanel> {
-  List<Bookmark> _bookmarks = [];
+  List<BookmarkModel> _bookmarks = [];
   bool _isLoading = true;
   String? _error;
 
@@ -38,10 +39,10 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
     });
 
     try {
-      final repository = GetIt.I<IPdfRepository>();
-      final bookmarks = await repository.getBookmarks(widget.bookId);
+      final repository = GetIt.I<IBookmarkRepository>();
+      final result = await repository.getBookmarksByPdfId(widget.bookId);
       setState(() {
-        _bookmarks = bookmarks;
+        _bookmarks = result.dataOrNull ?? [];
         _isLoading = false;
       });
     } catch (e) {
@@ -52,9 +53,9 @@ class _BookmarksPanelState extends State<BookmarksPanel> {
     }
   }
 
-  Future<void> _deleteBookmark(String bookmarkId) async {
+  Future<void> _deleteBookmark(int bookmarkId) async {
     try {
-      final repository = GetIt.I<IPdfRepository>();
+      final repository = GetIt.I<IBookmarkRepository>();
       await repository.deleteBookmark(bookmarkId);
       await _loadBookmarks();
       if (mounted) {
@@ -149,10 +150,10 @@ class _BookmarksPanelHeader extends StatelessWidget {
 class _BookmarksPanelContent extends StatelessWidget {
   final bool isLoading;
   final String? error;
-  final List<Bookmark> bookmarks;
+  final List<BookmarkModel> bookmarks;
   final VoidCallback onRetry;
   final Function(int) onBookmarkTap;
-  final Function(String) onDeleteBookmark;
+  final Function(int) onDeleteBookmark;
 
   const _BookmarksPanelContent({
     required this.isLoading,
@@ -245,9 +246,9 @@ class _BookmarksPanelContent extends StatelessWidget {
 }
 
 class _BookmarkItem extends StatelessWidget {
-  final Bookmark bookmark;
+  final BookmarkModel bookmark;
   final Function(int) onTap;
-  final Function(String) onDelete;
+  final Function(int) onDelete;
 
   const _BookmarkItem({
     required this.bookmark,
@@ -284,7 +285,7 @@ class _BookmarkItem extends StatelessWidget {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, Bookmark bookmark) {
+  void _showDeleteConfirmation(BuildContext context, BookmarkModel bookmark) {
     final l10n = S.of(context);
     showDialog(
       context: context,

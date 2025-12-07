@@ -1,7 +1,8 @@
-import 'package:codium/core/exceptions/app_error_extensions.dart';
-import 'package:codium/core/widgets/common_search_bar.dart';
-import 'package:codium/domain/models/ai_explanation/explanation.dart';
-import 'package:codium/domain/repositories/pdf_repository.dart';
+import 'package:codium/core/error/app_error_code_extension.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/core/widgets/widgets.dart';
+import 'package:codium/domain/models/explanation/explanation_model.dart';
+import 'package:codium/domain/repositories/i_pdf_repository.dart';
 import 'package:codium/features/explanation_history/bloc/explanation_history_bloc.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -193,8 +194,8 @@ class _HistoryErrorState extends StatelessWidget {
 }
 
 class _PdfGroupCard extends StatefulWidget {
-  final String pdfId;
-  final List<Explanation> explanations;
+  final int pdfId;
+  final List<ExplanationModel> explanations;
 
   const _PdfGroupCard({required this.pdfId, required this.explanations});
 
@@ -215,10 +216,10 @@ class _PdfGroupCardState extends State<_PdfGroupCard> {
   Future<void> _loadPdfTitle() async {
     try {
       final pdfRepository = GetIt.I<IPdfRepository>();
-      final book = await pdfRepository.getBookById(widget.pdfId);
+      final result = await pdfRepository.getBookById(widget.pdfId);
       if (mounted) {
         setState(() {
-          _pdfTitle = book?.title;
+          _pdfTitle = result.dataOrNull?.title;
           _isLoading = false;
         });
       }
@@ -287,7 +288,7 @@ class _PdfGroupCardState extends State<_PdfGroupCard> {
 }
 
 class _ExplanationItem extends StatelessWidget {
-  final Explanation explanation;
+  final ExplanationModel explanation;
 
   const _ExplanationItem({required this.explanation});
 

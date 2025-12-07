@@ -21,10 +21,29 @@ final class ProfileLoadErrorState extends ProfileState {
 }
 
 final class ProfileLoadSuccessState extends ProfileState {
-  final User user;
+  final UserProfileModel user;
+  final int coinBalance;
+  final int totalCoursesCompleted;
+  final int totalLessonsCompleted;
+  final List<AchievementModel> achievements;
+  final int currentStreak;
 
-  const ProfileLoadSuccessState({required this.user});
+  const ProfileLoadSuccessState({
+    required this.user,
+    required this.coinBalance,
+    required this.totalCoursesCompleted,
+    required this.totalLessonsCompleted,
+    required this.achievements,
+    required this.currentStreak,
+  });
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [
+    user,
+    coinBalance,
+    totalCoursesCompleted,
+    totalLessonsCompleted,
+    achievements,
+    currentStreak,
+  ];
 }

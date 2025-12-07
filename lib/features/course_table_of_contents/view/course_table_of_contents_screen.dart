@@ -1,33 +1,16 @@
-import 'package:codium/core/widgets/wrapper.dart';
-import 'package:codium/domain/models/course/course.dart';
+import 'package:codium/core/widgets/widgets.dart';
+import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/task/course_task.dart';
-import 'package:codium/features/course_table_of_contents/view/widgets/running_text.dart';
+import 'package:codium/features/course_table_of_contents/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class CourseTableOfContentsScreen extends StatelessWidget {
   const CourseTableOfContentsScreen({super.key, required this.course});
 
-  final Course course;
+  final CourseModel course;
 
   @override
   Widget build(BuildContext context) {
-    final moduleWidgets = course.modules
-        .expand<Widget>(
-          (module) => [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Text(
-                module.title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            ...module.tasks.map<Widget>(
-              (task) => ContentElement(task: task, onTap: () {}, indent: 1),
-            ),
-          ],
-        )
-        .toList();
-
     return Scaffold(
       appBar: AppBar(
         title: RunningText(
@@ -35,7 +18,9 @@ class CourseTableOfContentsScreen extends StatelessWidget {
         ),
         centerTitle: false,
       ),
-      body: Wrapper(child: ListView(children: moduleWidgets)),
+      body: const Wrapper(
+        child: Center(child: Text('Table of Contents - Coming Soon')),
+      ),
     );
   }
 }
