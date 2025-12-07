@@ -1,16 +1,12 @@
-import 'package:codium/core/exceptions/auth_exceptions.dart';
-import 'package:codium/domain/repositories/abstract_auth_repository.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/repositories/i_auth_repository.dart';
 
 class SignOutUseCase {
   final IAuthRepository _authRepository;
 
   SignOutUseCase(this._authRepository);
 
-  Future<void> call() async {
-    try {
-      await _authRepository.signOut();
-    } catch (e) {
-      throw AuthException('Sign out error');
-    }
+  Future<Result<void>> call() async {
+    return await _authRepository.signOut();
   }
 }

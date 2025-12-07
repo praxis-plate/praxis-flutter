@@ -1,24 +1,13 @@
-import 'package:codium/domain/models/ai_explanation/explanation.dart';
-import 'package:codium/domain/repositories/storage_repository.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/explanation/explanation_model.dart';
+import 'package:codium/domain/repositories/i_explanation_repository.dart';
 
 class SearchExplanationHistoryUseCase {
-  final IStorageRepository _storageRepository;
+  final IExplanationRepository _explanationRepository;
 
-  SearchExplanationHistoryUseCase(this._storageRepository);
+  SearchExplanationHistoryUseCase(this._explanationRepository);
 
-  Future<List<Explanation>> call(String query) async {
-    try {
-      if (query.isEmpty) {
-        return await _storageRepository.getAllExplanations();
-      }
-
-      final explanations = await _storageRepository.searchExplanations(query);
-      return explanations;
-    } catch (e, st) {
-      GetIt.I<Talker>().handle(e, st);
-      rethrow;
-    }
+  Future<Result<List<ExplanationModel>>> call(String query) async {
+    return await _explanationRepository.getAllExplanations();
   }
 }

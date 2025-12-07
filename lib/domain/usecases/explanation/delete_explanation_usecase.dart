@@ -1,22 +1,12 @@
-import 'package:codium/domain/repositories/storage_repository.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/repositories/i_explanation_repository.dart';
 
 class DeleteExplanationUseCase {
-  final IStorageRepository _storageRepository;
+  final IExplanationRepository _explanationRepository;
 
-  DeleteExplanationUseCase(this._storageRepository);
+  DeleteExplanationUseCase(this._explanationRepository);
 
-  Future<void> call(String explanationId) async {
-    try {
-      if (explanationId.isEmpty) {
-        throw ArgumentError('Explanation ID cannot be empty');
-      }
-
-      await _storageRepository.deleteExplanation(explanationId);
-    } catch (e, st) {
-      GetIt.I<Talker>().handle(e, st);
-      rethrow;
-    }
+  Future<Result<void>> call(int explanationId) async {
+    return await _explanationRepository.deleteExplanation(explanationId);
   }
 }

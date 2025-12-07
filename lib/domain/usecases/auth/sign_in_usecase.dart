@@ -1,23 +1,15 @@
-import 'package:codium/core/exceptions/auth_exceptions.dart';
+import 'package:codium/core/utils/result.dart';
 import 'package:codium/core/validators/auth_validator.dart';
-import 'package:codium/domain/models/models.dart';
-import 'package:codium/domain/repositories/abstract_auth_repository.dart';
+import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:codium/domain/repositories/i_auth_repository.dart';
 
 class SignInUseCase {
   final IAuthRepository _authRepository;
 
   SignInUseCase(this._authRepository);
 
-  Future<User> call(String email, String password) async {
+  Future<Result<UserProfileModel>> call(String email, String password) async {
     AuthValidator.validateCredentials(email, password);
-
-    try {
-      final user = await _authRepository.signIn(email, password);
-      return user;
-    } on AuthException {
-      rethrow;
-    } catch (e) {
-      throw AuthException('Sign in error');
-    }
+    return await _authRepository.signIn(email, password);
   }
 }
