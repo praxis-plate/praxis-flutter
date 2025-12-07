@@ -3,21 +3,36 @@ import 'package:equatable/equatable.dart';
 class SessionModel extends Equatable {
   final int userId;
   final String email;
-  final String? accessToken;
-  final String? refreshToken;
-  final DateTime? tokenExpiresAt;
+  final String accessToken;
+  final String refreshToken;
+  final DateTime tokenExpiresAt;
 
   const SessionModel({
     required this.userId,
     required this.email,
-    this.accessToken,
-    this.refreshToken,
-    this.tokenExpiresAt,
+    required this.accessToken,
+    required this.refreshToken,
+    required this.tokenExpiresAt,
   });
 
   bool get hasValidToken {
-    if (accessToken == null || tokenExpiresAt == null) return false;
-    return DateTime.now().isBefore(tokenExpiresAt!);
+    return DateTime.now().isBefore(tokenExpiresAt);
+  }
+
+  SessionModel copyWith({
+    int? userId,
+    String? email,
+    String? accessToken,
+    String? refreshToken,
+    DateTime? tokenExpiresAt,
+  }) {
+    return SessionModel(
+      userId: userId ?? this.userId,
+      email: email ?? this.email,
+      accessToken: accessToken ?? this.accessToken,
+      refreshToken: refreshToken ?? this.refreshToken,
+      tokenExpiresAt: tokenExpiresAt ?? this.tokenExpiresAt,
+    );
   }
 
   @override
