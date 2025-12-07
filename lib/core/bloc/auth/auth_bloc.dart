@@ -31,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignUpEvent>(_onSignUp);
     on<AuthSignInEvent>(_onSignIn);
     on<AuthSignOutEvent>(_onSignOut);
+    on<AuthResetErrorEvent>(_onResetError);
   }
 
   Future<void> _onCheckStatus(
@@ -65,10 +66,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await _signUpUseCase(event.email, event.password);
 
       if (!result.isSuccess) {
-        emit(const AuthUnauthenticatedState());
-        GetIt.I<Talker>().error(
-          'Sign up failed: ${result.failureOrNull!.message}',
-        );
+        final errorMessage = result.failureOrNull!.message;
+        emit(AuthErrorState(message: errorMessage));
+        GetIt.I<Talker>().error('Sign up failed: $errorMessage');
         return;
       }
 
@@ -87,10 +87,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await _signInUseCase(event.email, event.password);
 
       if (!result.isSuccess) {
-        emit(const AuthUnauthenticatedState());
-        GetIt.I<Talker>().error(
-          'Sign in failed: ${result.failureOrNull!.message}',
-        );
+        final errorMessage = result.failureOrNull!.message;
+        emit(AuthErrorState(message: errorMessage));
+        GetIt.I<Talker>().error('Sign in failed: $errorMessage');
         return;
       }
 
@@ -123,4 +122,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       GetIt.I<Talker>().handle(e, st);
     }
   }
+}
+
+void _onResetError(AuthResetErrorEvent event, Emitter<AuthState> emit) {
+  emit(const AuthUnauthenticatedState());
 }

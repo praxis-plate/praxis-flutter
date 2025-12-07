@@ -34,3 +34,7 @@ class AuthSignUpEvent extends AuthEvent {
 class AuthSignOutEvent extends AuthEvent {
   const AuthSignOutEvent();
 }
+
+class AuthResetErrorEvent extends AuthEvent {
+  const AuthResetErrorEvent();
+}
