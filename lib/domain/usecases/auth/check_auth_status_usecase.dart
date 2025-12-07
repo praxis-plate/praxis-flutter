@@ -1,6 +1,7 @@
-import 'package:codium/domain/models/models.dart';
-import 'package:codium/domain/repositories/abstract_auth_repository.dart';
-import 'package:codium/domain/repositories/abstract_user_repository.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:codium/domain/repositories/i_auth_repository.dart';
+import 'package:codium/domain/repositories/i_user_repository.dart';
 
 class CheckAuthStatusUseCase {
   final IAuthRepository _authRepository;
@@ -8,17 +9,22 @@ class CheckAuthStatusUseCase {
 
   CheckAuthStatusUseCase(this._authRepository, this._userRepository);
 
-  Future<User?> call() async {
-    try {
-      final isAuth = await _authRepository.isAuthenticated();
+  Future<Result<UserProfileModel?>> call() async {
+    final isAuthResult = await _authRepository.isAuthenticated();
 
-      if (!isAuth) {
-        return null;
-      }
+    return isAuthResult.when(
+      success: (isAuth) async {
+        if (!isAuth) {
+          return const Success<UserProfileModel?>(null);
+        }
 
-      return await _userRepository.getCurrentUser();
-    } catch (e) {
-      return null;
-    }
+        final userResult = await _userRepository.getCurrentUser();
+        return userResult.when(
+          success: (user) => Success<UserProfileModel?>(user),
+          failure: (failure) => const Success<UserProfileModel?>(null),
+        );
+      },
+      failure: (failure) => const Success<UserProfileModel?>(null),
+    );
   }
 }

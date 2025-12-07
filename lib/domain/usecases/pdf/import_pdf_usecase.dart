@@ -1,26 +1,41 @@
-import 'package:codium/domain/repositories/pdf_repository.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/error/failure.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/pdf_book/create_pdf_book_model.dart';
+import 'package:codium/domain/repositories/i_pdf_repository.dart';
 
 class ImportPdfUseCase {
   final IPdfRepository _pdfRepository;
 
   ImportPdfUseCase(this._pdfRepository);
 
-  Future<void> call(String filePath) async {
-    try {
-      if (filePath.isEmpty) {
-        throw ArgumentError('File path cannot be empty');
-      }
-
-      if (!filePath.toLowerCase().endsWith('.pdf')) {
-        throw ArgumentError('File must be a PDF');
-      }
-
-      await _pdfRepository.importPdf(filePath);
-    } catch (e, st) {
-      GetIt.I<Talker>().handle(e, st);
-      rethrow;
+  Future<Result<void>> call(String filePath, String title) async {
+    if (filePath.isEmpty) {
+      return const Failure(
+        AppFailure(
+          code: AppErrorCode.validationInvalid,
+          message: 'File path cannot be empty',
+          canRetry: false,
+        ),
+      );
     }
+
+    if (!filePath.toLowerCase().endsWith('.pdf')) {
+      return const Failure(
+        AppFailure(
+          code: AppErrorCode.validationInvalid,
+          message: 'File must be a PDF',
+          canRetry: false,
+        ),
+      );
+    }
+
+    final model = CreatePdfBookModel(
+      title: title,
+      filePath: filePath,
+      totalPages: 0,
+    );
+
+    return await _pdfRepository.create(model);
   }
 }

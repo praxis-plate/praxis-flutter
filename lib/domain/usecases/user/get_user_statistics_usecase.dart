@@ -1,6 +1,6 @@
-import 'package:codium/core/exceptions/user_statistics_exception.dart';
-import 'package:codium/domain/models/models.dart';
-import 'package:codium/domain/repositories/abstract_user_statistics_repository.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/user/user_statistic_model.dart';
+import 'package:codium/domain/repositories/i_user_statistics_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -9,19 +9,17 @@ class GetUserStatisticsUseCase {
 
   GetUserStatisticsUseCase(this._userStatisticsRepository);
 
-  Future<UserStatistics> call(String userId) async {
-    try {
-      final statisticsExist = await _userStatisticsRepository.exists(userId);
+  Future<Result<UserStatisticModel?>> call(int userId) async {
+    final result = await _userStatisticsRepository.getByUserId(userId);
 
-      if (!statisticsExist) {
-        final message = 'User #$userId doesn\'t have statistics';
-        GetIt.I<Talker>().log(message);
-        throw UserStatisticsException(message);
-      }
-
-      return await _userStatisticsRepository.get(userId);
-    } catch (e) {
-      rethrow;
-    }
+    return result.when(
+      success: (statistics) {
+        if (statistics == null) {
+          GetIt.I<Talker>().info('User #$userId doesn\'t have statistics');
+        }
+        return Success(statistics);
+      },
+      failure: (failure) => Failure(failure),
+    );
   }
 }

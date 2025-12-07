@@ -1,5 +1,6 @@
-import 'package:codium/domain/models/models.dart';
-import 'package:codium/domain/repositories/repositories.dart';
+import 'package:codium/core/utils/result.dart';
+import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/domain/repositories/i_course_repository.dart';
 
 class GetRecommendedCoursesUseCase {
   final ICourseRepository _courseRepository;
@@ -7,14 +8,17 @@ class GetRecommendedCoursesUseCase {
 
   GetRecommendedCoursesUseCase(this._courseRepository);
 
-  Future<List<Course>> call(String userId) async {
-    final courses = await _courseRepository.getCourses(5);
-    return _filterRecommendedCourses(courses);
-  }
+  Future<Result<List<CourseModel>>> call(String userId) async {
+    final coursesResult = await _courseRepository.getCourses(5);
 
-  List<Course> _filterRecommendedCourses(List<Course> courses) {
-    return courses
-        .where((c) => c.statistics.averageRating > _minRecommendRating)
-        .toList();
+    return coursesResult.when(
+      success: (courses) {
+        final recommended = courses
+            .where((c) => c.rating >= _minRecommendRating)
+            .toList();
+        return Success(recommended);
+      },
+      failure: (failure) => Failure(failure),
+    );
   }
 }
