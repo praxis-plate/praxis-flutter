@@ -14,6 +14,12 @@
   "displayEmailHint": "example@gmail.com",
   "displayPasswordHint": "•••••••••",
   "displayDontHaveAnAccount": "Don't have an account?",
+  "displayForgotPassword": "Forgot password?",
+  "displayForgotPasswordTitle": "Forgot password?",
+  "displayForgotPasswordSubtitle": "Enter your email and we'll send you a reset link.",
+  "displaySendResetLink": "Send reset link",
+  "displayRememberPassword": "Remembered your password?",
+  "displayResetLinkSent": "Check your email for a reset link",
 
   "navigationHomeTitle": "Home",
   "navigationMainTitle": "Main",
@@ -300,6 +306,7 @@
   "hours": "hours",
   "hoursShort": "h",
   "minutesShort": "m",
+  "secondsShort": "s",
   "lessonsCount": "{count} lessons",
   "@lessonsCount": {
     "placeholders": {
@@ -325,5 +332,69 @@
 
   "coursePurchaseSuccess": "Course purchased successfully!",
   "coursePurchaseError": "Failed to purchase course",
-  "coursePurchaseInsufficientBalance": "Insufficient balance"
+  "coursePurchaseInsufficientBalance": "Insufficient balance",
+
+  "taskMultipleChoice": "Multiple Choice",
+  "taskCodeCompletion": "Code Completion",
+  "taskMatching": "Matching",
+  "taskTextInput": "Text Input",
+  "taskHintButton": "Get Hint",
+  "taskSubmitButton": "Submit Answer",
+  "taskCorrectFeedback": "Correct! Well done!",
+  "taskIncorrectFeedback": "Not quite. Try again!",
+  "taskCorrectLabel": "Correct",
+  "taskIncorrectLabel": "Incorrect",
+  "taskXpEarned": "You earned {xp} XP",
+  "@taskXpEarned": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "taskHintsRemaining": "{count} hints remaining",
+  "@taskHintsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "taskProgressLabel": "{completed} of {total} tasks completed",
+  "@taskProgressLabel": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "taskLoading": "Loading task...",
+  "taskError": "Error loading task",
+  "taskValidating": "Validating answer...",
+  "taskContinue": "Continue",
+  "taskRetry": "Try Again",
+  "taskCorrectAnswer": "Correct Answer",
+  "taskExplanation": "Explanation",
+  "taskHintTitle": "Hint",
+  "taskSelectOption": "Select an option",
+  "taskEnterCode": "Enter your code",
+  "taskMatchItems": "Match the items",
+  "taskEnterAnswer": "Enter your answer",
+  "taskSessionLoading": "Loading lesson tasks...",
+  "taskSessionExitTitle": "Exit Session?",
+  "taskSessionExitMessage": "Are you sure you want to exit? Your progress will be saved.",
+  "taskSessionCompleteTitle": "Lesson Complete!",
+  "taskSessionCompleteMessage": "Congratulations! You've completed all tasks in this lesson.",
+  "taskSessionTotalXp": "Total XP",
+  "taskSessionAccuracy": "Accuracy",
+  "taskSessionTimeSpent": "Time Spent",
+  "taskSessionTasksCompleted": "Tasks Completed",
+  "offlineMode": "Offline - AI features unavailable",
+  "goBack": "Go Back",
+  "exit": "Exit",
+  "done": "Done",
+  "noLessonsAvailable": "No lessons available"
 }
