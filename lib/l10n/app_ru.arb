@@ -14,6 +14,12 @@
   "displayEmailHint": "example@yandex.ru",
   "displayPasswordHint": "•••••••••",
   "displayDontHaveAnAccount": "Нет аккаунта?",
+  "displayForgotPassword": "Забыли пароль?",
+  "displayForgotPasswordTitle": "Забыли пароль?",
+  "displayForgotPasswordSubtitle": "Введите email, и мы отправим ссылку для сброса пароля.",
+  "displaySendResetLink": "Отправить ссылку",
+  "displayRememberPassword": "Вспомнили пароль?",
+  "displayResetLinkSent": "Проверьте почту — мы отправили ссылку для сброса",
 
   "navigationHomeTitle": "Главная",
   "navigationMainTitle": "Обзор",
@@ -300,6 +306,7 @@
   "hours": "часов",
   "hoursShort": "ч",
   "minutesShort": "м",
+  "secondsShort": "с",
   "lessonsCount": "{count} уроков",
   "@lessonsCount": {
     "placeholders": {
@@ -325,5 +332,69 @@
 
   "coursePurchaseSuccess": "Курс успешно куплен!",
   "coursePurchaseError": "Не удалось купить курс",
-  "coursePurchaseInsufficientBalance": "Недостаточно монет"
+  "coursePurchaseInsufficientBalance": "Недостаточно монет",
+
+  "taskMultipleChoice": "Множественный выбор",
+  "taskCodeCompletion": "Завершение кода",
+  "taskMatching": "Сопоставление",
+  "taskTextInput": "Ввод текста",
+  "taskHintButton": "Получить подсказку",
+  "taskSubmitButton": "Отправить ответ",
+  "taskCorrectFeedback": "Правильно! Отлично!",
+  "taskIncorrectFeedback": "Не совсем. Попробуйте еще раз!",
+  "taskCorrectLabel": "Правильно",
+  "taskIncorrectLabel": "Неправильно",
+  "taskXpEarned": "Вы заработали {xp} XP",
+  "@taskXpEarned": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "taskHintsRemaining": "Осталось подсказок: {count}",
+  "@taskHintsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "taskProgressLabel": "{completed} из {total} заданий выполнено",
+  "@taskProgressLabel": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "taskLoading": "Загрузка задания...",
+  "taskError": "Ошибка загрузки задания",
+  "taskValidating": "Проверка ответа...",
+  "taskContinue": "Продолжить",
+  "taskRetry": "Попробовать снова",
+  "taskCorrectAnswer": "Правильный ответ",
+  "taskExplanation": "Объяснение",
+  "taskHintTitle": "Подсказка",
+  "taskSelectOption": "Выберите вариант",
+  "taskEnterCode": "Введите ваш код",
+  "taskMatchItems": "Сопоставьте элементы",
+  "taskEnterAnswer": "Введите ваш ответ",
+  "taskSessionLoading": "Загрузка заданий урока...",
+  "taskSessionExitTitle": "Выйти из сессии?",
+  "taskSessionExitMessage": "Вы уверены, что хотите выйти? Ваш прогресс будет сохранен.",
+  "taskSessionCompleteTitle": "Урок завершен!",
+  "taskSessionCompleteMessage": "Поздравляем! Вы выполнили все задания в этом уроке.",
+  "taskSessionTotalXp": "Всего XP",
+  "taskSessionAccuracy": "Точность",
+  "taskSessionTimeSpent": "Время",
+  "taskSessionTasksCompleted": "Заданий выполнено",
+  "offlineMode": "Оффлайн - функции ИИ недоступны",
+  "goBack": "Назад",
+  "exit": "Выйти",
+  "done": "Готово",
+  "noLessonsAvailable": "Нет доступных уроков"
 }
