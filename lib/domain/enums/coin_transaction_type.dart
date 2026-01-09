@@ -1,1 +1,6 @@
-enum CoinTransactionType { initialGrant, lessonCompletion, coursePurchase }
+enum CoinTransactionType {
+  initialGrant,
+  lessonCompletion,
+  coursePurchase,
+  taskCompletion,
+}

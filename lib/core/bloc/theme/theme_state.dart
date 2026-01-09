@@ -5,6 +5,10 @@ class ThemeState extends Equatable {
 
   final bool isDarkTheme;
 
+  ThemeData get currentTheme => isDarkTheme
+      ? AppTheme.of(Brightness.dark)
+      : AppTheme.of(Brightness.light);
+
   @override
   List<Object> get props => [isDarkTheme];
 }

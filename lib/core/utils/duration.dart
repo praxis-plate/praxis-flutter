@@ -26,6 +26,15 @@ class DurationFormatter {
     final remainingMinutes = minutes.remainder(60);
     return '$hours${s.hoursShort} $remainingMinutes${s.minutesShort}';
   }
+
+  static String formatSeconds(int seconds, AppLocalizations s) {
+    final minutes = seconds ~/ 60;
+    final remainingSeconds = seconds % 60;
+    if (minutes > 0) {
+      return '$minutes${s.minutesShort} $remainingSeconds${s.secondsShort}';
+    }
+    return '$remainingSeconds${s.secondsShort}';
+  }
 }
 
 @Deprecated('Use DurationFormatter methods with localization instead')

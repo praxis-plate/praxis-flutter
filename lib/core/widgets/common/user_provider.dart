@@ -8,7 +8,13 @@ class UserProvider extends InheritedWidget {
 
   static FullUserProfileModel of(BuildContext context) {
     final provider = context.dependOnInheritedWidgetOfExactType<UserProvider>();
+    assert(provider != null, 'UserProvider not found in widget tree');
     return provider!.user;
+  }
+
+  static FullUserProfileModel? maybeOf(BuildContext context) {
+    final provider = context.dependOnInheritedWidgetOfExactType<UserProvider>();
+    return provider?.user;
   }
 
   @override

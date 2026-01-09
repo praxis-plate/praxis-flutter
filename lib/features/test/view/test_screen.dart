@@ -1,4 +1,4 @@
-import 'package:codium/core/widgets/dumb/section.dart';
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class TestScreen extends StatelessWidget {

@@ -5,8 +5,17 @@ class NetworkError extends AppError {
   const NetworkError.timeout({super.message})
     : super(code: AppErrorCode.networkTimeout, canRetry: true);
 
-  const NetworkError.noInternet({super.message})
+  const NetworkError.noConnection({super.message})
     : super(code: AppErrorCode.networkNoInternet, canRetry: true);
+
+  const NetworkError.notFound({super.message})
+    : super(code: AppErrorCode.apiNotFound, canRetry: false);
+
+  const NetworkError.tooManyRequests({super.message})
+    : super(code: AppErrorCode.rateLimitExceeded, canRetry: true);
+
+  const NetworkError.serverError({super.message})
+    : super(code: AppErrorCode.apiGeneral, canRetry: true);
 
   const NetworkError.general({super.message})
     : super(code: AppErrorCode.networkGeneral, canRetry: true);

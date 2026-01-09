@@ -1,5 +1,6 @@
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/course_learning/bloc/course_learning_bloc.dart';
+import 'package:codium/features/course_learning/bloc/lessons_list_bloc.dart';
 import 'package:codium/features/course_learning/widgets/widgets.dart';
 import 'package:codium/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -97,25 +98,53 @@ class _CourseLearningView extends StatelessWidget {
           }
 
           if (state is CourseLearningLoaded) {
+            return _LessonsList(courseId: state.course.id);
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+}
+
+class _LessonsList extends StatelessWidget {
+  final int courseId;
+
+  const _LessonsList({required this.courseId});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context)!;
+
+    return BlocProvider(
+      create: (context) =>
+          GetIt.I<LessonsListBloc>()
+            ..add(LoadLessonsListEvent(courseId: courseId)),
+      child: BlocBuilder<LessonsListBloc, LessonsListState>(
+        builder: (context, state) {
+          if (state is LessonsListLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is LessonsListErrorState) {
+            return Center(child: Text(state.message));
+          }
+
+          if (state is LessonsListLoadedState) {
+            if (state.lessons.isEmpty) {
+              return Center(child: Text(s.noLessonsAvailable));
+            }
+
             return Wrapper(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      state.course.title,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '${state.statistics.solvedTasks}/${state.statistics.totalTasks} lessons completed',
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '${state.statistics.progress.toStringAsFixed(0)}% complete',
-                    ),
-                  ],
-                ),
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: state.lessons.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final lesson = state.lessons[index];
+                  return LessonCard(lesson: lesson);
+                },
               ),
             );
           }

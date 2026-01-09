@@ -22,7 +22,7 @@ final class UserRepository implements IUserRepository {
         return const Failure(
           AppFailure(
             code: AppErrorCode.apiUnauthorized,
-            message: 'No active session',
+            message: '',
             canRetry: false,
           ),
         );
@@ -33,7 +33,7 @@ final class UserRepository implements IUserRepository {
         return const Failure(
           AppFailure(
             code: AppErrorCode.apiNotFound,
-            message: 'User not found',
+            message: '',
             canRetry: false,
           ),
         );
@@ -55,7 +55,7 @@ final class UserRepository implements IUserRepository {
         return const Failure(
           AppFailure(
             code: AppErrorCode.apiNotFound,
-            message: 'User not found',
+            message: '',
             canRetry: false,
           ),
         );
