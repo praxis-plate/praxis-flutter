@@ -64,7 +64,6 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/images/icons/
     - assets/prompts/
 flutter_intl:
   enabled: true
