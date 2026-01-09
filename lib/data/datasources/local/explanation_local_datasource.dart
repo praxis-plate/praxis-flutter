@@ -19,13 +19,6 @@ class ExplanationLocalDataSource implements IExplanationLocalDataSource {
   }
 
   @override
-  Future<List<ExplanationEntity>> getExplanationsByPdfId(int pdfBookId) async {
-    return await _db.managers.explanation
-        .filter((f) => f.pdfBookId.id(pdfBookId))
-        .get();
-  }
-
-  @override
   Future<List<ExplanationEntity>> searchExplanations(String query) async {
     final lowercaseQuery = query.toLowerCase();
     final allExplanations = await getAllExplanations();
@@ -49,7 +42,7 @@ class ExplanationLocalDataSource implements IExplanationLocalDataSource {
   @override
   Future<void> updateExplanation(ExplanationCompanion entry) async {
     if (!entry.id.present) {
-      throw ArgumentError('Bookmark id must be present for update');
+      throw ArgumentError('Explanation id must be present for update');
     }
 
     final int id = entry.id.value;

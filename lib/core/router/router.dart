@@ -5,9 +5,7 @@ import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/auth/auth.dart';
 import 'package:codium/features/course_details/view/course_detail_screen.dart';
 import 'package:codium/features/course_learning/view/course_learning_screen.dart';
-import 'package:codium/features/explanation_history/view/history_screen.dart';
 import 'package:codium/features/learning/view/learning_screen.dart';
-import 'package:codium/features/library/view/library_screen.dart';
 import 'package:codium/features/main/view/main_screen.dart';
 import 'package:codium/features/navigation/view/navigation_screen.dart';
 import 'package:codium/features/profile/view/profile_screen.dart';
@@ -44,7 +42,6 @@ class AppRouter {
       refreshListenable: _authNotifier,
       redirect: (context, state) {
         final authState = _authNotifier.state;
-
         final isAuthRoute =
             state.matchedLocation.startsWith('/auth') ||
             state.matchedLocation == '/phone-sign-up';
@@ -113,23 +110,14 @@ class AppRouter {
             GoRoute(
               path: '/navigation',
               name: 'navigation',
-              redirect: (context, state) => '/library',
+              redirect: (context, state) => '/home',
             ),
-            if (FeatureFlags.enableCourses)
-              GoRoute(
-                path: '/home',
-                name: 'home',
-                pageBuilder: (context, state) => NoTransitionPage(
-                  key: state.pageKey,
-                  child: const MainScreen(),
-                ),
-              ),
             GoRoute(
-              path: '/library',
-              name: 'library',
+              path: '/home',
+              name: 'home',
               pageBuilder: (context, state) => NoTransitionPage(
                 key: state.pageKey,
-                child: const LibraryScreen(),
+                child: const MainScreen(),
               ),
             ),
             if (FeatureFlags.enableCourses)
@@ -141,14 +129,6 @@ class AppRouter {
                   child: const LearningScreen(),
                 ),
               ),
-            GoRoute(
-              path: '/history',
-              name: 'history',
-              pageBuilder: (context, state) => NoTransitionPage(
-                key: state.pageKey,
-                child: const HistoryScreen(),
-              ),
-            ),
             if (FeatureFlags.enableProfile)
               GoRoute(
                 path: '/profile',
@@ -217,18 +197,6 @@ class AppRouter {
           },
         ),
         GoRoute(
-          path: '/pdf/:bookId',
-          name: 'pdf-reader',
-          pageBuilder: (context, state) {
-            return MaterialPage(
-              key: state.pageKey,
-              child: const Scaffold(
-                body: Center(child: Text('PDF Reader - Coming Soon')),
-              ),
-            );
-          },
-        ),
-        GoRoute(
           path: '/test',
           name: 'test',
           pageBuilder: (context, state) =>
@@ -253,8 +221,8 @@ class AppRouter {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () => context.go('/library'),
-                child: const Text('Go to Library'),
+                onPressed: () => context.go('/home'),
+                child: const Text('Go to Home'),
               ),
             ],
           ),

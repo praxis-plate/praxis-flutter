@@ -4,8 +4,6 @@ class FeatureFlags {
   static const bool enableAiExplanations = false;
   static const bool enableAiChat = false;
   static const bool enableWebSearch = false;
-  static const bool enableBookmarks = true;
-  static const bool enableExplanationHistory = false;
   static const bool enableOfflineMode = true;
   static const bool enableCourses = true;
   static const bool enableProfile = true;
