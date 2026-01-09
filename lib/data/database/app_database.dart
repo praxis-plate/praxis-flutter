@@ -11,8 +11,6 @@ part 'app_database.g.dart';
 
 @DriftDatabase(
   tables: [
-    PdfBook,
-    Bookmark,
     Explanation,
     User,
     UserCourse,
