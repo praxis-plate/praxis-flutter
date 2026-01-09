@@ -1,4 +1,5 @@
 import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
+import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
 import 'package:codium/core/config/dio_factory.dart';
 import 'package:codium/core/services/ai_service.dart';
@@ -302,6 +303,13 @@ class DependencyInjection {
 
   void _registerBlocs() {
     GetIt.I
+      ..registerLazySingleton(
+        () => AuthBloc(
+          signUpUseCase: GetIt.I<SignUpUseCase>(),
+          signInUseCase: GetIt.I<SignInUseCase>(),
+          signOutUseCase: GetIt.I<SignOutUseCase>(),
+        ),
+      )
       ..registerLazySingleton(
         () => UserProfileBloc(
           getFullUserProfileUseCase: GetIt.I<GetFullUserProfileUseCase>(),
