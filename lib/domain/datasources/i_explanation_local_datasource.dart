@@ -5,8 +5,6 @@ abstract interface class IExplanationLocalDataSource {
 
   Future<ExplanationEntity?> getExplanationById(int id);
 
-  Future<List<ExplanationEntity>> getExplanationsByPdfId(int pdfBookId);
-
   Future<List<ExplanationEntity>> searchExplanations(String query);
 
   Future<ExplanationEntity> insertExplanation(ExplanationCompanion entry);
