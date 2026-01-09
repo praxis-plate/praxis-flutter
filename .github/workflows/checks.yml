@@ -19,6 +19,16 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter pub get
+      - name: Create .env for CI
+        run: |
+          cat <<EOF > .env
+          GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+          DB_PATH=codium.db
+          PROXY_HOST=${{ secrets.PROXY_HOST }}
+          PROXY_PORT=${{ secrets.PROXY_PORT }}
+          PROXY_USER=${{ secrets.PROXY_USER }}
+          PROXY_PASS=${{ secrets.PROXY_PASS }}
+          EOF
       - name: Generate code (build_runner)
         run: flutter pub run build_runner build --delete-conflicting-outputs
       - name: Generate l10n
