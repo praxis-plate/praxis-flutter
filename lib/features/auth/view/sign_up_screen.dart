@@ -1,5 +1,4 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/auth/bloc/sign_up/sign_up_cubit.dart';
 import 'package:codium/features/auth/widgets/widgets.dart';
@@ -7,60 +6,43 @@ import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({super.key, required this.onSwitchToSignIn});
+
+  final VoidCallback onSwitchToSignIn;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GetIt.I<SignUpCubit>(),
-      child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthAuthenticatedState) {
-            context.read<UserProfileBloc>().add(
-              UserProfileLoadEvent(userId: state.userId),
-            );
-            context.go('/navigation');
-            context.read<SignUpCubit>().reset();
-          } else if (state is AuthErrorState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Theme.of(context).colorScheme.error,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-            context.read<SignUpCubit>().reset();
-            context.read<AuthBloc>().add(const AuthResetErrorEvent());
-          }
-        },
-        child: Scaffold(
-          body: SafeArea(
+    return Scaffold(
+      body: Stack(
+        children: [
+          const AnimatedBubbleBackground(),
+          SafeArea(
             child: GestureDetector(
               onTap: FocusScope.of(context).unfocus,
-              child: const Wrapper(
+              behavior: HitTestBehavior.translucent,
+              child: Wrapper(
                 child: Center(
                   child: SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: _SignUpForm(),
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _SignUpForm(onSwitchToSignIn: onSwitchToSignIn),
                   ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
 class _SignUpForm extends StatelessWidget {
-  const _SignUpForm();
+  const _SignUpForm({this.onSwitchToSignIn});
+
+  final VoidCallback? onSwitchToSignIn;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +63,7 @@ class _SignUpForm extends StatelessWidget {
             const SizedBox(height: 16),
             const _SubmitButton(),
             const SizedBox(height: 16),
-            const _SignInRedirect(),
+            _SignInRedirect(onSwitchToSignIn: onSwitchToSignIn),
           ],
         ),
       ),
@@ -116,48 +98,17 @@ class _PasswordInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
 
-    return BlocSelector<SignUpCubit, SignUpState, _PasswordState>(
-      selector: (state) => _PasswordState(
-        password: state.password,
-        obscurePassword: state.obscurePassword,
-        status: state.status,
-      ),
+    return BlocBuilder<SignUpCubit, SignUpState>(
       builder: (context, state) {
         final cubit = context.read<SignUpCubit>();
         return AuthPasswordInput(
           errorText: state.password.stringDisplayError(s),
-          enabled: state.status != FormzSubmissionStatus.inProgress,
-          obscureText: state.obscurePassword,
+          isEnabled: state.status != FormzSubmissionStatus.inProgress,
           onChanged: cubit.passwordChanged,
-          onToggleVisibility: cubit.togglePasswordVisibility,
         );
       },
     );
   }
-}
-
-class _PasswordState {
-  final dynamic password;
-  final bool obscurePassword;
-  final FormzSubmissionStatus status;
-
-  const _PasswordState({
-    required this.password,
-    required this.obscurePassword,
-    required this.status,
-  });
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is _PasswordState &&
-          password == other.password &&
-          obscurePassword == other.obscurePassword &&
-          status == other.status;
-
-  @override
-  int get hashCode =>
-      password.hashCode ^ obscurePassword.hashCode ^ status.hashCode;
 }
 
 class _SubmitButton extends StatelessWidget {
@@ -201,7 +152,9 @@ class _SubmitButton extends StatelessWidget {
 }
 
 class _SignInRedirect extends StatelessWidget {
-  const _SignInRedirect();
+  const _SignInRedirect({this.onSwitchToSignIn});
+
+  final VoidCallback? onSwitchToSignIn;
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +162,7 @@ class _SignInRedirect extends StatelessWidget {
     return AuthRedirectText(
       questionText: s.displayAlreadyHaveAnAccount,
       actionText: s.displaySignIn,
-      route: '/sign-in',
+      onTap: onSwitchToSignIn ?? () => context.go('/auth/sign-in'),
     );
   }
 }
