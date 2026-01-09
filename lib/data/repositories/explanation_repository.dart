@@ -26,21 +26,6 @@ class ExplanationRepository implements IExplanationRepository {
   }
 
   @override
-  Future<Result<List<ExplanationModel>>> getExplanationsByPdfId(
-    int pdfBookId,
-  ) async {
-    try {
-      final entities = await _localDataSource.getExplanationsByPdfId(pdfBookId);
-      final explanations = entities.map((e) => e.toDomain()).toList();
-      return Success(explanations);
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
-    } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
-    }
-  }
-
-  @override
   Future<Result<void>> saveExplanation(
     CreateExplanationModel explanation,
   ) async {
