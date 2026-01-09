@@ -24,17 +24,13 @@ import 'package:codium/domain/usecases/tasks/get_task_count_by_lesson_id_usecase
 import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
 import 'package:codium/domain/usecases/tasks/submit_task_answer_usecase.dart';
 import 'package:codium/domain/usecases/usecases.dart';
-import 'package:codium/features/ai_explanation/ai_explanation.dart';
 import 'package:codium/features/course_details/course_details.dart';
 import 'package:codium/features/course_learning/bloc/course_learning_bloc.dart';
 import 'package:codium/features/course_learning/bloc/lessons_list_bloc.dart';
-import 'package:codium/features/explanation_history/explanation_history.dart';
 import 'package:codium/features/learning/learning.dart';
 import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
-import 'package:codium/features/library/library.dart';
 import 'package:codium/features/main/main.dart';
 import 'package:codium/features/onboarding/onboarding.dart';
-import 'package:codium/features/pdf_reader/pdf_reader.dart';
 import 'package:codium/features/profile/profile.dart';
 import 'package:codium/features/tasks/bloc/lesson_task/lesson_task_session_bloc.dart';
 import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
@@ -104,12 +100,6 @@ class DependencyInjection {
       ..registerLazySingleton<IUserDataSource>(
         () => UserLocalDataSource(GetIt.I<AppDatabase>()),
       )
-      ..registerLazySingleton<IPdfLocalDataSource>(
-        () => PdfLocalDataSource(GetIt.I<AppDatabase>()),
-      )
-      ..registerLazySingleton<IBookmarkLocalDataSource>(
-        () => BookmarkLocalDataSource(GetIt.I<AppDatabase>()),
-      )
       ..registerLazySingleton<IExplanationLocalDataSource>(
         () => ExplanationLocalDataSource(GetIt.I<AppDatabase>()),
       )
@@ -156,12 +146,6 @@ class DependencyInjection {
       ..registerLazySingleton<IUserStatisticsRepository>(
         () =>
             UserStatisticsRepository(GetIt.I<IUserStatisticsLocalDataSource>()),
-      )
-      ..registerLazySingleton<IPdfRepository>(
-        () => PdfRepository(GetIt.I<IPdfLocalDataSource>()),
-      )
-      ..registerLazySingleton<IBookmarkRepository>(
-        () => BookmarkRepository(GetIt.I<IBookmarkLocalDataSource>()),
       )
       ..registerLazySingleton<IExplanationRepository>(
         () => ExplanationRepository(GetIt.I<IExplanationLocalDataSource>()),
@@ -242,22 +226,6 @@ class DependencyInjection {
         () => CheckCourseEnrollmentUseCase(
           courseRepository: GetIt.I<ICourseRepository>(),
         ),
-      )
-      ..registerFactory(() => GetPdfListUseCase(GetIt.I<IPdfRepository>()))
-      ..registerFactory(() => ImportPdfUseCase(GetIt.I<IPdfRepository>()))
-      ..registerFactory(() => DeletePdfUseCase(GetIt.I<IPdfRepository>()))
-      ..registerFactory(
-        () => ToggleFavoritePdfUseCase(GetIt.I<IPdfRepository>()),
-      )
-      ..registerFactory(() => GetPdfBookByIdUseCase(GetIt.I<IPdfRepository>()))
-      ..registerFactory(
-        () => ValidateAndOpenPdfUseCase(GetIt.I<IPdfRepository>()),
-      )
-      ..registerFactory(
-        () => UpdateReadingProgressUseCase(GetIt.I<IPdfRepository>()),
-      )
-      ..registerFactory(
-        () => SaveBookmarkUseCase(GetIt.I<IBookmarkRepository>()),
       )
       ..registerFactory(
         () => ExplainTextUseCase(GetIt.I<IExplanationRepository>()),
@@ -353,34 +321,6 @@ class DependencyInjection {
       ..registerLazySingleton(
         () => CoursePurchasingBloc(
           purchaseCourseUseCase: GetIt.I<PurchaseCourseUseCase>(),
-        ),
-      )
-      ..registerFactory(
-        () => LibraryBloc(
-          getPdfListUseCase: GetIt.I<GetPdfListUseCase>(),
-          importPdfUseCase: GetIt.I<ImportPdfUseCase>(),
-          deletePdfUseCase: GetIt.I<DeletePdfUseCase>(),
-          toggleFavoritePdfUseCase: GetIt.I<ToggleFavoritePdfUseCase>(),
-        ),
-      )
-      ..registerFactory(
-        () => PdfReaderBloc(
-          validateAndOpenPdfUseCase: GetIt.I<ValidateAndOpenPdfUseCase>(),
-          updateReadingProgressUseCase: GetIt.I<UpdateReadingProgressUseCase>(),
-          saveBookmarkUseCase: GetIt.I<SaveBookmarkUseCase>(),
-        ),
-      )
-      ..registerFactory(
-        () => AiExplanationBloc(
-          explainTextUseCase: GetIt.I<ExplainTextUseCase>(),
-        ),
-      )
-      ..registerFactory(
-        () => ExplanationHistoryBloc(
-          getExplanationHistoryUseCase: GetIt.I<GetExplanationHistoryUseCase>(),
-          searchExplanationHistoryUseCase:
-              GetIt.I<SearchExplanationHistoryUseCase>(),
-          deleteExplanationUseCase: GetIt.I<DeleteExplanationUseCase>(),
         ),
       )
       ..registerFactory(
