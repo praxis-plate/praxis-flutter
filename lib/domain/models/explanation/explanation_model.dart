@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 
 class ExplanationModel extends Equatable {
   final int id;
-  final int pdfBookId;
-  final int pageNumber;
   final String selectedText;
   final String explanation;
   final String sources;
@@ -11,8 +9,6 @@ class ExplanationModel extends Equatable {
 
   const ExplanationModel({
     required this.id,
-    required this.pdfBookId,
-    required this.pageNumber,
     required this.selectedText,
     required this.explanation,
     required this.sources,
@@ -21,8 +17,6 @@ class ExplanationModel extends Equatable {
 
   ExplanationModel copyWith({
     int? id,
-    int? pdfBookId,
-    int? pageNumber,
     String? selectedText,
     String? explanation,
     String? sources,
@@ -30,8 +24,6 @@ class ExplanationModel extends Equatable {
   }) {
     return ExplanationModel(
       id: id ?? this.id,
-      pdfBookId: pdfBookId ?? this.pdfBookId,
-      pageNumber: pageNumber ?? this.pageNumber,
       selectedText: selectedText ?? this.selectedText,
       explanation: explanation ?? this.explanation,
       sources: sources ?? this.sources,
@@ -42,8 +34,6 @@ class ExplanationModel extends Equatable {
   @override
   List<Object?> get props => [
     id,
-    pdfBookId,
-    pageNumber,
     selectedText,
     explanation,
     sources,
