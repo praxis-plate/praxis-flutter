@@ -175,7 +175,14 @@ class _CourseMetaInfo extends StatelessWidget {
           isPurchased: isPurchased,
           onPressed: () {
             final talker = GetIt.I<Talker>();
-            final userId = UserProvider.of(context).profile.id;
+            final user = UserProvider.maybeOf(context);
+
+            if (user == null) {
+              talker.warning('UserProvider not available');
+              return;
+            }
+
+            final userId = user.profile.id;
 
             talker.info(
               '🛒 Purchase button pressed: courseId=$courseId, userId=$userId',

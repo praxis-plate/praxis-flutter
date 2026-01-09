@@ -182,42 +182,69 @@ class _LessonContent extends StatelessWidget {
               ),
             ),
           ),
-          if (!isCompleted)
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final bloc = context.read<LessonContentBloc>();
-                      final state = bloc.state;
-                      if (state is LessonContentLoaded) {
-                        bloc.add(
-                          CompleteLesson(
-                            userId: '',
-                            lessonId: lesson.id.toString(),
-                            courseId: '',
-                          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.pushNamed(
+                          'lesson-task-session',
+                          pathParameters: {'lessonId': lesson.id.toString()},
                         );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: theme.colorScheme.primary,
-                      foregroundColor: theme.colorScheme.onPrimary,
-                    ),
-                    child: Text(
-                      s.completeLesson,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.w600,
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: theme.colorScheme.primary,
+                        foregroundColor: theme.colorScheme.onPrimary,
+                      ),
+                      child: Text(
+                        s.startLearning,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  if (!isCompleted) ...[
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          final bloc = context.read<LessonContentBloc>();
+                          final state = bloc.state;
+                          if (state is LessonContentLoaded) {
+                            bloc.add(
+                              CompleteLesson(
+                                userId: '',
+                                lessonId: lesson.id.toString(),
+                                courseId: '',
+                              ),
+                            );
+                          }
+                        },
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        child: Text(
+                          s.completeLesson,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
+          ),
         ],
       ),
     );

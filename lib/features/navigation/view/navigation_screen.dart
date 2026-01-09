@@ -152,6 +152,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (index) => _onItemTapped(context, index),
         selectedIndex: _selectedIndex,
+        labelBehavior: NavigationDestinationLabelBehavior.values.first,
         destinations: destinations,
       ),
       body: widget.child,

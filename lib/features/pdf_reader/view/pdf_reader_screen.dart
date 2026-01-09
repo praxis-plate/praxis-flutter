@@ -1,6 +1,5 @@
 import 'package:codium/core/config/feature_flags.dart';
 import 'package:codium/core/error/app_error_code_extension.dart';
-import 'package:codium/domain/services/services.dart';
 import 'package:codium/features/ai_explanation/bloc/ai_explanation_bloc.dart';
 import 'package:codium/features/ai_explanation/widgets/explanation_bottom_sheet.dart';
 import 'package:codium/features/pdf_reader/bloc/pdf_reader_bloc.dart';
@@ -9,7 +8,6 @@ import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:pdfx/pdfx.dart';
 
 class PdfReaderScreen extends StatefulWidget {
@@ -26,7 +24,6 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
   PdfController? _pdfController;
   bool _showBookmarksPanel = false;
   double _lastScrollPosition = 0;
-  bool _isConnected = true;
   late final PdfReaderBloc _pdfReaderBloc;
   final FocusNode _focusNode = FocusNode();
 
@@ -35,17 +32,6 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
     super.initState();
     _pdfReaderBloc = context.read<PdfReaderBloc>();
     _pdfReaderBloc.add(OpenPdfEvent(widget.bookId));
-
-    final connectivityService = GetIt.I<IConnectivityService>();
-    _isConnected = connectivityService.isConnected;
-
-    connectivityService.connectivityStream.listen((isConnected) {
-      if (mounted) {
-        setState(() {
-          _isConnected = isConnected;
-        });
-      }
-    });
   }
 
   @override
@@ -104,7 +90,6 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
         if (event is KeyDownEvent) {
           final state = _pdfReaderBloc.state;
           if (state is PdfReaderLoadedState &&
-              _isConnected &&
               FeatureFlags.enableAiExplanations) {
             if (event.logicalKey == LogicalKeyboardKey.keyE &&
                 (HardwareKeyboard.instance.isControlPressed ||
@@ -132,9 +117,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                     return IconButton(
                       icon: const Icon(Icons.lightbulb_outline),
                       tooltip: s.pdfReaderExplainPage,
-                      onPressed: _isConnected
-                          ? () => _showExplainPageDialog(context, state)
-                          : null,
+                      onPressed: () => _showExplainPageDialog(context, state),
                     );
                   }
                   return const SizedBox.shrink();
@@ -169,7 +152,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
         floatingActionButton: FeatureFlags.enableAiExplanations
             ? BlocBuilder<PdfReaderBloc, PdfReaderState>(
                 builder: (context, state) {
-                  if (state is PdfReaderLoadedState && _isConnected) {
+                  if (state is PdfReaderLoadedState) {
                     return FloatingActionButton.extended(
                       onPressed: () =>
                           _showEnhancedTextSelectionDialog(context, state),
@@ -261,8 +244,7 @@ class _PdfReaderScreenState extends State<PdfReaderScreen> {
                   children: [
                     Column(
                       children: [
-                        if (!_isConnected) const OfflineIndicator(),
-                        if (_isConnected && FeatureFlags.enableAiExplanations)
+                        if (FeatureFlags.enableAiExplanations)
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,

@@ -36,10 +36,6 @@ class AppRouter {
       debugLogDiagnostics: true,
       refreshListenable: _authNotifier,
       redirect: (context, state) {
-        if (!FeatureFlags.enableAuthentication) {
-          return null;
-        }
-
         final authState = _authNotifier.state;
 
         final isAuthRoute =
@@ -63,34 +59,30 @@ class AppRouter {
       },
       routes: [
         GoRoute(path: '/', redirect: (context, state) => '/navigation'),
-        if (FeatureFlags.enableOnboarding)
-          GoRoute(
-            path: '/onboarding',
-            name: 'onboarding',
-            pageBuilder: (context, state) =>
-                MaterialPage(key: state.pageKey, child: const Placeholder()),
-          ),
-        if (FeatureFlags.enableAuthentication)
-          GoRoute(
-            path: '/sign-up',
-            name: 'sign-up',
-            pageBuilder: (context, state) =>
-                MaterialPage(key: state.pageKey, child: const SignUpScreen()),
-          ),
-        if (FeatureFlags.enableAuthentication)
-          GoRoute(
-            path: '/phone-sign-up',
-            name: 'phone-sign-up',
-            pageBuilder: (context, state) =>
-                MaterialPage(key: state.pageKey, child: const Placeholder()),
-          ),
-        if (FeatureFlags.enableAuthentication)
-          GoRoute(
-            path: '/sign-in',
-            name: 'sign-in',
-            pageBuilder: (context, state) =>
-                MaterialPage(key: state.pageKey, child: const SignInScreen()),
-          ),
+        GoRoute(
+          path: '/onboarding',
+          name: 'onboarding',
+          pageBuilder: (context, state) =>
+              MaterialPage(key: state.pageKey, child: const Placeholder()),
+        ),
+        GoRoute(
+          path: '/sign-up',
+          name: 'sign-up',
+          pageBuilder: (context, state) =>
+              MaterialPage(key: state.pageKey, child: const SignUpScreen()),
+        ),
+        GoRoute(
+          path: '/phone-sign-up',
+          name: 'phone-sign-up',
+          pageBuilder: (context, state) =>
+              MaterialPage(key: state.pageKey, child: const Placeholder()),
+        ),
+        GoRoute(
+          path: '/sign-in',
+          name: 'sign-in',
+          pageBuilder: (context, state) =>
+              MaterialPage(key: state.pageKey, child: const SignInScreen()),
+        ),
         ShellRoute(
           navigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state, child) {

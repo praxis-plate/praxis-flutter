@@ -1,3 +1,4 @@
+import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:codium/features/main/bloc/main/main_bloc.dart';
@@ -15,30 +16,44 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserProvider.of(context);
+    return BlocBuilder<UserProfileBloc, UserProfileState>(
+      builder: (context, userProfileState) {
+        if (userProfileState is! UserProfileLoadedState) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => GetIt.I<UserStatisticsBloc>()
-            ..add(UserStatisticsLoadEvent(userId: user.profile.id.toString())),
-        ),
-        BlocProvider(
-          create: (context) =>
-              GetIt.I<MainBloc>()
-                ..add(MainLoadCoursesEvent(userId: user.profile.id)),
-        ),
-        BlocProvider(
-          create: (context) => GetIt.I<ProfileBloc>()..add(ProfileLoadEvent()),
-        ),
-      ],
-      child: const _MainScreenContent(),
+        final userId = userProfileState.profile.id;
+
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) =>
+                  GetIt.I<UserStatisticsBloc>()
+                    ..add(UserStatisticsLoadEvent(userId: userId.toString())),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  GetIt.I<MainBloc>()
+                    ..add(MainLoadCoursesEvent(userId: userId)),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  GetIt.I<ProfileBloc>()..add(ProfileLoadEvent()),
+            ),
+          ],
+          child: _MainScreenContent(userId: userId),
+        );
+      },
     );
   }
 }
 
 class _MainScreenContent extends StatelessWidget {
-  const _MainScreenContent();
+  final int userId;
+
+  const _MainScreenContent({required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +63,11 @@ class _MainScreenContent extends StatelessWidget {
       appBar: AppBar(
         title: Text(S.of(context).mainTitle, style: theme.textTheme.titleLarge),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.bug_report),
+            tooltip: 'AI Service Test',
+            onPressed: () => context.push('/debug/ai-service-test'),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: Center(
@@ -73,25 +93,23 @@ class _MainScreenContent extends StatelessWidget {
           ),
         ],
       ),
-      body: const _MainScreenBody(),
+      body: _MainScreenBody(userId: userId),
     );
   }
 }
 
 class _MainScreenBody extends StatelessWidget {
-  const _MainScreenBody();
+  final int userId;
+
+  const _MainScreenBody({required this.userId});
 
   @override
   Widget build(BuildContext context) {
-    final user = UserProvider.of(context);
-
     return Wrapper(
       child: BlocListener<CoursePurchasingBloc, CoursePurchasingState>(
         listener: (context, state) {
           if (state is CoursePurchasingLoadSuccessState) {
-            context.read<MainBloc>().add(
-              MainLoadCoursesEvent(userId: user.profile.id),
-            );
+            context.read<MainBloc>().add(MainLoadCoursesEvent(userId: userId));
             context.read<ProfileBloc>().add(ProfileLoadEvent());
 
             ScaffoldMessenger.of(context).showSnackBar(

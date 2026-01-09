@@ -97,7 +97,7 @@ class PdfRepository implements IPdfRepository {
       final entity = await _pdfDataSource.getBookById(bookId);
       if (entity == null) {
         return const Failure(
-          AppFailure(code: AppErrorCode.apiNotFound, message: 'Book not found'),
+          AppFailure(code: AppErrorCode.apiNotFound, message: ''),
         );
       }
 

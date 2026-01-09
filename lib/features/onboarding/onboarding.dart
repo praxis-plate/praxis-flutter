@@ -1,1 +1,2 @@
-export 'bloc/onboarding_bloc.dart';
+export 'bloc/bloc.dart';
+export 'view/view.dart';
