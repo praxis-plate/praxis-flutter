@@ -5,16 +5,14 @@ final class SignUpState extends Equatable {
   final PasswordValidator password;
   final FormzSubmissionStatus status;
   final bool isValid;
-  final String? errorMessage;
-  final bool obscurePassword;
+  final AppErrorCode? errorCode;
 
   const SignUpState({
     this.email = const EmailValidator.pure(),
     this.password = const PasswordValidator.pure(),
     this.status = FormzSubmissionStatus.initial,
     this.isValid = false,
-    this.obscurePassword = true,
-    this.errorMessage,
+    this.errorCode,
   });
 
   SignUpState copyWith({
@@ -23,19 +21,17 @@ final class SignUpState extends Equatable {
     FormzSubmissionStatus? status,
     bool? isValid,
     bool? obscurePassword,
-    String? errorMessage,
+    AppErrorCode? errorCode,
   }) {
     return SignUpState(
       email: email ?? this.email,
       password: password ?? this.password,
       status: status ?? this.status,
       isValid: isValid ?? this.isValid,
-      errorMessage: errorMessage ?? this.errorMessage,
-      obscurePassword: obscurePassword ?? this.obscurePassword,
+      errorCode: errorCode ?? this.errorCode,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [email, password, status, isValid, obscurePassword, errorMessage];
+  List<Object?> get props => [email, password, status, isValid, errorCode];
 }
