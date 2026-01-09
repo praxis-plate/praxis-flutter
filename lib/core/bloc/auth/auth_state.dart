@@ -7,29 +7,31 @@ sealed class AuthState extends Equatable {
   List<Object?> get props => [];
 }
 
+class AuthUnauthenticatedState extends AuthState {
+  const AuthUnauthenticatedState();
+}
+
 class AuthLoadingState extends AuthState {
   const AuthLoadingState();
 }
 
 class AuthAuthenticatedState extends AuthState {
-  final int userId;
-  final String email;
+  final UserProfileModel user;
 
-  const AuthAuthenticatedState({required this.userId, required this.email});
+  const AuthAuthenticatedState({required this.user});
+
+  int get userId => user.id;
+  String get email => user.email;
 
   @override
-  List<Object> get props => [userId, email];
-}
-
-class AuthUnauthenticatedState extends AuthState {
-  const AuthUnauthenticatedState();
+  List<Object> get props => [user];
 }
 
 class AuthErrorState extends AuthState {
-  final String message;
+  final AppErrorCode errorCode;
 
-  const AuthErrorState({required this.message});
+  const AuthErrorState({required this.errorCode});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [errorCode];
 }

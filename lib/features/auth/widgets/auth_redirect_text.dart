@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 class AuthRedirectText extends StatelessWidget {
   final String questionText;
   final String actionText;
-  final String route;
+  final VoidCallback onTap;
 
   const AuthRedirectText({
     super.key,
     required this.questionText,
     required this.actionText,
-    required this.route,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return GestureDetector(
-      onTap: () => context.go(route),
+      onTap: onTap,
       child: RichText(
         text: TextSpan(
           style: theme.textTheme.bodySmall,

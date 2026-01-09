@@ -1,4 +1,4 @@
-export 'bloc/sign_in/sign_in_cubit.dart';
-export 'bloc/sign_up/sign_up_cubit.dart';
-export 'view/sign_in_screen.dart';
-export 'view/sign_up_screen.dart';
+export 'bloc/bloc.dart';
+export 'di/auth_feature_scope.dart';
+export 'view/view.dart';
+export 'widgets/widgets.dart';
