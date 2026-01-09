@@ -33,10 +33,10 @@ class CourseRepository implements ICourseRepository {
     try {
       final entity = await _localDataSource.getCourseById(int.parse(id));
       if (entity == null) {
-        return Failure(
+        return const Failure(
           AppFailure(
             code: AppErrorCode.apiNotFound,
-            message: 'Course not found with id: $id',
+            message: '',
             canRetry: false,
           ),
         );

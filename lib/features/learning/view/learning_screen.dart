@@ -1,5 +1,5 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/config/feature_flags.dart';
+import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
@@ -15,23 +15,29 @@ class LearningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userId = FeatureFlags.enableAuthentication
-        ? UserProvider.of(context).profile.id.toString()
-        : '1';
+    return BlocBuilder<UserProfileBloc, UserProfileState>(
+      builder: (context, userProfileState) {
+        if (userProfileState is! UserProfileLoadedState) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-    return BlocProvider(
-      create: (context) =>
-          GetIt.I<LearningBloc>()..add(LearningLoadEvent(userId: userId)),
-      child: FeatureFlags.enableAuthentication
-          ? BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthUnauthenticatedState) {
-                  context.go('/sign-in');
-                }
-              },
-              child: _LearningScreenContent(userId: userId),
-            )
-          : _LearningScreenContent(userId: userId),
+        final userId = userProfileState.profile.id.toString();
+
+        return BlocProvider(
+          create: (context) =>
+              GetIt.I<LearningBloc>()..add(LearningLoadEvent(userId: userId)),
+          child: BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthUnauthenticatedState) {
+                context.go('/auth/sign-in');
+              }
+            },
+            child: _LearningScreenContent(userId: userId),
+          ),
+        );
+      },
     );
   }
 }
@@ -184,7 +190,7 @@ class _EnrolledCourseCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          context.push('/course/${course.id}');
+          context.push('/course/${course.id}/learn');
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(

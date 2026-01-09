@@ -1,20 +1,32 @@
 import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
-import 'package:codium/core/services/mock_connectivity_service.dart';
+import 'package:codium/core/config/dio_factory.dart';
+import 'package:codium/core/services/ai_service.dart';
 import 'package:codium/core/services/session_service.dart';
 import 'package:codium/data/database/app_database.dart';
 import 'package:codium/data/database/database_seeder.dart';
 import 'package:codium/data/datasources/datasources.dart';
+import 'package:codium/data/datasources/local/task_local_datasource.dart';
 import 'package:codium/data/repositories/repositories.dart';
+import 'package:codium/data/repositories/task_repository.dart';
 import 'package:codium/domain/datasources/datasources.dart';
+import 'package:codium/domain/datasources/i_task_local_datasource.dart';
+import 'package:codium/domain/repositories/i_task_repository.dart';
 import 'package:codium/domain/repositories/repositories.dart';
+import 'package:codium/domain/services/i_ai_service.dart';
 import 'package:codium/domain/services/services.dart';
+import 'package:codium/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
+import 'package:codium/domain/usecases/tasks/complete_lesson_session_usecase.dart';
+import 'package:codium/domain/usecases/tasks/get_lesson_tasks_usecase.dart';
+import 'package:codium/domain/usecases/tasks/get_task_by_id_usecase.dart';
+import 'package:codium/domain/usecases/tasks/get_task_count_by_lesson_id_usecase.dart';
+import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
+import 'package:codium/domain/usecases/tasks/submit_task_answer_usecase.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/ai_explanation/ai_explanation.dart';
-import 'package:codium/features/auth/auth.dart';
 import 'package:codium/features/course_details/course_details.dart';
 import 'package:codium/features/course_learning/bloc/course_learning_bloc.dart';
+import 'package:codium/features/course_learning/bloc/lessons_list_bloc.dart';
 import 'package:codium/features/explanation_history/explanation_history.dart';
 import 'package:codium/features/learning/learning.dart';
 import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
@@ -23,6 +35,9 @@ import 'package:codium/features/main/main.dart';
 import 'package:codium/features/onboarding/onboarding.dart';
 import 'package:codium/features/pdf_reader/pdf_reader.dart';
 import 'package:codium/features/profile/profile.dart';
+import 'package:codium/features/tasks/bloc/lesson_task/lesson_task_session_bloc.dart';
+import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -36,6 +51,7 @@ class DependencyInjection {
     _registerRepositories();
     _registerUseCases();
     _registerBlocs();
+    _registerTaskFeature();
 
     await _seedDatabaseIfNeeded();
   }
@@ -44,12 +60,12 @@ class DependencyInjection {
     try {
       final db = GetIt.I<AppDatabase>();
       final userDataSource = GetIt.I<IUserDataSource>();
+      final seeder = DatabaseSeeder(db, userDataSource);
 
       final existingUsers = await db.managers.user.count();
 
       if (existingUsers == 0) {
         GetIt.I<Talker>().info('Database is empty, seeding...');
-        final seeder = DatabaseSeeder(db, userDataSource);
         await seeder.seed();
         GetIt.I<Talker>().info('Database seeded successfully');
       } else {
@@ -57,6 +73,8 @@ class DependencyInjection {
           'Database already contains $existingUsers users',
         );
       }
+
+      await seeder.ensureTestUser();
     } catch (e, st) {
       GetIt.I<Talker>().error('Failed to seed database', e, st);
     }
@@ -67,9 +85,6 @@ class DependencyInjection {
 
     GetIt.I
       ..registerSingleton(sharedPreferences)
-      ..registerLazySingleton<IConnectivityService>(
-        () => MockConnectivityService(),
-      )
       ..registerLazySingleton<ISessionService>(
         () => SessionService(GetIt.I<SharedPreferences>()),
       );
@@ -276,19 +291,17 @@ class DependencyInjection {
           userStatisticsRepository: GetIt.I<IUserStatisticsRepository>(),
           achievementRepository: GetIt.I<IAchievementRepository>(),
         ),
+      )
+      ..registerFactory(
+        () => GetLessonsByCourseIdUseCase(GetIt.I<ILessonRepository>()),
+      )
+      ..registerFactory(
+        () => GetTaskCountByLessonIdUseCase(GetIt.I<ITaskRepository>()),
       );
   }
 
   void _registerBlocs() {
     GetIt.I
-      ..registerLazySingleton(
-        () => AuthBloc(
-          checkAuthStatusUseCase: GetIt.I<CheckAuthStatusUseCase>(),
-          signInUseCase: GetIt.I<SignInUseCase>(),
-          signUpUseCase: GetIt.I<SignUpUseCase>(),
-          signOutUseCase: GetIt.I<SignOutUseCase>(),
-        ),
-      )
       ..registerLazySingleton(
         () => UserProfileBloc(
           getFullUserProfileUseCase: GetIt.I<GetFullUserProfileUseCase>(),
@@ -334,8 +347,6 @@ class DependencyInjection {
           purchaseCourseUseCase: GetIt.I<PurchaseCourseUseCase>(),
         ),
       )
-      ..registerFactory(() => SignUpCubit())
-      ..registerFactory(() => SignInCubit())
       ..registerFactory(
         () => LibraryBloc(
           getPdfListUseCase: GetIt.I<GetPdfListUseCase>(),
@@ -377,6 +388,9 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(
+        () => LessonsListBloc(GetIt.I<GetLessonsByCourseIdUseCase>()),
+      )
+      ..registerFactory(
         () => LessonContentBloc(
           lessonRepository: GetIt.I<ILessonRepository>(),
           lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
@@ -384,5 +398,50 @@ class DependencyInjection {
         ),
       )
       ..registerLazySingleton(() => AchievementNotificationCubit());
+  }
+
+  void _registerTaskFeature() {
+    GetIt.I
+      ..registerLazySingleton<Dio>(() => DioFactory.createDefaultDio())
+      ..registerLazySingleton<IAiService>(
+        () => AiService(dio: DioFactory.createGeminiDio()),
+      )
+      ..registerLazySingleton<ITaskLocalDataSource>(
+        () => TaskLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<ITaskRepository>(
+        () => TaskRepository(GetIt.I<ITaskLocalDataSource>()),
+      )
+      ..registerFactory(() => GetLessonTasksUseCase(GetIt.I<ITaskRepository>()))
+      ..registerFactory(() => GetTaskByIdUseCase(GetIt.I<ITaskRepository>()))
+      ..registerFactory(
+        () => SubmitTaskAnswerUseCase(
+          GetIt.I<ITaskRepository>(),
+          GetIt.I<IUserStatisticsRepository>(),
+          GetIt.I<ICoinTransactionRepository>(),
+        ),
+      )
+      ..registerFactory(
+        () => RequestTaskHintUseCase(
+          GetIt.I<ITaskRepository>(),
+          GetIt.I<IAiService>(),
+        ),
+      )
+      ..registerFactoryParam<TaskHintCubit, int, void>(
+        (userId, _) => TaskHintCubit(GetIt.I<RequestTaskHintUseCase>(), userId),
+      )
+      ..registerFactory<CompleteLessonSessionUseCase>(
+        () => CompleteLessonSessionUseCase(
+          GetIt.I<ILessonProgressRepository>(),
+          GetIt.I<IUserStatisticsRepository>(),
+          GetIt.I<ICoinTransactionRepository>(),
+        ),
+      )
+      ..registerFactory<LessonTaskSessionBloc>(
+        () => LessonTaskSessionBloc(
+          GetIt.I<GetLessonTasksUseCase>(),
+          GetIt.I<CompleteLessonSessionUseCase>(),
+        ),
+      );
   }
 }
