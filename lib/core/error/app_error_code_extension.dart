@@ -1,10 +1,10 @@
 import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/l10n/app_localizations.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/widgets.dart';
 
 extension AppErrorCodeExtension on AppErrorCode {
   String localizedMessage(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = S.of(context);
 
     switch (this) {
       case AppErrorCode.networkTimeout:
