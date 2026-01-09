@@ -1,13 +1,33 @@
+import 'dart:async';
+
+import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/validators/email_validator.dart';
 import 'package:codium/core/validators/password_validator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 part 'sign_in_state.dart';
 
 class SignInCubit extends Cubit<SignInState> {
-  SignInCubit() : super(const SignInState());
+  SignInCubit({required this.authBloc}) : super(const SignInState()) {
+    streamSubscription = authBloc.stream.listen((AuthState authState) {
+      if (authState is AuthErrorState) {
+        emit(
+          state.copyWith(
+            status: FormzSubmissionStatus.failure,
+            errorCode: authState.errorCode,
+          ),
+        );
+      }
+    });
+  }
+
+  final AuthBloc authBloc;
+  late final StreamSubscription streamSubscription;
 
   void emailChanged(String value) {
     final email = EmailValidator.dirty(value);
@@ -33,9 +53,19 @@ class SignInCubit extends Cubit<SignInState> {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
   }
 
-  void togglePasswordVisibility() {
-    emit(state.copyWith(obscurePassword: !state.obscurePassword));
+  void reset() => emit(
+    state.copyWith(status: FormzSubmissionStatus.initial, errorCode: null),
+  );
+
+  @override
+  Future<void> close() {
+    streamSubscription.cancel();
+    return super.close();
   }
 
-  void reset() => emit(state.copyWith(status: FormzSubmissionStatus.initial));
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    GetIt.I<Talker>().handle(error, stackTrace);
+    super.onError(error, stackTrace);
+  }
 }
