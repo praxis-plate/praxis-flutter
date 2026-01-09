@@ -13,6 +13,11 @@ class AppFailure extends Equatable {
     this.canRetry = false,
   });
 
+  const AppFailure.parsing({String? message})
+    : code = AppErrorCode.apiGeneral,
+      message = message ?? 'Failed to parse response',
+      canRetry = false;
+
   factory AppFailure.fromError(AppError error) {
     return AppFailure(
       code: error.code,
@@ -21,13 +26,25 @@ class AppFailure extends Equatable {
     );
   }
 
-  factory AppFailure.fromException(Exception exception) {
+  factory AppFailure.fromException(Object exception) {
     if (exception is AppError) {
       return AppFailure.fromError(exception);
     }
     return AppFailure(
       code: AppErrorCode.unknown,
       message: exception.toString(),
+      canRetry: false,
+    );
+  }
+
+  factory AppFailure.fromDioException(dynamic dioException) {
+    final error = dioException.error;
+    if (error is AppError) {
+      return AppFailure.fromError(error);
+    }
+    return AppFailure(
+      code: AppErrorCode.unknown,
+      message: error?.toString() ?? 'Unknown error occurred',
       canRetry: false,
     );
   }

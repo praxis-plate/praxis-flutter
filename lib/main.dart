@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:codium/app/app.dart';
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/router/router.dart';
+import 'package:codium/core/router/router_exports.dart';
 import 'package:codium/dependency_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,8 +35,6 @@ void main() {
       );
 
       AppRouter.initialize();
-
-      GetIt.I<AuthBloc>().add(const AuthCheckStatusEvent());
 
       runApp(const App());
     },

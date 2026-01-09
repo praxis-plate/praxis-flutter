@@ -1,0 +1,98 @@
+part of 'task_bloc.dart';
+
+abstract class TaskState extends Equatable {
+  const TaskState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class TaskInitialState extends TaskState {
+  const TaskInitialState();
+}
+
+class TaskLoadingState extends TaskState {
+  const TaskLoadingState();
+}
+
+class TaskLoadedState extends TaskState {
+  final TaskModel task;
+  final TaskProgressModel? progress;
+
+  const TaskLoadedState({required this.task, this.progress});
+
+  @override
+  List<Object?> get props => [task, progress];
+}
+
+class TaskAnswerValidatingState extends TaskState {
+  final TaskModel task;
+
+  const TaskAnswerValidatingState(this.task);
+
+  @override
+  List<Object> get props => [task];
+}
+
+class TaskAnswerCorrectState extends TaskState {
+  final TaskModel task;
+  final TaskResultModel result;
+
+  const TaskAnswerCorrectState({required this.task, required this.result});
+
+  @override
+  List<Object> get props => [task, result];
+}
+
+class TaskAnswerIncorrectState extends TaskState {
+  final TaskModel task;
+  final TaskResultModel result;
+
+  const TaskAnswerIncorrectState({required this.task, required this.result});
+
+  @override
+  List<Object> get props => [task, result];
+}
+
+class TaskHintLoadingState extends TaskState {
+  final TaskModel task;
+
+  const TaskHintLoadingState(this.task);
+
+  @override
+  List<Object> get props => [task];
+}
+
+class TaskHintLoadedState extends TaskState {
+  final TaskModel task;
+  final String hint;
+  final int hintsUsed;
+
+  const TaskHintLoadedState({
+    required this.task,
+    required this.hint,
+    required this.hintsUsed,
+  });
+
+  @override
+  List<Object> get props => [task, hint, hintsUsed];
+}
+
+class TaskErrorState extends TaskState {
+  final String message;
+
+  const TaskErrorState(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+class TaskHintErrorState extends TaskState {
+  final TaskModel task;
+  final String message;
+
+  const TaskHintErrorState({required this.task, required this.message});
+
+  @override
+  List<Object> get props => [task, message];
+}

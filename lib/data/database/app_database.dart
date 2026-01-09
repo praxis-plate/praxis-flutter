@@ -24,6 +24,10 @@ part 'app_database.g.dart';
     Course,
     Module,
     Lesson,
+    Task,
+    TaskProgress,
+    TaskOption,
+    TaskTestCase,
   ],
 )
 class AppDatabase extends _$AppDatabase {

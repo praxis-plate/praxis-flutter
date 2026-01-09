@@ -9,8 +9,6 @@ class FeatureFlags {
   static const bool enableOfflineMode = true;
   static const bool enableCourses = true;
   static const bool enableProfile = true;
-  static const bool enableOnboarding = false;
-  static const bool enableAuthentication = true;
 
   static bool get isDebugMode => kDebugMode;
   static bool get enableLogging => isDebugMode;

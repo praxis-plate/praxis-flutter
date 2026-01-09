@@ -2,13 +2,10 @@ import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/locale/locale.dart';
 import 'package:codium/core/bloc/theme/theme_cubit.dart';
 import 'package:codium/features/profile/profile.dart';
-import 'package:codium/features/profile/widgets/settings_switch.dart';
-import 'package:codium/features/profile/widgets/settings_tile.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -18,36 +15,29 @@ class ProfileScreen extends StatelessWidget {
     final s = S.of(context);
     final theme = Theme.of(context);
 
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthUnauthenticatedState) {
-          context.go('/sign-up');
-        }
-      },
-      child: BlocBuilder<ProfileBloc, ProfileState>(
-        bloc: GetIt.I<ProfileBloc>()..add(ProfileLoadEvent()),
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(s.profileTitle, style: theme.textTheme.titleLarge),
-            ),
-            body: state is ProfileLoadingState
-                ? const Center(child: CircularProgressIndicator())
-                : state is ProfileLoadErrorState
-                ? Center(
-                    child: Text(
-                      s.profileErrorLoading,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.error,
-                      ),
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      bloc: GetIt.I<ProfileBloc>()..add(ProfileLoadEvent()),
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(s.profileTitle, style: theme.textTheme.titleLarge),
+          ),
+          body: state is ProfileLoadingState
+              ? const Center(child: CircularProgressIndicator())
+              : state is ProfileLoadErrorState
+              ? Center(
+                  child: Text(
+                    s.profileErrorLoading,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.error,
                     ),
-                  )
-                : state is ProfileLoadSuccessState
-                ? _ProfileContent(state: state)
-                : const SizedBox.shrink(),
-          );
-        },
-      ),
+                  ),
+                )
+              : state is ProfileLoadSuccessState
+              ? _ProfileContent(state: state)
+              : const SizedBox.shrink(),
+        );
+      },
     );
   }
 }
