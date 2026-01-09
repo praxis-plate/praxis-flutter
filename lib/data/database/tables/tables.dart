@@ -1,12 +1,10 @@
 export 'achievement.dart';
-export 'bookmark.dart';
 export 'coin_transaction.dart';
 export 'course.dart';
 export 'explanation.dart';
 export 'lesson.dart';
 export 'lesson_progress.dart';
 export 'module.dart';
-export 'pdf_book.dart';
 export 'task.dart';
 export 'task_option.dart';
 export 'task_progress.dart';

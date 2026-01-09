@@ -2,7 +2,7 @@ import 'package:codium/core/bloc/achievement_notification/achievement_notificati
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/course_task.dart';
 import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
-import 'package:codium/l10n/app_localizations.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -35,7 +35,7 @@ class _LessonContentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = AppLocalizations.of(context)!;
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return BlocListener<LessonContentBloc, LessonContentState>(
@@ -109,7 +109,7 @@ class _LessonContentView extends StatelessWidget {
     BuildContext context,
     LessonContentCompleted state,
   ) {
-    final s = AppLocalizations.of(context)!;
+    final s = S.of(context);
 
     showDialog(
       context: context,
@@ -157,7 +157,7 @@ class _LessonContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = AppLocalizations.of(context)!;
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return Wrapper(

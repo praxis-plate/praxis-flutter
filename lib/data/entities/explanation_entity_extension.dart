@@ -6,8 +6,6 @@ extension ExplanationEntityExtension on ExplanationEntity {
   ExplanationModel toDomain() {
     return ExplanationModel(
       id: id,
-      pdfBookId: pdfBookId,
-      pageNumber: pageNumber,
       selectedText: selectedText,
       explanation: explanation,
       sources: sources,
@@ -19,8 +17,6 @@ extension ExplanationEntityExtension on ExplanationEntity {
 extension CreateExplanationModelExtension on CreateExplanationModel {
   ExplanationCompanion toCompanion() {
     return ExplanationCompanion.insert(
-      pdfBookId: pdfBookId,
-      pageNumber: pageNumber,
       selectedText: selectedText,
       explanation: explanation,
       sources: sources,
