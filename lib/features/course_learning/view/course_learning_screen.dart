@@ -2,7 +2,7 @@ import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/course_learning/bloc/course_learning_bloc.dart';
 import 'package:codium/features/course_learning/bloc/lessons_list_bloc.dart';
 import 'package:codium/features/course_learning/widgets/widgets.dart';
-import 'package:codium/l10n/app_localizations.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -28,7 +28,7 @@ class _CourseLearningView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = AppLocalizations.of(context)!;
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -115,7 +115,7 @@ class _LessonsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = AppLocalizations.of(context)!;
+    final s = S.of(context);
 
     return BlocProvider(
       create: (context) =>
