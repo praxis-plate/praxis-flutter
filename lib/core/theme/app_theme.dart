@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 @immutable
 class AppPalette {
+  static const Color star = Color.fromARGB(255, 255, 193, 7);
+
   final Color primary;
   final Color primaryVariant;
   final Color card;

@@ -7,9 +7,9 @@ sealed class MainState extends Equatable {
   List<Object> get props => [];
 }
 
-final class MainCoursesInitialState extends MainState {}
-
-final class MainCoursesLoadingState extends MainState {}
+final class MainCoursesLoadingState extends MainState {
+  const MainCoursesLoadingState();
+}
 
 final class MainCoursesLoadErrorState extends MainState {
   final String message;

@@ -31,7 +31,6 @@ import 'package:codium/features/learning/learning.dart';
 import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
 import 'package:codium/features/main/main.dart';
 import 'package:codium/features/onboarding/onboarding.dart';
-import 'package:codium/features/profile/profile.dart';
 import 'package:codium/features/tasks/bloc/lesson_task/lesson_task_session_bloc.dart';
 import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
 import 'package:dio/dio.dart';
@@ -284,12 +283,6 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(
-        () => ProfileBloc(
-          getProfileUseCase: GetIt.I<GetProfileUseCase>(),
-          getUserProfileDataUseCase: GetIt.I<GetUserProfileDataUseCase>(),
-        ),
-      )
-      ..registerFactory(
         () => MainBloc(
           getCoursesUseCase: GetIt.I<GetCoursesUseCase>(),
           getEnrolledCoursesUseCase: GetIt.I<GetEnrolledCoursesUseCase>(),
@@ -301,7 +294,7 @@ class DependencyInjection {
               GetIt.I<GetMainCarouselCoursesUseCase>(),
         ),
       )
-      ..registerFactory(
+      ..registerLazySingleton(
         () => UserStatisticsBloc(
           getUserStatisticsUseCase: GetIt.I<GetUserStatisticsUseCase>(),
         ),
