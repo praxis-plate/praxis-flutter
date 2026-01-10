@@ -1,18 +1,20 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/config/feature_flags.dart';
 import 'package:codium/core/router/auth_notifier.dart';
+import 'package:codium/core/router/navigation_shell_initializer.dart';
+import 'package:codium/core/router/router_exports.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/auth/auth.dart';
+import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
 import 'package:codium/features/course_details/view/course_detail_screen.dart';
 import 'package:codium/features/course_learning/view/course_learning_screen.dart';
-import 'package:codium/features/learning/view/learning_screen.dart';
-import 'package:codium/features/main/view/main_screen.dart';
+import 'package:codium/features/learning/learning.dart';
+import 'package:codium/features/main/main.dart';
 import 'package:codium/features/navigation/view/navigation_screen.dart';
-import 'package:codium/features/profile/view/profile_screen.dart';
+import 'package:codium/features/profile/profile.dart';
 import 'package:codium/features/tasks/view/lesson_task_session_screen.dart';
 import 'package:codium/features/tasks/view/task_screen.dart';
-import 'package:codium/features/test/view/test_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -99,10 +101,20 @@ class AppRouter {
               'Cannot access User: expected AuthAuthenticatedState, got ${authState.runtimeType}',
             );
 
+            final userProfile = (authState as AuthAuthenticatedState).user;
+
             return NoTransitionPage(
               child: UserScope(
-                user: (authState as AuthAuthenticatedState).user,
-                child: NavigationScreen(child: child),
+                user: userProfile,
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: GetIt.I<CoursePurchasingBloc>()),
+                    BlocProvider.value(value: GetIt.I<UserStatisticsBloc>()),
+                  ],
+                  child: NavigationShellInitializer(
+                    child: NavigationScreen(child: child),
+                  ),
+                ),
               ),
             );
           },
@@ -112,120 +124,134 @@ class AppRouter {
               name: 'navigation',
               redirect: (context, state) => '/home',
             ),
+
             GoRoute(
               path: '/home',
               name: 'home',
-              pageBuilder: (context, state) => NoTransitionPage(
-                key: state.pageKey,
-                child: const MainScreen(),
-              ),
+              pageBuilder: (context, state) {
+                final userProfile = UserScope.of(context, listen: false);
+
+                return NoTransitionPage(
+                  key: state.pageKey,
+                  child: BlocProvider<MainBloc>(
+                    create: (context) =>
+                        GetIt.I<MainBloc>()
+                          ..add(MainLoadCoursesEvent(userId: userProfile.id)),
+                    child: MainScreen(userProfile: userProfile),
+                  ),
+                );
+              },
             ),
-            if (FeatureFlags.enableCourses)
-              GoRoute(
-                path: '/learning',
-                name: 'learning',
-                pageBuilder: (context, state) => NoTransitionPage(
+            GoRoute(
+              path: '/learning',
+              name: 'learning',
+              pageBuilder: (context, state) {
+                final userProfile = UserScope.of(context, listen: false);
+
+                return NoTransitionPage(
                   key: state.pageKey,
-                  child: const LearningScreen(),
-                ),
-              ),
-            if (FeatureFlags.enableProfile)
-              GoRoute(
-                path: '/profile',
-                name: 'profile',
-                pageBuilder: (context, state) => NoTransitionPage(
+                  child: BlocProvider<LearningBloc>(
+                    create: (_) =>
+                        GetIt.I<LearningBloc>()
+                          ..add(LearningLoadEvent(userId: userProfile.id)),
+                    child: const LearningScreen(),
+                  ),
+                );
+              },
+            ),
+            GoRoute(
+              path: '/profile',
+              name: 'profile',
+              pageBuilder: (context, state) {
+                final userProfile = UserScope.of(context, listen: false);
+
+                return NoTransitionPage(
                   key: state.pageKey,
-                  child: const ProfileScreen(),
-                ),
-              ),
+                  child: ProfileScreen(userProfile: userProfile),
+                );
+              },
+            ),
+
+            GoRoute(
+              path: '/course/:courseId',
+              name: 'course-detail',
+              pageBuilder: (context, state) {
+                final courseId = int.parse(state.pathParameters['courseId']!);
+                final userProfile = UserScope.of(context, listen: false);
+
+                return MaterialPage(
+                  key: state.pageKey,
+                  child: BlocProvider(
+                    create: (context) => GetIt.I<CourseDetailBloc>()
+                      ..add(
+                        CourseDetailLoadEvent(
+                          courseId: courseId,
+                          userId: userProfile.id,
+                        ),
+                      ),
+                    child: CourseDetailScreen(
+                      userProfile: userProfile,
+                      courseId: courseId,
+                    ),
+                  ),
+                );
+              },
+            ),
+            GoRoute(
+              path: '/course/:courseId/learn',
+              name: 'course-learning',
+              pageBuilder: (context, state) {
+                final courseId = int.parse(state.pathParameters['courseId']!);
+                return MaterialPage(
+                  key: state.pageKey,
+                  child: CourseLearningScreen(courseId: courseId),
+                );
+              },
+            ),
+            // Lesson content page: shows the lesson material itself (reading/video).
+            GoRoute(
+              path: '/lesson/:lessonId',
+              name: 'lesson-content',
+              pageBuilder: (context, state) {
+                return MaterialPage(
+                  key: state.pageKey,
+                  child: const Scaffold(
+                    body: Center(child: Text('Lesson - Coming Soon')),
+                  ),
+                );
+              },
+            ),
+            // Single task page: standalone task details and solving UI.
+            GoRoute(
+              path: '/task/:taskId',
+              name: 'task',
+              pageBuilder: (context, state) {
+                final taskId = int.parse(state.pathParameters['taskId']!);
+                return MaterialPage(
+                  key: state.pageKey,
+                  child: TaskScreen(taskId: taskId),
+                );
+              },
+            ),
+            // Lesson task session: step-by-step task flow for a specific lesson.
+            GoRoute(
+              path: '/lesson/:lessonId/tasks',
+              name: 'lesson-task-session',
+              pageBuilder: (context, state) {
+                final lessonId = int.parse(state.pathParameters['lessonId']!);
+                return MaterialPage(
+                  key: state.pageKey,
+                  child: LessonTaskSessionScreen(lessonId: lessonId, userId: 1),
+                );
+              },
+            ),
           ],
-        ),
-        GoRoute(
-          path: '/course/:courseId',
-          name: 'course-detail',
-          pageBuilder: (context, state) {
-            final courseId = int.parse(state.pathParameters['courseId']!);
-            return MaterialPage(
-              key: state.pageKey,
-              child: CourseDetailScreen(courseId: courseId),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/course/:courseId/learn',
-          name: 'course-learning',
-          pageBuilder: (context, state) {
-            final courseId = int.parse(state.pathParameters['courseId']!);
-            return MaterialPage(
-              key: state.pageKey,
-              child: CourseLearningScreen(courseId: courseId),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/lesson/:lessonId',
-          name: 'lesson-content',
-          pageBuilder: (context, state) {
-            return MaterialPage(
-              key: state.pageKey,
-              child: const Scaffold(
-                body: Center(child: Text('Lesson - Coming Soon')),
-              ),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/task/:taskId',
-          name: 'task',
-          pageBuilder: (context, state) {
-            final taskId = int.parse(state.pathParameters['taskId']!);
-            return MaterialPage(
-              key: state.pageKey,
-              child: TaskScreen(taskId: taskId),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/lesson/:lessonId/tasks',
-          name: 'lesson-task-session',
-          pageBuilder: (context, state) {
-            final lessonId = int.parse(state.pathParameters['lessonId']!);
-            return MaterialPage(
-              key: state.pageKey,
-              child: LessonTaskSessionScreen(lessonId: lessonId, userId: 1),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/test',
-          name: 'test',
-          pageBuilder: (context, state) =>
-              MaterialPage(key: state.pageKey, child: const TestScreen()),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(
-                'Page not found',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                state.uri.toString(),
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () => context.go('/home'),
-                child: const Text('Go to Home'),
-              ),
-            ],
-          ),
+        body: NotFoundScreen(
+          path: state.uri.toString(),
+          onNavigateHome: () => context.go(RouteConstants.home),
         ),
       ),
     );

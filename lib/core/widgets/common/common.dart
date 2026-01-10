@@ -3,6 +3,7 @@ export 'coin_amount.dart';
 export 'coin_balance_widget.dart';
 export 'common_search_bar.dart';
 export 'get_button.dart';
+export 'glass_card.dart';
 export 'glass_text_field.dart';
 export 'section.dart';
 export 'svg_asset.dart';
