@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/domain/models/course_content/course_content_model.dart';
 import 'package:codium/features/course_details/widgets/meta_item.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class CourseMetaInfo extends StatelessWidget {
   const CourseMetaInfo({super.key, required this.course});
 
-  final CourseModel course;
+  final CourseContentModel course;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class CourseMetaInfo extends StatelessWidget {
                   label: s.courseDetailsRating,
                 ),
                 MetaItem(
-                  value: '${course.totalTasks}',
+                  value: '${course.lessonsCount}',
                   label: s.courseDetailsLessonsLabel,
                 ),
               ],

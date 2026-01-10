@@ -1,6 +1,6 @@
 import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/features/course_learning/bloc/course_learning_bloc.dart';
-import 'package:codium/features/course_learning/bloc/lessons_list_bloc.dart';
+import 'package:codium/features/course_learning/bloc/course_learning/course_learning_bloc.dart';
+import 'package:codium/features/course_learning/bloc/lessons_list/lessons_list_bloc.dart';
 import 'package:codium/features/course_learning/widgets/widgets.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';

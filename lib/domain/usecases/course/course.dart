@@ -1,4 +1,6 @@
 export 'check_course_enrollment_usecase.dart';
+export 'build_course_statistics_usecase.dart';
+export 'get_course_by_id_usecase.dart';
 export 'get_course_detail_usecase.dart';
 export 'get_courses_usecase.dart';
 export 'get_enrolled_courses.dart';

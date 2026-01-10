@@ -1,13 +1,13 @@
 import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/domain/repositories/i_course_repository.dart';
+import 'package:codium/domain/models/course_content/course_content_model.dart';
+import 'package:codium/domain/repositories/i_course_content_repository.dart';
 
 class GetCourseDetailUseCase {
-  final ICourseRepository _courseRepository;
+  final ICourseContentRepository _courseContentRepository;
 
-  GetCourseDetailUseCase(this._courseRepository);
+  GetCourseDetailUseCase(this._courseContentRepository);
 
-  Future<Result<CourseModel>> call(int courseId) async {
-    return await _courseRepository.getCourseById(courseId.toString());
+  Future<Result<CourseContentModel>> call(int courseId) async {
+    return await _courseContentRepository.getCourseContentById(courseId);
   }
 }

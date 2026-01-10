@@ -13,10 +13,8 @@ class CourseModel extends Equatable {
   final double rating;
   final String? thumbnailUrl;
   final DateTime createdAt;
-  final String tableOfContents;
   final CoursePricing pricing;
   final CourseStatistics statistics;
-  final int totalTasks;
   final String? coverImage;
 
   const CourseModel({
@@ -30,10 +28,8 @@ class CourseModel extends Equatable {
     required this.rating,
     this.thumbnailUrl,
     required this.createdAt,
-    this.tableOfContents = '',
     required this.pricing,
     required this.statistics,
-    this.totalTasks = 0,
     this.coverImage,
   });
 
@@ -48,10 +44,8 @@ class CourseModel extends Equatable {
     double? rating,
     String? thumbnailUrl,
     DateTime? createdAt,
-    String? tableOfContents,
     CoursePricing? pricing,
     CourseStatistics? statistics,
-    int? totalTasks,
     String? coverImage,
   }) {
     return CourseModel(
@@ -65,10 +59,8 @@ class CourseModel extends Equatable {
       rating: rating ?? this.rating,
       thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
       createdAt: createdAt ?? this.createdAt,
-      tableOfContents: tableOfContents ?? this.tableOfContents,
       pricing: pricing ?? this.pricing,
       statistics: statistics ?? this.statistics,
-      totalTasks: totalTasks ?? this.totalTasks,
       coverImage: coverImage ?? this.coverImage,
     );
   }
@@ -85,10 +77,8 @@ class CourseModel extends Equatable {
     rating,
     thumbnailUrl,
     createdAt,
-    tableOfContents,
     pricing,
     statistics,
-    totalTasks,
     coverImage,
   ];
 

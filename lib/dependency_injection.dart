@@ -25,8 +25,8 @@ import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
 import 'package:codium/domain/usecases/tasks/submit_task_answer_usecase.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/course_details/course_details.dart';
-import 'package:codium/features/course_learning/bloc/course_learning_bloc.dart';
-import 'package:codium/features/course_learning/bloc/lessons_list_bloc.dart';
+import 'package:codium/features/course_learning/bloc/course_learning/course_learning_bloc.dart';
+import 'package:codium/features/course_learning/bloc/lessons_list/lessons_list_bloc.dart';
 import 'package:codium/features/learning/learning.dart';
 import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
 import 'package:codium/features/main/main.dart';
@@ -136,6 +136,13 @@ class DependencyInjection {
       ..registerLazySingleton<ICourseRepository>(
         () => CourseRepository(GetIt.I<ICourseLocalDataSource>()),
       )
+      ..registerLazySingleton<ICourseContentRepository>(
+        () => CourseContentRepository(
+          GetIt.I<ICourseLocalDataSource>(),
+          GetIt.I<IModuleLocalDataSource>(),
+          GetIt.I<ILessonLocalDataSource>(),
+        ),
+      )
       ..registerLazySingleton<IUserRepository>(
         () => UserRepository(
           GetIt.I<IUserDataSource>(),
@@ -194,6 +201,10 @@ class DependencyInjection {
       )
       ..registerFactory(() => GetCoursesUseCase(GetIt.I<ICourseRepository>()))
       ..registerFactory(
+        () => GetCourseByIdUseCase(GetIt.I<ICourseRepository>()),
+      )
+      ..registerFactory(() => const BuildCourseStatisticsUseCase())
+      ..registerFactory(
         () => GetMainCarouselCoursesUseCase(GetIt.I<ICourseRepository>()),
       )
       ..registerFactory(
@@ -201,12 +212,17 @@ class DependencyInjection {
       )
       ..registerFactory(() => GenerateActivityUsecase())
       ..registerFactory(
-        () => GetCourseDetailUseCase(GetIt.I<ICourseRepository>()),
+        () => GetCourseDetailUseCase(GetIt.I<ICourseContentRepository>()),
       )
       ..registerFactory(
         () => GetLearningDataUseCase(
           GetIt.I<IUserStatisticsRepository>(),
           GetIt.I<GenerateActivityUsecase>(),
+        ),
+      )
+      ..registerFactory(
+        () => GetCourseLessonProgressUseCase(
+          GetIt.I<ILessonProgressRepository>(),
         ),
       )
       ..registerFactory(
@@ -324,8 +340,11 @@ class DependencyInjection {
       ..registerFactory(() => OnboardingBloc())
       ..registerFactory(
         () => CourseLearningBloc(
-          courseRepository: GetIt.I<ICourseRepository>(),
-          lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
+          getCourseByIdUseCase: GetIt.I<GetCourseByIdUseCase>(),
+          getLessonsByCourseIdUseCase: GetIt.I<GetLessonsByCourseIdUseCase>(),
+          getCourseLessonProgressUseCase:
+              GetIt.I<GetCourseLessonProgressUseCase>(),
+          buildCourseStatisticsUseCase: GetIt.I<BuildCourseStatisticsUseCase>(),
         ),
       )
       ..registerFactory(
