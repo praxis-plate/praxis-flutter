@@ -1,27 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:codium/core/utils/constants.dart';
+import 'package:codium/domain/models/user/user_profile_model.dart';
 import 'package:flutter/material.dart';
-
-class UserProfile {
-  String imagePath;
-  String name;
-  String email;
-
-  UserProfile({
-    required this.imagePath,
-    required this.name,
-    required this.email,
-  });
-}
 
 class SettingsProfileCard extends StatelessWidget {
   const SettingsProfileCard({super.key, required this.userProfile});
 
-  final UserProfile userProfile;
+  final UserProfileModel userProfile;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final avatarUrl = userProfile.avatarUrl;
+    final hasAvatar = avatarUrl != null && avatarUrl.trim().isNotEmpty;
 
     return Container(
       width: double.infinity,
@@ -38,17 +29,28 @@ class SettingsProfileCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
-                    child: CachedNetworkImage(
-                      height: 120,
-                      width: 120,
-                      alignment: Alignment.topCenter,
-                      fit: BoxFit.cover,
-                      imageUrl: userProfile.imagePath,
-                      placeholder: (context, url) =>
-                          const Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) =>
-                          Image.asset(Constants.placeholderProfileImagePath),
-                    ),
+                    // TODO: Review whether avatarUrl should be required for users and where it is assigned
+                    child: hasAvatar
+                        ? CachedNetworkImage(
+                            height: 120,
+                            width: 120,
+                            alignment: Alignment.topCenter,
+                            fit: BoxFit.cover,
+                            imageUrl: avatarUrl,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              Constants.placeholderProfileImagePath,
+                            ),
+                          )
+                        : Image.asset(
+                            Constants.placeholderProfileImagePath,
+                            height: 120,
+                            width: 120,
+                            alignment: Alignment.topCenter,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 Positioned(
@@ -61,14 +63,8 @@ class SettingsProfileCard extends StatelessWidget {
                 ),
               ],
             ),
-            Text(
-              userProfile.name,
-              style: theme.textTheme.bodyMedium,
-            ),
-            Text(
-              userProfile.email,
-              style: theme.textTheme.labelSmall,
-            ),
+            Text(userProfile.name, style: theme.textTheme.bodyMedium),
+            Text(userProfile.email, style: theme.textTheme.labelSmall),
           ],
         ),
       ),

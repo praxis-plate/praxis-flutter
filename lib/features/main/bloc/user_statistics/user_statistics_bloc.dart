@@ -16,7 +16,7 @@ class UserStatisticsBloc
   UserStatisticsBloc({
     required GetUserStatisticsUseCase getUserStatisticsUseCase,
   }) : _getUserStatisticsUseCase = getUserStatisticsUseCase,
-       super(UserStatisticsInitial()) {
+       super(const UserStatisticsLoadingState()) {
     on<UserStatisticsLoadEvent>(_onLoadUserStatistics);
   }
 
@@ -24,25 +24,14 @@ class UserStatisticsBloc
     UserStatisticsLoadEvent event,
     Emitter<UserStatisticsState> emit,
   ) async {
-    emit(UserStatisticsLoadingState());
+    emit(const UserStatisticsLoadingState());
     try {
-      final result = await _getUserStatisticsUseCase(int.parse(event.userId));
+      final result = await _getUserStatisticsUseCase(event.userId);
 
       result.when(
         success: (statistics) {
           if (statistics != null) {
-            emit(
-              UserStatisticsLoadSuccessState(
-                UserStatistics(
-                  userId: event.userId,
-                  currentStreak: statistics.currentStreak,
-                  maxStreak: statistics.maxStreak,
-                  points: 0,
-                  lastActiveDate: DateTime.now(),
-                  courses: const {},
-                ),
-              ),
-            );
+            emit(UserStatisticsLoadSuccessState(statistics));
           } else {
             emit(const UserStatisticsLoadErrorState('Statistics not found'));
           }

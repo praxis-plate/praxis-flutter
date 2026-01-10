@@ -1,5 +1,4 @@
-import 'package:codium/core/widgets/course/course_card.dart';
-import 'package:codium/core/widgets/course/course_carousel.dart';
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/main/bloc/main_carousel/main_carousel_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +10,8 @@ class RecommendationCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userProfile = UserScope.of(context);
+
     return BlocProvider(
       create: (context) =>
           GetIt.I<MainCarouselBloc>()..add(MainCarouselLoadEvent()),
@@ -21,7 +22,9 @@ class RecommendationCarousel extends StatelessWidget {
               courseCards: state.courses
                   .map(
                     (course) => CourseCard(
+                      key: Key(course.id.toString()),
                       course: course,
+                      userProfile: userProfile,
                       onPressed: () => context.push('/course/${course.id}'),
                     ),
                   )

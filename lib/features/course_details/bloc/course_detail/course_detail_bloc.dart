@@ -18,7 +18,7 @@ class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
     required CheckCourseEnrollmentUseCase checkCourseEnrollmentUseCase,
   }) : _getCourseDetailUseCase = getCourseDetailUseCase,
        _checkCourseEnrollmentUseCase = checkCourseEnrollmentUseCase,
-       super(CourseDetailInitialState()) {
+       super(CourseDetailLoadingState()) {
     on<CourseDetailLoadEvent>(_onLoadCourseDetail);
   }
 

@@ -1,3 +1,4 @@
+import 'package:codium/core/router/router_exports.dart';
 import 'package:codium/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
@@ -17,8 +18,8 @@ class NavigationTab {
 
     tabs.add(
       NavigationTab(
-        route: '/home',
-        routePrefix: '/home',
+        route: RouteConstants.home,
+        routePrefix: RouteConstants.home,
         destination: NavigationDestination(
           selectedIcon: const Icon(Icons.home_rounded),
           icon: const Icon(Icons.home_outlined),
@@ -29,8 +30,8 @@ class NavigationTab {
 
     tabs.add(
       NavigationTab(
-        route: '/learning',
-        routePrefix: '/learning',
+        route: RouteConstants.learning,
+        routePrefix: RouteConstants.learning,
         destination: NavigationDestination(
           selectedIcon: const Icon(Icons.science_rounded),
           icon: const Icon(Icons.science_outlined),
@@ -41,8 +42,8 @@ class NavigationTab {
 
     tabs.add(
       NavigationTab(
-        route: '/profile',
-        routePrefix: '/profile',
+        route: RouteConstants.profile,
+        routePrefix: RouteConstants.profile,
         destination: NavigationDestination(
           selectedIcon: const Icon(Icons.person_rounded),
           icon: const Icon(Icons.person_outlined),

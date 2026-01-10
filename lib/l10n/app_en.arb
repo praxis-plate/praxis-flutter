@@ -303,6 +303,14 @@
   "courseDuration": "Duration",
   "courseRating": "Rating",
   "minutes": "minutes",
+  "minutesCount": "{count, plural, one{{count} minute} other{{count} minutes}}",
+  "@minutesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hours": "hours",
   "hoursShort": "h",
   "minutesShort": "m",

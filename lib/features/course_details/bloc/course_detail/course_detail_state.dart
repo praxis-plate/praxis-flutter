@@ -4,11 +4,6 @@ sealed class CourseDetailState extends Equatable {
   const CourseDetailState();
 }
 
-class CourseDetailInitialState extends CourseDetailState {
-  @override
-  List<Object> get props => [];
-}
-
 class CourseDetailLoadingState extends CourseDetailState {
   @override
   List<Object> get props => [];
