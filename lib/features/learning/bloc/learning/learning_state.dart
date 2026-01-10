@@ -7,9 +7,9 @@ sealed class LearningState extends Equatable {
   List<Object> get props => [];
 }
 
-final class LearningInitialState extends LearningState {}
-
-final class LearningLoadingState extends LearningState {}
+final class LearningLoadingState extends LearningState {
+  const LearningLoadingState();
+}
 
 final class LearningLoadSuccessState extends LearningState {
   final List<DateTime> activityData;

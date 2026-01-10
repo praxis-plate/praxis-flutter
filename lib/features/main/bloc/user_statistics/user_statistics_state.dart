@@ -7,12 +7,12 @@ sealed class UserStatisticsState extends Equatable {
   List<Object> get props => [];
 }
 
-final class UserStatisticsInitial extends UserStatisticsState {}
-
-final class UserStatisticsLoadingState extends UserStatisticsState {}
+final class UserStatisticsLoadingState extends UserStatisticsState {
+  const UserStatisticsLoadingState();
+}
 
 final class UserStatisticsLoadSuccessState extends UserStatisticsState {
-  final UserStatistics userStatistics;
+  final UserStatisticModel userStatistics;
 
   const UserStatisticsLoadSuccessState(this.userStatistics);
 

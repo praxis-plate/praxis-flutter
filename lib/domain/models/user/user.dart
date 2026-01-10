@@ -7,4 +7,3 @@ export 'user_model.dart';
 export 'user_profile_data_model.dart';
 export 'user_profile_model.dart';
 export 'user_statistic_model.dart';
-export 'user_statistics.dart';
