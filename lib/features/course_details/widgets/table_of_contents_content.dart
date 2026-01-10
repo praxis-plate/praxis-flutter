@@ -1,11 +1,11 @@
-import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/domain/models/course_content/course_content_model.dart';
 import 'package:codium/features/course_details/utils/utils.dart';
 import 'package:codium/features/course_details/widgets/module_title.dart';
 import 'package:codium/features/course_details/widgets/task_item.dart';
 import 'package:flutter/material.dart';
 
 class TableOfContentsContent extends StatelessWidget {
-  final CourseModel course;
+  final CourseContentModel course;
 
   const TableOfContentsContent({super.key, required this.course});
 
@@ -13,9 +13,10 @@ class TableOfContentsContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = const TableOfContentsParser().parse(course.tableOfContents);
 
-    return ListView(
+    return ListView.builder(
       padding: const EdgeInsets.all(16),
-      children: items.map(_mapItemToWidget).toList(),
+      itemCount: items.length,
+      itemBuilder: (context, index) => _mapItemToWidget(items[index]),
     );
   }
 
