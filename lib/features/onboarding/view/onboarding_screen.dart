@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+// TODO: Review OnboardingScreen flow and UI, refactor if needed, and verify behavior end-to-end.
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
