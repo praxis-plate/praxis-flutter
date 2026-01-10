@@ -15,7 +15,7 @@ class ModuleTitle extends StatelessWidget {
         text,
         style: theme.textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w600,
-          color: theme.primaryColor,
+          color: theme.colorScheme.primary,
         ),
       ),
     );
