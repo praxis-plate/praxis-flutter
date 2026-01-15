@@ -37,6 +37,8 @@ dependencies:
   flutter_svg: ^2.0.10+1
   crypto: ^3.0.3
   mocktail: ^1.0.4
+  praxis_client:
+    path: packages/praxis_client
 
 dev_dependencies:
   flutter_test:
