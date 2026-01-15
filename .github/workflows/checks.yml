@@ -28,6 +28,7 @@ jobs:
           PROXY_PORT=${{ secrets.PROXY_PORT }}
           PROXY_USER=${{ secrets.PROXY_USER }}
           PROXY_PASS=${{ secrets.PROXY_PASS }}
+          SERVERPOD_HOST=${{ secrets.SERVERPOD_HOST }}
           EOF
       - name: Generate code (build_runner)
         run: flutter pub run build_runner build --delete-conflicting-outputs

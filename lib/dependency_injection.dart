@@ -1,6 +1,7 @@
 import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
+import 'package:codium/core/config/env_config.dart';
 import 'package:codium/core/config/dio_factory.dart';
 import 'package:codium/core/services/ai_service.dart';
 import 'package:codium/core/services/session_service.dart';
@@ -35,6 +36,7 @@ import 'package:codium/features/tasks/bloc/lesson_task/lesson_task_session_bloc.
 import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:praxis_client/praxis_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -42,6 +44,7 @@ class DependencyInjection {
   Future<void> initialize() async {
     GetIt.I.registerSingleton(TalkerFlutter.init());
 
+    _registerServerpodClient();
     await _registerServices();
     _registerDataSources();
     _registerRepositories();
@@ -84,6 +87,12 @@ class DependencyInjection {
       ..registerLazySingleton<ISessionService>(
         () => SessionService(GetIt.I<SharedPreferences>()),
       );
+  }
+
+  void _registerServerpodClient() {
+    GetIt.I.registerLazySingleton<Client>(
+      () => Client(EnvConfig.serverpodHost),
+    );
   }
 
   void _registerDataSources() {
