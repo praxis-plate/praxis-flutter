@@ -21,4 +21,7 @@ abstract class EnvConfig {
 
   @EnviedField(varName: 'PROXY_PASS', obfuscate: true)
   static final String proxyPass = _EnvConfig.proxyPass;
+
+  @EnviedField(varName: 'SERVERPOD_HOST', obfuscate: false)
+  static const String serverpodHost = _EnvConfig.serverpodHost;
 }
