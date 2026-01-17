@@ -16,7 +16,7 @@ class AddedCourseCard extends StatelessWidget {
   });
 
   final CourseModel course;
-  final UserCourseStatistics userCourseStatistics;
+  final UserCourseStatisticsModel userCourseStatistics;
 
   @override
   Widget build(BuildContext context) {

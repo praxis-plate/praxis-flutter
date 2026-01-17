@@ -1,11 +1,11 @@
-import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/domain/models/course_content/course_content_model.dart';
 import 'package:codium/features/course_details/widgets/description_content.dart';
 import 'package:codium/features/course_details/widgets/table_of_contents_content.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
 class CourseTabSection extends StatefulWidget {
-  final CourseModel course;
+  final CourseContentModel course;
 
   const CourseTabSection({super.key, required this.course});
 

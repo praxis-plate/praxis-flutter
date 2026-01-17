@@ -10,7 +10,7 @@ class CourseDetailLoadingState extends CourseDetailState {
 }
 
 class CourseDetailLoadSuccessState extends CourseDetailState {
-  final CourseModel course;
+  final CourseContentModel course;
   final bool isPurchased;
 
   const CourseDetailLoadSuccessState({

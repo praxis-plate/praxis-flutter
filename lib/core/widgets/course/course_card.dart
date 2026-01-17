@@ -101,7 +101,6 @@ class CourseCard extends StatelessWidget {
                       key: Key(course.id.toString()),
                       duration: Duration(minutes: course.durationMinutes),
                       courseId: course.id,
-                      lessonsCount: 0,
                       priceInCoins: course.priceInCoins,
                       isPurchased: isPurchased,
                       isProcessing: isProcessing,
@@ -123,7 +122,6 @@ class _CourseMetaInfo extends StatelessWidget {
     super.key,
     required this.courseId,
     required this.duration,
-    required this.lessonsCount,
     required this.priceInCoins,
     required this.isPurchased,
     required this.isProcessing,
@@ -132,7 +130,6 @@ class _CourseMetaInfo extends StatelessWidget {
 
   final int courseId;
   final Duration duration;
-  final int lessonsCount;
   final int priceInCoins;
   final bool isPurchased;
   final bool isProcessing;
@@ -166,19 +163,6 @@ class _CourseMetaInfo extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               DurationFormatter.formatCompact(duration, s),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Icon(
-              Icons.menu_book,
-              size: 16,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              s.lessonsCount(lessonsCount),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),

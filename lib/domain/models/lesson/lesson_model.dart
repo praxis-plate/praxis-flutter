@@ -16,11 +16,11 @@ class LessonModel extends Equatable {
     required this.moduleId,
     required this.title,
     required this.contentText,
-    this.videoUrl,
-    this.imageUrls,
     required this.orderIndex,
     required this.durationMinutes,
     required this.createdAt,
+    this.videoUrl,
+    this.imageUrls,
   });
 
   LessonModel copyWith({

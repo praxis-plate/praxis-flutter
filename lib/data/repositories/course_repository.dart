@@ -24,14 +24,14 @@ class CourseRepository implements ICourseRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
   @override
-  Future<Result<CourseModel>> getCourseById(String id) async {
+  Future<Result<CourseModel>> getCourseById(int id) async {
     try {
-      final entity = await _localDataSource.getCourseById(int.parse(id));
+      final entity = await _localDataSource.getCourseById(id);
       if (entity == null) {
         return const Failure(
           AppFailure(
@@ -45,7 +45,7 @@ class CourseRepository implements ICourseRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -62,7 +62,7 @@ class CourseRepository implements ICourseRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -91,7 +91,7 @@ class CourseRepository implements ICourseRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -106,7 +106,7 @@ class CourseRepository implements ICourseRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 }

@@ -18,7 +18,7 @@ class CourseLearningLoading extends CourseLearningState {
 class CourseLearningLoaded extends CourseLearningState {
   final CourseModel course;
   final List<LessonProgressModel> lessonProgress;
-  final UserCourseStatistics statistics;
+  final UserCourseStatisticsModel statistics;
 
   const CourseLearningLoaded({
     required this.course,

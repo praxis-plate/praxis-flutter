@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CourseProgressBar extends StatelessWidget {
   const CourseProgressBar({super.key, required this.userCourseStatistics});
 
-  final UserCourseStatistics userCourseStatistics;
+  final UserCourseStatisticsModel userCourseStatistics;
 
   @override
   Widget build(BuildContext context) {

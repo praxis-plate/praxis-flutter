@@ -1,5 +1,5 @@
 import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/domain/models/course_content/course_content_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,18 +28,10 @@ class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
   ) async {
     emit(CourseDetailLoadingState());
     try {
-      GetIt.I<Talker>().log(
-        'Loading course detail: courseId=${event.courseId}, userId=${event.userId}',
-      );
-
       final courseResult = await _getCourseDetailUseCase(event.courseId);
 
-      if (!courseResult.isSuccess) {
-        emit(
-          CourseDetailLoadErrorState(
-            courseResult.failureOrNull?.message ?? 'Unknown error',
-          ),
-        );
+      if (courseResult.isFailure) {
+        emit(CourseDetailLoadErrorState(courseResult.failureOrNull!.message));
         return;
       }
 
@@ -56,15 +48,17 @@ class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
 
       final isPurchased = enrollmentResult.dataOrNull ?? false;
 
-      GetIt.I<Talker>().info(
-        'Course enrollment status: isPurchased=$isPurchased',
-      );
-
       emit(
         CourseDetailLoadSuccessState(course: course, isPurchased: isPurchased),
       );
     } catch (e) {
       emit(CourseDetailLoadErrorState(e.toString()));
     }
+  }
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    GetIt.I<Talker>().handle(error, stackTrace);
+    super.onError(error, stackTrace);
   }
 }

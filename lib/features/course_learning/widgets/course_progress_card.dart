@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:codium/core/utils/constants.dart';
 import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/domain/models/user/user_course_statistics.dart';
+import 'package:codium/domain/models/user/user_course_statistics_model.dart';
 import 'package:flutter/material.dart';
 
 class CourseProgressCard extends StatelessWidget {
   final CourseModel course;
-  final UserCourseStatistics statistics;
+  final UserCourseStatisticsModel statistics;
   final VoidCallback? onTap;
 
   const CourseProgressCard({
@@ -51,8 +51,8 @@ class CourseProgressCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       _LessonProgress(
-                        completed: statistics.solvedTasks,
-                        total: statistics.totalTasks,
+                        completed: statistics.completedLessons,
+                        total: statistics.totalLessons,
                         theme: theme,
                       ),
                     ],
