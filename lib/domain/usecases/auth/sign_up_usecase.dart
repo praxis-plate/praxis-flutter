@@ -13,10 +13,18 @@ class SignUpUseCase {
 
   SignUpUseCase(this._authRepository, this._coinTransactionRepository);
 
-  Future<Result<UserProfileModel>> call(String email, String password) async {
+  Future<Result<UserProfileModel>> call(
+    String email,
+    String password,
+    String registrationToken,
+  ) async {
     AuthValidator.validateCredentials(email, password);
 
-    final userResult = await _authRepository.signUp(email, password);
+    final userResult = await _authRepository.signUp(
+      email: email,
+      password: password,
+      registrationToken: registrationToken,
+    );
 
     return userResult.when(
       success: (user) async {
