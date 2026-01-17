@@ -20,6 +20,10 @@
   "displaySendResetLink": "Отправить ссылку",
   "displayRememberPassword": "Вспомнили пароль?",
   "displayResetLinkSent": "Проверьте почту — мы отправили ссылку для сброса",
+  "displaySendVerificationCode": "Отправить код",
+  "displayVerifyCode": "Проверить код",
+  "displayResetPassword": "Сбросить пароль",
+  "displayPasswordResetSuccess": "Пароль обновлен. Теперь вы можете войти.",
 
   "navigationHomeTitle": "Главная",
   "navigationMainTitle": "Обзор",

@@ -34,7 +34,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthLoadingState());
 
-      final result = await _signUpUseCase(event.email, event.password);
+      final result = await _signUpUseCase(
+        event.email,
+        event.password,
+        event.registrationToken,
+      );
 
       if (result.isFailure) {
         final errorCode = result.failureOrNull!.code;

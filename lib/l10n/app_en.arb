@@ -20,6 +20,10 @@
   "displaySendResetLink": "Send reset link",
   "displayRememberPassword": "Remembered your password?",
   "displayResetLinkSent": "Check your email for a reset link",
+  "displaySendVerificationCode": "Send code",
+  "displayVerifyCode": "Verify code",
+  "displayResetPassword": "Reset password",
+  "displayPasswordResetSuccess": "Password updated. You can sign in now.",
 
   "navigationHomeTitle": "Home",
   "navigationMainTitle": "Main",
