@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class CreateUserStatisticModel extends Equatable {
-  final int userId;
+  final String userId;
 
   const CreateUserStatisticModel({required this.userId});
 

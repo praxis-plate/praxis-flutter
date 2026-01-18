@@ -48,7 +48,7 @@ final class UserRepository implements IUserRepository {
   }
 
   @override
-  Future<Result<UserProfileModel>> getUserById(int userId) async {
+  Future<Result<UserProfileModel>> getUserById(String userId) async {
     try {
       final user = await _userDataSource.getUserById(userId);
       if (user == null) {

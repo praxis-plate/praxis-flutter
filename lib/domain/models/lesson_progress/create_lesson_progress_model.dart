@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class CreateLessonProgressModel extends Equatable {
   final int lessonId;
-  final int userId;
+  final String userId;
   final bool isCompleted;
   final DateTime? completedAt;
   final int timeSpentSeconds;

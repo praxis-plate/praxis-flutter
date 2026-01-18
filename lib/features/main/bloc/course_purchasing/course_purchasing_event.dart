@@ -8,7 +8,7 @@ sealed class CoursePurchasingEvent extends Equatable {
 }
 
 class CoursePurchasingRequestEvent extends CoursePurchasingEvent {
-  final int userId;
+  final String userId;
   final int courseId;
 
   const CoursePurchasingRequestEvent({

@@ -8,7 +8,7 @@ sealed class MainEvent extends Equatable {
 }
 
 class MainLoadCoursesEvent extends MainEvent {
-  final int userId;
+  final String userId;
 
   const MainLoadCoursesEvent({required this.userId});
 

@@ -9,7 +9,7 @@ abstract class LessonTaskSessionEvent extends Equatable {
 
 class StartSessionEvent extends LessonTaskSessionEvent {
   final int lessonId;
-  final int userId;
+  final String userId;
 
   const StartSessionEvent({required this.lessonId, required this.userId});
 

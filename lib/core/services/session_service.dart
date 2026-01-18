@@ -15,14 +15,18 @@ class SessionService implements ISessionService {
 
   @override
   Future<void> saveSession(SessionModel session) async {
-    await _prefs.setInt(_userIdKey, session.userId);
+    await _prefs.setString(_userIdKey, session.userId);
     await _prefs.setString(_userEmailKey, session.email);
     await _prefs.setString(_accessTokenKey, session.accessToken);
-    await _prefs.setString(_refreshTokenKey, session.refreshToken);
-    await _prefs.setString(
-      _tokenExpiresAtKey,
-      session.tokenExpiresAt.toIso8601String(),
-    );
+    if (session.refreshToken is String) {
+      await _prefs.setString(_refreshTokenKey, session.refreshToken!);
+    }
+    if (session.tokenExpiresAt is DateTime) {
+      await _prefs.setString(
+        _tokenExpiresAtKey,
+        session.tokenExpiresAt!.toIso8601String(),
+      );
+    }
   }
 
   @override
@@ -46,7 +50,7 @@ class SessionService implements ISessionService {
 
   @override
   Future<bool> hasActiveSession() async {
-    final userId = _prefs.getInt(_userIdKey);
+    final userId = _prefs.getString(_userIdKey);
     if (userId == null) return false;
 
     final expiresAtStr = _prefs.getString(_tokenExpiresAtKey);
@@ -58,7 +62,7 @@ class SessionService implements ISessionService {
 
   @override
   Future<SessionModel?> getSession() async {
-    final userId = _prefs.getInt(_userIdKey);
+    final userId = _prefs.getString(_userIdKey);
     final email = _prefs.getString(_userEmailKey);
     final accessToken = _prefs.getString(_accessTokenKey);
     final refreshToken = _prefs.getString(_refreshTokenKey);

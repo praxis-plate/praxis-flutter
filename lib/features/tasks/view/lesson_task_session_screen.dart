@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/utils/duration.dart';
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/domain/usecases/tasks/get_task_by_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
@@ -16,12 +16,10 @@ import 'package:go_router/go_router.dart';
 
 class LessonTaskSessionScreen extends StatefulWidget {
   final int lessonId;
-  final int userId;
 
   const LessonTaskSessionScreen({
     super.key,
     required this.lessonId,
-    required this.userId,
   });
 
   @override
@@ -79,10 +77,8 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
-    final authState = context.read<AuthBloc>().state;
-    final userId = authState is AuthAuthenticatedState
-        ? authState.userId
-        : null;
+    final userProfile = UserScope.of(context, listen: false);
+
 
     return MultiBlocProvider(
       providers: [
@@ -91,7 +87,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
             ..add(
               StartSessionEvent(
                 lessonId: widget.lessonId,
-                userId: widget.userId,
+                userId: userProfile.id,
               ),
             ),
         ),
@@ -100,11 +96,11 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
             GetIt.I<GetTaskByIdUseCase>(),
             GetIt.I<SubmitTaskAnswerUseCase>(),
             GetIt.I<RequestTaskHintUseCase>(),
-            userId: userId,
+            userId: userProfile.id,
           )..add(const LoadTaskEvent(1)),
         ),
         BlocProvider(
-          create: (context) => GetIt.I<TaskHintCubit>(param1: widget.userId),
+          create: (context) => GetIt.I<TaskHintCubit>(param1: userProfile.id),
         ),
       ],
       child: BlocConsumer<LessonTaskSessionBloc, LessonTaskSessionState>(

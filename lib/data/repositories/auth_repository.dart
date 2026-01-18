@@ -1,106 +1,117 @@
-import 'dart:convert';
-
-import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/entities/user_entity_extension.dart';
+import 'package:codium/data/entities/auth_session_entity.dart';
+import 'package:codium/data/entities/auth_session_entity_extension.dart';
+import 'package:codium/data/mappers/exceptions/auth_exception_mapper.dart';
 import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/i_auth_repository.dart';
 import 'package:codium/domain/services/services.dart';
-import 'package:crypto/crypto.dart';
 
 final class AuthRepository implements IAuthRepository {
-  final IUserDataSource _userDataSource;
+  final IAuthDataSource _authDataSource;
   final ISessionService _sessionService;
 
-  AuthRepository(this._userDataSource, this._sessionService);
+  AuthRepository(this._authDataSource, this._sessionService);
 
   @override
-  Future<Result<UserProfileModel>> signUp(String email, String password) async {
+  Future<Result<String>> startRegistration(String email) async {
     try {
-      final existingUser = await _userDataSource.getUserByEmail(email);
+      final requestId = await _authDataSource.startRegistration(email: email);
+      return Success(requestId);
+    } catch (e) {
+      return Failure(AuthExceptionMapper.map(e));
+    }
+  }
 
-      if (existingUser != null) {
-        return const Failure(
-          AppFailure(
-            code: AppErrorCode.authUserAlreadyExists,
-            message: 'User with this email is already registered',
-            canRetry: false,
-          ),
-        );
-      }
+  @override
+  Future<Result<String>> verifyRegistrationCode({
+    required String accountRequestId,
+    required String verificationCode,
+  }) async {
+    try {
+      final token = await _authDataSource.verifyRegistrationCode(
+        accountRequestId: accountRequestId,
+        verificationCode: verificationCode,
+      );
+      return Success(token);
+    } catch (e) {
+      return Failure(AuthExceptionMapper.map(e));
+    }
+  }
 
-      final user = await _userDataSource.create(
+  @override
+  Future<Result<UserProfileModel>> signUp({
+    required String email,
+    required String password,
+    required String registrationToken,
+  }) async {
+    try {
+      final session = await _authDataSource.finishRegistration(
         email: email,
         password: password,
+        registrationToken: registrationToken,
       );
-
-      if (user == null) {
-        return const Failure(
-          AppFailure(
-            code: AppErrorCode.authFailedToCreateUser,
-            message: 'Failed to create user',
-            canRetry: true,
-          ),
-        );
-      }
-
-      final session = SessionModel(
-        userId: user.id,
-        email: email,
-        accessToken: _generateToken(user.id, email),
-        refreshToken: _generateToken(user.id, email, isRefresh: true),
-        tokenExpiresAt: DateTime.now().add(const Duration(hours: 24)),
-      );
-      await _sessionService.saveSession(session);
-      return Success(user.toDomain());
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
+      await _saveSession(session);
+      return Success(session.toUserProfileModel());
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AuthExceptionMapper.map(e));
     }
   }
 
   @override
   Future<Result<UserProfileModel>> signIn(String email, String password) async {
     try {
-      final user = await _userDataSource.getUserByEmail(email);
-
-      if (user == null) {
-        return const Failure(
-          AppFailure(
-            code: AppErrorCode.authUserNotFound,
-            message: 'User with this email is not found',
-            canRetry: false,
-          ),
-        );
-      }
-
-      if (user.passwordHash != _userDataSource.hashPassword(password)) {
-        return const Failure(
-          AppFailure(
-            code: AppErrorCode.authInvalidCredentials,
-            message: 'Invalid email or password',
-            canRetry: false,
-          ),
-        );
-      }
-
-      final session = SessionModel(
-        userId: user.id,
-        email: user.email,
-        accessToken: _generateToken(user.id, user.email),
-        refreshToken: _generateToken(user.id, user.email, isRefresh: true),
-        tokenExpiresAt: DateTime.now().add(const Duration(hours: 24)),
+      final session = await _authDataSource.login(
+        email: email,
+        password: password,
       );
-      await _sessionService.saveSession(session);
-      return Success(user.toDomain());
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
+      await _saveSession(session);
+      return Success(session.toUserProfileModel());
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AuthExceptionMapper.map(e));
+    }
+  }
+
+  @override
+  Future<Result<String>> startPasswordReset(String email) async {
+    try {
+      final requestId = await _authDataSource.startPasswordReset(email: email);
+      return Success(requestId);
+    } catch (e) {
+      return Failure(AuthExceptionMapper.map(e));
+    }
+  }
+
+  @override
+  Future<Result<String>> verifyPasswordResetCode({
+    required String passwordResetRequestId,
+    required String verificationCode,
+  }) async {
+    try {
+      final token = await _authDataSource.verifyPasswordResetCode(
+        passwordResetRequestId: passwordResetRequestId,
+        verificationCode: verificationCode,
+      );
+      return Success(token);
+    } catch (e) {
+      return Failure(AuthExceptionMapper.map(e));
+    }
+  }
+
+  @override
+  Future<Result<void>> finishPasswordReset({
+    required String finishPasswordResetToken,
+    required String newPassword,
+  }) async {
+    try {
+      await _authDataSource.finishPasswordReset(
+        finishPasswordResetToken: finishPasswordResetToken,
+        newPassword: newPassword,
+      );
+      return const Success(null);
+    } catch (e) {
+      return Failure(AuthExceptionMapper.map(e));
     }
   }
 
@@ -109,10 +120,12 @@ final class AuthRepository implements IAuthRepository {
     try {
       await _sessionService.clearSession();
       return const Success(null);
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(
+        AppFailure.fromException(
+          e is Exception ? e : Exception(e.toString()),
+        ),
+      );
     }
   }
 
@@ -121,19 +134,16 @@ final class AuthRepository implements IAuthRepository {
     try {
       final isAuth = await _sessionService.hasActiveSession();
       return Success(isAuth);
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(
+        AppFailure.fromException(
+          e is Exception ? e : Exception(e.toString()),
+        ),
+      );
     }
   }
 
-  String _generateToken(int userId, String email, {bool isRefresh = false}) {
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final type = isRefresh ? 'refresh' : 'access';
-    final payload = '$userId:$email:$type:$timestamp';
-    final bytes = utf8.encode(payload);
-    final hash = sha256.convert(bytes);
-    return base64Url.encode(hash.bytes);
+  Future<void> _saveSession(AuthSessionEntity session) async {
+    await _sessionService.saveSession(session.toSessionModel());
   }
 }

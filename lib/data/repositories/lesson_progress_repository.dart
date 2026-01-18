@@ -15,7 +15,7 @@ class LessonProgressRepository implements ILessonProgressRepository {
 
   @override
   Future<Result<List<LessonProgressModel>>> getCourseLessonProgress(
-    int userId,
+    String userId,
     int courseId,
   ) async {
     try {
@@ -34,7 +34,7 @@ class LessonProgressRepository implements ILessonProgressRepository {
 
   @override
   Future<Result<LessonProgressModel?>> getLessonProgress(
-    int userId,
+    String userId,
     int lessonId,
   ) async {
     try {
@@ -48,7 +48,7 @@ class LessonProgressRepository implements ILessonProgressRepository {
   }
 
   @override
-  Future<Result<void>> markLessonComplete(int userId, int lessonId) async {
+  Future<Result<void>> markLessonComplete(String userId, int lessonId) async {
     try {
       final existingEntity = await _localDataSource.getLessonProgress(
         userId,

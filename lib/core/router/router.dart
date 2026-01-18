@@ -241,7 +241,7 @@ class AppRouter {
                 final lessonId = int.parse(state.pathParameters['lessonId']!);
                 return MaterialPage(
                   key: state.pageKey,
-                  child: LessonTaskSessionScreen(lessonId: lessonId, userId: 1),
+                  child: LessonTaskSessionScreen(lessonId: lessonId),
                 );
               },
             ),

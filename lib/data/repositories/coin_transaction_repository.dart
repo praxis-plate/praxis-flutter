@@ -14,7 +14,7 @@ class CoinTransactionRepository implements ICoinTransactionRepository {
 
   @override
   Future<Result<List<CoinTransactionModel>>> getTransactionHistory(
-    int userId,
+    String userId,
   ) async {
     try {
       final entities = await _localDataSource.getTransactionHistory(userId);

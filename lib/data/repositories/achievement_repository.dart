@@ -12,7 +12,7 @@ class AchievementRepository implements IAchievementRepository {
   const AchievementRepository(this._achievementDataSource);
 
   @override
-  Future<Result<List<AchievementModel>>> getUserAchievements(int userId) async {
+  Future<Result<List<AchievementModel>>> getUserAchievements(String userId) async {
     try {
       final entities = await _achievementDataSource.getUserAchievements(userId);
       final achievements = entities.map((e) => e.toDomain()).toList();
@@ -25,7 +25,7 @@ class AchievementRepository implements IAchievementRepository {
   }
 
   @override
-  Future<Result<void>> unlockAchievement(int userId, int achievementId) async {
+  Future<Result<void>> unlockAchievement(String userId, int achievementId) async {
     try {
       final isUnlockedResult = await isAchievementUnlocked(
         userId,
@@ -54,7 +54,7 @@ class AchievementRepository implements IAchievementRepository {
 
   @override
   Future<Result<bool>> isAchievementUnlocked(
-    int userId,
+    String userId,
     int achievementId,
   ) async {
     try {

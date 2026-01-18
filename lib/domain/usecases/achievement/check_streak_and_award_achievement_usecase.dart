@@ -18,7 +18,7 @@ class CheckStreakAndAwardAchievementUseCase {
   }) : _userStatisticsRepository = userStatisticsRepository,
        _achievementRepository = achievementRepository;
 
-  Future<Result<AchievementModel?>> call(int userId) async {
+  Future<Result<AchievementModel?>> call(String userId) async {
     final userStatsResult = await _userStatisticsRepository.getByUserId(userId);
 
     if (userStatsResult.isFailure) {

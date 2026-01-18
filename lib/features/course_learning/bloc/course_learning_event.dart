@@ -9,7 +9,7 @@ abstract class CourseLearningEvent extends Equatable {
 
 class LoadCourseLearning extends CourseLearningEvent {
   final int courseId;
-  final int userId;
+  final String userId;
 
   const LoadCourseLearning({required this.courseId, required this.userId});
 

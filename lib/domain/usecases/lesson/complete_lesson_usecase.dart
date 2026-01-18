@@ -11,7 +11,7 @@ class CompleteLessonUseCase {
   }) : _lessonProgressRepository = lessonProgressRepository;
 
   Future<Result<void>> call({
-    required int userId,
+    required String userId,
     required int lessonId,
   }) async {
     final result = await _lessonProgressRepository.markLessonComplete(

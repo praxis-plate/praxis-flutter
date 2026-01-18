@@ -20,7 +20,7 @@ class CompleteLessonSessionUseCase {
   );
 
   Future<Result<void>> call({
-    required int userId,
+    required String userId,
     required int lessonId,
     required int totalXpEarned,
     required int bonusXp,

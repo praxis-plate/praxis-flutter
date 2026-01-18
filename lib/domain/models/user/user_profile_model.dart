@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class UserProfileModel extends Equatable {
-  final int id;
+  final String id;
   final String email;
   final String name;
   final String? avatarUrl;
@@ -16,7 +16,7 @@ class UserProfileModel extends Equatable {
   });
 
   UserProfileModel copyWith({
-    int? id,
+    String? id,
     String? email,
     String? name,
     String? avatarUrl,

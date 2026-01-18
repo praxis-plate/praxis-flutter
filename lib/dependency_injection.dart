@@ -108,6 +108,9 @@ class DependencyInjection {
       ..registerLazySingleton<IUserDataSource>(
         () => UserLocalDataSource(GetIt.I<AppDatabase>()),
       )
+      ..registerLazySingleton<IAuthDataSource>(
+        () => AuthRemoteDataSource(GetIt.I<Client>()),
+      )
       ..registerLazySingleton<IExplanationLocalDataSource>(
         () => ExplanationLocalDataSource(GetIt.I<AppDatabase>()),
       )
@@ -138,7 +141,7 @@ class DependencyInjection {
     GetIt.I
       ..registerLazySingleton<IAuthRepository>(
         () => AuthRepository(
-          GetIt.I<IUserDataSource>(),
+          GetIt.I<IAuthDataSource>(),
           GetIt.I<ISessionService>(),
         ),
       )
@@ -187,6 +190,12 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(() => SignInUseCase(GetIt.I<IAuthRepository>()))
+      ..registerFactory(
+        () => StartRegistrationUseCase(GetIt.I<IAuthRepository>()),
+      )
+      ..registerFactory(
+        () => VerifyRegistrationCodeUseCase(GetIt.I<IAuthRepository>()),
+      )
       ..registerFactory(
         () => SignUpUseCase(
           GetIt.I<IAuthRepository>(),
@@ -377,7 +386,7 @@ class DependencyInjection {
           GetIt.I<IAiService>(),
         ),
       )
-      ..registerFactoryParam<TaskHintCubit, int, void>(
+      ..registerFactoryParam<TaskHintCubit, String, void>(
         (userId, _) => TaskHintCubit(GetIt.I<RequestTaskHintUseCase>(), userId),
       )
       ..registerFactory<CompleteLessonSessionUseCase>(
