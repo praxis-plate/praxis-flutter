@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 class UserStatisticModel extends Equatable {
   final int id;
-  final int userId;
+  final String userId;
   final int currentStreak;
   final int maxStreak;
   final Money balance;
@@ -22,7 +22,7 @@ class UserStatisticModel extends Equatable {
 
   UserStatisticModel copyWith({
     int? id,
-    int? userId,
+    String? userId,
     int? currentStreak,
     int? maxStreak,
     Money? balance,

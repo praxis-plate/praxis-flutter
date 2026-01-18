@@ -6,13 +6,13 @@ abstract interface class IAchievementLocalDataSource {
 
   Future<AchievementEntity?> getAchievementById(int id);
 
-  Future<List<UnlockedAchievementEntity>> getUserAchievements(int userId);
+  Future<List<UnlockedAchievementEntity>> getUserAchievements(String userId);
 
   Future<void> insertUserAchievement(
-    int userId,
+    String userId,
     int achievementId,
     DateTime unlockedAt,
   );
 
-  Future<AchievementEntity?> getUserAchievement(int userId, int achievementId);
+  Future<AchievementEntity?> getUserAchievement(String userId, int achievementId);
 }

@@ -8,7 +8,7 @@ class CoinTransactionLocalDataSource
   const CoinTransactionLocalDataSource(this._db);
 
   @override
-  Future<List<CoinTransactionEntity>> getTransactionHistory(int userId) async {
+  Future<List<CoinTransactionEntity>> getTransactionHistory(String userId) async {
     return await _db.managers.coinTransaction
         .filter((f) => f.userId.id(userId))
         .get();

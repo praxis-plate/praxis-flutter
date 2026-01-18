@@ -8,7 +8,7 @@ class LessonProgressLocalDataSource implements ILessonProgressLocalDataSource {
 
   @override
   Future<List<LessonProgressEntity>> getCourseLessonProgress(
-    int userId,
+    String userId,
     int courseId,
   ) async {
     return await _db.managers.lessonProgress
@@ -19,7 +19,7 @@ class LessonProgressLocalDataSource implements ILessonProgressLocalDataSource {
 
   @override
   Future<LessonProgressEntity?> getLessonProgress(
-    int userId,
+    String userId,
     int lessonId,
   ) async {
     return await _db.managers.lessonProgress

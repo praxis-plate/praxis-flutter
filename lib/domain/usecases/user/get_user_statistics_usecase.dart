@@ -9,7 +9,7 @@ class GetUserStatisticsUseCase {
 
   GetUserStatisticsUseCase(this._userStatisticsRepository);
 
-  Future<Result<UserStatisticModel?>> call(int userId) async {
+  Future<Result<UserStatisticModel?>> call(String userId) async {
     final result = await _userStatisticsRepository.getByUserId(userId);
 
     return result.when(

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class TaskProgressModel extends Equatable {
   final int id;
   final int taskId;
-  final int userId;
+  final String userId;
   final bool isCompleted;
   final int attempts;
   final int hintsUsed;
@@ -28,7 +28,7 @@ class TaskProgressModel extends Equatable {
   TaskProgressModel copyWith({
     int? id,
     int? taskId,
-    int? userId,
+    String? userId,
     bool? isCompleted,
     int? attempts,
     int? hintsUsed,

@@ -23,7 +23,7 @@ class PurchaseCourseUseCase {
        _userStatisticsRepository = userStatisticsRepository,
        _coinTransactionRepository = coinTransactionRepository;
 
-  Future<Result<void>> call(int userId, int courseId) async {
+  Future<Result<void>> call(String userId, int courseId) async {
     final courseResult = await _courseRepository.getCourseById(
       courseId.toString(),
     );

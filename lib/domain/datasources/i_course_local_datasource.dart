@@ -6,7 +6,7 @@ abstract interface class ICourseLocalDataSource {
   Future<List<CourseEntity>> getCoursesByCategory(String category);
   Future<CourseEntity> insertCourse(CourseCompanion entry);
   Future<void> updateCourse(CourseCompanion entry);
-  Future<List<CourseEntity>> getEnrolledCourses(int userId);
+  Future<List<CourseEntity>> getEnrolledCourses(String userId);
   Future<void> enrollUserInCourse(UserCourseCompanion entry);
-  Future<bool> isUserEnrolled(int userId, int courseId);
+  Future<bool> isUserEnrolled(String userId, int courseId);
 }

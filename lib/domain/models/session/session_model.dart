@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class SessionModel extends Equatable {
-  final int userId;
+  final String userId;
   final String email;
   final String accessToken;
   final String? refreshToken;
@@ -20,7 +20,7 @@ class SessionModel extends Equatable {
   }
 
   SessionModel copyWith({
-    int? userId,
+    String? userId,
     String? email,
     String? accessToken,
     String? refreshToken,

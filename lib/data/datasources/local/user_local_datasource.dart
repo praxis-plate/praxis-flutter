@@ -16,6 +16,7 @@ class UserLocalDataSource implements IUserDataSource {
   }) async {
     return _db.managers.user.createReturning(
       (o) => o(
+        id: email + password, // TODO: Rewrite this hack
         email: email,
         passwordHash: hashPassword(password),
         createdAt: DateTime.now(),
@@ -31,7 +32,7 @@ class UserLocalDataSource implements IUserDataSource {
   }
 
   @override
-  Future<UserEntity?> getUserById(int userId) async {
+  Future<UserEntity?> getUserById(String userId) async {
     return await _db.managers.user
         .filter((f) => f.id(userId))
         .getSingleOrNull();
@@ -43,9 +44,7 @@ class UserLocalDataSource implements IUserDataSource {
       throw ArgumentError('User id must be present for update');
     }
 
-    final int id = entry.id.value;
-
-    await (_db.update(_db.user)..where((t) => t.id.equals(id))).write(entry);
+    await (_db.update(_db.user)..where((t) => t.id.equals(entry.id.value))).write(entry);
   }
 
   @override

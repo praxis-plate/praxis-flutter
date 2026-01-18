@@ -40,7 +40,7 @@ class CourseLocalDataSource implements ICourseLocalDataSource {
   }
 
   @override
-  Future<List<CourseEntity>> getEnrolledCourses(int userId) async {
+  Future<List<CourseEntity>> getEnrolledCourses(String userId) async {
     final userCourses = await _db.managers.userCourse
         .filter((f) => f.userId.id(userId))
         .get();
@@ -60,7 +60,7 @@ class CourseLocalDataSource implements ICourseLocalDataSource {
   }
 
   @override
-  Future<bool> isUserEnrolled(int userId, int courseId) async {
+  Future<bool> isUserEnrolled(String userId, int courseId) async {
     final enrollments = await _db.managers.userCourse
         .filter((f) => f.userId.id(userId))
         .filter((f) => f.courseId.id(courseId))

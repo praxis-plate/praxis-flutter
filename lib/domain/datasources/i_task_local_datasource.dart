@@ -7,10 +7,10 @@ abstract interface class ITaskLocalDataSource {
   Future<void> updateTask(TaskCompanion entry);
 
   Future<List<TaskProgressEntity>> getUserTaskProgress(
-    int userId,
+    String userId,
     int lessonId,
   );
-  Future<TaskProgressEntity?> getTaskProgress(int userId, int taskId);
+  Future<TaskProgressEntity?> getTaskProgress(String userId, int taskId);
   Future<TaskProgressEntity> insertTaskProgress(TaskProgressCompanion entry);
   Future<void> updateTaskProgress(TaskProgressCompanion entry);
 

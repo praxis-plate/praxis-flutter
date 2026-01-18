@@ -4,13 +4,13 @@ import 'package:codium/domain/models/lesson_progress/update_lesson_progress_mode
 
 abstract interface class ILessonProgressRepository {
   Future<Result<List<LessonProgressModel>>> getCourseLessonProgress(
-    int userId,
+    String userId,
     int courseId,
   );
   Future<Result<LessonProgressModel?>> getLessonProgress(
-    int userId,
+    String userId,
     int lessonId,
   );
-  Future<Result<void>> markLessonComplete(int userId, int lessonId);
+  Future<Result<void>> markLessonComplete(String userId, int lessonId);
   Future<Result<void>> updateLessonProgress(UpdateLessonProgressModel progress);
 }

@@ -36,7 +36,7 @@ class LessonContentBloc extends Bloc<LessonContentEvent, LessonContentState> {
     emit(const LessonContentLoading());
     try {
       final lessonId = int.tryParse(event.lessonId) ?? 0;
-      final userId = int.tryParse(event.userId) ?? 0;
+      final userId = event.userId;
 
       final lessonResult = await _lessonRepository.getLessonById(lessonId);
       final progressResult = await _lessonProgressRepository.getLessonProgress(
@@ -76,7 +76,7 @@ class LessonContentBloc extends Bloc<LessonContentEvent, LessonContentState> {
   ) async {
     emit(const LessonContentCompleting());
     try {
-      final userId = int.tryParse(event.userId) ?? 0;
+      final userId = event.userId;
       final lessonId = int.tryParse(event.lessonId) ?? 0;
 
       final result = await _completeLessonUseCase(

@@ -20,7 +20,7 @@ class AuthAuthenticatedState extends AuthState {
 
   const AuthAuthenticatedState({required this.user});
 
-  int get userId => user.id;
+  String get userId => user.id;
   String get email => user.email;
 
   @override

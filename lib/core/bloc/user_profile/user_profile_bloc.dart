@@ -13,7 +13,7 @@ part 'user_profile_state.dart';
 
 class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   final GetFullUserProfileUseCase _getFullUserProfileUseCase;
-  int? _currentUserId;
+  String? _currentUserId;
 
   UserProfileBloc({
     required GetFullUserProfileUseCase getFullUserProfileUseCase,

@@ -15,7 +15,7 @@ void main() {
 
   group('SessionService - Session Persistence', () {
     test('should save session with userId and email', () async {
-      const userId = 123;
+      const userId = '123' ;
       const email = 'test@example.com';
       final tokenExpiresAt = DateTime.now().add(const Duration(hours: 24));
       final session = SessionModel(
@@ -40,7 +40,7 @@ void main() {
     test('should clear all session data', () async {
       final tokenExpiresAt = DateTime.now().add(const Duration(hours: 24));
       final session = SessionModel(
-        userId: 123,
+        userId: '123',
         email: 'test@example.com',
         accessToken: 'test_access_token',
         refreshToken: 'test_refresh_token',
@@ -72,7 +72,7 @@ void main() {
     test('should persist session across service instances', () async {
       final tokenExpiresAt = DateTime.now().add(const Duration(hours: 24));
       final session = SessionModel(
-        userId: 123,
+        userId: '123',
         email: 'test@example.com',
         accessToken: 'test_access_token',
         refreshToken: 'test_refresh_token',
@@ -93,14 +93,14 @@ void main() {
     test('should overwrite existing session', () async {
       final tokenExpiresAt = DateTime.now().add(const Duration(hours: 24));
       final session1 = SessionModel(
-        userId: 123,
+        userId: '123',
         email: 'test1@example.com',
         accessToken: 'test_access_token_1',
         refreshToken: 'test_refresh_token_1',
         tokenExpiresAt: tokenExpiresAt,
       );
       final session2 = SessionModel(
-        userId: 456,
+        userId: '456',
         email: 'test2@example.com',
         accessToken: 'test_access_token_2',
         refreshToken: 'test_refresh_token_2',
