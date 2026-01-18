@@ -22,7 +22,7 @@ class SubmitTaskAnswerUseCase {
   Future<Result<TaskResultModel>> call({
     required int taskId,
     required String answer,
-    required int userId,
+    required String userId,
     required int hintsUsed,
   }) async {
     final resultOrFailure = await _taskRepository.validateAnswer(

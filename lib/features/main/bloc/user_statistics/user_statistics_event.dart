@@ -8,7 +8,7 @@ sealed class UserStatisticsEvent extends Equatable {
 }
 
 final class UserStatisticsLoadEvent extends UserStatisticsEvent {
-  final int userId;
+  final String userId;
 
   const UserStatisticsLoadEvent({required this.userId});
 }

@@ -57,7 +57,7 @@ class TaskRepository implements ITaskRepository {
   Future<Result<TaskResultModel>> validateAnswer(
     int taskId,
     String answer,
-    int userId,
+    String userId,
   ) async {
     try {
       final taskEntity = await _localDataSource.getTaskById(taskId);
@@ -118,7 +118,7 @@ class TaskRepository implements ITaskRepository {
 
   @override
   Future<Result<TaskProgressModel?>> getTaskProgress(
-    int userId,
+    String userId,
     int taskId,
   ) async {
     try {
@@ -133,7 +133,7 @@ class TaskRepository implements ITaskRepository {
 
   @override
   Future<Result<List<TaskProgressModel>>> getLessonProgress(
-    int userId,
+    String userId,
     int lessonId,
   ) async {
     try {

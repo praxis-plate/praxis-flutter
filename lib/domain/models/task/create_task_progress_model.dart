@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class CreateTaskProgressModel extends Equatable {
   final int taskId;
-  final int userId;
+  final String userId;
   final bool isCompleted;
   final int attempts;
   final int hintsUsed;

@@ -18,7 +18,7 @@ class CourseLearningBloc
   final ILessonProgressRepository _lessonProgressRepository;
 
   int? _currentCourseId;
-  int? _currentUserId;
+  String? _currentUserId;
 
   CourseLearningBloc({
     required ICourseRepository courseRepository,

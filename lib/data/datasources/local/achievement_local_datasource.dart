@@ -22,7 +22,7 @@ class AchievementLocalDataSource implements IAchievementLocalDataSource {
 
   @override
   Future<List<UnlockedAchievementEntity>> getUserAchievements(
-    int userId,
+    String userId,
   ) async {
     final query = _db.select(_db.userAchievement).join([
       innerJoin(
@@ -50,7 +50,7 @@ class AchievementLocalDataSource implements IAchievementLocalDataSource {
 
   @override
   Future<void> insertUserAchievement(
-    int userId,
+    String userId,
     int achievementId,
     DateTime unlockedAt,
   ) async {
@@ -65,7 +65,7 @@ class AchievementLocalDataSource implements IAchievementLocalDataSource {
 
   @override
   Future<AchievementEntity?> getUserAchievement(
-    int userId,
+    String userId,
     int achievementId,
   ) async {
     final entity = await _db.managers.userAchievement

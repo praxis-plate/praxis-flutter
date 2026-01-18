@@ -8,7 +8,7 @@ class GetEnrolledCoursesUseCase {
   GetEnrolledCoursesUseCase({required ICourseRepository courseRepository})
     : _courseRepository = courseRepository;
 
-  Future<Result<List<CourseModel>>> call(int userId) async {
+  Future<Result<List<CourseModel>>> call(String userId) async {
     return await _courseRepository.getEnrolledCourses(userId);
   }
 }

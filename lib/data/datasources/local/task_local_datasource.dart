@@ -39,7 +39,7 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
 
   @override
   Future<List<TaskProgressEntity>> getUserTaskProgress(
-    int userId,
+    String userId,
     int lessonId,
   ) async {
     final tasks = await getTasksByLessonId(lessonId);
@@ -56,7 +56,7 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
   }
 
   @override
-  Future<TaskProgressEntity?> getTaskProgress(int userId, int taskId) async {
+  Future<TaskProgressEntity?> getTaskProgress(String userId, int taskId) async {
     return await _db.managers.taskProgress
         .filter((f) => f.userId.id(userId))
         .filter((f) => f.taskId.id(taskId))

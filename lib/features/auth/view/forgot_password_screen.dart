@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/auth/bloc/forgot_password/forgot_password_cubit.dart';
 import 'package:codium/features/auth/widgets/widgets.dart';
@@ -27,15 +28,28 @@ class ForgotPasswordScreen extends StatelessWidget {
       child: BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
         listenWhen: (previous, current) =>
             previous.status != current.status &&
-            current.status == FormzSubmissionStatus.success,
+            (current.status == FormzSubmissionStatus.success ||
+                current.status == FormzSubmissionStatus.failure),
         listener: (context, state) {
+          if (state.status == FormzSubmissionStatus.success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(s.displayPasswordResetSuccess),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
+            );
+            context.read<ForgotPasswordCubit>().reset();
+            return;
+          }
+
+          final errorMessage = state.errorCode?.localizedMessage(context);
+          if (errorMessage == null) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(s.displayResetLinkSent),
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              content: Text(errorMessage),
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
-          context.read<ForgotPasswordCubit>().reset();
         },
         child: Scaffold(
           body: Stack(
@@ -94,6 +108,10 @@ class _ForgotPasswordForm extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             const _EmailInput(),
+            const SizedBox(height: 16),
+            const _VerificationCodeInput(),
+            const SizedBox(height: 16),
+            const _PasswordInput(),
             const SizedBox(height: 24),
             const _SubmitButton(),
             const SizedBox(height: 16),
@@ -126,8 +144,64 @@ class _EmailInput extends StatelessWidget {
       builder: (context, state) {
         return AuthEmailInput(
           errorText: state.email.stringDisplayError(s),
-          enabled: state.status != FormzSubmissionStatus.inProgress,
+          enabled:
+              state.step == ForgotPasswordStep.email &&
+              state.status != FormzSubmissionStatus.inProgress,
           onChanged: context.read<ForgotPasswordCubit>().emailChanged,
+        );
+      },
+    );
+  }
+}
+
+class _VerificationCodeInput extends StatelessWidget {
+  const _VerificationCodeInput();
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+
+    return BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
+      buildWhen: (previous, current) =>
+          previous.verificationCode != current.verificationCode ||
+          previous.step != current.step ||
+          previous.status != current.status,
+      builder: (context, state) {
+        if (state.step != ForgotPasswordStep.verifyCode) {
+          return const SizedBox.shrink();
+        }
+
+        return AuthCodeInput(
+          errorText: state.verificationCode.stringDisplayError(s),
+          enabled: state.status != FormzSubmissionStatus.inProgress,
+          onChanged: context.read<ForgotPasswordCubit>().verificationCodeChanged,
+        );
+      },
+    );
+  }
+}
+
+class _PasswordInput extends StatelessWidget {
+  const _PasswordInput();
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+
+    return BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
+      buildWhen: (previous, current) =>
+          previous.password != current.password ||
+          previous.step != current.step ||
+          previous.status != current.status,
+      builder: (context, state) {
+        if (state.step != ForgotPasswordStep.newPassword) {
+          return const SizedBox.shrink();
+        }
+
+        return AuthPasswordInput(
+          errorText: state.password.stringDisplayError(s),
+          isEnabled: state.status != FormzSubmissionStatus.inProgress,
+          onChanged: context.read<ForgotPasswordCubit>().passwordChanged,
         );
       },
     );
@@ -145,13 +219,19 @@ class _SubmitButton extends StatelessWidget {
           return const CircularProgressIndicator();
         }
 
+        final s = S.of(context);
+        final label = switch (state.step) {
+          ForgotPasswordStep.email => s.displaySendVerificationCode,
+          ForgotPasswordStep.verifyCode => s.displayVerifyCode,
+          ForgotPasswordStep.newPassword => s.displayResetPassword,
+        };
+
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: state.isValid
-                ? context.read<ForgotPasswordCubit>().submit
-                : null,
-            child: Text(S.of(context).displaySendResetLink),
+            onPressed:
+                state.isValid ? context.read<ForgotPasswordCubit>().submit : null,
+            child: Text(label),
           ),
         );
       },
