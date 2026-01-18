@@ -50,7 +50,7 @@ class SessionService implements ISessionService {
 
   @override
   Future<bool> hasActiveSession() async {
-    final userId = _prefs.getInt(_userIdKey);
+    final userId = _prefs.getString(_userIdKey);
     if (userId == null) return false;
 
     final expiresAtStr = _prefs.getString(_tokenExpiresAtKey);

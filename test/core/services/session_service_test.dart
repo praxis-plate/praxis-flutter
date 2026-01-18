@@ -87,7 +87,7 @@ void main() {
 
       expect(hasSession, true);
       expect(savedSession, isNotNull);
-      expect(savedSession!.userId, 123);
+      expect(savedSession!.userId, '123');
     });
 
     test('should overwrite existing session', () async {
@@ -113,7 +113,7 @@ void main() {
       final savedSession = await sessionService.getSession();
 
       expect(savedSession, isNotNull);
-      expect(savedSession!.userId, 456);
+      expect(savedSession!.userId, '456');
       expect(savedSession.email, 'test2@example.com');
     });
   });
