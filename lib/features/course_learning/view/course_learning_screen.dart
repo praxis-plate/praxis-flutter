@@ -17,7 +17,7 @@ class CourseLearningScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           GetIt.I<CourseLearningBloc>()
-            ..add(LoadCourseLearning(courseId: courseId, userId: 1)),
+            ..add(LoadCourseLearning(courseId: courseId, userId: '1')),
       child: const _CourseLearningView(),
     );
   }

@@ -386,7 +386,7 @@ class DependencyInjection {
           GetIt.I<IAiService>(),
         ),
       )
-      ..registerFactoryParam<TaskHintCubit, int, void>(
+      ..registerFactoryParam<TaskHintCubit, String, void>(
         (userId, _) => TaskHintCubit(GetIt.I<RequestTaskHintUseCase>(), userId),
       )
       ..registerFactory<CompleteLessonSessionUseCase>(

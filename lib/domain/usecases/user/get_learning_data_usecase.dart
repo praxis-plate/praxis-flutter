@@ -12,7 +12,7 @@ class GetLearningDataUseCase {
     this._generateActivityUsecase,
   );
 
-  Future<Result<UserStatisticModel?>> call(int userId) async {
+  Future<Result<UserStatisticModel?>> call(String userId) async {
     await _generateActivityUsecase();
     final result = await _userStatisticsRepository.getByUserId(userId);
 

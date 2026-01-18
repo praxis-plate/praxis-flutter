@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:codium/data/database/app_database.dart';
 import 'package:codium/domain/enums/coin_transaction_type.dart';
 import 'package:codium/domain/models/coin_transaction/coin_transaction_model.dart';

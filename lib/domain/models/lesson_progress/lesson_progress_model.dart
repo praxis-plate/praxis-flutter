@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class LessonProgressModel extends Equatable {
   final int id;
   final int lessonId;
-  final int userId;
+  final String userId;
   final bool isCompleted;
   final DateTime? completedAt;
   final int timeSpentSeconds;
@@ -20,7 +20,7 @@ class LessonProgressModel extends Equatable {
   LessonProgressModel copyWith({
     int? id,
     int? lessonId,
-    int? userId,
+    String? userId,
     bool? isCompleted,
     DateTime? completedAt,
     int? timeSpentSeconds,

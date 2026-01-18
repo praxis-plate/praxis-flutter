@@ -17,15 +17,15 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final RequestTaskHintUseCase _requestTaskHintUseCase;
 
   int _hintsUsed = 0;
-  int _currentUserId = 1;
+  String _currentUserId = '1';
 
   TaskBloc(
     this._getTaskByIdUseCase,
     this._submitTaskAnswerUseCase,
     this._requestTaskHintUseCase, {
-    int? userId,
+    String? userId,
   }) : super(const TaskInitialState()) {
-    _currentUserId = userId ?? 1;
+    _currentUserId = userId ?? '1';
     on<LoadTaskEvent>(_onLoadTaskEvent);
     on<SubmitAnswerEvent>(_onSubmitAnswerEvent);
     on<RequestHintEvent>(_onRequestHintEvent);

@@ -13,7 +13,7 @@ class RequestTaskHintUseCase {
 
   Future<Result<String>> call({
     required int taskId,
-    required int userId,
+    required String userId,
   }) async {
     final taskResult = await _taskRepository.getTaskById(taskId);
 

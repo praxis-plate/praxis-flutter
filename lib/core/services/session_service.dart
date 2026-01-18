@@ -15,7 +15,7 @@ class SessionService implements ISessionService {
 
   @override
   Future<void> saveSession(SessionModel session) async {
-    await _prefs.setInt(_userIdKey, session.userId);
+    await _prefs.setString(_userIdKey, session.userId);
     await _prefs.setString(_userEmailKey, session.email);
     await _prefs.setString(_accessTokenKey, session.accessToken);
     if (session.refreshToken is String) {
@@ -62,7 +62,7 @@ class SessionService implements ISessionService {
 
   @override
   Future<SessionModel?> getSession() async {
-    final userId = _prefs.getInt(_userIdKey);
+    final userId = _prefs.getString(_userIdKey);
     final email = _prefs.getString(_userEmailKey);
     final accessToken = _prefs.getString(_accessTokenKey);
     final refreshToken = _prefs.getString(_refreshTokenKey);

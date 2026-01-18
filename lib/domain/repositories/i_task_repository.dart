@@ -13,17 +13,17 @@ abstract interface class ITaskRepository {
   Future<Result<TaskResultModel>> validateAnswer(
     int taskId,
     String answer,
-    int userId,
+    String userId,
   );
 
   Future<Result<void>> saveTaskProgress(CreateTaskProgressModel progress);
 
   Future<Result<void>> updateProgress(UpdateTaskProgressModel progress);
 
-  Future<Result<TaskProgressModel?>> getTaskProgress(int userId, int taskId);
+  Future<Result<TaskProgressModel?>> getTaskProgress(String userId, int taskId);
 
   Future<Result<List<TaskProgressModel>>> getLessonProgress(
-    int userId,
+    String userId,
     int lessonId,
   );
 }

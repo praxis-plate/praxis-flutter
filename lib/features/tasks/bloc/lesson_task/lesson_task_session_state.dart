@@ -17,7 +17,7 @@ class SessionLoadingState extends LessonTaskSessionState {
 
 class SessionActiveState extends LessonTaskSessionState {
   final int lessonId;
-  final int userId;
+  final String userId;
   final List<TaskModel> tasks;
   final int currentTaskIndex;
   final int completedTasksCount;

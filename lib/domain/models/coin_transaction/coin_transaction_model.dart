@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 class CoinTransactionModel extends Equatable {
   final int id;
-  final int userId;
+  final String userId;
   final int amount;
   final CoinTransactionType type;
   final String? relatedEntityId;
@@ -20,7 +20,7 @@ class CoinTransactionModel extends Equatable {
 
   CoinTransactionModel copyWith({
     int? id,
-    int? userId,
+    String? userId,
     int? amount,
     CoinTransactionType? type,
     String? relatedEntityId,

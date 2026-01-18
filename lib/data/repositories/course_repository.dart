@@ -67,7 +67,7 @@ class CourseRepository implements ICourseRepository {
   }
 
   @override
-  Future<Result<List<CourseModel>>> getEnrolledCourses(int userId) async {
+  Future<Result<List<CourseModel>>> getEnrolledCourses(String userId) async {
     try {
       final entities = await _localDataSource.getEnrolledCourses(userId);
       final courses = entities.map((e) => e.toDomain()).toList();
@@ -80,8 +80,9 @@ class CourseRepository implements ICourseRepository {
   }
 
   @override
-  Future<Result<void>> enrollUserInCourse(int userId, int courseId) async {
+  Future<Result<void>> enrollUserInCourse(String userId, int courseId) async {
     try {
+      // TODO: Repository should depend on datasource, not concrete database 
       final companion = UserCourseCompanion.insert(
         userId: userId,
         courseId: courseId,
@@ -96,7 +97,7 @@ class CourseRepository implements ICourseRepository {
   }
 
   @override
-  Future<Result<bool>> isUserEnrolled(int userId, int courseId) async {
+  Future<Result<bool>> isUserEnrolled(String userId, int courseId) async {
     try {
       final isEnrolled = await _localDataSource.isUserEnrolled(
         userId,
