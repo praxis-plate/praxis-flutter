@@ -3,7 +3,9 @@ import 'package:codium/core/utils/result.dart';
 import 'package:codium/core/validators/email_validator.dart';
 import 'package:codium/core/validators/password_validator.dart';
 import 'package:codium/core/validators/verification_code_validator.dart';
-import 'package:codium/domain/repositories/i_auth_repository.dart';
+import 'package:codium/domain/usecases/auth/finish_password_reset_usecase.dart';
+import 'package:codium/domain/usecases/auth/start_password_reset_usecase.dart';
+import 'package:codium/domain/usecases/auth/verify_password_reset_code_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -13,10 +15,15 @@ import 'package:talker_flutter/talker_flutter.dart';
 part 'forgot_password_state.dart';
 
 class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
-  ForgotPasswordCubit({required this.authRepository})
-    : super(const ForgotPasswordState());
+  final StartPasswordResetUseCase _startPasswordResetUseCase;
+  final VerifyPasswordResetCodeUseCase _verifyPasswordResetCodeUseCase;
+  final FinishPasswordResetUsecase _finishPasswordResetUseCase;
 
-  final IAuthRepository authRepository;
+  ForgotPasswordCubit(
+    this._startPasswordResetUseCase,
+    this._verifyPasswordResetCodeUseCase,
+    this._finishPasswordResetUseCase,
+  ) : super(const ForgotPasswordState());
 
   void emailChanged(String value) {
     final email = EmailValidator.dirty(value);
@@ -84,7 +91,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
 
   Future<void> _startPasswordReset() async {
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    final result = await authRepository.startPasswordReset(state.email.value);
+    final result = await _startPasswordResetUseCase(state.email.value);
 
     result.when(
       success: (requestId) {
@@ -119,7 +126,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
     if (requestId == null) return;
 
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    final result = await authRepository.verifyPasswordResetCode(
+    final result = await _verifyPasswordResetCodeUseCase(
       passwordResetRequestId: requestId,
       verificationCode: state.verificationCode.value,
     );
@@ -157,7 +164,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
     if (finishToken == null) return;
 
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-    final result = await authRepository.finishPasswordReset(
+    final result = await _finishPasswordResetUseCase(
       finishPasswordResetToken: finishToken,
       newPassword: state.password.value,
     );
