@@ -5,16 +5,12 @@ import 'package:serverpod_client/serverpod_client.dart';
 
 extension AuthSessionEntityExtension on AuthSessionEntity {
   SessionModel toSessionModel() {
-    final refresh = refreshToken ?? '';
-    final expiresAt =
-        tokenExpiresAt ?? DateTime.now().add(const Duration(hours: 24));
-
     return SessionModel(
       userId: _authUserIdToLocalId(authUserId),
       email: email,
       accessToken: accessToken,
-      refreshToken: refresh,
-      tokenExpiresAt: expiresAt,
+      refreshToken: refreshToken,
+      tokenExpiresAt: tokenExpiresAt,
     );
   }
 

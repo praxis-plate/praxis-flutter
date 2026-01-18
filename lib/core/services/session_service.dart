@@ -18,11 +18,15 @@ class SessionService implements ISessionService {
     await _prefs.setInt(_userIdKey, session.userId);
     await _prefs.setString(_userEmailKey, session.email);
     await _prefs.setString(_accessTokenKey, session.accessToken);
-    await _prefs.setString(_refreshTokenKey, session.refreshToken);
-    await _prefs.setString(
-      _tokenExpiresAtKey,
-      session.tokenExpiresAt.toIso8601String(),
-    );
+    if (session.refreshToken is String) {
+      await _prefs.setString(_refreshTokenKey, session.refreshToken!);
+    }
+    if (session.tokenExpiresAt is DateTime) {
+      await _prefs.setString(
+        _tokenExpiresAtKey,
+        session.tokenExpiresAt!.toIso8601String(),
+      );
+    }
   }
 
   @override
