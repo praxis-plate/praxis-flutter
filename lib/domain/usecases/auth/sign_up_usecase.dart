@@ -1,6 +1,5 @@
 import 'package:codium/core/config/test_user_config.dart';
 import 'package:codium/core/utils/result.dart';
-import 'package:codium/core/validators/auth_validator.dart';
 import 'package:codium/domain/enums/coin_transaction_type.dart';
 import 'package:codium/domain/models/coin_transaction/create_coin_transaction_model.dart';
 import 'package:codium/domain/models/user/user_profile_model.dart';
@@ -18,8 +17,6 @@ class SignUpUseCase {
     String password,
     String registrationToken,
   ) async {
-    AuthValidator.validateCredentials(email, password);
-
     final userResult = await _authRepository.signUp(
       email: email,
       password: password,
