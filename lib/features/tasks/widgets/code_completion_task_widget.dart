@@ -1,3 +1,4 @@
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/bloc.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
@@ -168,52 +169,33 @@ class _CodeCompletionTaskWidgetState extends State<CodeCompletionTaskWidget> {
       if (i < _inputControllers.length) {
         widgets.add(
           IntrinsicWidth(
-            child: TextField(
-              controller: _inputControllers[i],
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontFamily: 'monospace',
-                fontSize: 14,
-                height: 1.5,
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.bold,
+            child: GlassTextField(
+              borderRadius: BorderRadius.circular(8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
               ),
-              decoration: InputDecoration(
-                constraints: const BoxConstraints(minWidth: 100),
-                hintText: '...',
-                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+              child: TextField(
+                controller: _inputControllers[i],
+                style: theme.textTheme.bodyMedium?.copyWith(
                   fontFamily: 'monospace',
                   fontSize: 14,
-                  color: theme.colorScheme.onSurfaceVariant.withValues(
-                    alpha: 0.5,
-                  ),
+                  height: 1.5,
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
                 ),
-                filled: true,
-                fillColor: theme.colorScheme.surface,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
-                isDense: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.5),
-                    width: 2,
+                decoration: InputDecoration(
+                  constraints: const BoxConstraints(minWidth: 100),
+                  hintText: '...',
+                  hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                    fontFamily: 'monospace',
+                    fontSize: 14,
+                    color: theme.colorScheme.onSurfaceVariant.withValues(
+                      alpha: 0.5,
+                    ),
                   ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.5),
-                    width: 2,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary,
-                    width: 2,
-                  ),
+                  isDense: true,
+                  border: InputBorder.none,
                 ),
               ),
             ),
