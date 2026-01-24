@@ -1,3 +1,4 @@
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/bloc.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
@@ -40,7 +41,7 @@ class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
           Text(
             s.taskSelectOption,
             style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+              color: Colors.white.withValues(alpha: 0.85),
             ),
           ),
           const SizedBox(height: 12),
@@ -58,20 +59,16 @@ class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
                   });
                 },
                 borderRadius: BorderRadius.circular(12),
-                child: Container(
+                child: GlassCard(
+                  borderRadius: BorderRadius.circular(12),
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? theme.colorScheme.primaryContainer
-                        : theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isSelected
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.outline.withValues(alpha: 0.3),
-                      width: isSelected ? 2 : 1,
-                    ),
-                  ),
+                  backgroundColor: isSelected
+                      ? theme.colorScheme.primaryContainer.withValues(
+                          alpha: 0.35,
+                        )
+                      : null,
+                  borderColor: isSelected ? theme.colorScheme.primary : null,
+                  borderWidth: isSelected ? 2 : 1,
                   child: Row(
                     children: [
                       Container(
@@ -107,7 +104,7 @@ class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
                           option,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: isSelected
-                                ? theme.colorScheme.onPrimaryContainer
+                                ? theme.colorScheme.primary
                                 : theme.colorScheme.onSurface,
                           ),
                         ),
@@ -115,7 +112,7 @@ class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
                       if (isSelected)
                         Icon(
                           Icons.check_circle,
-                          color: theme.colorScheme.onPrimaryContainer,
+                          color: theme.colorScheme.primary,
                         ),
                     ],
                   ),

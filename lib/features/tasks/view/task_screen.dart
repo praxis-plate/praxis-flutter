@@ -6,6 +6,7 @@ import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:codium/core/widgets/common/user_scope.dart';
 
 class TaskScreen extends StatefulWidget {
   final int taskId;
@@ -21,14 +22,18 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
+    final userProfile = UserScope.of(context, listen: false);
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (context) =>
-              GetIt.I<TaskBloc>(param1: 1)..add(LoadTaskEvent(widget.taskId)),
+              GetIt.I<TaskBloc>(param1: userProfile.id)
+                ..add(LoadTaskEvent(widget.taskId)),
         ),
-        BlocProvider(create: (context) => GetIt.I<TaskHintCubit>(param1: 1)),
+        BlocProvider(
+          create: (context) => GetIt.I<TaskHintCubit>(param1: userProfile.id),
+        ),
       ],
       child: Scaffold(
         appBar: AppBar(
