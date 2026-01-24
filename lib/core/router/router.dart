@@ -111,65 +111,76 @@ class AppRouter {
                     BlocProvider.value(value: GetIt.I<CoursePurchasingBloc>()),
                     BlocProvider.value(value: GetIt.I<UserStatisticsBloc>()),
                   ],
-                  child: NavigationShellInitializer(
-                    child: NavigationScreen(child: child),
-                  ),
+                  child: NavigationShellInitializer(child: child),
                 ),
               ),
             );
           },
           routes: [
-            GoRoute(
-              path: '/navigation',
-              name: 'navigation',
-              redirect: (context, state) => '/home',
-            ),
-
-            GoRoute(
-              path: '/home',
-              name: 'home',
-              pageBuilder: (context, state) {
-                final userProfile = UserScope.of(context, listen: false);
-
+            ShellRoute(
+              pageBuilder: (context, state, child) {
                 return NoTransitionPage(
-                  key: state.pageKey,
-                  child: BlocProvider<MainBloc>(
-                    create: (context) =>
-                        GetIt.I<MainBloc>()
-                          ..add(MainLoadCoursesEvent(userId: userProfile.id)),
-                    child: MainScreen(userProfile: userProfile),
-                  ),
+                  child: NavigationScreen(child: child),
                 );
               },
-            ),
-            GoRoute(
-              path: '/learning',
-              name: 'learning',
-              pageBuilder: (context, state) {
-                final userProfile = UserScope.of(context, listen: false);
+              routes: [
+                GoRoute(
+                  path: '/navigation',
+                  name: 'navigation',
+                  redirect: (context, state) => '/home',
+                ),
 
-                return NoTransitionPage(
-                  key: state.pageKey,
-                  child: BlocProvider<LearningBloc>(
-                    create: (_) =>
-                        GetIt.I<LearningBloc>()
-                          ..add(LearningLoadEvent(userId: userProfile.id)),
-                    child: const LearningScreen(),
-                  ),
-                );
-              },
-            ),
-            GoRoute(
-              path: '/profile',
-              name: 'profile',
-              pageBuilder: (context, state) {
-                final userProfile = UserScope.of(context, listen: false);
+                GoRoute(
+                  path: '/home',
+                  name: 'home',
+                  pageBuilder: (context, state) {
+                    final userProfile = UserScope.of(context, listen: false);
 
-                return NoTransitionPage(
-                  key: state.pageKey,
-                  child: ProfileScreen(userProfile: userProfile),
-                );
-              },
+                    return NoTransitionPage(
+                      key: state.pageKey,
+                      child: BlocProvider<MainBloc>(
+                        create: (context) =>
+                            GetIt.I<MainBloc>()
+                              ..add(
+                                MainLoadCoursesEvent(userId: userProfile.id),
+                              ),
+                        child: MainScreen(userProfile: userProfile),
+                      ),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: '/learning',
+                  name: 'learning',
+                  pageBuilder: (context, state) {
+                    final userProfile = UserScope.of(context, listen: false);
+
+                    return NoTransitionPage(
+                      key: state.pageKey,
+                      child: BlocProvider<LearningBloc>(
+                        create: (_) =>
+                            GetIt.I<LearningBloc>()
+                              ..add(
+                                LearningLoadEvent(userId: userProfile.id),
+                              ),
+                        child: const LearningScreen(),
+                      ),
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: '/profile',
+                  name: 'profile',
+                  pageBuilder: (context, state) {
+                    final userProfile = UserScope.of(context, listen: false);
+
+                    return NoTransitionPage(
+                      key: state.pageKey,
+                      child: ProfileScreen(userProfile: userProfile),
+                    );
+                  },
+                ),
+              ],
             ),
 
             GoRoute(
