@@ -1,6 +1,6 @@
-import 'package:codium/domain/models/task/base_task_model.dart';
+part of 'task_model.dart';
 
-class TextInputTaskModel extends TaskModel {
+final class TextInputTaskModel extends TaskModel {
   final bool caseSensitive;
   final bool exactMatch;
   final List<String>? acceptableAnswers;

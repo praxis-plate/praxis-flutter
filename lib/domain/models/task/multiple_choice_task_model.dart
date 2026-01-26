@@ -1,7 +1,7 @@
-import 'package:codium/domain/models/task/base_task_model.dart';
+part of 'task_model.dart';
 
 /// Задача с множественным выбором
-class MultipleChoiceTaskModel extends TaskModel {
+final class MultipleChoiceTaskModel extends TaskModel {
   final List<String> options;
 
   const MultipleChoiceTaskModel({
