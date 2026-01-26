@@ -33,7 +33,11 @@ class LessonTaskSessionBloc
     result.when(
       success: (tasks) {
         if (tasks.isEmpty) {
-          emit(const SessionErrorState('No tasks found for this lesson'));
+          emit(
+            const SessionErrorState(
+              type: LessonTaskSessionErrorType.noTasks,
+            ),
+          );
           return;
         }
 
@@ -50,7 +54,12 @@ class LessonTaskSessionBloc
           ),
         );
       },
-      failure: (failure) => emit(SessionErrorState(failure.message)),
+      failure: (failure) => emit(
+        SessionErrorState(
+          type: LessonTaskSessionErrorType.generic,
+          message: failure.message,
+        ),
+      ),
     );
   }
 

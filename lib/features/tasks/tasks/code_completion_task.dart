@@ -2,22 +2,23 @@ import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/bloc.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
+import 'package:codium/features/tasks/widgets/task_view_layout.dart';
 import 'package:codium/features/tasks/widgets/task_hint_button.dart';
+import 'package:codium/features/tasks/widgets/submit_task_button.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CodeCompletionTaskWidget extends StatefulWidget {
+class CodeCompletionTask extends StatefulWidget {
   final CodeCompletionTaskModel task;
 
-  const CodeCompletionTaskWidget({super.key, required this.task});
+  const CodeCompletionTask({super.key, required this.task});
 
   @override
-  State<CodeCompletionTaskWidget> createState() =>
-      _CodeCompletionTaskWidgetState();
+  State<CodeCompletionTask> createState() => _CodeCompletionTaskState();
 }
 
-class _CodeCompletionTaskWidgetState extends State<CodeCompletionTaskWidget> {
+class _CodeCompletionTaskState extends State<CodeCompletionTask> {
   late final List<TextEditingController> _inputControllers;
   late final List<String> _codeParts;
   late final int _placeholderCount;
@@ -68,52 +69,46 @@ class _CodeCompletionTaskWidgetState extends State<CodeCompletionTaskWidget> {
     final s = S.of(context);
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
+    return TaskViewLayout(
+      content: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    widget.task.questionText,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Chip(
-                    label: Text(
-                      widget.task.language.name.toUpperCase(),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    backgroundColor: theme.colorScheme.secondaryContainer,
-                    side: BorderSide.none,
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: theme.colorScheme.outline.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(16),
-                    child: _buildCodeWithInputs(theme),
-                  ),
-                ],
-              ),
+          Text(
+            widget.task.questionText,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
           ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Chip(
+              label: Text(
+                widget.task.language.name.toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              color: WidgetStatePropertyAll(theme.colorScheme.primary),
+              side: BorderSide.none,
+            ),
+          ),
+          const SizedBox(height: 4),
+          GlassCard(
+            borderRadius: BorderRadius.circular(12),
+            padding: const EdgeInsets.all(16),
+            child: _buildCodeWithInputs(theme),
+          ),
+        ],
+      ),
+      footer: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
           TaskHintButton(taskId: widget.task.id),
           const SizedBox(height: 12),
-          ElevatedButton(
+          SubmitTaskButton(
+            label: s.taskSubmitButton,
             onPressed: _isAnswerComplete()
                 ? () {
                     context.read<TaskBloc>().add(
@@ -121,28 +116,7 @@ class _CodeCompletionTaskWidgetState extends State<CodeCompletionTaskWidget> {
                     );
                   }
                 : null,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              backgroundColor: theme.colorScheme.primary,
-              foregroundColor: theme.colorScheme.onPrimary,
-              disabledBackgroundColor:
-                  theme.colorScheme.surfaceContainerHighest,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              minimumSize: const Size(double.infinity, 0),
-            ),
-            child: Text(
-              s.taskSubmitButton,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: _isAnswerComplete()
-                    ? theme.colorScheme.onPrimary
-                    : theme.colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
           ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
         ],
       ),
     );

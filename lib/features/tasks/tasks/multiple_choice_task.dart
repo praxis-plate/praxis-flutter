@@ -2,22 +2,23 @@ import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/bloc.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
+import 'package:codium/features/tasks/widgets/task_view_layout.dart';
+import 'package:codium/features/tasks/widgets/submit_task_button.dart';
 import 'package:codium/features/tasks/widgets/task_hint_button.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MultipleChoiceTaskWidget extends StatefulWidget {
+class MultipleChoiceTask extends StatefulWidget {
   final MultipleChoiceTaskModel task;
 
-  const MultipleChoiceTaskWidget({super.key, required this.task});
+  const MultipleChoiceTask({super.key, required this.task});
 
   @override
-  State<MultipleChoiceTaskWidget> createState() =>
-      _MultipleChoiceTaskWidgetState();
+  State<MultipleChoiceTask> createState() => _MultipleChoiceTaskState();
 }
 
-class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
+class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
   String? _selectedOption;
 
   @override
@@ -25,9 +26,8 @@ class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
     final s = S.of(context);
     final theme = Theme.of(context);
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
+    return TaskViewLayout(
+      content: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
@@ -36,7 +36,6 @@ class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 24),
           Text(
             s.taskSelectOption,
@@ -76,9 +75,7 @@ class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
                         height: 32,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isSelected
-                              ? theme.colorScheme.surface
-                              : theme.colorScheme.surface,
+                          color: theme.colorScheme.surface,
                           border: Border.all(
                             color: isSelected
                                 ? theme.colorScheme.primary
@@ -120,10 +117,15 @@ class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
               ),
             );
           }),
-          const SizedBox(height: 24),
+        ],
+      ),
+      footer: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
           TaskHintButton(taskId: widget.task.id),
           const SizedBox(height: 12),
-          ElevatedButton(
+          SubmitTaskButton(
+            label: s.taskSubmitButton,
             onPressed: _selectedOption != null
                 ? () {
                     context.read<TaskBloc>().add(
@@ -131,27 +133,7 @@ class _MultipleChoiceTaskWidgetState extends State<MultipleChoiceTaskWidget> {
                     );
                   }
                 : null,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              backgroundColor: theme.colorScheme.primary,
-              foregroundColor: theme.colorScheme.onPrimary,
-              disabledBackgroundColor:
-                  theme.colorScheme.surfaceContainerHighest,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: Text(
-              s.taskSubmitButton,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: _selectedOption != null
-                    ? theme.colorScheme.onPrimary
-                    : theme.colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
           ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
         ],
       ),
     );

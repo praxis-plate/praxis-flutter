@@ -4,7 +4,7 @@ abstract class LessonTaskSessionState extends Equatable {
   const LessonTaskSessionState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class SessionInitialState extends LessonTaskSessionState {
@@ -102,11 +102,14 @@ class SessionCompletedState extends LessonTaskSessionState {
   ];
 }
 
-class SessionErrorState extends LessonTaskSessionState {
-  final String message;
+enum LessonTaskSessionErrorType { noTasks, generic }
 
-  const SessionErrorState(this.message);
+class SessionErrorState extends LessonTaskSessionState {
+  final LessonTaskSessionErrorType type;
+  final String? message;
+
+  const SessionErrorState({required this.type, this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [type, message];
 }

@@ -7,6 +7,10 @@ abstract class TaskState extends Equatable {
   List<Object?> get props => [];
 }
 
+abstract interface class TaskStateWithTask {
+  TaskModel get task;
+}
+
 class TaskInitialState extends TaskState {
   const TaskInitialState();
 }
@@ -15,7 +19,8 @@ class TaskLoadingState extends TaskState {
   const TaskLoadingState();
 }
 
-class TaskLoadedState extends TaskState {
+class TaskLoadedState extends TaskState implements TaskStateWithTask {
+  @override
   final TaskModel task;
   final TaskProgressModel? progress;
 
@@ -25,7 +30,8 @@ class TaskLoadedState extends TaskState {
   List<Object?> get props => [task, progress];
 }
 
-class TaskAnswerValidatingState extends TaskState {
+class TaskAnswerValidatingState extends TaskState implements TaskStateWithTask {
+  @override
   final TaskModel task;
 
   const TaskAnswerValidatingState(this.task);
@@ -34,7 +40,8 @@ class TaskAnswerValidatingState extends TaskState {
   List<Object> get props => [task];
 }
 
-class TaskAnswerCorrectState extends TaskState {
+class TaskAnswerCorrectState extends TaskState implements TaskStateWithTask {
+  @override
   final TaskModel task;
   final TaskResultModel result;
 
@@ -44,7 +51,8 @@ class TaskAnswerCorrectState extends TaskState {
   List<Object> get props => [task, result];
 }
 
-class TaskAnswerIncorrectState extends TaskState {
+class TaskAnswerIncorrectState extends TaskState implements TaskStateWithTask {
+  @override
   final TaskModel task;
   final TaskResultModel result;
 
@@ -54,7 +62,8 @@ class TaskAnswerIncorrectState extends TaskState {
   List<Object> get props => [task, result];
 }
 
-class TaskHintLoadingState extends TaskState {
+class TaskHintLoadingState extends TaskState implements TaskStateWithTask {
+  @override
   final TaskModel task;
 
   const TaskHintLoadingState(this.task);
@@ -63,7 +72,8 @@ class TaskHintLoadingState extends TaskState {
   List<Object> get props => [task];
 }
 
-class TaskHintLoadedState extends TaskState {
+class TaskHintLoadedState extends TaskState implements TaskStateWithTask {
+  @override
   final TaskModel task;
   final String hint;
   final int hintsUsed;
@@ -87,7 +97,8 @@ class TaskErrorState extends TaskState {
   List<Object> get props => [message];
 }
 
-class TaskHintErrorState extends TaskState {
+class TaskHintErrorState extends TaskState implements TaskStateWithTask {
+  @override
   final TaskModel task;
   final String message;
 
