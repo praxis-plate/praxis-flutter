@@ -1,26 +1,7 @@
-import 'package:codium/domain/models/task/base_task_model.dart';
-
-/// Модель для элемента сопоставления
-class MatchingPair {
-  final String left;
-  final String right;
-
-  const MatchingPair({required this.left, required this.right});
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MatchingPair &&
-          runtimeType == other.runtimeType &&
-          left == other.left &&
-          right == other.right;
-
-  @override
-  int get hashCode => left.hashCode ^ right.hashCode;
-}
+part of 'task_model.dart';
 
 /// Задача на сопоставление элементов
-class MatchingTaskModel extends TaskModel {
+final class MatchingTaskModel extends TaskModel {
   final List<MatchingPair> pairs;
   final List<String> leftItems;
   final List<String> rightItems;
@@ -98,4 +79,15 @@ class MatchingTaskModel extends TaskModel {
 
   @override
   List<Object?> get props => [...super.props, pairs, leftItems, rightItems];
+}
+
+/// Модель для элемента сопоставления
+class MatchingPair extends Equatable {
+  final String left;
+  final String right;
+
+  const MatchingPair({required this.left, required this.right});
+
+  @override
+  List<Object?> get props => [left, right];
 }
