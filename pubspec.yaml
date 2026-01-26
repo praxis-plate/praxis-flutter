@@ -67,6 +67,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/blur-backgrounds/
     - assets/prompts/
 flutter_intl:
   enabled: true
