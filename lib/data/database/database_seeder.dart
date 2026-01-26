@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 
 import 'app_database.dart';
 
+// TODO: Remove this class after the seeding logic is moved to the backend
 class DatabaseSeeder {
   final AppDatabase db;
   final IUserDataSource userDataSource;
@@ -225,7 +226,7 @@ class DatabaseSeeder {
       await _seedTasksForLessons([lesson1Id, lesson2Id, lesson3Id]);
 
       print('🎉 Database seeding completed successfully!');
-      print('📊 Summary: 2 courses, 3 modules, 3 lessons, 18 tasks');
+      print('📊 Summary: 2 courses, 3 modules, 3 lessons, 21 tasks');
     });
   }
 
@@ -371,6 +372,29 @@ class DatabaseSeeder {
               createdAt: DateTime.now(),
             ),
           );
+
+      await db
+          .into(db.task)
+          .insert(
+            TaskCompanion.insert(
+              lessonId: lessonId,
+              taskType: 'matching',
+              questionText: 'Match the term with its definition',
+              correctAnswer: '{"Widget":"Building block of UI"}',
+              optionsJson: const Value(
+                '{"pairs":[{"left":"Widget","right":"Building block of UI"}]}',
+              ),
+              difficultyLevel: 1,
+              xpValue: 15,
+              orderIndex: 6,
+              topic: 'flutter_basics',
+              fallbackHint: const Value('Widgets are the building blocks'),
+              fallbackExplanation: const Value(
+                'In Flutter, widgets are the fundamental building blocks of the UI.',
+              ),
+              createdAt: DateTime.now(),
+            ),
+          );
     }
   }
 
@@ -427,6 +451,72 @@ class DatabaseSeeder {
           ),
         );
       }
+    });
+  }
+
+  Future<void> ensureMatchingTask() async {
+    await db.transaction(() async {
+      final existingMatchingTask =
+          await (db.select(db.task)
+                ..where((t) => t.taskType.equals('matching'))
+                ..limit(1))
+              .getSingleOrNull();
+
+      const optionsJson =
+          '{"pairs":[{"left":"Widget","right":"Building block of UI"},{"left":"StatefulWidget","right":"Widget with mutable state"},{"left":"StatelessWidget","right":"Widget without mutable state"}]}';
+      const correctAnswer =
+          '{"Widget":"Building block of UI","StatefulWidget":"Widget with mutable state","StatelessWidget":"Widget without mutable state"}';
+
+      if (existingMatchingTask != null) {
+        await (db.update(
+          db.task,
+        )..where((t) => t.id.equals(existingMatchingTask.id))).write(
+          const TaskCompanion(
+            questionText: Value('Match the term with its definition'),
+            correctAnswer: Value(correctAnswer),
+            optionsJson: Value(optionsJson),
+            difficultyLevel: Value(1),
+            xpValue: Value(15),
+            topic: Value('flutter_basics'),
+          ),
+        );
+        return;
+      }
+
+      final lesson = await (db.select(db.lesson)..limit(1)).getSingleOrNull();
+      if (lesson == null) {
+        return;
+      }
+
+      final lastTask =
+          await (db.select(db.task)
+                ..where((t) => t.lessonId.equals(lesson.id))
+                ..orderBy([(t) => OrderingTerm.desc(t.orderIndex)])
+                ..limit(1))
+              .getSingleOrNull();
+
+      final nextOrderIndex = (lastTask?.orderIndex ?? -1) + 1;
+
+      await db
+          .into(db.task)
+          .insert(
+            TaskCompanion.insert(
+              lessonId: lesson.id,
+              taskType: 'matching',
+              questionText: 'Match the term with its definition',
+              correctAnswer: correctAnswer,
+              optionsJson: const Value(optionsJson),
+              difficultyLevel: 1,
+              xpValue: 15,
+              orderIndex: nextOrderIndex,
+              topic: 'flutter_basics',
+              fallbackHint: const Value('Widgets are the building blocks'),
+              fallbackExplanation: const Value(
+                'In Flutter, widgets are the fundamental building blocks of the UI.',
+              ),
+              createdAt: DateTime.now(),
+            ),
+          );
     });
   }
 }
