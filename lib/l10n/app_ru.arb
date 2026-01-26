@@ -354,6 +354,8 @@
   "taskSubmitButton": "Отправить ответ",
   "taskCorrectFeedback": "Правильно! Отлично!",
   "taskIncorrectFeedback": "Не совсем. Попробуйте еще раз!",
+  "taskIncorrectTitle": "Не совсем.",
+  "taskIncorrectSubtitle": "Попробуйте еще раз!",
   "taskCorrectLabel": "Правильно",
   "taskIncorrectLabel": "Неправильно",
   "taskXpEarned": "Вы заработали {xp} XP",
@@ -391,11 +393,21 @@
   "taskCorrectAnswer": "Правильный ответ",
   "taskExplanation": "Объяснение",
   "taskHintTitle": "Подсказка",
+  "taskHintPenalty": "Использование подсказок уменьшает награду XP на 50%",
   "taskSelectOption": "Выберите вариант",
   "taskEnterCode": "Введите ваш код",
   "taskMatchItems": "Сопоставьте элементы",
   "taskEnterAnswer": "Введите ваш ответ",
+  "taskUnsupportedType": "Неподдерживаемый тип задания: {type}",
+  "@taskUnsupportedType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "taskSessionLoading": "Загрузка заданий урока...",
+  "taskSessionNoTasks": "Задания для этого урока не найдены",
   "taskSessionExitTitle": "Выйти из сессии?",
   "taskSessionExitMessage": "Вы уверены, что хотите выйти? Ваш прогресс будет сохранен.",
   "taskSessionCompleteTitle": "Урок завершен!",

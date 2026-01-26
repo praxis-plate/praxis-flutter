@@ -354,6 +354,8 @@
   "taskSubmitButton": "Submit Answer",
   "taskCorrectFeedback": "Correct! Well done!",
   "taskIncorrectFeedback": "Not quite. Try again!",
+  "taskIncorrectTitle": "Not quite.",
+  "taskIncorrectSubtitle": "Try again!",
   "taskCorrectLabel": "Correct",
   "taskIncorrectLabel": "Incorrect",
   "taskXpEarned": "You earned {xp} XP",
@@ -391,11 +393,21 @@
   "taskCorrectAnswer": "Correct Answer",
   "taskExplanation": "Explanation",
   "taskHintTitle": "Hint",
+  "taskHintPenalty": "Using hints reduces XP reward by 50%",
   "taskSelectOption": "Select an option",
   "taskEnterCode": "Enter your code",
   "taskMatchItems": "Match the items",
   "taskEnterAnswer": "Enter your answer",
+  "taskUnsupportedType": "Unsupported task type: {type}",
+  "@taskUnsupportedType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "taskSessionLoading": "Loading lesson tasks...",
+  "taskSessionNoTasks": "No tasks found for this lesson",
   "taskSessionExitTitle": "Exit Session?",
   "taskSessionExitMessage": "Are you sure you want to exit? Your progress will be saved.",
   "taskSessionCompleteTitle": "Lesson Complete!",
