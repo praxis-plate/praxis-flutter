@@ -1,23 +1,26 @@
 import 'package:codium/data/database/app_database.dart';
 import 'package:codium/domain/datasources/i_coin_transaction_datasource.dart';
+import 'package:praxis_client/praxis_client.dart';
 
-class CoinTransactionLocalDataSource
+class CoinTransactionRemoteDataSource
     implements ICoinTransactionDataSource {
-  final AppDatabase _db;
+  final Client _client;
 
-  const CoinTransactionLocalDataSource(this._db);
+  const CoinTransactionRemoteDataSource(this._client);
 
   @override
   Future<List<CoinTransactionEntity>> getTransactionHistory(String userId) async {
-    return await _db.managers.coinTransaction
-        .filter((f) => f.userId.id(userId))
-        .get();
+    throw UnimplementedError(
+      'Remote coin transactions are not implemented for $_client',
+    );
   }
 
   @override
   Future<CoinTransactionEntity> insertTransaction(
     CoinTransactionCompanion entry,
   ) async {
-    return await _db.into(_db.coinTransaction).insertReturning(entry);
+    throw UnimplementedError(
+      'Remote coin transactions are not implemented for $_client',
+    );
   }
 }
