@@ -1,6 +1,6 @@
 export 'i_achievement_local_datasource.dart';
 export 'i_auth_datasource.dart';
-export 'i_coin_transaction_local_datasource.dart';
+export 'i_coin_transaction_datasource.dart';
 export 'i_course_local_datasource.dart';
 export 'i_explanation_local_datasource.dart';
 export 'i_gemini_datasource.dart';

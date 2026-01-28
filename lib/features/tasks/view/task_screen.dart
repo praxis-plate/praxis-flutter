@@ -1,6 +1,8 @@
+import 'package:codium/core/widgets/common/user_scope.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
 import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
+import 'package:codium/features/tasks/renderers/task_renderer.dart';
 import 'package:codium/features/tasks/widgets/widgets.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -21,31 +23,26 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
+    final userProfile = UserScope.of(context, listen: false);
+    final renderer = GetIt.I<TaskRenderer>();
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (context) =>
-              GetIt.I<TaskBloc>(param1: 1)..add(LoadTaskEvent(widget.taskId)),
+              GetIt.I<TaskBloc>(param1: userProfile.id)
+                ..add(LoadTaskEvent(widget.taskId)),
         ),
-        BlocProvider(create: (context) => GetIt.I<TaskHintCubit>(param1: 1)),
+        BlocProvider(
+          create: (context) => GetIt.I<TaskHintCubit>(param1: userProfile.id),
+        ),
       ],
       child: Scaffold(
         appBar: AppBar(
           title: BlocBuilder<TaskBloc, TaskState>(
             builder: (context, state) {
-              if (state is TaskLoadedState ||
-                  state is TaskAnswerValidatingState ||
-                  state is TaskAnswerCorrectState ||
-                  state is TaskAnswerIncorrectState) {
-                final task = state is TaskLoadedState
-                    ? state.task
-                    : state is TaskAnswerValidatingState
-                    ? state.task
-                    : state is TaskAnswerCorrectState
-                    ? state.task
-                    : (state as TaskAnswerIncorrectState).task;
-
+              if (state is TaskStateWithTask) {
+                final task = (state as TaskStateWithTask).task;
                 return Text(_getTaskTypeTitle(task, context));
               }
               return Text(S.of(context).taskMultipleChoice);
@@ -110,7 +107,7 @@ class _TaskScreenState extends State<TaskScreen> {
 
             if (state is TaskLoadedState) {
               final task = state.task;
-              return _buildTaskContent(context, task);
+              return renderer.build(context, task);
             }
 
             if (state is TaskAnswerValidatingState) {
@@ -127,18 +124,16 @@ class _TaskScreenState extends State<TaskScreen> {
             }
 
             if (state is TaskAnswerCorrectState) {
-              return TaskFeedbackWidget(
+              return TaskFeedbackCorrectWidget(
                 task: state.task,
                 result: state.result,
-                isCorrect: true,
               );
             }
 
             if (state is TaskAnswerIncorrectState) {
-              return TaskFeedbackWidget(
+              return TaskFeedbackIncorrectWidget(
                 task: state.task,
                 result: state.result,
-                isCorrect: false,
               );
             }
 
@@ -157,25 +152,5 @@ class _TaskScreenState extends State<TaskScreen> {
       () => s.taskMatching,
       () => s.taskTextInput,
     );
-  }
-
-  Widget _buildTaskContent(BuildContext context, TaskModel task) {
-    final theme = Theme.of(context);
-
-    // Используем полиморфизм - проверяем тип во время выполнения
-    switch (task) {
-      case MultipleChoiceTaskModel():
-        return MultipleChoiceTaskWidget(task: task);
-      case CodeCompletionTaskModel():
-        return CodeCompletionTaskWidget(task: task);
-      case MatchingTaskModel():
-        return MatchingTaskWidget(task: task);
-      case TextInputTaskModel():
-        return TextInputTaskWidget(task: task);
-      default:
-        return Center(
-          child: Text('Unknown task type', style: theme.textTheme.bodyLarge),
-        );
-    }
   }
 }

@@ -54,7 +54,7 @@ class ForgotPasswordScreen extends StatelessWidget {
         child: Scaffold(
           body: Stack(
             children: [
-              const AnimatedBubbleBackground(),
+              const BlurredImageBackground(),
               SafeArea(
                 child: GestureDetector(
                   onTap: FocusScope.of(context).unfocus,

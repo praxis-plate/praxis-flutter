@@ -51,56 +51,65 @@ class _LessonContentView extends StatelessWidget {
           _showCompletionDialog(context, state);
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: BlocBuilder<LessonContentBloc, LessonContentState>(
-            builder: (context, state) {
-              if (state is LessonContentLoaded) {
-                return Text(
-                  state.lesson.title,
-                  style: theme.textTheme.titleLarge,
-                );
-              }
-              return Text(s.loading, style: theme.textTheme.titleLarge);
-            },
-          ),
-        ),
-        body: BlocBuilder<LessonContentBloc, LessonContentState>(
-          builder: (context, state) {
-            if (state is LessonContentLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      child: Stack(
+        children: [
+          const BlurredImageBackground(),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              surfaceTintColor: Colors.transparent,
+              title: BlocBuilder<LessonContentBloc, LessonContentState>(
+                builder: (context, state) {
+                  if (state is LessonContentLoaded) {
+                    return Text(
+                      state.lesson.title,
+                      style: theme.textTheme.titleLarge,
+                    );
+                  }
+                  return Text(s.loading, style: theme.textTheme.titleLarge);
+                },
+              ),
+            ),
+            body: BlocBuilder<LessonContentBloc, LessonContentState>(
+              builder: (context, state) {
+                if (state is LessonContentLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            if (state is LessonContentError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(state.message),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => context.pop(),
-                      child: Text(s.retry),
+                if (state is LessonContentError) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(state.message),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => context.pop(),
+                          child: Text(s.retry),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            }
+                  );
+                }
 
-            if (state is LessonContentLoaded) {
-              return _LessonContent(
-                lesson: state.lesson,
-                isCompleted: state.isCompleted,
-              );
-            }
+                if (state is LessonContentLoaded) {
+                  return _LessonContent(
+                    lesson: state.lesson,
+                    isCompleted: state.isCompleted,
+                  );
+                }
 
-            if (state is LessonContentCompleting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+                if (state is LessonContentCompleting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            return const SizedBox.shrink();
-          },
-        ),
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

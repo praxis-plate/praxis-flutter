@@ -1,9 +1,7 @@
-import 'package:codium/domain/enums/programming_language.dart';
-import 'package:codium/domain/models/task/base_task_model.dart';
-import 'package:codium/domain/models/task/test_case_model.dart';
+part of 'task_model.dart';
 
 /// Задача на дополнение кода
-class CodeCompletionTaskModel extends TaskModel {
+final class CodeCompletionTaskModel extends TaskModel {
   final String codeTemplate;
   final List<TestCaseModel> testCases;
   final ProgrammingLanguage language;

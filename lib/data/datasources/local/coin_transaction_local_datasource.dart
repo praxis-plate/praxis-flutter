@@ -1,8 +1,8 @@
 import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/datasources/i_coin_transaction_local_datasource.dart';
+import 'package:codium/domain/datasources/i_coin_transaction_datasource.dart';
 
 class CoinTransactionLocalDataSource
-    implements ICoinTransactionLocalDataSource {
+    implements ICoinTransactionDataSource {
   final AppDatabase _db;
 
   const CoinTransactionLocalDataSource(this._db);
