@@ -17,8 +17,6 @@ class DefaultTaskRenderer implements TaskRenderer {
         return MatchingTask(task: task);
       case TextInputTaskModel():
         return TextInputTask(task: task);
-      default:
-        return UnsupportedTask(task: task);
     }
   }
 }
