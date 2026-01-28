@@ -22,7 +22,7 @@ class SignInScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          const AnimatedBubbleBackground(),
+          const BlurredImageBackground(),
           SafeArea(
             child: GestureDetector(
               onTap: FocusScope.of(context).unfocus,

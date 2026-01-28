@@ -32,6 +32,8 @@ import 'package:codium/features/learning/learning.dart';
 import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
 import 'package:codium/features/main/main.dart';
 import 'package:codium/features/onboarding/onboarding.dart';
+import 'package:codium/features/tasks/renderers/default_task_renderer.dart';
+import 'package:codium/features/tasks/renderers/task_renderer.dart';
 import 'package:codium/features/tasks/bloc/lesson_task/lesson_task_session_bloc.dart';
 import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
 import 'package:dio/dio.dart';
@@ -74,6 +76,7 @@ class DependencyInjection {
       }
 
       await seeder.ensureTestUser();
+      await seeder.ensureMatchingTask();
     } catch (e, st) {
       GetIt.I<Talker>().error('Failed to seed database', e, st);
     }
@@ -132,7 +135,7 @@ class DependencyInjection {
       ..registerLazySingleton<IAchievementLocalDataSource>(
         () => AchievementLocalDataSource(GetIt.I<AppDatabase>()),
       )
-      ..registerLazySingleton<ICoinTransactionLocalDataSource>(
+      ..registerLazySingleton<ICoinTransactionDataSource>(
         () => CoinTransactionLocalDataSource(GetIt.I<AppDatabase>()),
       );
   }
@@ -176,7 +179,7 @@ class DependencyInjection {
       )
       ..registerLazySingleton<ICoinTransactionRepository>(
         () => CoinTransactionRepository(
-          GetIt.I<ICoinTransactionLocalDataSource>(),
+          GetIt.I<ICoinTransactionDataSource>(),
         ),
       );
   }
@@ -195,6 +198,15 @@ class DependencyInjection {
       )
       ..registerFactory(
         () => VerifyRegistrationCodeUseCase(GetIt.I<IAuthRepository>()),
+      )
+      ..registerFactory(
+        () => StartPasswordResetUseCase(GetIt.I<IAuthRepository>()),
+      )
+      ..registerFactory(
+        () => VerifyPasswordResetCodeUseCase(GetIt.I<IAuthRepository>()),
+      )
+      ..registerFactory(
+        () => FinishPasswordResetUsecase(GetIt.I<IAuthRepository>()),
       )
       ..registerFactory(
         () => SignUpUseCase(
@@ -371,6 +383,7 @@ class DependencyInjection {
       ..registerLazySingleton<ITaskRepository>(
         () => TaskRepository(GetIt.I<ITaskLocalDataSource>()),
       )
+      ..registerLazySingleton<TaskRenderer>(() => const DefaultTaskRenderer())
       ..registerFactory(() => GetLessonTasksUseCase(GetIt.I<ITaskRepository>()))
       ..registerFactory(() => GetTaskByIdUseCase(GetIt.I<ITaskRepository>()))
       ..registerFactory(

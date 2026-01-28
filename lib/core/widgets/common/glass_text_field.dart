@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class GlassTextField extends StatelessWidget {
+class GlassTextField extends StatefulWidget {
   const GlassTextField({
     super.key,
     required this.child,
@@ -27,10 +27,44 @@ class GlassTextField extends StatelessWidget {
   final double borderWidth;
 
   @override
+  State<GlassTextField> createState() => _GlassTextFieldState();
+}
+
+class _GlassTextFieldState extends State<GlassTextField> {
+  late final FocusScopeNode _focusScopeNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusScopeNode = FocusScopeNode();
+    _focusScopeNode.addListener(_handleFocusChange);
+  }
+
+  @override
+  void dispose() {
+    _focusScopeNode.removeListener(_handleFocusChange);
+    _focusScopeNode.dispose();
+    super.dispose();
+  }
+
+  void _handleFocusChange() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final surface = theme.colorScheme.surface.withValues(alpha: 0.24);
     final stroke = theme.colorScheme.onSurface.withValues(alpha: 0.18);
+    final isFocused = _focusScopeNode.hasFocus && widget.enabled;
+    final resolvedBorderColor =
+        widget.borderColor ??
+        (isFocused ? theme.colorScheme.primary.withValues(alpha: 0.7) : stroke);
+    final resolvedBorderWidth = isFocused
+        ? widget.borderWidth + 0.5
+        : widget.borderWidth;
     final fallbackGradient = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -53,21 +87,24 @@ class GlassTextField extends StatelessWidget {
     );
 
     return Opacity(
-      opacity: enabled ? 1 : 0.4,
+      opacity: widget.enabled ? 1 : 0.4,
       child: ClipRRect(
-        borderRadius: borderRadius,
+        borderRadius: widget.borderRadius,
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+          filter: ImageFilter.blur(
+            sigmaX: widget.blurSigma,
+            sigmaY: widget.blurSigma,
+          ),
           child: Container(
-            padding: padding,
+            padding: widget.padding,
             decoration: BoxDecoration(
-              color: backgroundColor ?? surface,
-              gradient: gradient ?? fallbackGradient,
+              color: widget.backgroundColor ?? surface,
+              gradient: widget.gradient ?? fallbackGradient,
               border: Border.all(
-                color: borderColor ?? stroke,
-                width: borderWidth,
+                color: resolvedBorderColor,
+                width: resolvedBorderWidth,
               ),
-              borderRadius: borderRadius,
+              borderRadius: widget.borderRadius,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.12),
@@ -78,7 +115,7 @@ class GlassTextField extends StatelessWidget {
             ),
             child: Theme(
               data: theme.copyWith(inputDecorationTheme: inputDecorationTheme),
-              child: child,
+              child: FocusScope(node: _focusScopeNode, child: widget.child),
             ),
           ),
         ),
