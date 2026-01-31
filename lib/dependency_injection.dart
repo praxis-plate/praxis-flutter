@@ -1,8 +1,8 @@
 import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
-import 'package:codium/core/config/env_config.dart';
 import 'package:codium/core/config/dio_factory.dart';
+import 'package:codium/core/config/env_config.dart';
 import 'package:codium/core/services/ai_service.dart';
 import 'package:codium/core/services/session_service.dart';
 import 'package:codium/data/database/app_database.dart';
@@ -32,10 +32,10 @@ import 'package:codium/features/learning/learning.dart';
 import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
 import 'package:codium/features/main/main.dart';
 import 'package:codium/features/onboarding/onboarding.dart';
-import 'package:codium/features/tasks/renderers/default_task_renderer.dart';
-import 'package:codium/features/tasks/renderers/task_renderer.dart';
 import 'package:codium/features/tasks/bloc/lesson_task/lesson_task_session_bloc.dart';
 import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
+import 'package:codium/features/tasks/renderers/default_task_renderer.dart';
+import 'package:codium/features/tasks/renderers/task_renderer.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:praxis_client/praxis_client.dart';
@@ -114,9 +114,6 @@ class DependencyInjection {
       ..registerLazySingleton<IAuthDataSource>(
         () => AuthRemoteDataSource(GetIt.I<Client>()),
       )
-      ..registerLazySingleton<IExplanationLocalDataSource>(
-        () => ExplanationLocalDataSource(GetIt.I<AppDatabase>()),
-      )
       ..registerLazySingleton<IUserStatisticsLocalDataSource>(
         () => UserStatisticsLocalDataSource(GetIt.I<AppDatabase>()),
       )
@@ -161,9 +158,6 @@ class DependencyInjection {
         () =>
             UserStatisticsRepository(GetIt.I<IUserStatisticsLocalDataSource>()),
       )
-      ..registerLazySingleton<IExplanationRepository>(
-        () => ExplanationRepository(GetIt.I<IExplanationLocalDataSource>()),
-      )
       ..registerLazySingleton<IModuleRepository>(
         () => ModuleRepository(GetIt.I<IModuleLocalDataSource>()),
       )
@@ -178,9 +172,7 @@ class DependencyInjection {
         () => AchievementRepository(GetIt.I<IAchievementLocalDataSource>()),
       )
       ..registerLazySingleton<ICoinTransactionRepository>(
-        () => CoinTransactionRepository(
-          GetIt.I<ICoinTransactionDataSource>(),
-        ),
+        () => CoinTransactionRepository(GetIt.I<ICoinTransactionDataSource>()),
       );
   }
 
@@ -255,19 +247,6 @@ class DependencyInjection {
         () => CheckCourseEnrollmentUseCase(
           courseRepository: GetIt.I<ICourseRepository>(),
         ),
-      )
-      ..registerFactory(
-        () => ExplainTextUseCase(GetIt.I<IExplanationRepository>()),
-      )
-      ..registerFactory(
-        () => GetExplanationHistoryUseCase(GetIt.I<IExplanationRepository>()),
-      )
-      ..registerFactory(
-        () =>
-            SearchExplanationHistoryUseCase(GetIt.I<IExplanationRepository>()),
-      )
-      ..registerFactory(
-        () => DeleteExplanationUseCase(GetIt.I<IExplanationRepository>()),
       )
       ..registerFactory(
         () => GetRecommendedCoursesUseCase(GetIt.I<ICourseRepository>()),

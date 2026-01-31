@@ -1,7 +1,6 @@
 export 'achievement_local_datasource.dart';
 export 'coin_transaction_local_datasource.dart';
 export 'course_local_datasource.dart';
-export 'explanation_local_datasource.dart';
 export 'lesson_local_datasource.dart';
 export 'lesson_progress_local_datasource.dart';
 export 'user_local_datasource.dart';
