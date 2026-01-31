@@ -12,4 +12,12 @@ class TaskRemoteDataSource {
   Future<TaskDto> getTaskById(int taskId) async {
     return await _client.task.getById(taskId);
   }
+
+  Future<Map<String, dynamic>> submitAnswer(
+    int taskId,
+    String answer,
+    String userId,
+  ) async {
+    return await _client.task.answer(taskId, answer);
+  }
 }

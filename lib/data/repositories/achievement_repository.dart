@@ -1,21 +1,25 @@
 import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/entities/achievement_entity_extension.dart';
-import 'package:codium/domain/datasources/i_achievement_local_datasource.dart';
+import 'package:codium/data/datasources/remote/achievement_remote_datasource.dart';
+import 'package:codium/data/entities/achievement_dto_extension.dart';
 import 'package:codium/domain/models/achievement/achievement_data_model.dart';
 import 'package:codium/domain/repositories/i_achievement_repository.dart';
 
 class AchievementRepository implements IAchievementRepository {
-  final IAchievementLocalDataSource _achievementDataSource;
+  final AchievementRemoteDataSource _remoteDataSource;
 
-  const AchievementRepository(this._achievementDataSource);
+  const AchievementRepository(this._remoteDataSource);
 
   @override
-  Future<Result<List<AchievementModel>>> getUserAchievements(String userId) async {
+  Future<Result<List<AchievementModel>>> getUserAchievements(
+    String userId,
+  ) async {
     try {
-      final entities = await _achievementDataSource.getUserAchievements(userId);
-      final achievements = entities.map((e) => e.toDomain()).toList();
+      final achievementDtos = await _remoteDataSource.getUserAchievements();
+      final achievements = achievementDtos
+          .map((dto) => dto.toDomain())
+          .toList();
       return Success(achievements);
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
@@ -25,7 +29,10 @@ class AchievementRepository implements IAchievementRepository {
   }
 
   @override
-  Future<Result<void>> unlockAchievement(String userId, int achievementId) async {
+  Future<Result<void>> unlockAchievement(
+    String userId,
+    int achievementId,
+  ) async {
     try {
       final isUnlockedResult = await isAchievementUnlocked(
         userId,
@@ -35,11 +42,7 @@ class AchievementRepository implements IAchievementRepository {
       return isUnlockedResult.when(
         success: (isUnlocked) async {
           if (!isUnlocked) {
-            await _achievementDataSource.insertUserAchievement(
-              userId,
-              achievementId,
-              DateTime.now(),
-            );
+            await _remoteDataSource.unlockAchievement(achievementId);
           }
           return const Success(null);
         },
@@ -58,11 +61,10 @@ class AchievementRepository implements IAchievementRepository {
     int achievementId,
   ) async {
     try {
-      final achievement = await _achievementDataSource.getUserAchievement(
-        userId,
+      final isUnlocked = await _remoteDataSource.isAchievementUnlocked(
         achievementId,
       );
-      return Success(achievement != null);
+      return Success(isUnlocked);
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
@@ -73,8 +75,10 @@ class AchievementRepository implements IAchievementRepository {
   @override
   Future<Result<List<AchievementModel>>> getAllAchievements() async {
     try {
-      final entities = await _achievementDataSource.getAllAchievements();
-      final achievements = entities.map((e) => e.toDomain()).toList();
+      final achievementDtos = await _remoteDataSource.getAllAchievements();
+      final achievements = achievementDtos
+          .map((dto) => dto.toDomain())
+          .toList();
       return Success(achievements);
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));

@@ -13,6 +13,10 @@ class LessonRemoteDataSource {
     return await _client.lesson.getByCourseId(courseId);
   }
 
+  Future<LessonDto> getLessonById(int lessonId) async {
+    return await _client.lesson.getById(lessonId);
+  }
+
   Future<void> markComplete(int lessonId, {int timeSpentSeconds = 0}) async {
     return await _client.lesson.markComplete(
       lessonId,
