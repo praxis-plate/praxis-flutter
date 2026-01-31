@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:codium/core/utils/constants.dart';
 import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/course_learning/widgets/widgets.dart';
 import 'package:codium/s.dart';
