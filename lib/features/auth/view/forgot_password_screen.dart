@@ -174,7 +174,9 @@ class _VerificationCodeInput extends StatelessWidget {
         return AuthCodeInput(
           errorText: state.verificationCode.stringDisplayError(s),
           enabled: state.status != FormzSubmissionStatus.inProgress,
-          onChanged: context.read<ForgotPasswordCubit>().verificationCodeChanged,
+          onChanged: context
+              .read<ForgotPasswordCubit>()
+              .verificationCodeChanged,
         );
       },
     );
@@ -229,8 +231,9 @@ class _SubmitButton extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed:
-                state.isValid ? context.read<ForgotPasswordCubit>().submit : null,
+            onPressed: state.isValid
+                ? context.read<ForgotPasswordCubit>().submit
+                : null,
             child: Text(label),
           ),
         );

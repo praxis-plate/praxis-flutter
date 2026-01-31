@@ -34,15 +34,9 @@ class SettingsTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  Text(title, style: theme.textTheme.bodyMedium),
                   if (subtitle != null)
-                    Text(
-                      subtitle!,
-                      style: theme.textTheme.labelSmall,
-                    ),
+                    Text(subtitle!, style: theme.textTheme.labelSmall),
                 ],
               ),
             ],
