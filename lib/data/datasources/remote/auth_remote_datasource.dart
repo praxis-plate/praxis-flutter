@@ -36,11 +36,13 @@ class AuthRemoteDataSource implements IAuthDataSource {
     );
 
     return AuthSessionEntity(
+      authStrategy: authSuccess.authStrategy,
       authUserId: authSuccess.authUserId,
       accessToken: authSuccess.token,
       refreshToken: authSuccess.refreshToken,
       tokenExpiresAt: authSuccess.tokenExpiresAt,
       email: email,
+      scopeNames: authSuccess.scopeNames,
     );
   }
 
@@ -55,11 +57,13 @@ class AuthRemoteDataSource implements IAuthDataSource {
     );
 
     return AuthSessionEntity(
+      authStrategy: authSuccess.authStrategy,
       authUserId: authSuccess.authUserId,
       accessToken: authSuccess.token,
       refreshToken: authSuccess.refreshToken,
       tokenExpiresAt: authSuccess.tokenExpiresAt,
       email: email,
+      scopeNames: authSuccess.scopeNames,
     );
   }
 

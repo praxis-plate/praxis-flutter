@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
@@ -9,6 +11,7 @@ import 'package:codium/data/datasources/datasources.dart';
 import 'package:codium/data/repositories/repositories.dart';
 import 'package:codium/data/repositories/task_repository.dart';
 import 'package:codium/domain/datasources/datasources.dart';
+import 'package:codium/domain/models/session/update_session_model.dart';
 import 'package:codium/domain/repositories/i_task_repository.dart';
 import 'package:codium/domain/repositories/repositories.dart';
 import 'package:codium/domain/services/i_ai_service.dart';
@@ -33,6 +36,7 @@ import 'package:codium/features/tasks/renderers/default_task_renderer.dart';
 import 'package:codium/features/tasks/renderers/task_renderer.dart';
 import 'package:get_it/get_it.dart';
 import 'package:praxis_client/praxis_client.dart';
+import 'package:serverpod_auth_core_flutter/serverpod_auth_core_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -41,7 +45,7 @@ class DependencyInjection {
     GetIt.I.registerSingleton(TalkerFlutter.init());
 
     await _registerServices();
-    _registerServerpodClient();
+    await _registerServerpodClient();
     _registerDataSources();
     _registerRepositories();
     _registerUseCases();
@@ -61,9 +65,49 @@ class DependencyInjection {
       );
   }
 
-  void _registerServerpodClient() {
-    GetIt.I.registerLazySingleton<Client>(
-      () => Client(EnvConfig.serverpodHost),
+  Future<void> _registerServerpodClient() async {
+    final sessionService = GetIt.I<ISessionService>();
+    final client = Client(EnvConfig.serverpodHost);
+    final authSessionManager = FlutterAuthSessionManager();
+    authSessionManager.authInfoListenable.addListener(() {
+      unawaited(
+        _syncSessionFromAuthInfo(authSessionManager, sessionService),
+      );
+    });
+    client.authSessionManager = authSessionManager;
+    await authSessionManager.restore();
+    await _syncSessionFromAuthInfo(authSessionManager, sessionService);
+
+    GetIt.I.registerLazySingleton<Client>(() => client);
+  }
+
+  Future<void> _syncSessionFromAuthInfo(
+    FlutterAuthSessionManager authSessionManager,
+    ISessionService sessionService,
+  ) async {
+    final authInfo = authSessionManager.authInfo;
+    if (authInfo == null) {
+      await sessionService.clearSession();
+      return;
+    }
+
+    final session = await sessionService.getSession();
+    if (session == null) {
+      return;
+    }
+
+    final refreshToken = authInfo.refreshToken;
+    final expiresAt = authInfo.tokenExpiresAt;
+    if (refreshToken == null || expiresAt == null) {
+      return;
+    }
+
+    await sessionService.updateTokens(
+      UpdateSessionModel(
+        accessToken: authInfo.token,
+        refreshToken: refreshToken,
+        tokenExpiresAt: expiresAt,
+      ),
     );
   }
 
@@ -110,10 +154,14 @@ class DependencyInjection {
 
   void _registerRepositories() {
     GetIt.I
+      ..registerLazySingleton<AuthSessionRemoteDataSource>(
+        () => AuthSessionRemoteDataSource(GetIt.I<Client>()),
+      )
       ..registerLazySingleton<IAuthRepository>(
         () => AuthRepository(
           GetIt.I<IAuthDataSource>(),
           GetIt.I<ISessionService>(),
+          GetIt.I<AuthSessionRemoteDataSource>(),
         ),
       )
       ..registerLazySingleton<ICourseRepository>(
