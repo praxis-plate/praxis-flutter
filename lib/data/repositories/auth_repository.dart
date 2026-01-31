@@ -122,9 +122,7 @@ final class AuthRepository implements IAuthRepository {
       return const Success(null);
     } catch (e) {
       return Failure(
-        AppFailure.fromException(
-          e is Exception ? e : Exception(e.toString()),
-        ),
+        AppFailure.fromException(e is Exception ? e : Exception(e.toString())),
       );
     }
   }
@@ -136,9 +134,7 @@ final class AuthRepository implements IAuthRepository {
       return Success(isAuth);
     } catch (e) {
       return Failure(
-        AppFailure.fromException(
-          e is Exception ? e : Exception(e.toString()),
-        ),
+        AppFailure.fromException(e is Exception ? e : Exception(e.toString())),
       );
     }
   }
