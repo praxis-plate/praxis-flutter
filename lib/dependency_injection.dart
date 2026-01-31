@@ -70,9 +70,7 @@ class DependencyInjection {
     final client = Client(EnvConfig.serverpodHost);
     final authSessionManager = FlutterAuthSessionManager();
     authSessionManager.authInfoListenable.addListener(() {
-      unawaited(
-        _syncSessionFromAuthInfo(authSessionManager, sessionService),
-      );
+      unawaited(_syncSessionFromAuthInfo(authSessionManager, sessionService));
     });
     client.authSessionManager = authSessionManager;
     await authSessionManager.restore();

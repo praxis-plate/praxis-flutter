@@ -54,10 +54,14 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
   }
 
   String _getUserAnswer() {
-    if (_inputControllers.length == 1) {
-      return _inputControllers[0].text.trim();
+    final buffer = StringBuffer();
+    for (int i = 0; i < _codeParts.length; i++) {
+      buffer.write(_codeParts[i]);
+      if (i < _inputControllers.length) {
+        buffer.write(_inputControllers[i].text.trim());
+      }
     }
-    return _inputControllers.map((c) => c.text.trim()).join(', ');
+    return buffer.toString().trim();
   }
 
   bool _isAnswerComplete() {

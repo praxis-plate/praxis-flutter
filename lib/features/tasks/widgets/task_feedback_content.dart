@@ -10,9 +10,12 @@ Widget buildTaskFeedbackContent({
   required Animation<double> scaleAnimation,
   required Animation<double> fadeAnimation,
   required VoidCallback? onRetry,
+  String? fallbackExplanation,
 }) {
   final s = S.of(context);
   final theme = Theme.of(context);
+  final explanation =
+      result.explanation ?? (!isCorrect ? fallbackExplanation : null);
 
   return SingleChildScrollView(
     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
@@ -85,17 +88,13 @@ Widget buildTaskFeedbackContent({
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.stars,
-                    color: theme.colorScheme.onSecondaryContainer,
-                    size: 32,
-                  ),
+                  Icon(Icons.stars, color: theme.colorScheme.primary, size: 32),
                   const SizedBox(width: 12),
                   Text(
                     s.taskXpEarned(result.xpEarned),
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onSecondaryContainer,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                 ],
@@ -135,7 +134,7 @@ Widget buildTaskFeedbackContent({
             ),
           ),
         ],
-        if (result.explanation != null) ...[
+        if (explanation != null) ...[
           const SizedBox(height: 24),
           GlassCard(
             padding: const EdgeInsets.all(16),
@@ -162,7 +161,7 @@ Widget buildTaskFeedbackContent({
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(result.explanation!, style: theme.textTheme.bodyMedium),
+                Text(explanation, style: theme.textTheme.bodyMedium),
               ],
             ),
           ),

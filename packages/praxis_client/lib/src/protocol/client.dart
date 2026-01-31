@@ -33,14 +33,16 @@ import 'package:praxis_client/src/protocol/requests/complete_lesson_session_requ
     as _i14;
 import 'package:praxis_client/src/protocol/dto/module_dto.dart' as _i15;
 import 'package:praxis_client/src/protocol/dto/task_dto.dart' as _i16;
-import 'package:praxis_client/src/protocol/dto/user_statistics_dto.dart'
+import 'package:praxis_client/src/protocol/dto/task_answer_result_dto.dart'
     as _i17;
-import 'package:praxis_client/src/protocol/dto/wallet_balance_dto.dart' as _i18;
+import 'package:praxis_client/src/protocol/dto/user_statistics_dto.dart'
+    as _i18;
+import 'package:praxis_client/src/protocol/dto/wallet_balance_dto.dart' as _i19;
 import 'package:praxis_client/src/protocol/dto/coin_transaction_dto.dart'
-    as _i19;
-import 'package:praxis_client/src/protocol/requests/create_coin_transaction_request.dart'
     as _i20;
-import 'protocol.dart' as _i21;
+import 'package:praxis_client/src/protocol/requests/create_coin_transaction_request.dart'
+    as _i21;
+import 'protocol.dart' as _i22;
 
 /// {@category Endpoint}
 class EndpointAchievement extends _i1.EndpointRef {
@@ -416,8 +418,8 @@ class EndpointTask extends _i1.EndpointRef {
         'lessonId': lessonId,
       });
 
-  _i2.Future<Map<String, dynamic>> answer(int taskId, String userAnswer) =>
-      caller.callServerEndpoint<Map<String, dynamic>>('task', 'answer', {
+  _i2.Future<_i17.TaskAnswerResultDto> answer(int taskId, String userAnswer) =>
+      caller.callServerEndpoint<_i17.TaskAnswerResultDto>('task', 'answer', {
         'taskId': taskId,
         'userAnswer': userAnswer,
       });
@@ -442,8 +444,8 @@ class EndpointUserStatistics extends _i1.EndpointRef {
   /// Always returns statistics, creates empty statistics for first-time users
   ///
   /// Throws [NotAuthorizedException] if user is not authenticated
-  _i2.Future<_i17.UserStatisticsDto> get() => caller
-      .callServerEndpoint<_i17.UserStatisticsDto>('userStatistics', 'get', {});
+  _i2.Future<_i18.UserStatisticsDto> get() => caller
+      .callServerEndpoint<_i18.UserStatisticsDto>('userStatistics', 'get', {});
 }
 
 /// Wallet endpoint for managing user coin balances and transactions
@@ -463,8 +465,8 @@ class EndpointWallet extends _i1.EndpointRef {
   /// - currency: Always 'COIN'
   ///
   /// Throws [NotAuthorizedException] if user is not authenticated
-  _i2.Future<_i18.WalletBalanceDto> getBalance() => caller
-      .callServerEndpoint<_i18.WalletBalanceDto>('wallet', 'getBalance', {});
+  _i2.Future<_i19.WalletBalanceDto> getBalance() => caller
+      .callServerEndpoint<_i19.WalletBalanceDto>('wallet', 'getBalance', {});
 
   /// Adds coins to user wallet (INTERNAL USE ONLY)
   ///
@@ -485,9 +487,9 @@ class EndpointWallet extends _i1.EndpointRef {
   /// - [NotAuthorizedException] if user is not authenticated
   /// - [ValidationException] if request validation fails
   /// - [ValidationException] if transaction key already exists with different parameters
-  _i2.Future<_i19.CoinTransactionDto> topUp(
-    _i20.CreateCoinTransactionRequest request,
-  ) => caller.callServerEndpoint<_i19.CoinTransactionDto>('wallet', 'topUp', {
+  _i2.Future<_i20.CoinTransactionDto> topUp(
+    _i21.CreateCoinTransactionRequest request,
+  ) => caller.callServerEndpoint<_i20.CoinTransactionDto>('wallet', 'topUp', {
     'request': request,
   });
 
@@ -506,9 +508,9 @@ class EndpointWallet extends _i1.EndpointRef {
   /// - [ValidationException] if insufficient available balance
   /// - [ValidationException] if request validation fails
   /// - [ValidationException] if transaction key already exists with different parameters
-  _i2.Future<_i19.CoinTransactionDto> buy(
-    _i20.CreateCoinTransactionRequest request,
-  ) => caller.callServerEndpoint<_i19.CoinTransactionDto>('wallet', 'buy', {
+  _i2.Future<_i20.CoinTransactionDto> buy(
+    _i21.CreateCoinTransactionRequest request,
+  ) => caller.callServerEndpoint<_i20.CoinTransactionDto>('wallet', 'buy', {
     'request': request,
   });
 
@@ -527,10 +529,10 @@ class EndpointWallet extends _i1.EndpointRef {
   /// - Related entity information if applicable
   ///
   /// Throws [NotAuthorizedException] if user is not authenticated
-  _i2.Future<List<_i19.CoinTransactionDto>> getHistory({
+  _i2.Future<List<_i20.CoinTransactionDto>> getHistory({
     int? limit,
     int? offset,
-  }) => caller.callServerEndpoint<List<_i19.CoinTransactionDto>>(
+  }) => caller.callServerEndpoint<List<_i20.CoinTransactionDto>>(
     'wallet',
     'getHistory',
     {'limit': limit, 'offset': offset},
@@ -563,7 +565,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i21.Protocol(),
+         _i22.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
