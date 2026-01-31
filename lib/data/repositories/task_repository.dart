@@ -50,17 +50,16 @@ class TaskRepository implements ITaskRepository {
     String userId,
   ) async {
     try {
-      final resultMap = await _remoteDataSource.submitAnswer(
+      final resultDto = await _remoteDataSource.submitAnswer(
         taskId,
         answer,
         userId,
       );
-      // Convert Map<String, dynamic> to TaskResultModel
       final result = TaskResultModel(
-        isCorrect: resultMap['isCorrect'] as bool,
-        xpEarned: resultMap['xpEarned'] as int,
-        explanation: resultMap['explanation'] as String?,
-        correctAnswer: resultMap['correctAnswer'] as String?,
+        isCorrect: resultDto.isCorrect,
+        xpEarned: resultDto.xpEarned ?? 0,
+        explanation: resultDto.feedbackMessage,
+        correctAnswer: null, // Not provided by server yet
       );
       return Success(result);
     } on AppError catch (e) {

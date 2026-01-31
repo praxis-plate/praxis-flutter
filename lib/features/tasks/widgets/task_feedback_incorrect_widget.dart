@@ -67,6 +67,7 @@ class _TaskFeedbackIncorrectWidgetState
       onRetry: () {
         context.read<TaskBloc>().add(const RetryTaskEvent());
       },
+      fallbackExplanation: widget.task.fallbackExplanation,
     );
   }
 }
