@@ -15,7 +15,7 @@ void main() {
 
   group('SessionService - Session Persistence', () {
     test('should save session with userId and email', () async {
-      const userId = '123' ;
+      const userId = '123';
       const email = 'test@example.com';
       final tokenExpiresAt = DateTime.now().add(const Duration(hours: 24));
       final session = SessionModel(
