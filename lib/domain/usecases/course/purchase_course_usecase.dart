@@ -86,17 +86,19 @@ class PurchaseCourseUseCase {
       );
     }
 
-    final transactionResult = await _coinTransactionRepository.create(
-      CreateCoinTransactionModel(
-        userId: userId,
-        amount: -course.priceInCoins,
-        type: CoinTransactionType.coursePurchase,
-        relatedEntityId: courseId.toString(),
-      ),
-    );
+    if (course.priceInCoins > 0) {
+      final transactionResult = await _coinTransactionRepository.create(
+        CreateCoinTransactionModel(
+          userId: userId,
+          amount: course.priceInCoins,
+          type: CoinTransactionType.coursePurchase,
+          relatedEntityId: courseId.toString(),
+        ),
+      );
 
-    if (transactionResult.isFailure) {
-      return Failure(transactionResult.failureOrNull!);
+      if (transactionResult.isFailure) {
+        return Failure(transactionResult.failureOrNull!);
+      }
     }
 
     final enrollResult = await _courseRepository.enrollUserInCourse(
