@@ -3,7 +3,6 @@ import 'package:codium/core/theme/app_theme.dart';
 import 'package:codium/core/utils/constants.dart';
 import 'package:codium/core/utils/duration.dart';
 import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:codium/s.dart';
