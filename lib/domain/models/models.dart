@@ -1,4 +1,11 @@
 export 'achievement/achievement.dart';
 export 'coin/coin_models.dart';
+export 'coin_transaction/coin_transaction.dart';
+export 'course/course.dart';
+export 'lesson/lesson.dart';
+export 'lesson_progress/lesson_progress.dart';
+export 'module/module.dart';
 export 'session/session.dart';
+export 'task/task.dart';
 export 'user/user.dart';
+export 'user_statistic/user_statistic.dart';

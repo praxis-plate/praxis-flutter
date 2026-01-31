@@ -24,14 +24,7 @@ final class CodeCompletionTaskModel extends TaskModel {
   });
 
   @override
-  bool validateAnswer(String answer) {
-    // Для кода можем использовать более сложную логику валидации
-    // Например, проверка через тест-кейсы или сравнение нормализованного кода
-    return answer.trim() == correctAnswer.trim();
-  }
-
-  @override
-  String get taskType => 'codeCompletion';
+  TaskType get taskType => TaskType.codeCompletion;
 
   @override
   String getLocalizedTitle(

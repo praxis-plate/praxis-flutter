@@ -2,8 +2,7 @@ import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/lesson_progress/lesson_progress_model.dart';
 import 'package:codium/domain/models/user/user_course_statistics.dart';
-import 'package:codium/domain/repositories/i_course_repository.dart';
-import 'package:codium/domain/repositories/i_lesson_progress_repository.dart';
+import 'package:codium/domain/usecases/course/get_course_detail_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -14,18 +13,14 @@ part 'course_learning_state.dart';
 
 class CourseLearningBloc
     extends Bloc<CourseLearningEvent, CourseLearningState> {
-  final ICourseRepository _courseRepository;
-  final ILessonProgressRepository _lessonProgressRepository;
+  final GetCourseDetailUseCase _getCourseDetailUseCase;
 
   int? _currentCourseId;
   String? _currentUserId;
 
-  CourseLearningBloc({
-    required ICourseRepository courseRepository,
-    required ILessonProgressRepository lessonProgressRepository,
-  }) : _courseRepository = courseRepository,
-       _lessonProgressRepository = lessonProgressRepository,
-       super(const CourseLearningInitial()) {
+  CourseLearningBloc({required GetCourseDetailUseCase getCourseDetailUseCase})
+    : _getCourseDetailUseCase = getCourseDetailUseCase,
+      super(const CourseLearningInitial()) {
     on<LoadCourseLearning>(_onLoadCourseLearning);
     on<RefreshProgress>(_onRefreshProgress);
   }
@@ -57,15 +52,12 @@ class CourseLearningBloc
       _currentCourseId = event.courseId;
       _currentUserId = event.userId;
 
-      final courseResult = await _courseRepository.getCourseById(
-        event.courseId.toString(),
-      );
-      final progressResult = await _lessonProgressRepository
-          .getCourseLessonProgress(event.userId, event.courseId);
+      final courseResult = await _getCourseDetailUseCase.call(event.courseId);
 
-      if (courseResult.isSuccess && progressResult.isSuccess) {
+      if (courseResult.isSuccess) {
         final course = courseResult.dataOrNull;
-        final progress = progressResult.dataOrNull ?? [];
+        // For now, we'll use empty progress list until lesson progress use case is implemented
+        final progress = <LessonProgressModel>[];
 
         if (course != null) {
           emit(
@@ -79,8 +71,7 @@ class CourseLearningBloc
           emit(const CourseLearningError(message: 'Course not found'));
         }
       } else {
-        final error =
-            courseResult.failureOrNull ?? progressResult.failureOrNull;
+        final error = courseResult.failureOrNull;
         emit(CourseLearningError(message: error?.message ?? 'Unknown error'));
       }
     } catch (e, st) {
@@ -98,15 +89,14 @@ class CourseLearningBloc
     }
 
     try {
-      final courseResult = await _courseRepository.getCourseById(
-        _currentCourseId.toString(),
+      final courseResult = await _getCourseDetailUseCase.call(
+        _currentCourseId!,
       );
-      final progressResult = await _lessonProgressRepository
-          .getCourseLessonProgress(_currentUserId!, _currentCourseId!);
 
-      if (courseResult.isSuccess && progressResult.isSuccess) {
+      if (courseResult.isSuccess) {
         final course = courseResult.dataOrNull;
-        final progress = progressResult.dataOrNull ?? [];
+        // For now, we'll use empty progress list until lesson progress use case is implemented
+        final progress = <LessonProgressModel>[];
 
         if (course != null) {
           emit(

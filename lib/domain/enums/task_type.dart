@@ -1,1 +1,1 @@
-enum TaskType { theory, practice, quiz, project }
+enum TaskType { multipleChoice, codeCompletion, matching, textInput }

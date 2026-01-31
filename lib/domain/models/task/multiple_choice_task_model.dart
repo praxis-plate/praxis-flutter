@@ -20,12 +20,7 @@ final class MultipleChoiceTaskModel extends TaskModel {
   });
 
   @override
-  bool validateAnswer(String answer) {
-    return answer.trim() == correctAnswer.trim();
-  }
-
-  @override
-  String get taskType => 'multipleChoice';
+  TaskType get taskType => TaskType.multipleChoice;
 
   @override
   String getLocalizedTitle(

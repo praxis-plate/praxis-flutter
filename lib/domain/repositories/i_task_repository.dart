@@ -7,23 +7,13 @@ import 'package:codium/domain/models/task/update_task_progress_model.dart';
 
 abstract interface class ITaskRepository {
   Future<Result<List<TaskModel>>> getTasksByLessonId(int lessonId);
-
   Future<Result<TaskModel>> getTaskById(int taskId);
-
-  Future<Result<TaskResultModel>> validateAnswer(
+  Future<Result<TaskResultModel>> answer(
     int taskId,
     String answer,
     String userId,
   );
-
   Future<Result<void>> saveTaskProgress(CreateTaskProgressModel progress);
-
-  Future<Result<void>> updateProgress(UpdateTaskProgressModel progress);
-
   Future<Result<TaskProgressModel?>> getTaskProgress(String userId, int taskId);
-
-  Future<Result<List<TaskProgressModel>>> getLessonProgress(
-    String userId,
-    int lessonId,
-  );
+  Future<Result<void>> updateProgress(UpdateTaskProgressModel progress);
 }

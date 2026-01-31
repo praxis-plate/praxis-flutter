@@ -130,8 +130,8 @@ final class AuthRepository implements IAuthRepository {
   @override
   Future<Result<bool>> isAuthenticated() async {
     try {
-      final isAuth = await _sessionService.hasActiveSession();
-      return Success(isAuth);
+      final hasLocalSession = await _sessionService.hasActiveSession();
+      return Success(hasLocalSession);
     } catch (e) {
       return Failure(
         AppFailure.fromException(e is Exception ? e : Exception(e.toString())),

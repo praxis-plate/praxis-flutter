@@ -3,7 +3,6 @@ import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/enums/coin_transaction_type.dart';
 import 'package:codium/domain/models/coin_transaction/create_coin_transaction_model.dart';
-import 'package:codium/domain/models/user_statistic/update_user_statistic_model.dart';
 import 'package:codium/domain/repositories/i_coin_transaction_repository.dart';
 import 'package:codium/domain/repositories/i_course_repository.dart';
 import 'package:codium/domain/repositories/i_user_statistics_repository.dart';
@@ -24,9 +23,7 @@ class PurchaseCourseUseCase {
        _coinTransactionRepository = coinTransactionRepository;
 
   Future<Result<void>> call(String userId, int courseId) async {
-    final courseResult = await _courseRepository.getCourseById(
-      courseId.toString(),
-    );
+    final courseResult = await _courseRepository.getCourseById(courseId);
     if (courseResult.isFailure) {
       return Failure(courseResult.failureOrNull!);
     }
@@ -87,16 +84,6 @@ class PurchaseCourseUseCase {
           canRetry: false,
         ),
       );
-    }
-
-    final newBalance = currentBalance - course.priceInCoins;
-
-    final updateStatisticsResult = await _userStatisticsRepository.update(
-      UpdateUserStatisticModel(id: statistics.id, coinBalance: newBalance),
-    );
-
-    if (updateStatisticsResult.isFailure) {
-      return Failure(updateStatisticsResult.failureOrNull!);
     }
 
     final transactionResult = await _coinTransactionRepository.create(

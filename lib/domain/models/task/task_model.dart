@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:codium/domain/enums/programming_language.dart';
+import 'package:codium/domain/enums/task_type.dart';
 import 'package:codium/domain/models/task/test_case_model.dart';
 import 'package:equatable/equatable.dart';
 
 part 'code_completion_task_model.dart';
-part 'multiple_choice_task_model.dart';
 part 'matching_task_model.dart';
+part 'multiple_choice_task_model.dart';
 part 'text_input_task_model.dart';
 
 /// Базовый класс для всех типов задач
@@ -35,14 +38,10 @@ sealed class TaskModel extends Equatable {
     required this.createdAt,
   });
 
-  /// Абстрактный метод для валидации ответа
-  /// Каждый тип задачи реализует свою логику валидации
-  bool validateAnswer(String answer);
+  /// Abstract method to get task type as enum
+  TaskType get taskType;
 
-  /// Абстрактный метод для получения типа задачи как строки
-  String get taskType;
-
-  /// Абстрактный метод для получения локализованного названия типа
+  /// Abstract method to get localized title based on task type
   String getLocalizedTitle(
     String Function() multipleChoice,
     String Function() codeCompletion,
