@@ -48,7 +48,7 @@ class _CourseTabSectionState extends State<CourseTabSection>
             controller: _tabController,
             children: [
               DescriptionContent(course: widget.course),
-              TableOfContentsContent(course: widget.course),
+              const TableOfContentsContent(),
             ],
           ),
         ),

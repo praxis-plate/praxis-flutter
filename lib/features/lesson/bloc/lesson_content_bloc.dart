@@ -44,6 +44,7 @@ class LessonContentBloc extends Bloc<LessonContentEvent, LessonContentState> {
               id: lesson.id,
               title: lesson.title,
               description: lesson.contentText,
+              content: lesson.contentText,
               moduleId: lesson.moduleId,
               orderIndex: lesson.orderIndex,
             );

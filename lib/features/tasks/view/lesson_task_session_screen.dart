@@ -11,6 +11,7 @@ import 'package:codium/features/tasks/renderers/task_renderer.dart';
 import 'package:codium/features/tasks/widgets/widgets.dart';
 import 'package:codium/l10n/app_localizations.dart';
 import 'package:codium/s.dart';
+import 'package:codium/core/router/route_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -28,6 +29,15 @@ class LessonTaskSessionScreen extends StatefulWidget {
 
 class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
   Timer? _autoAdvanceTimer;
+
+  void _exitSession(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+      return;
+    }
+
+    context.go(RouteConstants.learning);
+  }
 
   @override
   void dispose() {
@@ -196,7 +206,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                       ),
                       const SizedBox(height: 24),
                       ElevatedButton(
-                        onPressed: () => context.pop(),
+                        onPressed: () => _exitSession(context),
                         child: Text(s.goBack),
                       ),
                     ],
@@ -221,7 +231,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                       );
                       if (shouldExit && mounted) {
                         if (context.mounted) {
-                          context.pop();
+                          _exitSession(context);
                         }
                       }
                     }
@@ -238,12 +248,11 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                       leading: IconButton(
                         icon: const Icon(Icons.close),
                         onPressed: () async {
-                          final navigator = Navigator.of(context);
                           final shouldExit = await _showExitConfirmationDialog(
                             context,
                           );
                           if (shouldExit && mounted) {
-                            navigator.pop();
+                            _exitSession(context);
                           }
                         },
                       ),
@@ -500,7 +509,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.of(dialogContext).pop();
-                              context.pop();
+                              _exitSession(context);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.colorScheme.primary,

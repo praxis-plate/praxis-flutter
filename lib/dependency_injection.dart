@@ -239,6 +239,9 @@ class DependencyInjection {
         () => GetCourseDetailUseCase(GetIt.I<ICourseRepository>()),
       )
       ..registerFactory(
+        () => GetCourseTableOfContentsUseCase(GetIt.I<ICourseRepository>()),
+      )
+      ..registerFactory(
         () => GetLearningDataUseCase(
           GetIt.I<IUserStatisticsRepository>(),
           GetIt.I<GenerateActivityUsecase>(),
@@ -334,6 +337,7 @@ class DependencyInjection {
         () => CourseDetailBloc(
           getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
           checkCourseEnrollmentUseCase: GetIt.I<CheckCourseEnrollmentUseCase>(),
+          getTableOfContentsUseCase: GetIt.I<GetCourseTableOfContentsUseCase>(),
         ),
       )
       ..registerLazySingleton(

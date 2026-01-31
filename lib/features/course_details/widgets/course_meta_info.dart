@@ -17,13 +17,14 @@ class CourseMetaInfo extends StatelessWidget {
         child: Builder(
           builder: (context) {
             final s = S.of(context);
+            final priceDisplay = course.pricing.price.amount == 0
+                ? s.free
+                : '${course.pricing.price.amount}';
+
             return ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                MetaItem(
-                  value: '${course.pricing.price.amount}',
-                  label: s.courseDetailsPrice,
-                ),
+                MetaItem(value: priceDisplay, label: s.courseDetailsPrice),
                 MetaItem(value: course.author, label: s.courseDetailsAuthor),
                 MetaItem(
                   value: '${course.statistics.averageRating}/5',
