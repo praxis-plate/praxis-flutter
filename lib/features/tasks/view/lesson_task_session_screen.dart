@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:codium/core/router/route_constants.dart';
 import 'package:codium/core/utils/duration.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
@@ -11,7 +12,6 @@ import 'package:codium/features/tasks/renderers/task_renderer.dart';
 import 'package:codium/features/tasks/widgets/widgets.dart';
 import 'package:codium/l10n/app_localizations.dart';
 import 'package:codium/s.dart';
-import 'package:codium/core/router/route_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -251,7 +251,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                           final shouldExit = await _showExitConfirmationDialog(
                             context,
                           );
-                          if (shouldExit && mounted) {
+                          if (shouldExit && context.mounted) {
                             _exitSession(context);
                           }
                         },
