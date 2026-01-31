@@ -2,9 +2,9 @@ import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/bloc.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
-import 'package:codium/features/tasks/widgets/task_view_layout.dart';
-import 'package:codium/features/tasks/widgets/task_hint_button.dart';
 import 'package:codium/features/tasks/widgets/submit_task_button.dart';
+import 'package:codium/features/tasks/widgets/task_hint_button.dart';
+import 'package:codium/features/tasks/widgets/task_view_layout.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -145,10 +145,7 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
           IntrinsicWidth(
             child: GlassTextField(
               borderRadius: BorderRadius.circular(8),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: TextField(
                 controller: _inputControllers[i],
                 style: theme.textTheme.bodyMedium?.copyWith(

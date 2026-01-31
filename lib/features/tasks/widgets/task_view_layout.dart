@@ -22,10 +22,7 @@ class TaskViewLayout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            padding: contentPadding,
-            child: content,
-          ),
+          child: SingleChildScrollView(padding: contentPadding, child: content),
         ),
         Padding(
           padding: footerPadding,

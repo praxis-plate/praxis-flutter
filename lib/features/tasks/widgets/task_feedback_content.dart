@@ -25,7 +25,9 @@ Widget buildTaskFeedbackContent({
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             borderRadius: BorderRadius.circular(16),
             borderColor:
-                (isCorrect ? theme.colorScheme.primary : theme.colorScheme.error)
+                (isCorrect
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.error)
                     .withValues(alpha: 0.35),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -128,10 +130,7 @@ Widget buildTaskFeedbackContent({
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  result.correctAnswer!,
-                  style: theme.textTheme.bodyLarge,
-                ),
+                Text(result.correctAnswer!, style: theme.textTheme.bodyLarge),
               ],
             ),
           ),
@@ -163,10 +162,7 @@ Widget buildTaskFeedbackContent({
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  result.explanation!,
-                  style: theme.textTheme.bodyMedium,
-                ),
+                Text(result.explanation!, style: theme.textTheme.bodyMedium),
               ],
             ),
           ),

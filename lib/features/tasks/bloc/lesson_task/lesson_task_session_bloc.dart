@@ -34,9 +34,7 @@ class LessonTaskSessionBloc
       success: (tasks) {
         if (tasks.isEmpty) {
           emit(
-            const SessionErrorState(
-              type: LessonTaskSessionErrorType.noTasks,
-            ),
+            const SessionErrorState(type: LessonTaskSessionErrorType.noTasks),
           );
           return;
         }
