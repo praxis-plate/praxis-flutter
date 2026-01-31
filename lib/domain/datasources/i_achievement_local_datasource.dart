@@ -14,5 +14,8 @@ abstract interface class IAchievementLocalDataSource {
     DateTime unlockedAt,
   );
 
-  Future<AchievementEntity?> getUserAchievement(String userId, int achievementId);
+  Future<AchievementEntity?> getUserAchievement(
+    String userId,
+    int achievementId,
+  );
 }
