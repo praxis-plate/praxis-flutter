@@ -1,5 +1,6 @@
 export 'achievement_remote_datasource.dart';
 export 'auth_remote_datasource.dart';
+export 'auth_session_remote_datasource.dart';
 export 'coin_transaction_remote_datasource.dart';
 export 'course_remote_datasource.dart';
 export 'lesson_progress_remote_datasource.dart';
