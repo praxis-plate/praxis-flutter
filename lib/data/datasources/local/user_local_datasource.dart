@@ -44,7 +44,9 @@ class UserLocalDataSource implements IUserDataSource {
       throw ArgumentError('User id must be present for update');
     }
 
-    await (_db.update(_db.user)..where((t) => t.id.equals(entry.id.value))).write(entry);
+    await (_db.update(
+      _db.user,
+    )..where((t) => t.id.equals(entry.id.value))).write(entry);
   }
 
   @override
