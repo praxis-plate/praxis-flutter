@@ -2,7 +2,6 @@ export 'achievement_repository.dart';
 export 'auth_repository.dart';
 export 'coin_transaction_repository.dart';
 export 'course_repository.dart';
-export 'explanation_repository.dart';
 export 'lesson_progress_repository.dart';
 export 'lesson_repository.dart';
 export 'module_repository.dart';
