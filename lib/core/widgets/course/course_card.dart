@@ -100,7 +100,7 @@ class CourseCard extends StatelessWidget {
                       key: Key(course.id.toString()),
                       duration: Duration(minutes: course.durationMinutes),
                       courseId: course.id,
-                      lessonsCount: 0,
+                      lessonsCount: course.totalTasks,
                       priceInCoins: course.priceInCoins,
                       isPurchased: isPurchased,
                       isProcessing: isProcessing,
@@ -268,6 +268,8 @@ class _CompactPurchaseButtonContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+
     if (isPurchased) {
       return Row(
         mainAxisSize: MainAxisSize.min,
@@ -289,6 +291,22 @@ class _CompactPurchaseButtonContent extends StatelessWidget {
         ],
       );
     }
+
+    if (priceInCoins == 0) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            s.add,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        ],
+      );
+    }
+
     return CoinAmount(
       amount: priceInCoins,
       style: theme.textTheme.bodyMedium?.copyWith(

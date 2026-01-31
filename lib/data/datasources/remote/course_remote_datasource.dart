@@ -20,4 +20,8 @@ class CourseRemoteDataSource {
   Future<void> enrollUserInCourse(int courseId) async {
     await _client.course.enroll(courseId);
   }
+
+  Future<CourseStructureDto> getTableOfContents(int courseId) async {
+    return await _client.course.getTableOfContents(courseId);
+  }
 }
