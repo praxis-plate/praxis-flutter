@@ -16,7 +16,8 @@ class SessionModel extends Equatable {
   });
 
   bool get hasValidToken {
-    return tokenExpiresAt is DateTime && DateTime.now().isBefore(tokenExpiresAt!);
+    return tokenExpiresAt is DateTime &&
+        DateTime.now().isBefore(tokenExpiresAt!);
   }
 
   SessionModel copyWith({

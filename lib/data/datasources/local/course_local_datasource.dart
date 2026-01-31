@@ -19,11 +19,6 @@ class CourseLocalDataSource implements ICourseLocalDataSource {
   }
 
   @override
-  Future<List<CourseEntity>> getCoursesByCategory(String category) async {
-    return await _db.managers.course.filter((f) => f.category(category)).get();
-  }
-
-  @override
   Future<CourseEntity> insertCourse(CourseCompanion entry) async {
     return await _db.into(_db.course).insertReturning(entry);
   }
