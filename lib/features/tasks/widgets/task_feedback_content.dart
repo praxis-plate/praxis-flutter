@@ -40,7 +40,7 @@ Widget buildTaskFeedbackContent({
                   size: 48,
                   color: isCorrect
                       ? theme.colorScheme.primary
-                      : theme.colorScheme.onErrorContainer,
+                      : theme.colorScheme.error,
                 ),
                 const SizedBox(height: 12),
                 if (isCorrect)
@@ -59,7 +59,7 @@ Widget buildTaskFeedbackContent({
                         s.taskIncorrectTitle,
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onErrorContainer,
+                          color: theme.colorScheme.error,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -67,7 +67,7 @@ Widget buildTaskFeedbackContent({
                       Text(
                         s.taskIncorrectSubtitle,
                         style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.onErrorContainer,
+                          color: theme.colorScheme.error,
                         ),
                         textAlign: TextAlign.center,
                       ),
