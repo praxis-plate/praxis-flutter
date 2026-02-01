@@ -11,6 +11,14 @@
 
 **Языки:** [English](../../README.md) • [Русский](#)
 
+## Скриншоты
+
+<p align="center">
+  <img src="../screenshots/code-completion-ios-eng-dark.png" width="30%" />
+  <img src="../screenshots/multiple-choice-ios-eng-dark.png" width="30%" />
+  <img src="../screenshots/matching-ios-eng-dark.png" width="30%" />
+</p>
+
 ## Обзор
 
 Praxis Flutter – это клиентское приложение для образовательной платформы Praxis. Оно предоставляет:
