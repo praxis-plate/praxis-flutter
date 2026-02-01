@@ -11,6 +11,14 @@ Cross-platform mobile and web application for the **Praxis** educational platfor
 
 **Languages:** [English](#) • [Русский](docs/ru/README.md)
 
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/code-completion-ios-eng-dark.png" width="30%" />
+  <img src="docs/screenshots/multiple-choice-ios-eng-dark.png" width="30%" />
+  <img src="docs/screenshots/matching-ios-eng-dark.png" width="30%" />
+</p>
+
 ## Overview
 
 Praxis Flutter is the client application for the Praxis educational platform. It provides:
