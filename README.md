@@ -27,6 +27,10 @@ Praxis Flutter is the client application for the Praxis educational platform. It
 
 The app follows **Clean Architecture** with **BLoC** pattern for state management:
 
+![Architecture Diagram](docs/diagrams/images/architecture-overview.png)
+
+*[View PlantUML source](docs/diagrams/uml/architecture-overview.puml)*
+
 ```
 lib/
 ├── features/         # Feature modules (UI + BLoC)
