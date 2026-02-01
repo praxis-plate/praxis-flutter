@@ -1,0 +1,160 @@
+@startuml Praxis Flutter - Clean Architecture (Layers)
+!theme plain
+skinparam backgroundColor white
+
+' Colors from praxis theme
+skinparam package {
+  BackgroundColor<<presentation>> #10B981
+  BorderColor<<presentation>> #059669
+  FontColor<<presentation>> #FFFFFF
+  
+  BackgroundColor<<domain>> #D1FAE5
+  BorderColor<<domain>> #10B981
+  FontColor<<domain>> #064E3B
+  
+  BackgroundColor<<data>> #FED7AA
+  BorderColor<<data>> #F97316
+  FontColor<<data>> #7C2D12
+}
+
+skinparam component {
+  MinimumWidth 150
+}
+
+skinparam cloud {
+  BackgroundColor #EEEEEF
+  BorderColor #E0E0E0
+  FontColor #424242
+}
+
+skinparam database {
+  BackgroundColor #EEEEEF
+  BorderColor #E0E0E0
+  FontColor #424242
+}
+
+skinparam arrow {
+  Color #424242
+  FontColor #424242
+}
+
+title Praxis Flutter - Clean Architecture (Layered)
+
+rectangle "Presentation Layer\n(Interface Adapters)" <<presentation>> {
+  component "UI Widgets\n(Flutter)" as UI
+  component "BLoC\n(State)" as BLOC
+}
+
+rectangle "Domain Layer\n(Business Logic)" <<domain>> {
+  component "Entities /\nValue Objects" as ENTITIES
+  component "Use Cases" as UC
+  component "Repository\nInterfaces" as REPO_INT
+  component "Failures /\nResult Types" as FAILURES
+}
+
+rectangle "Data Gateways\n(Interface Adapters)" <<data>> {
+  component "Repository\nImplementations" as REPO_IMPL
+}
+
+rectangle "Infrastructure\n(Frameworks & Drivers)" <<data>> {
+  component "Remote DTO" as DTO_REMOTE
+  component "DB Rows /\nPersistence Models" as PERSISTENCE_MODELS
+  component "Remote\nData Source" as DS_REMOTE
+  component "Local\nData Source" as DS_LOCAL
+}
+
+cloud "Praxis API\n(Serverpod client)" as API
+database "Local DB\n(Drift)" as DB
+
+UI -down-> BLOC : events
+BLOC -down-> UC : execute
+BLOC ..> ENTITIES : uses in state
+UC -down-> REPO_INT : call
+UC -right-> ENTITIES : use
+REPO_INT ..> FAILURES : returns Result<T>
+REPO_IMPL .up.|> REPO_INT : implements
+REPO_IMPL -down-> DS_REMOTE : fetch
+REPO_IMPL -down-> DS_LOCAL : fetch
+REPO_IMPL .up.> ENTITIES : map DTO to
+REPO_IMPL .up.> FAILURES : catch & adapt to
+DS_REMOTE -right-> DTO_REMOTE : return
+DS_LOCAL -right-> PERSISTENCE_MODELS : return
+DS_REMOTE -down-> API : RPC
+DS_LOCAL -down-> DB : SQL
+
+note right of ENTITIES
+  <b>Domain Core</b>
+  
+  Pure business entities
+  No framework dependencies
+  Used directly in BLoC states
+end note
+
+note right of UC
+  <b>Application Rules</b>
+  
+  Orchestrate domain logic
+  Call repository abstractions
+  Return Result<T>
+  (T = Entity, void, or Response)
+end note
+
+note right of FAILURES
+  <b>Application Errors</b>
+  
+  Business failures
+  Application-level errors
+  No infrastructure details
+  (e.g., no timeouts, socket errors)
+end note
+
+note right of REPO_INT
+  <b>Repository Contract</b>
+  
+  Returns Result<T>
+  No exceptions thrown
+  Domain-level abstraction
+end note
+
+note right of REPO_IMPL
+  <b>Data Gateway</b>
+  
+  Map DTO → Domain
+  Catch exceptions
+  Convert to Failures
+  Implement caching
+  Coordinate sources
+end note
+
+note bottom of DS_REMOTE
+  <b>Remote Source</b>
+  
+  Returns remote DTO
+  Serverpod client calls
+  May throw exceptions
+end note
+
+note bottom of DS_LOCAL
+  <b>Local Source</b>
+  
+  Returns DB rows
+  Drift queries
+  May throw exceptions
+end note
+
+note top of BLOC
+  <b>State Management</b>
+  
+  Emits states with domain models
+  Presentation logic
+  No domain business rules
+end note
+
+note bottom of DTO_REMOTE
+  <b>Infrastructure Models</b>
+  
+  Never exposed to
+  Domain or Presentation
+end note
+
+@enduml
