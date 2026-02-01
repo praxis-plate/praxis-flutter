@@ -119,9 +119,7 @@ class AppRouter {
           routes: [
             ShellRoute(
               pageBuilder: (context, state, child) {
-                return NoTransitionPage(
-                  child: NavigationScreen(child: child),
-                );
+                return NoTransitionPage(child: NavigationScreen(child: child));
               },
               routes: [
                 GoRoute(
@@ -139,11 +137,8 @@ class AppRouter {
                     return NoTransitionPage(
                       key: state.pageKey,
                       child: BlocProvider<MainBloc>(
-                        create: (context) =>
-                            GetIt.I<MainBloc>()
-                              ..add(
-                                MainLoadCoursesEvent(userId: userProfile.id),
-                              ),
+                        create: (context) => GetIt.I<MainBloc>()
+                          ..add(MainLoadCoursesEvent(userId: userProfile.id)),
                         child: MainScreen(userProfile: userProfile),
                       ),
                     );
@@ -160,9 +155,7 @@ class AppRouter {
                       child: BlocProvider<LearningBloc>(
                         create: (_) =>
                             GetIt.I<LearningBloc>()
-                              ..add(
-                                LearningLoadEvent(userId: userProfile.id),
-                              ),
+                              ..add(LearningLoadEvent(userId: userProfile.id)),
                         child: const LearningScreen(),
                       ),
                     );

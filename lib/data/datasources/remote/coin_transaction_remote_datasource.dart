@@ -1,26 +1,41 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/datasources/i_coin_transaction_datasource.dart';
 import 'package:praxis_client/praxis_client.dart';
 
-class CoinTransactionRemoteDataSource
-    implements ICoinTransactionDataSource {
+class CoinTransactionRemoteDataSource {
   final Client _client;
 
   const CoinTransactionRemoteDataSource(this._client);
 
-  @override
-  Future<List<CoinTransactionEntity>> getTransactionHistory(String userId) async {
-    throw UnimplementedError(
-      'Remote coin transactions are not implemented for $_client',
-    );
+  Future<List<CoinTransactionDto>> getTransactionHistory() async {
+    return await _client.wallet.getHistory();
   }
 
-  @override
-  Future<CoinTransactionEntity> insertTransaction(
-    CoinTransactionCompanion entry,
-  ) async {
-    throw UnimplementedError(
-      'Remote coin transactions are not implemented for $_client',
+  Future<CoinTransactionDto> createTransaction({
+    required int amount,
+    required CoinTransactionType type,
+    required String transactionKey,
+    int? relatedEntityId,
+  }) async {
+    final request = CreateCoinTransactionRequest(
+      amount: amount,
+      currency: 'COIN',
+      type: type,
+      transactionKey: transactionKey,
+      relatedEntityId: relatedEntityId?.toString(),
     );
+
+    switch (type) {
+      case CoinTransactionType.buy:
+        return await _client.wallet.buy(request);
+      case CoinTransactionType.topUp:
+        return await _client.wallet.topUp(request);
+      default:
+        throw ArgumentError(
+          'Unsupported transaction type for wallet operations: $type',
+        );
+    }
+  }
+
+  Future<WalletBalanceDto> getWalletBalance() async {
+    return await _client.wallet.getBalance();
   }
 }

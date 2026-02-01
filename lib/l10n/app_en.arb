@@ -329,6 +329,8 @@
   },
   "price": "Price",
   "free": "Free",
+  "add": "Add",
+  "get": "Get",
   "purchased": "Purchased",
   "notPurchased": "Not Purchased",
   "searchResults": "Search Results",

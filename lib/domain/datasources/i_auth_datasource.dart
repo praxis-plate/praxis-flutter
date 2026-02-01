@@ -16,7 +16,7 @@ abstract interface class IAuthDataSource {
     required String email,
     required String password,
   });
-  
+
   Future<String> startPasswordReset({required String email});
   Future<String> verifyPasswordResetCode({
     required String passwordResetRequestId,

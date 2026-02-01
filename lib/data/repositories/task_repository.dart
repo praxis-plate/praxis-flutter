@@ -1,10 +1,10 @@
-import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/entities/task_entity_extension.dart';
+import 'package:codium/data/datasources/local/task_local_datasource.dart';
+import 'package:codium/data/datasources/remote/task_remote_datasource.dart';
+import 'package:codium/data/entities/task_dto_extension.dart';
 import 'package:codium/data/entities/task_progress_entity_extension.dart';
-import 'package:codium/domain/datasources/i_task_local_datasource.dart';
 import 'package:codium/domain/models/task/create_task_progress_model.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/domain/models/task/task_progress_model.dart';
@@ -13,15 +13,16 @@ import 'package:codium/domain/models/task/update_task_progress_model.dart';
 import 'package:codium/domain/repositories/i_task_repository.dart';
 
 class TaskRepository implements ITaskRepository {
-  final ITaskLocalDataSource _localDataSource;
+  final TaskRemoteDataSource _remoteDataSource;
+  final TaskLocalDataSource _localDataSource;
 
-  const TaskRepository(this._localDataSource);
+  const TaskRepository(this._remoteDataSource, this._localDataSource);
 
   @override
   Future<Result<List<TaskModel>>> getTasksByLessonId(int lessonId) async {
     try {
-      final entities = await _localDataSource.getTasksByLessonId(lessonId);
-      final tasks = entities.map((e) => e.toDomain()).toList();
+      final taskDtos = await _remoteDataSource.getTasksByLessonId(lessonId);
+      final tasks = taskDtos.map((dto) => dto.toDomain()).toList();
       return Success(tasks);
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
@@ -33,19 +34,8 @@ class TaskRepository implements ITaskRepository {
   @override
   Future<Result<TaskModel>> getTaskById(int taskId) async {
     try {
-      final entity = await _localDataSource.getTaskById(taskId);
-
-      if (entity == null) {
-        return const Failure(
-          AppFailure(
-            code: AppErrorCode.apiNotFound,
-            message: '',
-            canRetry: false,
-          ),
-        );
-      }
-
-      return Success(entity.toDomain());
+      final taskDto = await _remoteDataSource.getTaskById(taskId);
+      return Success(taskDto.toDomain());
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
@@ -54,35 +44,24 @@ class TaskRepository implements ITaskRepository {
   }
 
   @override
-  Future<Result<TaskResultModel>> validateAnswer(
+  Future<Result<TaskResultModel>> answer(
     int taskId,
     String answer,
     String userId,
   ) async {
     try {
-      final taskEntity = await _localDataSource.getTaskById(taskId);
-
-      if (taskEntity == null) {
-        return const Failure(
-          AppFailure(
-            code: AppErrorCode.apiNotFound,
-            message: '',
-            canRetry: false,
-          ),
-        );
-      }
-
-      final task = taskEntity.toDomain();
-      final isCorrect = _validateAnswerLogic(task, answer);
-
-      return Success(
-        TaskResultModel(
-          isCorrect: isCorrect,
-          xpEarned: task.xpValue,
-          explanation: isCorrect ? null : task.fallbackExplanation,
-          correctAnswer: isCorrect ? null : task.correctAnswer,
-        ),
+      final resultDto = await _remoteDataSource.submitAnswer(
+        taskId,
+        answer,
+        userId,
       );
+      final result = TaskResultModel(
+        isCorrect: resultDto.isCorrect,
+        xpEarned: resultDto.xpEarned ?? 0,
+        explanation: resultDto.feedbackMessage,
+        correctAnswer: null, // Not provided by server yet
+      );
+      return Success(result);
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
@@ -97,22 +76,8 @@ class TaskRepository implements ITaskRepository {
     try {
       await _localDataSource.insertTaskProgress(progress.toCompanion());
       return const Success(null);
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e));
-    }
-  }
-
-  @override
-  Future<Result<void>> updateProgress(UpdateTaskProgressModel progress) async {
-    try {
-      await _localDataSource.updateTaskProgress(progress.toCompanion());
-      return const Success(null);
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
-    } catch (e) {
-      return Failure(AppFailure.fromException(e));
+      return Failure(AppFailure.fromException(e as Exception));
     }
   }
 
@@ -122,36 +87,23 @@ class TaskRepository implements ITaskRepository {
     int taskId,
   ) async {
     try {
-      final entity = await _localDataSource.getTaskProgress(userId, taskId);
-      return Success(entity?.toDomain());
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
+      final progressEntity = await _localDataSource.getTaskProgress(
+        userId,
+        taskId,
+      );
+      return Success(progressEntity?.toDomain());
     } catch (e) {
-      return Failure(AppFailure.fromException(e));
+      return Failure(AppFailure.fromException(e as Exception));
     }
   }
 
   @override
-  Future<Result<List<TaskProgressModel>>> getLessonProgress(
-    String userId,
-    int lessonId,
-  ) async {
+  Future<Result<void>> updateProgress(UpdateTaskProgressModel progress) async {
     try {
-      final entities = await _localDataSource.getUserTaskProgress(
-        userId,
-        lessonId,
-      );
-      final progressList = entities.map((e) => e.toDomain()).toList();
-      return Success(progressList);
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
+      await _localDataSource.updateTaskProgress(progress.toCompanion());
+      return const Success(null);
     } catch (e) {
-      return Failure(AppFailure.fromException(e));
+      return Failure(AppFailure.fromException(e as Exception));
     }
-  }
-
-  bool _validateAnswerLogic(TaskModel task, String answer) {
-    // Теперь используем полиморфизм - каждый тип задачи знает как валидировать свой ответ
-    return task.validateAnswer(answer);
   }
 }

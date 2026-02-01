@@ -10,9 +10,12 @@ Widget buildTaskFeedbackContent({
   required Animation<double> scaleAnimation,
   required Animation<double> fadeAnimation,
   required VoidCallback? onRetry,
+  String? fallbackExplanation,
 }) {
   final s = S.of(context);
   final theme = Theme.of(context);
+  final explanation =
+      result.explanation ?? (!isCorrect ? fallbackExplanation : null);
 
   return SingleChildScrollView(
     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
@@ -25,7 +28,9 @@ Widget buildTaskFeedbackContent({
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             borderRadius: BorderRadius.circular(16),
             borderColor:
-                (isCorrect ? theme.colorScheme.primary : theme.colorScheme.error)
+                (isCorrect
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.error)
                     .withValues(alpha: 0.35),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -35,7 +40,7 @@ Widget buildTaskFeedbackContent({
                   size: 48,
                   color: isCorrect
                       ? theme.colorScheme.primary
-                      : theme.colorScheme.onErrorContainer,
+                      : theme.colorScheme.error,
                 ),
                 const SizedBox(height: 12),
                 if (isCorrect)
@@ -54,7 +59,7 @@ Widget buildTaskFeedbackContent({
                         s.taskIncorrectTitle,
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onErrorContainer,
+                          color: theme.colorScheme.error,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -62,7 +67,7 @@ Widget buildTaskFeedbackContent({
                       Text(
                         s.taskIncorrectSubtitle,
                         style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.onErrorContainer,
+                          color: theme.colorScheme.error,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -83,17 +88,13 @@ Widget buildTaskFeedbackContent({
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.stars,
-                    color: theme.colorScheme.onSecondaryContainer,
-                    size: 32,
-                  ),
+                  Icon(Icons.stars, color: theme.colorScheme.primary, size: 32),
                   const SizedBox(width: 12),
                   Text(
                     s.taskXpEarned(result.xpEarned),
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onSecondaryContainer,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                 ],
@@ -128,15 +129,12 @@ Widget buildTaskFeedbackContent({
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  result.correctAnswer!,
-                  style: theme.textTheme.bodyLarge,
-                ),
+                Text(result.correctAnswer!, style: theme.textTheme.bodyLarge),
               ],
             ),
           ),
         ],
-        if (result.explanation != null) ...[
+        if (explanation != null) ...[
           const SizedBox(height: 24),
           GlassCard(
             padding: const EdgeInsets.all(16),
@@ -163,10 +161,7 @@ Widget buildTaskFeedbackContent({
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  result.explanation!,
-                  style: theme.textTheme.bodyMedium,
-                ),
+                Text(explanation, style: theme.textTheme.bodyMedium),
               ],
             ),
           ),

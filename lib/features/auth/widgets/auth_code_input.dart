@@ -28,9 +28,7 @@ class AuthCodeInput extends StatelessWidget {
             enabled: enabled,
             keyboardType: TextInputType.text,
             style: theme.textTheme.bodyMedium,
-            decoration: InputDecoration(
-              labelText: s.taskEnterCode,
-            ),
+            decoration: InputDecoration(labelText: s.taskEnterCode),
             onChanged: onChanged,
           ),
         ),

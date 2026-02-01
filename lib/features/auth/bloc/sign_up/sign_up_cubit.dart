@@ -187,10 +187,7 @@ class SignUpCubit extends Cubit<SignUpState> {
   }
 
   void reset() => emit(
-    state.copyWith(
-      status: FormzSubmissionStatus.initial,
-      errorCode: null,
-    ),
+    state.copyWith(status: FormzSubmissionStatus.initial, errorCode: null),
   );
 
   @override
