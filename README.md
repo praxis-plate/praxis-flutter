@@ -1,4 +1,4 @@
-# praxis_flutter
+# Praxis Flutter
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.38-blue.svg)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.10-blue.svg)](https://dart.dev)
