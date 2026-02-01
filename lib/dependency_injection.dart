@@ -1,18 +1,17 @@
+import 'dart:async';
+
 import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/bloc/user_profile/user_profile_bloc.dart';
 import 'package:codium/core/config/env_config.dart';
-import 'package:codium/core/config/dio_factory.dart';
-import 'package:codium/core/services/ai_service.dart';
+import 'package:codium/core/services/ai_remote_service.dart';
 import 'package:codium/core/services/session_service.dart';
 import 'package:codium/data/database/app_database.dart';
-import 'package:codium/data/database/database_seeder.dart';
 import 'package:codium/data/datasources/datasources.dart';
-import 'package:codium/data/datasources/local/task_local_datasource.dart';
 import 'package:codium/data/repositories/repositories.dart';
 import 'package:codium/data/repositories/task_repository.dart';
 import 'package:codium/domain/datasources/datasources.dart';
-import 'package:codium/domain/datasources/i_task_local_datasource.dart';
+import 'package:codium/domain/models/session/update_session_model.dart';
 import 'package:codium/domain/repositories/i_task_repository.dart';
 import 'package:codium/domain/repositories/repositories.dart';
 import 'package:codium/domain/services/i_ai_service.dart';
@@ -26,19 +25,18 @@ import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
 import 'package:codium/domain/usecases/tasks/submit_task_answer_usecase.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:codium/features/course_details/course_details.dart';
-import 'package:codium/features/course_learning/bloc/course_learning_bloc.dart';
-import 'package:codium/features/course_learning/bloc/lessons_list_bloc.dart';
+import 'package:codium/features/course_learning/bloc/bloc.dart';
 import 'package:codium/features/learning/learning.dart';
 import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
 import 'package:codium/features/main/main.dart';
 import 'package:codium/features/onboarding/onboarding.dart';
-import 'package:codium/features/tasks/renderers/default_task_renderer.dart';
-import 'package:codium/features/tasks/renderers/task_renderer.dart';
 import 'package:codium/features/tasks/bloc/lesson_task/lesson_task_session_bloc.dart';
 import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
-import 'package:dio/dio.dart';
+import 'package:codium/features/tasks/renderers/default_task_renderer.dart';
+import 'package:codium/features/tasks/renderers/task_renderer.dart';
 import 'package:get_it/get_it.dart';
 import 'package:praxis_client/praxis_client.dart';
+import 'package:serverpod_auth_core_flutter/serverpod_auth_core_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -46,40 +44,15 @@ class DependencyInjection {
   Future<void> initialize() async {
     GetIt.I.registerSingleton(TalkerFlutter.init());
 
-    _registerServerpodClient();
     await _registerServices();
+    await _registerServerpodClient();
     _registerDataSources();
     _registerRepositories();
     _registerUseCases();
     _registerBlocs();
     _registerTaskFeature();
 
-    await _seedDatabaseIfNeeded();
-  }
-
-  Future<void> _seedDatabaseIfNeeded() async {
-    try {
-      final db = GetIt.I<AppDatabase>();
-      final userDataSource = GetIt.I<IUserDataSource>();
-      final seeder = DatabaseSeeder(db, userDataSource);
-
-      final existingUsers = await db.managers.user.count();
-
-      if (existingUsers == 0) {
-        GetIt.I<Talker>().info('Database is empty, seeding...');
-        await seeder.seed();
-        GetIt.I<Talker>().info('Database seeded successfully');
-      } else {
-        GetIt.I<Talker>().info(
-          'Database already contains $existingUsers users',
-        );
-      }
-
-      await seeder.ensureTestUser();
-      await seeder.ensureMatchingTask();
-    } catch (e, st) {
-      GetIt.I<Talker>().error('Failed to seed database', e, st);
-    }
+    // Database seeding removed - data now comes from server
   }
 
   Future<void> _registerServices() async {
@@ -92,9 +65,47 @@ class DependencyInjection {
       );
   }
 
-  void _registerServerpodClient() {
-    GetIt.I.registerLazySingleton<Client>(
-      () => Client(EnvConfig.serverpodHost),
+  Future<void> _registerServerpodClient() async {
+    final sessionService = GetIt.I<ISessionService>();
+    final client = Client(EnvConfig.serverpodHost);
+    final authSessionManager = FlutterAuthSessionManager();
+    authSessionManager.authInfoListenable.addListener(() {
+      unawaited(_syncSessionFromAuthInfo(authSessionManager, sessionService));
+    });
+    client.authSessionManager = authSessionManager;
+    await authSessionManager.restore();
+    await _syncSessionFromAuthInfo(authSessionManager, sessionService);
+
+    GetIt.I.registerLazySingleton<Client>(() => client);
+  }
+
+  Future<void> _syncSessionFromAuthInfo(
+    FlutterAuthSessionManager authSessionManager,
+    ISessionService sessionService,
+  ) async {
+    final authInfo = authSessionManager.authInfo;
+    if (authInfo == null) {
+      await sessionService.clearSession();
+      return;
+    }
+
+    final session = await sessionService.getSession();
+    if (session == null) {
+      return;
+    }
+
+    final refreshToken = authInfo.refreshToken;
+    final expiresAt = authInfo.tokenExpiresAt;
+    if (refreshToken == null || expiresAt == null) {
+      return;
+    }
+
+    await sessionService.updateTokens(
+      UpdateSessionModel(
+        accessToken: authInfo.token,
+        refreshToken: refreshToken,
+        tokenExpiresAt: expiresAt,
+      ),
     );
   }
 
@@ -108,48 +119,51 @@ class DependencyInjection {
           rethrow;
         }
       })
+      // Keep user datasource local for now
       ..registerLazySingleton<IUserDataSource>(
         () => UserLocalDataSource(GetIt.I<AppDatabase>()),
       )
+      // Use remote datasources
       ..registerLazySingleton<IAuthDataSource>(
         () => AuthRemoteDataSource(GetIt.I<Client>()),
       )
-      ..registerLazySingleton<IExplanationLocalDataSource>(
-        () => ExplanationLocalDataSource(GetIt.I<AppDatabase>()),
+      ..registerLazySingleton<UserStatisticsRemoteDataSource>(
+        () => UserStatisticsRemoteDataSource(GetIt.I<Client>()),
       )
-      ..registerLazySingleton<IUserStatisticsLocalDataSource>(
-        () => UserStatisticsLocalDataSource(GetIt.I<AppDatabase>()),
+      ..registerLazySingleton<CourseRemoteDataSource>(
+        () => CourseRemoteDataSource(GetIt.I<Client>()),
       )
-      ..registerLazySingleton<ICourseLocalDataSource>(
-        () => CourseLocalDataSource(GetIt.I<AppDatabase>()),
+      ..registerLazySingleton<ModuleRemoteDataSource>(
+        () => ModuleRemoteDataSource(GetIt.I<Client>()),
       )
-      ..registerLazySingleton<IModuleLocalDataSource>(
-        () => ModuleLocalDataSource(GetIt.I<AppDatabase>()),
+      ..registerLazySingleton<LessonRemoteDataSource>(
+        () => LessonRemoteDataSource(GetIt.I<Client>()),
       )
-      ..registerLazySingleton<ILessonLocalDataSource>(
-        () => LessonLocalDataSource(GetIt.I<AppDatabase>()),
+      ..registerLazySingleton<LessonProgressRemoteDataSource>(
+        () => LessonProgressRemoteDataSource(GetIt.I<Client>()),
       )
-      ..registerLazySingleton<ILessonProgressLocalDataSource>(
-        () => LessonProgressLocalDataSource(GetIt.I<AppDatabase>()),
+      ..registerLazySingleton<AchievementRemoteDataSource>(
+        () => AchievementRemoteDataSource(GetIt.I<Client>()),
       )
-      ..registerLazySingleton<IAchievementLocalDataSource>(
-        () => AchievementLocalDataSource(GetIt.I<AppDatabase>()),
-      )
-      ..registerLazySingleton<ICoinTransactionDataSource>(
-        () => CoinTransactionLocalDataSource(GetIt.I<AppDatabase>()),
+      ..registerLazySingleton<CoinTransactionRemoteDataSource>(
+        () => CoinTransactionRemoteDataSource(GetIt.I<Client>()),
       );
   }
 
   void _registerRepositories() {
     GetIt.I
+      ..registerLazySingleton<AuthSessionRemoteDataSource>(
+        () => AuthSessionRemoteDataSource(GetIt.I<Client>()),
+      )
       ..registerLazySingleton<IAuthRepository>(
         () => AuthRepository(
           GetIt.I<IAuthDataSource>(),
           GetIt.I<ISessionService>(),
+          GetIt.I<AuthSessionRemoteDataSource>(),
         ),
       )
       ..registerLazySingleton<ICourseRepository>(
-        () => CourseRepository(GetIt.I<ICourseLocalDataSource>()),
+        () => CourseRepository(GetIt.I<CourseRemoteDataSource>()),
       )
       ..registerLazySingleton<IUserRepository>(
         () => UserRepository(
@@ -159,27 +173,23 @@ class DependencyInjection {
       )
       ..registerLazySingleton<IUserStatisticsRepository>(
         () =>
-            UserStatisticsRepository(GetIt.I<IUserStatisticsLocalDataSource>()),
-      )
-      ..registerLazySingleton<IExplanationRepository>(
-        () => ExplanationRepository(GetIt.I<IExplanationLocalDataSource>()),
+            UserStatisticsRepository(GetIt.I<UserStatisticsRemoteDataSource>()),
       )
       ..registerLazySingleton<IModuleRepository>(
-        () => ModuleRepository(GetIt.I<IModuleLocalDataSource>()),
+        () => ModuleRepository(GetIt.I<ModuleRemoteDataSource>()),
       )
       ..registerLazySingleton<ILessonRepository>(
-        () => LessonRepository(GetIt.I<ILessonLocalDataSource>()),
+        () => LessonRepository(GetIt.I<LessonRemoteDataSource>()),
       )
       ..registerLazySingleton<ILessonProgressRepository>(
-        () =>
-            LessonProgressRepository(GetIt.I<ILessonProgressLocalDataSource>()),
+        () => LessonProgressRepository(GetIt.I<LessonRemoteDataSource>()),
       )
       ..registerLazySingleton<IAchievementRepository>(
-        () => AchievementRepository(GetIt.I<IAchievementLocalDataSource>()),
+        () => AchievementRepository(GetIt.I<AchievementRemoteDataSource>()),
       )
       ..registerLazySingleton<ICoinTransactionRepository>(
         () => CoinTransactionRepository(
-          GetIt.I<ICoinTransactionDataSource>(),
+          GetIt.I<CoinTransactionRemoteDataSource>(),
         ),
       );
   }
@@ -208,12 +218,7 @@ class DependencyInjection {
       ..registerFactory(
         () => FinishPasswordResetUsecase(GetIt.I<IAuthRepository>()),
       )
-      ..registerFactory(
-        () => SignUpUseCase(
-          GetIt.I<IAuthRepository>(),
-          GetIt.I<ICoinTransactionRepository>(),
-        ),
-      )
+      ..registerFactory(() => SignUpUseCase(GetIt.I<IAuthRepository>()))
       ..registerFactory(() => SignOutUseCase(GetIt.I<IAuthRepository>()))
       ..registerFactory(() => GetProfileUseCase(GetIt.I<IUserRepository>()))
       ..registerFactory(
@@ -232,6 +237,9 @@ class DependencyInjection {
       ..registerFactory(() => GenerateActivityUsecase())
       ..registerFactory(
         () => GetCourseDetailUseCase(GetIt.I<ICourseRepository>()),
+      )
+      ..registerFactory(
+        () => GetCourseTableOfContentsUseCase(GetIt.I<ICourseRepository>()),
       )
       ..registerFactory(
         () => GetLearningDataUseCase(
@@ -257,25 +265,15 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(
-        () => ExplainTextUseCase(GetIt.I<IExplanationRepository>()),
-      )
-      ..registerFactory(
-        () => GetExplanationHistoryUseCase(GetIt.I<IExplanationRepository>()),
-      )
-      ..registerFactory(
-        () =>
-            SearchExplanationHistoryUseCase(GetIt.I<IExplanationRepository>()),
-      )
-      ..registerFactory(
-        () => DeleteExplanationUseCase(GetIt.I<IExplanationRepository>()),
-      )
-      ..registerFactory(
         () => GetRecommendedCoursesUseCase(GetIt.I<ICourseRepository>()),
       )
       ..registerFactory(
         () => CompleteLessonUseCase(
           lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
         ),
+      )
+      ..registerFactory(
+        () => GetLessonByIdUseCase(GetIt.I<ILessonRepository>()),
       )
       ..registerFactory(
         () => GetUserProfileDataUseCase(
@@ -339,6 +337,7 @@ class DependencyInjection {
         () => CourseDetailBloc(
           getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
           checkCourseEnrollmentUseCase: GetIt.I<CheckCourseEnrollmentUseCase>(),
+          getTableOfContentsUseCase: GetIt.I<GetCourseTableOfContentsUseCase>(),
         ),
       )
       ..registerLazySingleton(
@@ -354,8 +353,7 @@ class DependencyInjection {
       ..registerFactory(() => OnboardingBloc())
       ..registerFactory(
         () => CourseLearningBloc(
-          courseRepository: GetIt.I<ICourseRepository>(),
-          lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
+          getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
         ),
       )
       ..registerFactory(
@@ -363,8 +361,7 @@ class DependencyInjection {
       )
       ..registerFactory(
         () => LessonContentBloc(
-          lessonRepository: GetIt.I<ILessonRepository>(),
-          lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
+          getLessonByIdUseCase: GetIt.I<GetLessonByIdUseCase>(),
           completeLessonUseCase: GetIt.I<CompleteLessonUseCase>(),
         ),
       )
@@ -373,15 +370,20 @@ class DependencyInjection {
 
   void _registerTaskFeature() {
     GetIt.I
-      ..registerLazySingleton<Dio>(() => DioFactory.createDefaultDio())
       ..registerLazySingleton<IAiService>(
-        () => AiService(dio: DioFactory.createGeminiDio()),
+        () => AiRemoteService(GetIt.I<Client>()),
       )
-      ..registerLazySingleton<ITaskLocalDataSource>(
+      ..registerLazySingleton<TaskRemoteDataSource>(
+        () => TaskRemoteDataSource(GetIt.I<Client>()),
+      )
+      ..registerLazySingleton<TaskLocalDataSource>(
         () => TaskLocalDataSource(GetIt.I<AppDatabase>()),
       )
       ..registerLazySingleton<ITaskRepository>(
-        () => TaskRepository(GetIt.I<ITaskLocalDataSource>()),
+        () => TaskRepository(
+          GetIt.I<TaskRemoteDataSource>(),
+          GetIt.I<TaskLocalDataSource>(),
+        ),
       )
       ..registerLazySingleton<TaskRenderer>(() => const DefaultTaskRenderer())
       ..registerFactory(() => GetLessonTasksUseCase(GetIt.I<ITaskRepository>()))
@@ -389,7 +391,6 @@ class DependencyInjection {
       ..registerFactory(
         () => SubmitTaskAnswerUseCase(
           GetIt.I<ITaskRepository>(),
-          GetIt.I<IUserStatisticsRepository>(),
           GetIt.I<ICoinTransactionRepository>(),
         ),
       )
@@ -405,7 +406,6 @@ class DependencyInjection {
       ..registerFactory<CompleteLessonSessionUseCase>(
         () => CompleteLessonSessionUseCase(
           GetIt.I<ILessonProgressRepository>(),
-          GetIt.I<IUserStatisticsRepository>(),
           GetIt.I<ICoinTransactionRepository>(),
         ),
       )

@@ -1,5 +1,4 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/auth/bloc/sign_up/sign_up_cubit.dart';
 import 'package:codium/features/auth/widgets/widgets.dart';
@@ -29,27 +28,7 @@ class SignUpScreen extends StatelessWidget {
                 child: Center(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: BlocListener<SignUpCubit, SignUpState>(
-                      listenWhen: (previous, current) =>
-                          previous.status != current.status &&
-                          current.status == FormzSubmissionStatus.failure &&
-                          current.errorCode != null &&
-                          current.step != SignUpStep.password,
-                      listener: (context, state) {
-                        final message = state.errorCode?.localizedMessage(
-                          context,
-                        );
-                        if (message == null) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(message),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.error,
-                          ),
-                        );
-                      },
-                      child: _SignUpForm(onSwitchToSignIn: onSwitchToSignIn),
-                    ),
+                    child: _SignUpForm(onSwitchToSignIn: onSwitchToSignIn),
                   ),
                 ),
               ),

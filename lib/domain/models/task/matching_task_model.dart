@@ -23,15 +23,66 @@ final class MatchingTaskModel extends TaskModel {
     required super.createdAt,
   });
 
-  @override
-  bool validateAnswer(String answer) {
-    // Для matching задач ответ может быть в формате JSON или специальном формате
-    // Здесь можно реализовать более сложную логику сравнения пар
-    return answer.trim() == correctAnswer.trim();
+  /// Factory constructor that parses matching data from JSON
+  factory MatchingTaskModel.fromMatchingData({
+    required int id,
+    required int lessonId,
+    required String questionText,
+    required String correctAnswer,
+    required int difficultyLevel,
+    required int xpValue,
+    required int orderIndex,
+    String? fallbackHint,
+    String? fallbackExplanation,
+    required String topic,
+    required DateTime createdAt,
+    String? matchingDataJson,
+  }) {
+    List<MatchingPair> pairs = [];
+    List<String> leftItems = [];
+    List<String> rightItems = [];
+
+    if (matchingDataJson != null) {
+      try {
+        final jsonData = jsonDecode(matchingDataJson);
+        if (jsonData is Map<String, dynamic> && jsonData.containsKey('pairs')) {
+          final pairsList = jsonData['pairs'] as List<dynamic>;
+          pairs = pairsList.map((pair) {
+            final pairMap = pair as Map<String, dynamic>;
+            return MatchingPair(
+              left: pairMap['left'] as String,
+              right: pairMap['right'] as String,
+            );
+          }).toList();
+
+          leftItems = pairs.map((p) => p.left).toList();
+          rightItems = pairs.map((p) => p.right).toList();
+        }
+      } catch (e) {
+        // If parsing fails, use empty lists
+      }
+    }
+
+    return MatchingTaskModel(
+      id: id,
+      lessonId: lessonId,
+      questionText: questionText,
+      correctAnswer: correctAnswer,
+      pairs: pairs,
+      leftItems: leftItems,
+      rightItems: rightItems,
+      difficultyLevel: difficultyLevel,
+      xpValue: xpValue,
+      orderIndex: orderIndex,
+      fallbackHint: fallbackHint,
+      fallbackExplanation: fallbackExplanation,
+      topic: topic,
+      createdAt: createdAt,
+    );
   }
 
   @override
-  String get taskType => 'matching';
+  TaskType get taskType => TaskType.matching;
 
   @override
   String getLocalizedTitle(

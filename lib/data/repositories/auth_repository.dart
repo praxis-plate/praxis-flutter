@@ -7,12 +7,18 @@ import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/i_auth_repository.dart';
 import 'package:codium/domain/services/services.dart';
+import 'package:codium/data/datasources/remote/auth_session_remote_datasource.dart';
 
 final class AuthRepository implements IAuthRepository {
   final IAuthDataSource _authDataSource;
   final ISessionService _sessionService;
+  final AuthSessionRemoteDataSource _authSessionRemoteDataSource;
 
-  AuthRepository(this._authDataSource, this._sessionService);
+  AuthRepository(
+    this._authDataSource,
+    this._sessionService,
+    this._authSessionRemoteDataSource,
+  );
 
   @override
   Future<Result<String>> startRegistration(String email) async {
@@ -53,6 +59,7 @@ final class AuthRepository implements IAuthRepository {
         registrationToken: registrationToken,
       );
       await _saveSession(session);
+      await _updateClientAuthSession(session);
       return Success(session.toUserProfileModel());
     } catch (e) {
       return Failure(AuthExceptionMapper.map(e));
@@ -67,6 +74,7 @@ final class AuthRepository implements IAuthRepository {
         password: password,
       );
       await _saveSession(session);
+      await _updateClientAuthSession(session);
       return Success(session.toUserProfileModel());
     } catch (e) {
       return Failure(AuthExceptionMapper.map(e));
@@ -118,13 +126,12 @@ final class AuthRepository implements IAuthRepository {
   @override
   Future<Result<void>> signOut() async {
     try {
+      await _authSessionRemoteDataSource.clear();
       await _sessionService.clearSession();
       return const Success(null);
     } catch (e) {
       return Failure(
-        AppFailure.fromException(
-          e is Exception ? e : Exception(e.toString()),
-        ),
+        AppFailure.fromException(e is Exception ? e : Exception(e.toString())),
       );
     }
   }
@@ -132,18 +139,20 @@ final class AuthRepository implements IAuthRepository {
   @override
   Future<Result<bool>> isAuthenticated() async {
     try {
-      final isAuth = await _sessionService.hasActiveSession();
-      return Success(isAuth);
+      final hasLocalSession = await _sessionService.hasActiveSession();
+      return Success(hasLocalSession);
     } catch (e) {
       return Failure(
-        AppFailure.fromException(
-          e is Exception ? e : Exception(e.toString()),
-        ),
+        AppFailure.fromException(e is Exception ? e : Exception(e.toString())),
       );
     }
   }
 
   Future<void> _saveSession(AuthSessionEntity session) async {
     await _sessionService.saveSession(session.toSessionModel());
+  }
+
+  Future<void> _updateClientAuthSession(AuthSessionEntity session) async {
+    await _authSessionRemoteDataSource.update(session);
   }
 }

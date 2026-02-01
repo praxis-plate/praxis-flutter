@@ -53,9 +53,9 @@ class _TaskHintButtonState extends State<TaskHintButton> {
                 child: InkWell(
                   onTap: canRequestHint
                       ? () {
-                          context
-                              .read<TaskHintCubit>()
-                              .requestHint(widget.taskId);
+                          context.read<TaskHintCubit>().requestHint(
+                            widget.taskId,
+                          );
                         }
                       : null,
                   borderRadius: BorderRadius.circular(12),

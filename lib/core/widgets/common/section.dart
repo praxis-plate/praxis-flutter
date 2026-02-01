@@ -13,10 +13,7 @@ class Section extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: theme.textTheme.titleSmall,
-        ),
+        Text(title, style: theme.textTheme.titleSmall),
         const SizedBox(height: 8),
         widget,
         const SizedBox(height: 8),

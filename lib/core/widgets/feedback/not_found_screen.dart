@@ -20,11 +20,7 @@ class NotFoundScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: theme.colorScheme.error,
-          ),
+          Icon(Icons.error_outline, size: 64, color: theme.colorScheme.error),
           const SizedBox(height: 16),
           Text(
             s.errorApiNotFound,
@@ -38,10 +34,7 @@ class NotFoundScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: onNavigateHome,
-            child: Text(s.mainTitle),
-          ),
+          ElevatedButton(onPressed: onNavigateHome, child: Text(s.mainTitle)),
         ],
       ),
     );

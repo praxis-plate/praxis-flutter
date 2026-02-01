@@ -2,9 +2,9 @@ import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/bloc.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
-import 'package:codium/features/tasks/widgets/task_view_layout.dart';
-import 'package:codium/features/tasks/widgets/task_hint_button.dart';
 import 'package:codium/features/tasks/widgets/submit_task_button.dart';
+import 'package:codium/features/tasks/widgets/task_hint_button.dart';
+import 'package:codium/features/tasks/widgets/task_view_layout.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,10 +54,14 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
   }
 
   String _getUserAnswer() {
-    if (_inputControllers.length == 1) {
-      return _inputControllers[0].text.trim();
+    final buffer = StringBuffer();
+    for (int i = 0; i < _codeParts.length; i++) {
+      buffer.write(_codeParts[i]);
+      if (i < _inputControllers.length) {
+        buffer.write(_inputControllers[i].text.trim());
+      }
     }
-    return _inputControllers.map((c) => c.text.trim()).join(', ');
+    return buffer.toString().trim();
   }
 
   bool _isAnswerComplete() {
@@ -145,10 +149,7 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
           IntrinsicWidth(
             child: GlassTextField(
               borderRadius: BorderRadius.circular(8),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: TextField(
                 controller: _inputControllers[i],
                 style: theme.textTheme.bodyMedium?.copyWith(
