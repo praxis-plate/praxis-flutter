@@ -1,15 +1,11 @@
-export 'ai_explanation/ai_explanation.dart';
 export 'auth/auth.dart';
 export 'course_details/course_details.dart';
 export 'course_learning/course_learning.dart';
 export 'course_table_of_contents/course_table_of_contents.dart';
-export 'explanation_history/explanation_history.dart';
 export 'learning/learning.dart';
 export 'lesson/lesson.dart';
-export 'library/library.dart';
 export 'main/main.dart';
 export 'navigation/navigation.dart';
 export 'onboarding/onboarding.dart';
-export 'pdf_reader/pdf_reader.dart';
 export 'profile/profile.dart';
 export 'tasks/tasks.dart';

@@ -1,7 +1,7 @@
-import 'package:codium/domain/models/task/base_task_model.dart';
+part of 'task_model.dart';
 
 /// Задача с множественным выбором
-class MultipleChoiceTaskModel extends TaskModel {
+final class MultipleChoiceTaskModel extends TaskModel {
   final List<String> options;
 
   const MultipleChoiceTaskModel({
@@ -20,12 +20,7 @@ class MultipleChoiceTaskModel extends TaskModel {
   });
 
   @override
-  bool validateAnswer(String answer) {
-    return answer.trim() == correctAnswer.trim();
-  }
-
-  @override
-  String get taskType => 'multipleChoice';
+  TaskType get taskType => TaskType.multipleChoice;
 
   @override
   String getLocalizedTitle(

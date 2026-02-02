@@ -14,6 +14,16 @@
   "displayEmailHint": "example@gmail.com",
   "displayPasswordHint": "•••••••••",
   "displayDontHaveAnAccount": "Don't have an account?",
+  "displayForgotPassword": "Forgot password?",
+  "displayForgotPasswordTitle": "Forgot password?",
+  "displayForgotPasswordSubtitle": "Enter your email and we'll send you a verification code.",
+  "displaySendResetLink": "Send code",
+  "displayRememberPassword": "Remembered your password?",
+  "displayResetLinkSent": "Check your email for a verification code",
+  "displaySendVerificationCode": "Send code",
+  "displayVerifyCode": "Verify code",
+  "displayResetPassword": "Reset password",
+  "displayPasswordResetSuccess": "Password updated. You can sign in now.",
 
   "navigationHomeTitle": "Home",
   "navigationMainTitle": "Main",
@@ -297,9 +307,18 @@
   "courseDuration": "Duration",
   "courseRating": "Rating",
   "minutes": "minutes",
+  "minutesCount": "{count, plural, one{{count} minute} other{{count} minutes}}",
+  "@minutesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "hours": "hours",
   "hoursShort": "h",
   "minutesShort": "m",
+  "secondsShort": "s",
   "lessonsCount": "{count} lessons",
   "@lessonsCount": {
     "placeholders": {
@@ -310,6 +329,8 @@
   },
   "price": "Price",
   "free": "Free",
+  "add": "Add",
+  "get": "Get",
   "purchased": "Purchased",
   "notPurchased": "Not Purchased",
   "searchResults": "Search Results",
@@ -325,5 +346,81 @@
 
   "coursePurchaseSuccess": "Course purchased successfully!",
   "coursePurchaseError": "Failed to purchase course",
-  "coursePurchaseInsufficientBalance": "Insufficient balance"
+  "coursePurchaseInsufficientBalance": "Insufficient balance",
+
+  "taskMultipleChoice": "Multiple Choice",
+  "taskCodeCompletion": "Code Completion",
+  "taskMatching": "Matching",
+  "taskTextInput": "Text Input",
+  "taskHintButton": "Get Hint",
+  "taskSubmitButton": "Submit Answer",
+  "taskCorrectFeedback": "Correct! Well done!",
+  "taskIncorrectFeedback": "Not quite. Try again!",
+  "taskIncorrectTitle": "Not quite.",
+  "taskIncorrectSubtitle": "Try again!",
+  "taskCorrectLabel": "Correct",
+  "taskIncorrectLabel": "Incorrect",
+  "taskXpEarned": "You earned {xp} XP",
+  "@taskXpEarned": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "taskHintsRemaining": "{count} hints remaining",
+  "@taskHintsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "taskProgressLabel": "{completed} of {total} tasks completed",
+  "@taskProgressLabel": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "taskLoading": "Loading task...",
+  "taskError": "Error loading task",
+  "taskValidating": "Validating answer...",
+  "taskContinue": "Continue",
+  "taskRetry": "Try Again",
+  "taskCorrectAnswer": "Correct Answer",
+  "taskExplanation": "Explanation",
+  "taskHintTitle": "Hint",
+  "taskHintPenalty": "Using hints reduces XP reward by 50%",
+  "taskSelectOption": "Select an option",
+  "taskEnterCode": "Enter your code",
+  "taskMatchItems": "Match the items",
+  "taskEnterAnswer": "Enter your answer",
+  "taskUnsupportedType": "Unsupported task type: {type}",
+  "@taskUnsupportedType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSessionLoading": "Loading lesson tasks...",
+  "taskSessionNoTasks": "No tasks found for this lesson",
+  "taskSessionExitTitle": "Exit Session?",
+  "taskSessionExitMessage": "Are you sure you want to exit? Your progress will be saved.",
+  "taskSessionCompleteTitle": "Lesson Complete!",
+  "taskSessionCompleteMessage": "Congratulations! You've completed all tasks in this lesson.",
+  "taskSessionTotalXp": "Total XP",
+  "taskSessionAccuracy": "Accuracy",
+  "taskSessionTimeSpent": "Time Spent",
+  "taskSessionTasksCompleted": "Tasks Completed",
+  "offlineMode": "Offline - AI features unavailable",
+  "goBack": "Go Back",
+  "exit": "Exit",
+  "done": "Done",
+  "noLessonsAvailable": "No lessons available"
 }

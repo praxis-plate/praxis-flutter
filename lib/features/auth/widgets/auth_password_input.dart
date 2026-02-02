@@ -1,46 +1,77 @@
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
-class AuthPasswordInput extends StatelessWidget {
+class AuthPasswordInput extends StatefulWidget {
   final String? errorText;
-  final bool enabled;
-  final bool obscureText;
+  final bool isEnabled;
   final ValueChanged<String> onChanged;
-  final VoidCallback onToggleVisibility;
 
   const AuthPasswordInput({
     super.key,
     this.errorText,
-    required this.enabled,
-    required this.obscureText,
     required this.onChanged,
-    required this.onToggleVisibility,
+    required this.isEnabled,
   });
+
+  @override
+  State<AuthPasswordInput> createState() => _AuthPasswordInputState();
+}
+
+class _AuthPasswordInputState extends State<AuthPasswordInput> {
+  bool _isPasswordHidden = true;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
     final theme = Theme.of(context);
 
-    return TextFormField(
-      enabled: enabled,
-      obscureText: obscureText,
-      style: theme.textTheme.bodyMedium,
-      decoration: InputDecoration(
-        labelText: s.labelPassword,
-        hintText: s.displayPasswordHint,
-        errorText: errorText,
-        suffixIcon: IconButton(
-          icon: Icon(
-            obscureText ? Icons.visibility : Icons.visibility_off,
-            color: theme.colorScheme.onSurfaceVariant,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GlassTextField(
+          enabled: widget.isEnabled,
+          child: TextFormField(
+            enabled: widget.isEnabled,
+            obscureText: _isPasswordHidden,
+            keyboardType: TextInputType.visiblePassword,
+            enableSuggestions: false,
+            autocorrect: false,
+            textInputAction: TextInputAction.done,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
+            obscuringCharacter: '•',
+            decoration: InputDecoration(
+              labelText: s.labelPassword,
+              hintText: s.displayPasswordHint,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                  color: widget.isEnabled
+                      ? theme.colorScheme.onSurface
+                      : theme.disabledColor,
+                ),
+                splashRadius: 20,
+                onPressed: () {
+                  _isPasswordHidden = !_isPasswordHidden;
+                  setState(() {});
+                },
+              ),
+            ),
+            onChanged: widget.onChanged,
           ),
-          splashRadius: 20,
-          padding: const EdgeInsets.only(right: 16),
-          onPressed: enabled ? onToggleVisibility : null,
         ),
-      ),
-      onChanged: onChanged,
+        if (widget.errorText != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            widget.errorText!,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

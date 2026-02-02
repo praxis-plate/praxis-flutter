@@ -16,7 +16,7 @@ class UserStatisticsBloc
   UserStatisticsBloc({
     required GetUserStatisticsUseCase getUserStatisticsUseCase,
   }) : _getUserStatisticsUseCase = getUserStatisticsUseCase,
-       super(UserStatisticsInitial()) {
+       super(const UserStatisticsLoadingState()) {
     on<UserStatisticsLoadEvent>(_onLoadUserStatistics);
   }
 
@@ -24,36 +24,28 @@ class UserStatisticsBloc
     UserStatisticsLoadEvent event,
     Emitter<UserStatisticsState> emit,
   ) async {
-    emit(UserStatisticsLoadingState());
-    try {
-      final result = await _getUserStatisticsUseCase(int.parse(event.userId));
+    emit(const UserStatisticsLoadingState());
 
-      result.when(
-        success: (statistics) {
-          if (statistics != null) {
-            emit(
-              UserStatisticsLoadSuccessState(
-                UserStatistics(
-                  userId: event.userId,
-                  currentStreak: statistics.currentStreak,
-                  maxStreak: statistics.maxStreak,
-                  points: 0,
-                  lastActiveDate: DateTime.now(),
-                  courses: const {},
-                ),
-              ),
-            );
-          } else {
-            emit(const UserStatisticsLoadErrorState('Statistics not found'));
-          }
-        },
-        failure: (failure) {
-          emit(UserStatisticsLoadErrorState(failure.message));
-        },
-      );
-    } catch (e, st) {
-      emit(UserStatisticsLoadErrorState(e.toString()));
-      GetIt.I<Talker>().handle(e, st);
-    }
+    final result = await _getUserStatisticsUseCase(event.userId);
+
+    result.when(
+      success: (statistics) {
+        if (statistics != null) {
+          emit(UserStatisticsLoadSuccessState(statistics));
+        } else {
+          emit(const UserStatisticsLoadErrorState('Statistics not found'));
+        }
+      },
+      failure: (failure) {
+        GetIt.I<Talker>().error(failure.code);
+        emit(UserStatisticsLoadErrorState('Hello: ${failure.message}'));
+      },
+    );
+  }
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    GetIt.I<Talker>().handle(error, stackTrace);
+    super.onError(error, stackTrace);
   }
 }

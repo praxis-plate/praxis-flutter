@@ -3,7 +3,6 @@ import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/enums/coin_transaction_type.dart';
 import 'package:codium/domain/models/coin_transaction/create_coin_transaction_model.dart';
-import 'package:codium/domain/models/user_statistic/update_user_statistic_model.dart';
 import 'package:codium/domain/repositories/i_coin_transaction_repository.dart';
 import 'package:codium/domain/repositories/i_course_repository.dart';
 import 'package:codium/domain/repositories/i_user_statistics_repository.dart';
@@ -23,10 +22,8 @@ class PurchaseCourseUseCase {
        _userStatisticsRepository = userStatisticsRepository,
        _coinTransactionRepository = coinTransactionRepository;
 
-  Future<Result<void>> call(int userId, int courseId) async {
-    final courseResult = await _courseRepository.getCourseById(
-      courseId.toString(),
-    );
+  Future<Result<void>> call(String userId, int courseId) async {
+    final courseResult = await _courseRepository.getCourseById(courseId);
     if (courseResult.isFailure) {
       return Failure(courseResult.failureOrNull!);
     }
@@ -89,27 +86,19 @@ class PurchaseCourseUseCase {
       );
     }
 
-    final newBalance = currentBalance - course.priceInCoins;
+    if (course.priceInCoins > 0) {
+      final transactionResult = await _coinTransactionRepository.create(
+        CreateCoinTransactionModel(
+          userId: userId,
+          amount: course.priceInCoins,
+          type: CoinTransactionType.coursePurchase,
+          relatedEntityId: courseId.toString(),
+        ),
+      );
 
-    final updateStatisticsResult = await _userStatisticsRepository.update(
-      UpdateUserStatisticModel(id: statistics.id, coinBalance: newBalance),
-    );
-
-    if (updateStatisticsResult.isFailure) {
-      return Failure(updateStatisticsResult.failureOrNull!);
-    }
-
-    final transactionResult = await _coinTransactionRepository.create(
-      CreateCoinTransactionModel(
-        userId: userId,
-        amount: -course.priceInCoins,
-        type: CoinTransactionType.coursePurchase,
-        relatedEntityId: courseId.toString(),
-      ),
-    );
-
-    if (transactionResult.isFailure) {
-      return Failure(transactionResult.failureOrNull!);
+      if (transactionResult.isFailure) {
+        return Failure(transactionResult.failureOrNull!);
+      }
     }
 
     final enrollResult = await _courseRepository.enrollUserInCourse(

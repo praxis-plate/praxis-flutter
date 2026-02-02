@@ -7,7 +7,7 @@ class UserStatisticsLocalDataSource implements IUserStatisticsLocalDataSource {
   const UserStatisticsLocalDataSource(this._db);
 
   @override
-  Future<UserStatisticEntity?> getStatisticsByUserId(int userId) async {
+  Future<UserStatisticEntity?> getStatisticsByUserId(String userId) async {
     return await _db.managers.userStatistic
         .filter((f) => f.userId.id(userId))
         .getSingleOrNull();
@@ -34,7 +34,7 @@ class UserStatisticsLocalDataSource implements IUserStatisticsLocalDataSource {
   }
 
   @override
-  Future<void> deleteStatistics(int userId) async {
+  Future<void> deleteStatistics(String userId) async {
     await _db.managers.userStatistic
         .filter((f) => f.userId.id(userId))
         .delete();

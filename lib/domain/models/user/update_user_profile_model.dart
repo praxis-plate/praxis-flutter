@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class UpdateUserProfileModel extends Equatable {
-  final int id;
+  final String id;
   final String? email;
   final String? name;
   final String? avatarUrl;

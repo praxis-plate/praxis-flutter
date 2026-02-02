@@ -1,3 +1,4 @@
+import 'package:codium/core/widgets/common/glass_card.dart';
 import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -40,59 +41,67 @@ class _TaskHintButtonState extends State<TaskHintButton> {
 
           return SizedBox(
             height: 48,
-            child: OutlinedButton(
-              onPressed: canRequestHint
-                  ? () {
-                      context.read<TaskHintCubit>().requestHint(widget.taskId);
-                    }
-                  : null,
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                side: BorderSide(
-                  color: canRequestHint
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.outline.withValues(alpha: 0.3),
-                ),
-                shape: RoundedRectangleBorder(
+            child: GlassCard(
+              borderRadius: BorderRadius.circular(12),
+              padding: EdgeInsets.zero,
+              enabled: canRequestHint,
+              borderColor: canRequestHint
+                  ? theme.colorScheme.primary.withValues(alpha: 0.5)
+                  : theme.colorScheme.outline.withValues(alpha: 0.3),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: canRequestHint
+                      ? () {
+                          context.read<TaskHintCubit>().requestHint(
+                            widget.taskId,
+                          );
+                        }
+                      : null,
                   borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    child: Center(
+                      child: isLoading
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: theme.colorScheme.primary,
+                              ),
+                            )
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.lightbulb_outline,
+                                  size: 20,
+                                  color: canRequestHint
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  child: Text(
+                                    '${s.taskHintButton} ($hintsRemaining/${widget.maxHints})',
+                                    style: theme.textTheme.labelLarge?.copyWith(
+                                      color: canRequestHint
+                                          ? theme.colorScheme.primary
+                                          : theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                  ),
                 ),
               ),
-              child: isLoading
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: theme.colorScheme.primary,
-                      ),
-                    )
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.lightbulb_outline,
-                          size: 20,
-                          color: canRequestHint
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            '${s.taskHintButton} ($hintsRemaining/3)',
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              color: canRequestHint
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurfaceVariant,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
             ),
           );
         },
@@ -155,7 +164,7 @@ class _TaskHintButtonState extends State<TaskHintButton> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Using hints reduces XP reward by 50%',
+                        s.taskHintPenalty,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurface,
                         ),

@@ -1,3 +1,4 @@
+import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
@@ -18,16 +19,32 @@ class AuthEmailInput extends StatelessWidget {
     final s = S.of(context);
     final theme = Theme.of(context);
 
-    return TextFormField(
-      enabled: enabled,
-      keyboardType: TextInputType.emailAddress,
-      style: theme.textTheme.bodyMedium,
-      decoration: InputDecoration(
-        labelText: s.labelEmail,
-        hintText: s.displayEmailHint,
-        errorText: errorText,
-      ),
-      onChanged: onChanged,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GlassTextField(
+          enabled: enabled,
+          child: TextFormField(
+            enabled: enabled,
+            keyboardType: TextInputType.emailAddress,
+            style: theme.textTheme.bodyMedium,
+            decoration: InputDecoration(
+              labelText: s.labelEmail,
+              hintText: s.displayEmailHint,
+            ),
+            onChanged: onChanged,
+          ),
+        ),
+        if (errorText != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            errorText!,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

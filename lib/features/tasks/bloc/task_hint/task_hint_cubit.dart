@@ -7,7 +7,7 @@ part 'task_hint_state.dart';
 
 class TaskHintCubit extends Cubit<TaskHintState> {
   final RequestTaskHintUseCase _requestTaskHintUseCase;
-  final int _userId;
+  final String _userId;
 
   TaskHintCubit(this._requestTaskHintUseCase, this._userId)
     : super(const TaskHintInitial());

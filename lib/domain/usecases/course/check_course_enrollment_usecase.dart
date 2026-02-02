@@ -8,7 +8,7 @@ class CheckCourseEnrollmentUseCase {
     : _courseRepository = courseRepository;
 
   Future<Result<bool>> call({
-    required int userId,
+    required String userId,
     required int courseId,
   }) async {
     final result = await _courseRepository.getEnrolledCourses(userId);
