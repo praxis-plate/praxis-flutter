@@ -8,7 +8,7 @@ sealed class UserProfileEvent extends Equatable {
 }
 
 class UserProfileLoadEvent extends UserProfileEvent {
-  final int userId;
+  final String userId;
 
   const UserProfileLoadEvent({required this.userId});
 

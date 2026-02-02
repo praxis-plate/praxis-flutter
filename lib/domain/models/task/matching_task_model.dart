@@ -1,26 +1,7 @@
-import 'package:codium/domain/models/task/base_task_model.dart';
-
-/// Модель для элемента сопоставления
-class MatchingPair {
-  final String left;
-  final String right;
-
-  const MatchingPair({required this.left, required this.right});
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MatchingPair &&
-          runtimeType == other.runtimeType &&
-          left == other.left &&
-          right == other.right;
-
-  @override
-  int get hashCode => left.hashCode ^ right.hashCode;
-}
+part of 'task_model.dart';
 
 /// Задача на сопоставление элементов
-class MatchingTaskModel extends TaskModel {
+final class MatchingTaskModel extends TaskModel {
   final List<MatchingPair> pairs;
   final List<String> leftItems;
   final List<String> rightItems;
@@ -42,15 +23,66 @@ class MatchingTaskModel extends TaskModel {
     required super.createdAt,
   });
 
-  @override
-  bool validateAnswer(String answer) {
-    // Для matching задач ответ может быть в формате JSON или специальном формате
-    // Здесь можно реализовать более сложную логику сравнения пар
-    return answer.trim() == correctAnswer.trim();
+  /// Factory constructor that parses matching data from JSON
+  factory MatchingTaskModel.fromMatchingData({
+    required int id,
+    required int lessonId,
+    required String questionText,
+    required String correctAnswer,
+    required int difficultyLevel,
+    required int xpValue,
+    required int orderIndex,
+    String? fallbackHint,
+    String? fallbackExplanation,
+    required String topic,
+    required DateTime createdAt,
+    String? matchingDataJson,
+  }) {
+    List<MatchingPair> pairs = [];
+    List<String> leftItems = [];
+    List<String> rightItems = [];
+
+    if (matchingDataJson != null) {
+      try {
+        final jsonData = jsonDecode(matchingDataJson);
+        if (jsonData is Map<String, dynamic> && jsonData.containsKey('pairs')) {
+          final pairsList = jsonData['pairs'] as List<dynamic>;
+          pairs = pairsList.map((pair) {
+            final pairMap = pair as Map<String, dynamic>;
+            return MatchingPair(
+              left: pairMap['left'] as String,
+              right: pairMap['right'] as String,
+            );
+          }).toList();
+
+          leftItems = pairs.map((p) => p.left).toList();
+          rightItems = pairs.map((p) => p.right).toList();
+        }
+      } catch (e) {
+        // If parsing fails, use empty lists
+      }
+    }
+
+    return MatchingTaskModel(
+      id: id,
+      lessonId: lessonId,
+      questionText: questionText,
+      correctAnswer: correctAnswer,
+      pairs: pairs,
+      leftItems: leftItems,
+      rightItems: rightItems,
+      difficultyLevel: difficultyLevel,
+      xpValue: xpValue,
+      orderIndex: orderIndex,
+      fallbackHint: fallbackHint,
+      fallbackExplanation: fallbackExplanation,
+      topic: topic,
+      createdAt: createdAt,
+    );
   }
 
   @override
-  String get taskType => 'matching';
+  TaskType get taskType => TaskType.matching;
 
   @override
   String getLocalizedTitle(
@@ -98,4 +130,15 @@ class MatchingTaskModel extends TaskModel {
 
   @override
   List<Object?> get props => [...super.props, pairs, leftItems, rightItems];
+}
+
+/// Модель для элемента сопоставления
+class MatchingPair extends Equatable {
+  final String left;
+  final String right;
+
+  const MatchingPair({required this.left, required this.right});
+
+  @override
+  List<Object?> get props => [left, right];
 }

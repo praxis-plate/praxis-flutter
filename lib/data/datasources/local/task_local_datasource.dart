@@ -1,5 +1,6 @@
 import 'package:codium/data/database/app_database.dart';
 import 'package:codium/domain/datasources/i_task_local_datasource.dart';
+import 'package:drift/drift.dart';
 
 class TaskLocalDataSource implements ITaskLocalDataSource {
   final AppDatabase _db;
@@ -39,9 +40,10 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
 
   @override
   Future<List<TaskProgressEntity>> getUserTaskProgress(
-    int userId,
+    String userId,
     int lessonId,
   ) async {
+    final resolvedUserId = await _resolveUserId(userId);
     final tasks = await getTasksByLessonId(lessonId);
     final taskIds = tasks.map((t) => t.id).toList();
 
@@ -50,15 +52,16 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
     }
 
     return await _db.managers.taskProgress
-        .filter((f) => f.userId.id(userId))
+        .filter((f) => f.userId.id(resolvedUserId))
         .filter((f) => f.taskId.id.isIn(taskIds))
         .get();
   }
 
   @override
-  Future<TaskProgressEntity?> getTaskProgress(int userId, int taskId) async {
+  Future<TaskProgressEntity?> getTaskProgress(String userId, int taskId) async {
+    final resolvedUserId = await _resolveUserId(userId);
     return await _db.managers.taskProgress
-        .filter((f) => f.userId.id(userId))
+        .filter((f) => f.userId.id(resolvedUserId))
         .filter((f) => f.taskId.id(taskId))
         .getSingleOrNull();
   }
@@ -67,7 +70,33 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
   Future<TaskProgressEntity> insertTaskProgress(
     TaskProgressCompanion entry,
   ) async {
-    return await _db.into(_db.taskProgress).insertReturning(entry);
+    if (!entry.userId.present) {
+      throw ArgumentError('TaskProgress userId must be present for insert');
+    }
+
+    final resolvedUserId = await _resolveUserId(entry.userId.value);
+    final insertEntry = resolvedUserId == entry.userId.value
+        ? entry
+        : entry.copyWith(userId: Value(resolvedUserId));
+
+    return await _db.into(_db.taskProgress).insertReturning(insertEntry);
+  }
+
+  Future<String> _resolveUserId(String userId) async {
+    final existingUser = await _db.managers.user
+        .filter((f) => f.id(userId))
+        .getSingleOrNull();
+
+    if (existingUser != null) {
+      return userId;
+    }
+
+    // TODO: Remove after testing
+    final fallbackUser = await (_db.select(
+      _db.user,
+    )..limit(1)).getSingleOrNull();
+
+    return fallbackUser?.id ?? userId;
   }
 
   @override

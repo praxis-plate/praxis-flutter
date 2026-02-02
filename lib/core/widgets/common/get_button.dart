@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 class GetButton extends StatelessWidget {
-  const GetButton({
-    required this.price,
-    this.onPressed,
-    super.key,
-  });
+  const GetButton({required this.price, this.onPressed, super.key});
 
   final VoidCallback? onPressed;
   final double? price;
@@ -29,15 +25,17 @@ class GetButton extends StatelessWidget {
             child: price == null
                 ? Text(
                     'Get',
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(color: theme.colorScheme.primary),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
                   )
                 : Row(
                     children: [
                       Text(
                         '$price',
-                        style: theme.textTheme.titleSmall
-                            ?.copyWith(color: theme.colorScheme.primary),
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                        ),
                       ),
                       const SizedBox(width: 2),
                       Icon(

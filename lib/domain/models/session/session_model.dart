@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 class SessionModel extends Equatable {
-  final int userId;
+  final String userId;
   final String email;
   final String accessToken;
-  final String refreshToken;
-  final DateTime tokenExpiresAt;
+  final String? refreshToken;
+  final DateTime? tokenExpiresAt;
 
   const SessionModel({
     required this.userId,
@@ -16,11 +16,12 @@ class SessionModel extends Equatable {
   });
 
   bool get hasValidToken {
-    return DateTime.now().isBefore(tokenExpiresAt);
+    return tokenExpiresAt is DateTime &&
+        DateTime.now().isBefore(tokenExpiresAt!);
   }
 
   SessionModel copyWith({
-    int? userId,
+    String? userId,
     String? email,
     String? accessToken,
     String? refreshToken,

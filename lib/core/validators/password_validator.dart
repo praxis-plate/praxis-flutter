@@ -1,7 +1,5 @@
 import 'package:codium/l10n/app_localizations.dart';
 import 'package:formz/formz.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 class PasswordValidator extends FormzInput<String, PasswordValidationError> {
   const PasswordValidator.pure() : super.pure('');
@@ -13,24 +11,24 @@ class PasswordValidator extends FormzInput<String, PasswordValidationError> {
 
   @override
   PasswordValidationError? validator(String? value) {
-    if (value?.isEmpty ?? true) return PasswordValidationError.empty;
-    if (!_passwordRegex.hasMatch(value!)) return PasswordValidationError.invalid;
+    if (value?.isEmpty ?? true) {
+      return PasswordValidationError.empty;
+    }
+    if (!_passwordRegex.hasMatch(value!)) {
+      return PasswordValidationError.invalid;
+    }
     return null;
   }
 
-  String? stringDisplayError(AppLocalizations? s) => isPure ? null : error?.toErrorText(s);
+  String? stringDisplayError(AppLocalizations s) =>
+      isPure ? null : error?.toErrorText(s);
 }
 
 enum PasswordValidationError {
   empty,
   invalid;
 
-  String toErrorText(AppLocalizations? s) {
-    if (s == null) {
-      GetIt.I<Talker>().log('PasswordValidator unhandled error');
-      return 'Unhandled error';
-    }
-
+  String toErrorText(AppLocalizations s) {
     switch (this) {
       case PasswordValidationError.empty:
         return s.errorPasswordEmpty;

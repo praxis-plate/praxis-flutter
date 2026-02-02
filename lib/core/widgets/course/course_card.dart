@@ -1,27 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:codium/core/theme/app_theme.dart';
 import 'package:codium/core/utils/constants.dart';
 import 'package:codium/core/utils/duration.dart';
-import 'package:codium/core/widgets/common/coin_amount.dart';
-import 'package:codium/core/widgets/common/user_provider.dart';
-import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/core/widgets/widgets.dart';
+import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 class CourseCard extends StatelessWidget {
-  final CourseModel course;
-  final VoidCallback? onPressed;
-  final bool isPurchased;
-
   const CourseCard({
+    required this.userProfile,
     required this.course,
     required this.onPressed,
     this.isPurchased = false,
     super.key,
   });
+
+  final UserProfileModel userProfile;
+  final CourseModel course;
+  final VoidCallback? onPressed;
+  final bool isPurchased;
 
   @override
   Widget build(BuildContext context) {
@@ -97,12 +97,14 @@ class CourseCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     _CourseMetaInfo(
+                      key: Key(course.id.toString()),
                       duration: Duration(minutes: course.durationMinutes),
                       courseId: course.id,
-                      lessonsCount: 0,
+                      lessonsCount: course.totalTasks,
                       priceInCoins: course.priceInCoins,
                       isPurchased: isPurchased,
                       isProcessing: isProcessing,
+                      userProfile: userProfile,
                     ),
                   ],
                 ),
@@ -116,21 +118,34 @@ class CourseCard extends StatelessWidget {
 }
 
 class _CourseMetaInfo extends StatelessWidget {
-  final int courseId;
-  final Duration duration;
-  final int lessonsCount;
-  final int priceInCoins;
-  final bool isPurchased;
-  final bool isProcessing;
-
   const _CourseMetaInfo({
+    super.key,
     required this.courseId,
     required this.duration,
     required this.lessonsCount,
     required this.priceInCoins,
     required this.isPurchased,
     required this.isProcessing,
+    required this.userProfile,
   });
+
+  final int courseId;
+  final Duration duration;
+  final int lessonsCount;
+  final int priceInCoins;
+  final bool isPurchased;
+  final bool isProcessing;
+  final UserProfileModel userProfile;
+
+  void onPurchasePressed(BuildContext context, UserProfileModel userProfile) {
+    if (!context.mounted) {
+      return;
+    }
+
+    context.read<CoursePurchasingBloc>().add(
+      CoursePurchasingRequestEvent(userId: userProfile.id, courseId: courseId),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,34 +188,7 @@ class _CourseMetaInfo extends StatelessWidget {
           priceInCoins: priceInCoins,
           isProcessing: isProcessing,
           isPurchased: isPurchased,
-          onPressed: () {
-            final talker = GetIt.I<Talker>();
-            final user = UserProvider.maybeOf(context);
-
-            if (user == null) {
-              talker.warning('UserProvider not available');
-              return;
-            }
-
-            final userId = user.profile.id;
-
-            talker.info(
-              '🛒 Purchase button pressed: courseId=$courseId, userId=$userId',
-            );
-
-            final bloc = context.read<CoursePurchasingBloc>();
-            talker.debug('Bloc closed: ${bloc.isClosed}');
-
-            if (!bloc.isClosed) {
-              talker.info('Adding CoursePurchasingRequestEvent');
-              bloc.add(
-                CoursePurchasingRequestEvent(
-                  userId: userId,
-                  courseId: courseId,
-                ),
-              );
-            }
-          },
+          onPressed: () => onPurchasePressed(context, userProfile),
         ),
       ],
     );
@@ -280,6 +268,8 @@ class _CompactPurchaseButtonContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+
     if (isPurchased) {
       return Row(
         mainAxisSize: MainAxisSize.min,
@@ -301,6 +291,22 @@ class _CompactPurchaseButtonContent extends StatelessWidget {
         ],
       );
     }
+
+    if (priceInCoins == 0) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            s.add,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        ],
+      );
+    }
+
     return CoinAmount(
       amount: priceInCoins,
       style: theme.textTheme.bodyMedium?.copyWith(
@@ -332,7 +338,7 @@ class _CourseRating extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 4),
-        const Icon(Icons.star, color: Colors.amber, size: 16),
+        const Icon(Icons.star, color: AppPalette.star, size: 16),
       ],
     );
   }

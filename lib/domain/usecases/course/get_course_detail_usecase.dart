@@ -8,6 +8,6 @@ class GetCourseDetailUseCase {
   GetCourseDetailUseCase(this._courseRepository);
 
   Future<Result<CourseModel>> call(int courseId) async {
-    return await _courseRepository.getCourseById(courseId.toString());
+    return await _courseRepository.getCourseById(courseId);
   }
 }

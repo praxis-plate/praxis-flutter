@@ -18,7 +18,7 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
     required GetEnrolledCoursesUseCase getEnrolledCoursesUseCase,
   }) : _getLearningDataUseCase = getLearningDataUseCase,
        _getEnrolledCoursesUseCase = getEnrolledCoursesUseCase,
-       super(LearningInitialState()) {
+       super(const LearningLoadingState()) {
     on<LearningLoadEvent>(_onLoadData);
   }
 
@@ -26,10 +26,9 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
     LearningLoadEvent event,
     Emitter<LearningState> emit,
   ) async {
-    emit(LearningLoadingState());
+    emit(const LearningLoadingState());
     try {
-      final userId = int.parse(event.userId);
-
+      final userId = event.userId;
       final statisticsResult = await _getLearningDataUseCase(userId);
       final coursesResult = await _getEnrolledCoursesUseCase(userId);
 
@@ -55,12 +54,15 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
           enrolledCourses: coursesResult.dataOrNull ?? [],
         ),
       );
-    } catch (e) {
-      GetIt.I<Talker>().error('LearningBloc error: $e');
-      final errorMessage = e is Exception
-          ? e.toString().replaceFirst('Exception: ', '')
-          : 'Ошибка загрузки данных';
-      emit(LearningLoadErrorState(message: errorMessage));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      emit(LearningLoadErrorState(message: e.toString()));
     }
+  }
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    GetIt.I<Talker>().handle(error, stackTrace);
+    super.onError(error, stackTrace);
   }
 }

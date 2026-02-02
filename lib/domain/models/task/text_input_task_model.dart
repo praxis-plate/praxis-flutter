@@ -1,6 +1,6 @@
-import 'package:codium/domain/models/task/base_task_model.dart';
+part of 'task_model.dart';
 
-class TextInputTaskModel extends TaskModel {
+final class TextInputTaskModel extends TaskModel {
   final bool caseSensitive;
   final bool exactMatch;
   final List<String>? acceptableAnswers;
@@ -23,51 +23,7 @@ class TextInputTaskModel extends TaskModel {
   });
 
   @override
-  bool validateAnswer(String answer) {
-    final userAnswer = caseSensitive
-        ? answer.trim()
-        : answer.trim().toLowerCase();
-    final correctAnswerProcessed = caseSensitive
-        ? correctAnswer.trim()
-        : correctAnswer.trim().toLowerCase();
-
-    // Проверяем основной правильный ответ
-    if (exactMatch) {
-      if (userAnswer == correctAnswerProcessed) {
-        return true;
-      }
-    } else {
-      if (userAnswer.contains(correctAnswerProcessed) ||
-          correctAnswerProcessed.contains(userAnswer)) {
-        return true;
-      }
-    }
-
-    // Проверяем альтернативные правильные ответы
-    if (acceptableAnswers != null) {
-      for (final acceptable in acceptableAnswers!) {
-        final acceptableProcessed = caseSensitive
-            ? acceptable.trim()
-            : acceptable.trim().toLowerCase();
-
-        if (exactMatch) {
-          if (userAnswer == acceptableProcessed) {
-            return true;
-          }
-        } else {
-          if (userAnswer.contains(acceptableProcessed) ||
-              acceptableProcessed.contains(userAnswer)) {
-            return true;
-          }
-        }
-      }
-    }
-
-    return false;
-  }
-
-  @override
-  String get taskType => 'textInput';
+  TaskType get taskType => TaskType.textInput;
 
   @override
   String getLocalizedTitle(

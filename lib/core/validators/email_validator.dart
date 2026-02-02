@@ -1,7 +1,5 @@
 import 'package:codium/l10n/app_localizations.dart';
 import 'package:formz/formz.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 class EmailValidator extends FormzInput<String, EmailValidationError> {
   const EmailValidator.pure() : super.pure('');
@@ -13,25 +11,24 @@ class EmailValidator extends FormzInput<String, EmailValidationError> {
 
   @override
   EmailValidationError? validator(String? value) {
-    if (value?.isEmpty ?? true) return EmailValidationError.empty;
-    if (!_emailRegex.hasMatch(value!)) return EmailValidationError.invalid;
+    if (value?.isEmpty ?? true) {
+      return EmailValidationError.empty;
+    }
+    if (!_emailRegex.hasMatch(value!)) {
+      return EmailValidationError.invalid;
+    }
     return null;
   }
 
-  String? stringDisplayError(AppLocalizations? s) => isPure ? null : error?.toErrorText(s);
+  String? stringDisplayError(AppLocalizations s) =>
+      isPure ? null : error?.toErrorText(s);
 }
 
 enum EmailValidationError {
   empty,
   invalid;
 
-  String toErrorText(AppLocalizations? s) {
-    if (s == null) {
-      GetIt.I<Talker>().log('PasswordValidator unhandled error');
-      return 'Unhandled error';
-    }
-
-
+  String toErrorText(AppLocalizations s) {
     switch (this) {
       case EmailValidationError.empty:
         return s.errorEmailEmpty;

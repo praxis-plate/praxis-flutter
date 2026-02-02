@@ -6,7 +6,7 @@ sealed class CourseDetailEvent extends Equatable {
 
 class CourseDetailLoadEvent extends CourseDetailEvent {
   final int courseId;
-  final int userId;
+  final String userId;
 
   const CourseDetailLoadEvent({required this.courseId, required this.userId});
 

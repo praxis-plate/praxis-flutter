@@ -4,6 +4,6 @@ import 'package:codium/domain/models/user/user_profile_model.dart';
 
 abstract interface class IUserRepository {
   Future<Result<UserProfileModel>> getCurrentUser();
-  Future<Result<UserProfileModel>> getUserById(int userId);
+  Future<Result<UserProfileModel>> getUserById(String userId);
   Future<Result<void>> updateUser(UpdateUserProfileModel user);
 }

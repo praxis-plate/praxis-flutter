@@ -1,41 +1,42 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/entities/coin_transaction_entity_extension.dart';
-import 'package:codium/domain/datasources/i_coin_transaction_local_datasource.dart';
+import 'package:codium/data/datasources/remote/coin_transaction_remote_datasource.dart';
+import 'package:codium/data/entities/coin_transaction_dto_extension.dart';
+import 'package:codium/data/mappers/coin_transaction_type_mapper.dart';
 import 'package:codium/domain/models/coin_transaction/coin_transaction_model.dart';
 import 'package:codium/domain/models/coin_transaction/create_coin_transaction_model.dart';
+import 'package:codium/domain/models/coin_transaction/wallet_balance.dart';
 import 'package:codium/domain/repositories/i_coin_transaction_repository.dart';
 
 class CoinTransactionRepository implements ICoinTransactionRepository {
-  final ICoinTransactionLocalDataSource _localDataSource;
+  final CoinTransactionRemoteDataSource _remoteDataSource;
 
-  const CoinTransactionRepository(this._localDataSource);
+  const CoinTransactionRepository(this._remoteDataSource);
 
   @override
   Future<Result<List<CoinTransactionModel>>> getTransactionHistory(
-    int userId,
+    String userId,
   ) async {
-    try {
-      final entities = await _localDataSource.getTransactionHistory(userId);
-      final transactions = entities.map((e) => e.toDomain()).toList();
-      return Success(transactions);
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
-    } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
-    }
+    final transactionDtos = await _remoteDataSource.getTransactionHistory();
+    final models = transactionDtos.map((dto) => dto.toDomain()).toList();
+    return Success(models);
   }
 
   @override
   Future<Result<void>> create(CreateCoinTransactionModel model) async {
-    try {
-      await _localDataSource.insertTransaction(model.toCompanion());
-      return const Success(null);
-    } on AppError catch (e) {
-      return Failure(AppFailure.fromError(e));
-    } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
-    }
+    final serverType = CoinTransactionTypeMapper.toServerType(model.type);
+    await _remoteDataSource.createTransaction(
+      amount: model.amount,
+      type: serverType,
+      transactionKey: 'transaction_${DateTime.now().millisecondsSinceEpoch}',
+      relatedEntityId: model.relatedEntityId != null
+          ? int.parse(model.relatedEntityId!)
+          : null,
+    );
+    return const Success(null);
+  }
+
+  Future<Result<WalletBalance>> getWalletBalance() async {
+    final balanceDto = await _remoteDataSource.getWalletBalance();
+    return Success(balanceDto.toDomain());
   }
 }

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 class RunningText extends StatefulWidget {
-  const RunningText({
-    super.key,
-    required this.text,
-    this.additionalWidth = 30,
-  });
+  const RunningText({super.key, required this.text, this.additionalWidth = 30});
 
   final Text text;
   final int additionalWidth;

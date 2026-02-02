@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class UserCourseModel extends Equatable {
   final int id;
-  final int userId;
+  final String userId;
   final int courseId;
   final DateTime enrolledAt;
   final bool isCompleted;
@@ -19,7 +19,7 @@ class UserCourseModel extends Equatable {
 
   UserCourseModel copyWith({
     int? id,
-    int? userId,
+    String? userId,
     int? courseId,
     DateTime? enrolledAt,
     bool? isCompleted,

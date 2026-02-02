@@ -2,7 +2,7 @@ import 'package:codium/domain/enums/coin_transaction_type.dart';
 import 'package:equatable/equatable.dart';
 
 class CreateCoinTransactionModel extends Equatable {
-  final int userId;
+  final String userId;
   final int amount;
   final CoinTransactionType type;
   final String? relatedEntityId;

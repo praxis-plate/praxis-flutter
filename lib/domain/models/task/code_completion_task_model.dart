@@ -1,9 +1,7 @@
-import 'package:codium/domain/enums/programming_language.dart';
-import 'package:codium/domain/models/task/base_task_model.dart';
-import 'package:codium/domain/models/task/test_case_model.dart';
+part of 'task_model.dart';
 
 /// Задача на дополнение кода
-class CodeCompletionTaskModel extends TaskModel {
+final class CodeCompletionTaskModel extends TaskModel {
   final String codeTemplate;
   final List<TestCaseModel> testCases;
   final ProgrammingLanguage language;
@@ -26,14 +24,7 @@ class CodeCompletionTaskModel extends TaskModel {
   });
 
   @override
-  bool validateAnswer(String answer) {
-    // Для кода можем использовать более сложную логику валидации
-    // Например, проверка через тест-кейсы или сравнение нормализованного кода
-    return answer.trim() == correctAnswer.trim();
-  }
-
-  @override
-  String get taskType => 'codeCompletion';
+  TaskType get taskType => TaskType.codeCompletion;
 
   @override
   String getLocalizedTitle(

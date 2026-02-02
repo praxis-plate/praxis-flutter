@@ -1,4 +1,6 @@
 import 'package:codium/core/utils/result.dart';
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/domain/enums/programming_language.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/domain/models/task/update_task_progress_model.dart';
@@ -13,7 +15,7 @@ class RequestTaskHintUseCase {
 
   Future<Result<String>> call({
     required int taskId,
-    required int userId,
+    required String userId,
   }) async {
     final taskResult = await _taskRepository.getTaskById(taskId);
 
@@ -32,8 +34,15 @@ class RequestTaskHintUseCase {
       topic: task.topic,
     );
 
-    if (hintResult.isFailure) {
-      return Failure(hintResult.failureOrNull!);
+    final hint = _resolveHint(hintResult, task.fallbackHint);
+    if (hint == null) {
+      final failure =
+          hintResult.failureOrNull ??
+          const AppFailure(
+            code: AppErrorCode.apiGeneral,
+            message: 'Hint unavailable',
+          );
+      return Failure(failure);
     }
 
     final progressResult = await _taskRepository.getTaskProgress(
@@ -50,6 +59,22 @@ class RequestTaskHintUseCase {
       );
     }
 
-    return hintResult;
+    return Success(hint);
+  }
+
+  String? _resolveHint(Result<String> hintResult, String? fallbackHint) {
+    if (hintResult.isSuccess) {
+      final hint = hintResult.dataOrNull?.trim();
+      if (hint != null && hint.isNotEmpty) {
+        return hint;
+      }
+    }
+
+    final fallback = fallbackHint?.trim();
+    if (fallback != null && fallback.isNotEmpty) {
+      return fallback;
+    }
+
+    return null;
   }
 }

@@ -16,7 +16,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     required GetEnrolledCoursesUseCase getEnrolledCoursesUseCase,
   }) : _getCoursesUseCase = getCoursesUseCase,
        _getEnrolledCoursesUseCase = getEnrolledCoursesUseCase,
-       super(MainCoursesInitialState()) {
+       super(const MainCoursesLoadingState()) {
     on<MainLoadCoursesEvent>(_onLoadCourses);
     on<SearchCoursesEvent>(_onSearchCourses);
   }
@@ -25,7 +25,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     MainLoadCoursesEvent event,
     Emitter<MainState> emit,
   ) async {
-    emit(MainCoursesLoadingState());
+    emit(const MainCoursesLoadingState());
     try {
       final coursesResult = await _getCoursesUseCase();
       final enrolledResult = await _getEnrolledCoursesUseCase(event.userId);

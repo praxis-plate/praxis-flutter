@@ -19,7 +19,7 @@ class GetUserProfileDataUseCase {
        _userStatisticsRepository = userStatisticsRepository,
        _achievementRepository = achievementRepository;
 
-  Future<Result<UserProfileDataModel>> call(int userId) async {
+  Future<Result<UserProfileDataModel>> call(String userId) async {
     final userResult = await _userRepository.getUserById(userId);
 
     return userResult.when(

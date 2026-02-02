@@ -2,7 +2,7 @@ import 'package:codium/core/bloc/achievement_notification/achievement_notificati
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/course_task.dart';
 import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
-import 'package:codium/l10n/app_localizations.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -35,7 +35,7 @@ class _LessonContentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = AppLocalizations.of(context)!;
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return BlocListener<LessonContentBloc, LessonContentState>(
@@ -51,56 +51,65 @@ class _LessonContentView extends StatelessWidget {
           _showCompletionDialog(context, state);
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: BlocBuilder<LessonContentBloc, LessonContentState>(
-            builder: (context, state) {
-              if (state is LessonContentLoaded) {
-                return Text(
-                  state.lesson.title,
-                  style: theme.textTheme.titleLarge,
-                );
-              }
-              return Text(s.loading, style: theme.textTheme.titleLarge);
-            },
-          ),
-        ),
-        body: BlocBuilder<LessonContentBloc, LessonContentState>(
-          builder: (context, state) {
-            if (state is LessonContentLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      child: Stack(
+        children: [
+          const BlurredImageBackground(),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              surfaceTintColor: Colors.transparent,
+              title: BlocBuilder<LessonContentBloc, LessonContentState>(
+                builder: (context, state) {
+                  if (state is LessonContentLoaded) {
+                    return Text(
+                      state.lesson.title,
+                      style: theme.textTheme.titleLarge,
+                    );
+                  }
+                  return Text(s.loading, style: theme.textTheme.titleLarge);
+                },
+              ),
+            ),
+            body: BlocBuilder<LessonContentBloc, LessonContentState>(
+              builder: (context, state) {
+                if (state is LessonContentLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            if (state is LessonContentError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(state.message),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => context.pop(),
-                      child: Text(s.retry),
+                if (state is LessonContentError) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(state.message),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => context.pop(),
+                          child: Text(s.retry),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            }
+                  );
+                }
 
-            if (state is LessonContentLoaded) {
-              return _LessonContent(
-                lesson: state.lesson,
-                isCompleted: state.isCompleted,
-              );
-            }
+                if (state is LessonContentLoaded) {
+                  return _LessonContent(
+                    lesson: state.lesson,
+                    isCompleted: state.isCompleted,
+                  );
+                }
 
-            if (state is LessonContentCompleting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+                if (state is LessonContentCompleting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            return const SizedBox.shrink();
-          },
-        ),
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -109,7 +118,7 @@ class _LessonContentView extends StatelessWidget {
     BuildContext context,
     LessonContentCompleted state,
   ) {
-    final s = AppLocalizations.of(context)!;
+    final s = S.of(context);
 
     showDialog(
       context: context,
@@ -157,7 +166,7 @@ class _LessonContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = AppLocalizations.of(context)!;
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return Wrapper(

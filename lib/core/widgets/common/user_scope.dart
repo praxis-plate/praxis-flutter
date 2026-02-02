@@ -6,9 +6,17 @@ class UserScope extends InheritedWidget {
 
   final UserProfileModel user;
 
-  static UserProfileModel of(BuildContext context) {
-    final scope = context.dependOnInheritedWidgetOfExactType<UserScope>();
+  static UserProfileModel of(BuildContext context, {bool listen = true}) {
+    UserScope? scope;
+
+    if (listen) {
+      scope = context.dependOnInheritedWidgetOfExactType<UserScope>();
+    } else {
+      scope = context.getInheritedWidgetOfExactType<UserScope>();
+    }
+
     assert(scope != null, 'UserScope not found in widget tree');
+
     return scope!.user;
   }
 
