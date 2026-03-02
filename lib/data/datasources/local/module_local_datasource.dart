@@ -1,31 +1,26 @@
 import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/datasources/i_module_local_datasource.dart';
 
-class ModuleLocalDataSource implements IModuleLocalDataSource {
+class ModuleLocalDataSource {
   final AppDatabase _db;
 
   const ModuleLocalDataSource(this._db);
 
-  @override
   Future<List<ModuleEntity>> getModulesByCourseId(int courseId) async {
     return await _db.managers.module
         .filter((f) => f.courseId.id(courseId))
         .get();
   }
 
-  @override
   Future<ModuleEntity?> getModuleById(int moduleId) async {
     return await _db.managers.module
         .filter((f) => f.id(moduleId))
         .getSingleOrNull();
   }
 
-  @override
   Future<ModuleEntity> insertModule(ModuleCompanion entry) async {
     return await _db.into(_db.module).insertReturning(entry);
   }
 
-  @override
   Future<void> updateModule(ModuleCompanion entry) async {
     if (!entry.id.present) {
       throw ArgumentError('Module id must be present for update');

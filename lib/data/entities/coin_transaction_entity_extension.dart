@@ -10,10 +10,13 @@ extension CoinTransactionEntityExtension on CoinTransactionEntity {
       id: id,
       userId: userId,
       amount: amount,
-      type: CoinTransactionType.values.firstWhere(
-        (e) => e.name == type,
-        orElse: () => CoinTransactionType.initialGrant,
-      ),
+      type: CoinTransactionType.values
+          .firstWhere(
+            (e) => e.name == type,
+            orElse: () => CoinTransactionType.initialGrant,
+          )
+          .name,
+      transactionKey: 'local_tx_$id', // Generated key for local transactions
       relatedEntityId: relatedEntityId,
       createdAt: createdAt,
     );

@@ -1,13 +1,11 @@
 import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/datasources/i_task_local_datasource.dart';
 import 'package:drift/drift.dart';
 
-class TaskLocalDataSource implements ITaskLocalDataSource {
+class TaskLocalDataSource {
   final AppDatabase _db;
 
   const TaskLocalDataSource(this._db);
 
-  @override
   Future<List<TaskEntity>> getTasksByLessonId(int lessonId) async {
     return await _db.managers.task
         .filter((f) => f.lessonId.id(lessonId))
@@ -15,19 +13,16 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
         .get();
   }
 
-  @override
   Future<TaskEntity?> getTaskById(int taskId) async {
     return await _db.managers.task
         .filter((f) => f.id(taskId))
         .getSingleOrNull();
   }
 
-  @override
   Future<TaskEntity> insertTask(TaskCompanion entry) async {
     return await _db.into(_db.task).insertReturning(entry);
   }
 
-  @override
   Future<void> updateTask(TaskCompanion entry) async {
     if (!entry.id.present) {
       throw ArgumentError('Task id must be present for update');
@@ -38,7 +33,6 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
     await (_db.update(_db.task)..where((t) => t.id.equals(id))).write(entry);
   }
 
-  @override
   Future<List<TaskProgressEntity>> getUserTaskProgress(
     String userId,
     int lessonId,
@@ -57,7 +51,6 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
         .get();
   }
 
-  @override
   Future<TaskProgressEntity?> getTaskProgress(String userId, int taskId) async {
     final resolvedUserId = await _resolveUserId(userId);
     return await _db.managers.taskProgress
@@ -66,7 +59,6 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
         .getSingleOrNull();
   }
 
-  @override
   Future<TaskProgressEntity> insertTaskProgress(
     TaskProgressCompanion entry,
   ) async {
@@ -99,7 +91,6 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
     return fallbackUser?.id ?? userId;
   }
 
-  @override
   Future<void> updateTaskProgress(TaskProgressCompanion entry) async {
     if (!entry.id.present) {
       throw ArgumentError('TaskProgress id must be present for update');
@@ -112,7 +103,6 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
     )..where((t) => t.id.equals(id))).write(entry);
   }
 
-  @override
   Future<List<TaskOptionEntity>> getTaskOptions(int taskId) async {
     return await _db.managers.taskOption
         .filter((f) => f.taskId.id(taskId))
@@ -120,7 +110,6 @@ class TaskLocalDataSource implements ITaskLocalDataSource {
         .get();
   }
 
-  @override
   Future<List<TaskTestCaseEntity>> getTaskTestCases(int taskId) async {
     return await _db.managers.taskTestCase
         .filter((f) => f.taskId.id(taskId))
