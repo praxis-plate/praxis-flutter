@@ -10,7 +10,6 @@ import 'package:codium/data/database/app_database.dart';
 import 'package:codium/data/datasources/datasources.dart';
 import 'package:codium/data/repositories/repositories.dart';
 import 'package:codium/data/repositories/task_repository.dart';
-import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/session/update_session_model.dart';
 import 'package:codium/domain/repositories/i_task_repository.dart';
 import 'package:codium/domain/repositories/repositories.dart';
@@ -120,11 +119,11 @@ class DependencyInjection {
         }
       })
       // Keep user datasource local for now
-      ..registerLazySingleton<IUserDataSource>(
+      ..registerLazySingleton<UserLocalDataSource>(
         () => UserLocalDataSource(GetIt.I<AppDatabase>()),
       )
       // Use remote datasources
-      ..registerLazySingleton<IAuthDataSource>(
+      ..registerLazySingleton<AuthRemoteDataSource>(
         () => AuthRemoteDataSource(GetIt.I<Client>()),
       )
       ..registerLazySingleton<UserStatisticsRemoteDataSource>(
@@ -157,7 +156,7 @@ class DependencyInjection {
       )
       ..registerLazySingleton<IAuthRepository>(
         () => AuthRepository(
-          GetIt.I<IAuthDataSource>(),
+          GetIt.I<AuthRemoteDataSource>(),
           GetIt.I<ISessionService>(),
           GetIt.I<AuthSessionRemoteDataSource>(),
         ),
@@ -167,7 +166,7 @@ class DependencyInjection {
       )
       ..registerLazySingleton<IUserRepository>(
         () => UserRepository(
-          GetIt.I<IUserDataSource>(),
+          GetIt.I<UserLocalDataSource>(),
           GetIt.I<ISessionService>(),
         ),
       )

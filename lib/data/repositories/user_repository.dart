@@ -2,14 +2,14 @@ import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/utils/result.dart';
+import 'package:codium/data/datasources/local/user_local_datasource.dart';
 import 'package:codium/data/entities/user_entity_extension.dart';
-import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/user/user.dart';
 import 'package:codium/domain/repositories/i_user_repository.dart';
 import 'package:codium/domain/services/services.dart';
 
 final class UserRepository implements IUserRepository {
-  final IUserDataSource _userDataSource;
+  final UserLocalDataSource _userDataSource;
   final ISessionService _sessionService;
 
   UserRepository(this._userDataSource, this._sessionService);

@@ -1,19 +1,16 @@
 import 'package:codium/data/entities/auth_session_entity.dart';
-import 'package:codium/domain/datasources/datasources.dart';
 import 'package:praxis_client/praxis_client.dart';
 
-class AuthRemoteDataSource implements IAuthDataSource {
+class AuthRemoteDataSource {
   final Client _client;
 
   const AuthRemoteDataSource(this._client);
 
-  @override
   Future<String> startRegistration({required String email}) async {
     final requestId = await _client.emailIdp.startRegistration(email: email);
     return requestId.toString();
   }
 
-  @override
   Future<String> verifyRegistrationCode({
     required String accountRequestId,
     required String verificationCode,
@@ -24,7 +21,6 @@ class AuthRemoteDataSource implements IAuthDataSource {
     );
   }
 
-  @override
   Future<AuthSessionEntity> finishRegistration({
     required String email,
     required String password,
@@ -46,7 +42,6 @@ class AuthRemoteDataSource implements IAuthDataSource {
     );
   }
 
-  @override
   Future<AuthSessionEntity> login({
     required String email,
     required String password,
@@ -67,13 +62,11 @@ class AuthRemoteDataSource implements IAuthDataSource {
     );
   }
 
-  @override
   Future<String> startPasswordReset({required String email}) async {
     final requestId = await _client.emailIdp.startPasswordReset(email: email);
     return requestId.toString();
   }
 
-  @override
   Future<String> verifyPasswordResetCode({
     required String passwordResetRequestId,
     required String verificationCode,
@@ -84,7 +77,6 @@ class AuthRemoteDataSource implements IAuthDataSource {
     );
   }
 
-  @override
   Future<void> finishPasswordReset({
     required String finishPasswordResetToken,
     required String newPassword,

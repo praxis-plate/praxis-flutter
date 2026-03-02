@@ -17,14 +17,14 @@ class AuthSessionRemoteDataSource {
       scopeNames: session.scopeNames,
     );
 
-    await ClientAuthSessionManagerExtension(_client)
-        .auth
-        .updateSignedInUser(authSuccess);
+    await ClientAuthSessionManagerExtension(
+      _client,
+    ).auth.updateSignedInUser(authSuccess);
   }
 
   Future<void> clear() async {
-    await ClientAuthSessionManagerExtension(_client)
-        .auth
-        .updateSignedInUser(null);
+    await ClientAuthSessionManagerExtension(
+      _client,
+    ).auth.updateSignedInUser(null);
   }
 }

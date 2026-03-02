@@ -5,6 +5,7 @@ import 'package:codium/domain/enums/programming_language.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/domain/models/task/test_case_model.dart';
 
+// TODO: Improve mapping
 extension TaskEntityExtension on TaskEntity {
   TaskModel toDomain() {
     final taskTypeString = _snakeToCamelCase(taskType);
@@ -187,9 +188,8 @@ List<TestCaseModel> _decodeTestCasesFromJson(String? json, int taskId) {
       });
 
       final id = _toInt(normalized['id']) ?? (i + 1);
-      final parsedTaskId = _toInt(
-            normalized['taskId'] ?? normalized['task_id'],
-          ) ?? taskId;
+      final parsedTaskId =
+          _toInt(normalized['taskId'] ?? normalized['task_id']) ?? taskId;
       final orderIndex =
           _toInt(normalized['orderIndex'] ?? normalized['order_index']) ?? i;
 
@@ -203,9 +203,7 @@ List<TestCaseModel> _decodeTestCasesFromJson(String? json, int taskId) {
                 normalized['expected_output'] ??
                 normalized['output'],
           ),
-          isHidden: _toBool(
-            normalized['isHidden'] ?? normalized['is_hidden'],
-          ),
+          isHidden: _toBool(normalized['isHidden'] ?? normalized['is_hidden']),
           orderIndex: orderIndex,
         ),
       );
@@ -223,7 +221,8 @@ List<dynamic> _extractTestCaseList(dynamic decoded) {
   }
 
   if (decoded is Map) {
-    final candidate = decoded['testCases'] ?? decoded['test_cases'] ?? decoded['cases'];
+    final candidate =
+        decoded['testCases'] ?? decoded['test_cases'] ?? decoded['cases'];
     if (candidate is List) {
       return candidate;
     }

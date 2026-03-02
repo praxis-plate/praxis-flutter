@@ -1,16 +1,16 @@
 import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
+import 'package:codium/data/datasources/remote/auth_remote_datasource.dart';
+import 'package:codium/data/datasources/remote/auth_session_remote_datasource.dart';
 import 'package:codium/data/entities/auth_session_entity.dart';
 import 'package:codium/data/entities/auth_session_entity_extension.dart';
 import 'package:codium/data/mappers/exceptions/auth_exception_mapper.dart';
-import 'package:codium/domain/datasources/datasources.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/repositories/i_auth_repository.dart';
 import 'package:codium/domain/services/services.dart';
-import 'package:codium/data/datasources/remote/auth_session_remote_datasource.dart';
 
 final class AuthRepository implements IAuthRepository {
-  final IAuthDataSource _authDataSource;
+  final AuthRemoteDataSource _authDataSource;
   final ISessionService _sessionService;
   final AuthSessionRemoteDataSource _authSessionRemoteDataSource;
 
