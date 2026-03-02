@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code.dart';
 import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/utils/result.dart';
@@ -92,8 +93,17 @@ class TaskRepository implements ITaskRepository {
         taskId,
       );
       return Success(progressEntity?.toDomain());
-    } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+    } on Error catch (e) {
+      // TODO: В catch следует обрабатывать базовый класс у StateError, маппинг к Exception критическая ошибка
+      return const Failure(
+        AppFailure(
+          code: AppErrorCode.unknown,
+          message: 'Gemini is not available',
+          canRetry: false,
+        ),
+      );
+    } on Exception catch (e) {
+      return Failure(AppFailure.fromException(e));
     }
   }
 

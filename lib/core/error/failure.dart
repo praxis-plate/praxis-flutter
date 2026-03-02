@@ -26,6 +26,7 @@ class AppFailure extends Equatable {
     );
   }
 
+  // TODO: Добавить маппинг из error самого dart
   factory AppFailure.fromException(Object exception) {
     if (exception is AppError) {
       return AppFailure.fromError(exception);
