@@ -15,7 +15,7 @@ class CourseTabSection extends StatefulWidget {
 
 class _CourseTabSectionState extends State<CourseTabSection>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  late final TabController _tabController;
 
   @override
   void initState() {
@@ -33,6 +33,8 @@ class _CourseTabSectionState extends State<CourseTabSection>
   Widget build(BuildContext context) {
     final s = S.of(context);
 
+    // TODO: нужно реализовать пролистывание содержания вместе со скрытием курса
+    // => сделать сам курс в appBar и его скрытие после пролистывания
     return Column(
       children: [
         TabBar(

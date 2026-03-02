@@ -54,7 +54,6 @@ class ForgotPasswordScreen extends StatelessWidget {
         child: Scaffold(
           body: Stack(
             children: [
-              const BlurredImageBackground(),
               SafeArea(
                 child: GestureDetector(
                   onTap: FocusScope.of(context).unfocus,
@@ -104,9 +103,10 @@ class _ForgotPasswordForm extends StatelessWidget {
             Text(
               s.displayForgotPasswordSubtitle,
               style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
             ),
             const SizedBox(height: 32),
+            // TODO: поправить отображение, не строить отступ при отсутствии инпутов
             const _EmailInput(),
             const SizedBox(height: 16),
             const _VerificationCodeInput(),
