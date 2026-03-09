@@ -8,7 +8,7 @@ extension CoinTransactionExtension on CoinTransactionEntity {
       id: id,
       userId: userId,
       amount: amount,
-      type: _mapStringToDomainType(type).name,
+      type: _mapStringToDomainType(type),
       transactionKey: 'local_tx_$id', // Generated key for local transactions
       relatedEntityId: relatedEntityId,
       createdAt: createdAt,
