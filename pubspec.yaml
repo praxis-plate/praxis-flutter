@@ -51,6 +51,8 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
 
   # Code Generation
   drift_dev: ^2.14.0
@@ -69,6 +71,22 @@ flutter:
   assets:
     - assets/images/
     - assets/images/blur-backgrounds/
+    - assets/icons/
     - assets/prompts/
 flutter_intl:
   enabled: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/icons/icon1024.png
+  remove_alpha_ios: true
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/icons/splash-screen-icon1152.png
+  android: true
+  ios: true
+  android_12:
+    color: "#FFFFFF"
+    image: assets/icons/splash-screen-icon1152.png
