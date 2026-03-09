@@ -1,6 +1,7 @@
 import 'package:codium/core/bloc/auth/auth_bloc.dart';
 import 'package:codium/core/router/auth_notifier.dart';
 import 'package:codium/core/router/navigation_shell_initializer.dart';
+import 'package:codium/core/router/route_constants.dart';
 import 'package:codium/core/router/router_exports.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/auth/auth.dart';
@@ -10,6 +11,7 @@ import 'package:codium/features/course_learning/view/course_learning_screen.dart
 import 'package:codium/features/learning/learning.dart';
 import 'package:codium/features/main/main.dart';
 import 'package:codium/features/navigation/view/navigation_screen.dart';
+import 'package:codium/features/onboarding/view/onboarding_screen.dart';
 import 'package:codium/features/profile/profile.dart';
 import 'package:codium/features/tasks/view/lesson_task_session_screen.dart';
 import 'package:codium/features/tasks/view/task_screen.dart';
@@ -17,8 +19,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppRouter {
+  static const String _onboardingCompleteKey = 'onboarding_complete';
   static late final AuthNotifier _authNotifier;
   static late final GoRouter _router;
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -43,24 +47,21 @@ class AppRouter {
       debugLogDiagnostics: true,
       refreshListenable: _authNotifier,
       redirect: (context, state) {
-        final authState = _authNotifier.state;
-        final isAuthRoute =
-            state.matchedLocation.startsWith('/auth') ||
-            state.matchedLocation == '/phone-sign-up';
-
-        if (authState is AuthUnauthenticatedState && !isAuthRoute) {
-          return '/auth/sign-in';
-        }
-
-        if (authState is AuthAuthenticatedState && isAuthRoute) {
-          return '/navigation';
-        }
-
-        return null;
+        return resolveRedirect(
+          matchedLocation: state.matchedLocation,
+          authState: _authNotifier.state,
+          preferences: GetIt.I<SharedPreferences>(),
+        );
       },
       routes: [
         GoRoute(
-          path: '/auth',
+          path: RouteConstants.onboarding,
+          name: 'onboarding',
+          pageBuilder: (context, state) =>
+              MaterialPage(key: state.pageKey, child: const OnboardingScreen()),
+        ),
+        GoRoute(
+          path: RouteConstants.auth,
           name: 'auth',
           pageBuilder: (context, state) {
             final modeParam = state.uri.queryParameters['mode'];
@@ -123,13 +124,13 @@ class AppRouter {
               },
               routes: [
                 GoRoute(
-                  path: '/navigation',
+                  path: RouteConstants.navigation,
                   name: 'navigation',
-                  redirect: (context, state) => '/home',
+                  redirect: (context, state) => RouteConstants.home,
                 ),
 
                 GoRoute(
-                  path: '/home',
+                  path: RouteConstants.home,
                   name: 'home',
                   pageBuilder: (context, state) {
                     final userProfile = UserScope.of(context, listen: false);
@@ -145,7 +146,7 @@ class AppRouter {
                   },
                 ),
                 GoRoute(
-                  path: '/learning',
+                  path: RouteConstants.learning,
                   name: 'learning',
                   pageBuilder: (context, state) {
                     final userProfile = UserScope.of(context, listen: false);
@@ -162,7 +163,7 @@ class AppRouter {
                   },
                 ),
                 GoRoute(
-                  path: '/profile',
+                  path: RouteConstants.profile,
                   name: 'profile',
                   pageBuilder: (context, state) {
                     final userProfile = UserScope.of(context, listen: false);
@@ -259,5 +260,46 @@ class AppRouter {
         ),
       ),
     );
+  }
+
+  static String? resolveRedirect({
+    required String matchedLocation,
+    required AuthState authState,
+    required SharedPreferences preferences,
+  }) {
+    final isOnboardingComplete =
+        preferences.getBool(_onboardingCompleteKey) ?? false;
+    final isAuthRoute =
+        matchedLocation.startsWith(RouteConstants.auth) ||
+        matchedLocation == RouteConstants.phoneSignUp;
+    final isOnboardingRoute = matchedLocation == RouteConstants.onboarding;
+    final isRootRoute = matchedLocation == RouteConstants.root;
+
+    if (!isOnboardingComplete && !isOnboardingRoute) {
+      return RouteConstants.onboarding;
+    }
+
+    if (isOnboardingComplete && isOnboardingRoute) {
+      return authState is AuthAuthenticatedState
+          ? RouteConstants.navigation
+          : RouteConstants.signIn;
+    }
+
+    if (authState is AuthUnauthenticatedState &&
+        !isAuthRoute &&
+        !isRootRoute &&
+        !isOnboardingRoute) {
+      return RouteConstants.signIn;
+    }
+
+    if (authState is AuthAuthenticatedState && (isAuthRoute || isRootRoute)) {
+      return RouteConstants.navigation;
+    }
+
+    if (authState is AuthUnauthenticatedState && isRootRoute) {
+      return RouteConstants.signIn;
+    }
+
+    return null;
   }
 }
