@@ -5,4 +5,7 @@ class User extends Table {
   TextColumn get id => text()();
   TextColumn get email => text().unique()();
   DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
 }
