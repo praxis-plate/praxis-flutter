@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/features.dart';
 import 'package:codium/s.dart';
@@ -42,7 +43,7 @@ class _NavigationShellInitializerState
         } else if (state is CoursePurchasingLoadErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error),
+              content: Text(state.failure.code.localizedMessage(context)),
               backgroundColor: Theme.of(context).colorScheme.error,
               duration: const Duration(seconds: 3),
             ),

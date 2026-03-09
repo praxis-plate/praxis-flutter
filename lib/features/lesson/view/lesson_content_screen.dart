@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/course_task.dart';
@@ -25,13 +26,16 @@ class LessonContentScreen extends StatelessWidget {
         ..add(
           LoadLessonContent(lessonId: lessonId, userId: '', courseId: courseId),
         ),
-      child: const _LessonContentView(),
+      child: _LessonContentView(lessonId: lessonId, courseId: courseId),
     );
   }
 }
 
 class _LessonContentView extends StatelessWidget {
-  const _LessonContentView();
+  const _LessonContentView({required this.lessonId, required this.courseId});
+
+  final String lessonId;
+  final String courseId;
 
   @override
   Widget build(BuildContext context) {
@@ -78,18 +82,17 @@ class _LessonContentView extends StatelessWidget {
                 }
 
                 if (state is LessonContentError) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(state.message),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () => context.pop(),
-                          child: Text(s.retry),
+                  return ErrorScreen(
+                    message: state.failure.code.localizedMessage(context),
+                    onRetry: () {
+                      context.read<LessonContentBloc>().add(
+                        LoadLessonContent(
+                          lessonId: lessonId,
+                          userId: '',
+                          courseId: courseId,
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   );
                 }
 

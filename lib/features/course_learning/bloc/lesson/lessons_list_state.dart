@@ -29,10 +29,10 @@ final class LessonsListLoadedState extends LessonsListState {
 }
 
 final class LessonsListErrorState extends LessonsListState {
-  final String message;
+  final AppFailure failure;
 
-  const LessonsListErrorState({required this.message});
+  const LessonsListErrorState({required this.failure});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }

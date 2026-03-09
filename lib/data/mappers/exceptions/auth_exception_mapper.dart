@@ -85,8 +85,6 @@ class AuthExceptionMapper {
       );
     }
 
-    return AppFailure.fromException(
-      error is Exception ? error : Exception(error.toString()),
-    );
+    return AppFailure.fromException(error);
   }
 }

@@ -32,12 +32,12 @@ class CoursePurchasingLoadSuccessState extends CoursePurchasingState {
 
 class CoursePurchasingLoadErrorState extends CoursePurchasingState {
   final int courseId;
-  final String error;
+  final AppFailure failure;
 
-  const CoursePurchasingLoadErrorState(this.courseId, this.error);
+  const CoursePurchasingLoadErrorState(this.courseId, this.failure);
 
   @override
-  List<Object> get props => [courseId, error];
+  List<Object> get props => [courseId, failure];
 }
 
 class CoursePurchasingInsufficientBalanceState extends CoursePurchasingState {

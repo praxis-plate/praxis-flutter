@@ -1,3 +1,5 @@
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/course/course_structure_model.dart';
@@ -41,7 +43,10 @@ class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
       if (!courseResult.isSuccess) {
         emit(
           CourseDetailLoadErrorState(
-            courseResult.failureOrNull?.message ?? 'Unknown error',
+            courseResult.failureOrNull ??
+                AppFailure.fromException(
+                  StateError('Failed to load course detail'),
+                ),
           ),
         );
         return;
@@ -49,7 +54,11 @@ class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
 
       final course = courseResult.dataOrNull;
       if (course == null) {
-        emit(const CourseDetailLoadErrorState('Course not found'));
+        emit(
+          const CourseDetailLoadErrorState(
+            AppFailure(code: AppErrorCode.apiNotFound, message: ''),
+          ),
+        );
         return;
       }
 
@@ -76,8 +85,9 @@ class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
           tableOfContents: tableOfContents,
         ),
       );
-    } catch (e) {
-      emit(CourseDetailLoadErrorState(e.toString()));
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      emit(CourseDetailLoadErrorState(AppFailure.fromException(e)));
     }
   }
 }

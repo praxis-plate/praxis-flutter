@@ -241,6 +241,7 @@
   "errorApiNotFound": "Resource not found.",
   "errorApiGeneral": "API error occurred.",
   "errorRateLimitExceeded": "Rate limit exceeded. Please try again later.",
+  "errorCourseAlreadyPurchased": "You have already purchased this course.",
   "errorInsufficientBalance": "Insufficient balance to complete this purchase.",
   "errorCourseNotPurchased": "This course has not been purchased.",
   "errorLessonNotUnlocked": "This lesson is not yet unlocked.",
