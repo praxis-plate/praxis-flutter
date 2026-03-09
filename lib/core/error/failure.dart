@@ -26,14 +26,22 @@ class AppFailure extends Equatable {
     );
   }
 
-  // TODO: Добавить маппинг из error самого dart
-  factory AppFailure.fromException(Object exception) {
-    if (exception is AppError) {
-      return AppFailure.fromError(exception);
+  factory AppFailure.fromException(Object error) {
+    if (error is AppError) {
+      return AppFailure.fromError(error);
     }
+
+    final message = switch (error) {
+      StateError(:final message) => message,
+      ArgumentError(:final message) => message?.toString() ?? error.toString(),
+      Error() => error.toString(),
+      Exception() => error.toString(),
+      _ => error.toString(),
+    };
+
     return AppFailure(
       code: AppErrorCode.unknown,
-      message: exception.toString(),
+      message: message.isEmpty ? 'Unknown error occurred' : message,
       canRetry: false,
     );
   }

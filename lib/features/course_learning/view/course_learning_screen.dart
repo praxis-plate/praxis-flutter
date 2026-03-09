@@ -12,10 +12,12 @@ class CourseLearningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userId = UserScope.of(context, listen: false).id;
+
     return BlocProvider(
       create: (context) =>
           GetIt.I<CourseLearningBloc>()
-            ..add(LoadCourseLearning(courseId: courseId, userId: '1')),
+            ..add(LoadCourseLearning(courseId: courseId, userId: userId)),
       child: const _CourseLearningView(),
     );
   }
