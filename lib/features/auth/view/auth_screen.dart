@@ -127,20 +127,23 @@ class _AnimatedAuthPane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      ignoring: !isActive,
-      child: Semantics(
-        hidden: !isActive,
-        child: ExcludeSemantics(
-          excluding: !isActive,
-          child: FocusScope(
-            canRequestFocus: isActive,
-            descendantsAreFocusable: isActive,
-            child: AnimatedOpacity(
-              duration: _duration,
-              curve: Curves.easeInQuad,
-              opacity: isActive ? 1 : 0,
-              child: child,
+    return HeroMode(
+      enabled: isActive,
+      child: IgnorePointer(
+        ignoring: !isActive,
+        child: Semantics(
+          hidden: !isActive,
+          child: ExcludeSemantics(
+            excluding: !isActive,
+            child: FocusScope(
+              canRequestFocus: isActive,
+              descendantsAreFocusable: isActive,
+              child: AnimatedOpacity(
+                duration: _duration,
+                curve: Curves.easeInQuad,
+                opacity: isActive ? 1 : 0,
+                child: child,
+              ),
             ),
           ),
         ),
