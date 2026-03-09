@@ -1,3 +1,4 @@
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
@@ -33,18 +34,12 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
       final coursesResult = await _getEnrolledCoursesUseCase(userId);
 
       if (statisticsResult.isFailure) {
-        emit(
-          LearningLoadErrorState(
-            message: statisticsResult.failureOrNull!.message,
-          ),
-        );
+        emit(LearningLoadErrorState(failure: statisticsResult.failureOrNull!));
         return;
       }
 
       if (coursesResult.isFailure) {
-        emit(
-          LearningLoadErrorState(message: coursesResult.failureOrNull!.message),
-        );
+        emit(LearningLoadErrorState(failure: coursesResult.failureOrNull!));
         return;
       }
 
@@ -56,7 +51,7 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
       );
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
-      emit(LearningLoadErrorState(message: e.toString()));
+      emit(LearningLoadErrorState(failure: AppFailure.fromException(e)));
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/features.dart';
 import 'package:codium/s.dart';
@@ -78,22 +79,11 @@ class _CourseLearningView extends StatelessWidget {
           }
 
           if (state is CourseLearningError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(state.message),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<CourseLearningBloc>().add(
-                        const RefreshProgress(),
-                      );
-                    },
-                    child: Text(s.retry),
-                  ),
-                ],
-              ),
+            return ErrorScreen(
+              message: state.failure.code.localizedMessage(context),
+              onRetry: () {
+                context.read<CourseLearningBloc>().add(const RefreshProgress());
+              },
             );
           }
 
@@ -128,7 +118,14 @@ class _LessonsList extends StatelessWidget {
           }
 
           if (state is LessonsListErrorState) {
-            return Center(child: Text(state.message));
+            return ErrorScreen(
+              message: state.failure.code.localizedMessage(context),
+              onRetry: () {
+                context.read<LessonsListBloc>().add(
+                  LoadLessonsListEvent(courseId: courseId),
+                );
+              },
+            );
           }
 
           if (state is LessonsListLoadedState) {

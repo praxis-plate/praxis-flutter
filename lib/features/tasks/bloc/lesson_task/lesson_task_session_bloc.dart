@@ -1,3 +1,4 @@
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/task/task_model.dart';
 import 'package:codium/domain/usecases/tasks/complete_lesson_session_usecase.dart';
@@ -27,38 +28,46 @@ class LessonTaskSessionBloc
     Emitter<LessonTaskSessionState> emit,
   ) async {
     emit(const SessionLoadingState());
+    try {
+      final result = await _getLessonTasksUseCase(event.lessonId);
 
-    final result = await _getLessonTasksUseCase(event.lessonId);
+      result.when(
+        success: (tasks) {
+          if (tasks.isEmpty) {
+            emit(
+              const SessionErrorState(type: LessonTaskSessionErrorType.noTasks),
+            );
+            return;
+          }
 
-    result.when(
-      success: (tasks) {
-        if (tasks.isEmpty) {
           emit(
-            const SessionErrorState(type: LessonTaskSessionErrorType.noTasks),
+            SessionActiveState(
+              lessonId: event.lessonId,
+              userId: event.userId,
+              tasks: tasks,
+              currentTaskIndex: 0,
+              completedTasksCount: 0,
+              correctTasksCount: 0,
+              totalXpEarned: 0,
+              sessionStartTime: DateTime.now(),
+            ),
           );
-          return;
-        }
-
-        emit(
-          SessionActiveState(
-            lessonId: event.lessonId,
-            userId: event.userId,
-            tasks: tasks,
-            currentTaskIndex: 0,
-            completedTasksCount: 0,
-            correctTasksCount: 0,
-            totalXpEarned: 0,
-            sessionStartTime: DateTime.now(),
+        },
+        failure: (failure) => emit(
+          SessionErrorState(
+            type: LessonTaskSessionErrorType.generic,
+            failure: failure,
           ),
-        );
-      },
-      failure: (failure) => emit(
+        ),
+      );
+    } catch (e) {
+      emit(
         SessionErrorState(
           type: LessonTaskSessionErrorType.generic,
-          message: failure.message,
+          failure: AppFailure.fromException(e),
         ),
-      ),
-    );
+      );
+    }
   }
 
   Future<void> _onCompleteCurrentTaskEvent(
@@ -83,23 +92,32 @@ class LessonTaskSessionBloc
       const bonusXp = 100;
       final totalXpWithBonus = newTotalXp + bonusXp;
 
-      await _completeLessonSessionUseCase(
-        userId: currentState.userId,
-        lessonId: currentState.lessonId,
-        totalXpEarned: newTotalXp,
-        bonusXp: bonusXp,
-      );
-
-      emit(
-        SessionCompletedState(
+      try {
+        await _completeLessonSessionUseCase(
+          userId: currentState.userId,
           lessonId: currentState.lessonId,
-          totalXpEarned: totalXpWithBonus,
-          accuracyPercentage: accuracy * 100,
-          timeSpentSeconds: timeSpent,
-          totalTasks: currentState.tasks.length,
-          correctTasks: newCorrectCount,
-        ),
-      );
+          totalXpEarned: newTotalXp,
+          bonusXp: bonusXp,
+        );
+
+        emit(
+          SessionCompletedState(
+            lessonId: currentState.lessonId,
+            totalXpEarned: totalXpWithBonus,
+            accuracyPercentage: accuracy * 100,
+            timeSpentSeconds: timeSpent,
+            totalTasks: currentState.tasks.length,
+            correctTasks: newCorrectCount,
+          ),
+        );
+      } catch (e) {
+        emit(
+          SessionErrorState(
+            type: LessonTaskSessionErrorType.generic,
+            failure: AppFailure.fromException(e),
+          ),
+        );
+      }
     } else {
       emit(
         currentState.copyWith(

@@ -58,6 +58,8 @@ extension AppErrorCodeExtension on AppErrorCode {
       case AppErrorCode.authFailedToCreateUser:
         return l10n.errorAuthFailedToCreateUser;
 
+      case AppErrorCode.courseAlreadyPurchased:
+        return l10n.errorCourseAlreadyPurchased;
       case AppErrorCode.insufficientBalance:
         return l10n.errorInsufficientBalance;
 

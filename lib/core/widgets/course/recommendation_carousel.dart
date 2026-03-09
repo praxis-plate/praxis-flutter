@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/main/bloc/main_carousel/main_carousel_bloc.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,12 @@ class RecommendationCarousel extends StatelessWidget {
           }
 
           if (state is MainCarouselLoadErrorState) {
-            return Text(state.message);
+            return ErrorScreen(
+              message: state.failure.code.localizedMessage(context),
+              onRetry: () {
+                context.read<MainCarouselBloc>().add(MainCarouselLoadEvent());
+              },
+            );
           }
 
           return const Center(child: CircularProgressIndicator());

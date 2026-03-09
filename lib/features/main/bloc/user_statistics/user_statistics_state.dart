@@ -21,9 +21,9 @@ final class UserStatisticsLoadSuccessState extends UserStatisticsState {
 }
 
 final class UserStatisticsLoadErrorState extends UserStatisticsState {
-  final String message;
-  const UserStatisticsLoadErrorState(this.message);
+  final AppFailure failure;
+  const UserStatisticsLoadErrorState(this.failure);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }

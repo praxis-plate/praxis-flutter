@@ -1,3 +1,4 @@
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
@@ -39,14 +40,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       } else {
         emit(
           MainCoursesLoadErrorState(
-            coursesResult.failureOrNull?.message ??
-                enrolledResult.failureOrNull?.message ??
-                'Unknown error',
+            coursesResult.failureOrNull ??
+                enrolledResult.failureOrNull ??
+                AppFailure.fromException(StateError('Failed to load courses')),
           ),
         );
       }
     } catch (e) {
-      emit(MainCoursesLoadErrorState(e.toString()));
+      emit(MainCoursesLoadErrorState(AppFailure.fromException(e)));
     }
   }
 

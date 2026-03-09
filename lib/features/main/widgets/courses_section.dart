@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/main/main.dart';
@@ -51,7 +52,12 @@ class CoursesSection extends StatelessWidget {
                   );
                 },
               ),
-              MainCoursesLoadErrorState() => Text(state.message),
+              MainCoursesLoadErrorState() => ErrorScreen(
+                message: state.failure.code.localizedMessage(context),
+                onRetry: () => context.read<MainBloc>().add(
+                  MainLoadCoursesEvent(userId: userProfile.id),
+                ),
+              ),
               MainCoursesLoadingState() => const Center(
                 child: CircularProgressIndicator(),
               ),

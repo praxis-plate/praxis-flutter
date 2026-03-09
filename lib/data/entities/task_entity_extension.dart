@@ -145,7 +145,6 @@ extension TaskEntityExtension on TaskEntity {
       createdAt: createdAt,
     );
   }
-
 }
 
 List<TestCaseModel> _decodeTestCasesFromJson(String? json, int taskId) {

@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
 import 'package:codium/features/course_details/widgets/course_detail.dart';
@@ -15,8 +16,8 @@ class CourseBody extends StatelessWidget {
           CourseDetailLoadingState() => const Center(
             child: CircularProgressIndicator(),
           ),
-          CourseDetailLoadErrorState(:final message) => ErrorScreen(
-            message: message,
+          CourseDetailLoadErrorState(:final failure) => ErrorScreen(
+            message: failure.code.localizedMessage(context),
           ),
           CourseDetailLoadSuccessState(:final course, :final isPurchased) =>
             CourseDetail(course: course, isPurchased: isPurchased),

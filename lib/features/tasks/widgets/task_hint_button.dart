@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/common/glass_card.dart';
 import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
 import 'package:codium/s.dart';
@@ -31,7 +32,10 @@ class _TaskHintButtonState extends State<TaskHintButton> {
           });
           _showHintDialog(context, state.hint);
         } else if (state is TaskHintError) {
-          _showErrorDialog(context, state.message);
+          _showErrorDialog(
+            context,
+            state.failure.code.localizedMessage(context),
+          );
         }
       },
       child: BlocBuilder<TaskHintCubit, TaskHintState>(

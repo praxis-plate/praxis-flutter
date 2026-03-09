@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/common/user_scope.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
@@ -86,7 +87,7 @@ class _TaskScreenState extends State<TaskScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Text(
-                        state.message,
+                        state.failure.code.localizedMessage(context),
                         style: theme.textTheme.bodyMedium,
                         textAlign: TextAlign.center,
                       ),

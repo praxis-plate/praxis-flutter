@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'dart:async';
 
 import 'package:codium/core/router/route_constants.dart';
@@ -85,9 +86,14 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
   String _resolveSessionErrorMessage(
     SessionErrorState state,
     AppLocalizations s,
+    BuildContext context,
   ) {
-    if (state.message != null && state.message!.isNotEmpty) {
-      return state.message!;
+    final failure = state.failure;
+    if (failure != null) {
+      if (failure.message.isNotEmpty) {
+        return failure.message;
+      }
+      return failure.code.localizedMessage(context);
     }
 
     switch (state.type) {
@@ -161,7 +167,11 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
           }
 
           if (sessionState is SessionErrorState) {
-            final errorMessage = _resolveSessionErrorMessage(sessionState, s);
+            final errorMessage = _resolveSessionErrorMessage(
+              sessionState,
+              s,
+              context,
+            );
             return Scaffold(
               backgroundColor: Colors.transparent,
               appBar: AppBar(
@@ -300,7 +310,9 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                                         horizontal: 32,
                                       ),
                                       child: Text(
-                                        taskState.message,
+                                        taskState.failure.code.localizedMessage(
+                                          context,
+                                        ),
                                         style: theme.textTheme.bodyMedium,
                                         textAlign: TextAlign.center,
                                       ),

@@ -1,3 +1,4 @@
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/task/task_model.dart';
 import 'package:codium/domain/models/task/task_progress_model.dart';
@@ -37,13 +38,16 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     Emitter<TaskState> emit,
   ) async {
     emit(const TaskLoadingState());
+    try {
+      final result = await _getTaskByIdUseCase(event.taskId);
 
-    final result = await _getTaskByIdUseCase(event.taskId);
-
-    result.when(
-      success: (task) => emit(TaskLoadedState(task: task)),
-      failure: (failure) => emit(TaskErrorState(failure.message)),
-    );
+      result.when(
+        success: (task) => emit(TaskLoadedState(task: task)),
+        failure: (failure) => emit(TaskErrorState(failure)),
+      );
+    } catch (e) {
+      emit(TaskErrorState(AppFailure.fromException(e)));
+    }
   }
 
   Future<void> _onSubmitAnswerEvent(
@@ -54,31 +58,37 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     if (currentState is! TaskLoadedState) return;
 
     emit(TaskAnswerValidatingState(currentState.task));
+    try {
+      final result = await _submitTaskAnswerUseCase(
+        taskId: currentState.task.id,
+        answer: event.answer,
+        userId: _currentUserId,
+        hintsUsed: _hintsUsed,
+      );
 
-    final result = await _submitTaskAnswerUseCase(
-      taskId: currentState.task.id,
-      answer: event.answer,
-      userId: _currentUserId,
-      hintsUsed: _hintsUsed,
-    );
-
-    result.when(
-      success: (taskResult) {
-        if (taskResult.isCorrect) {
-          emit(
-            TaskAnswerCorrectState(task: currentState.task, result: taskResult),
-          );
-        } else {
-          emit(
-            TaskAnswerIncorrectState(
-              task: currentState.task,
-              result: taskResult,
-            ),
-          );
-        }
-      },
-      failure: (failure) => emit(TaskErrorState(failure.message)),
-    );
+      result.when(
+        success: (taskResult) {
+          if (taskResult.isCorrect) {
+            emit(
+              TaskAnswerCorrectState(
+                task: currentState.task,
+                result: taskResult,
+              ),
+            );
+          } else {
+            emit(
+              TaskAnswerIncorrectState(
+                task: currentState.task,
+                result: taskResult,
+              ),
+            );
+          }
+        },
+        failure: (failure) => emit(TaskErrorState(failure)),
+      );
+    } catch (e) {
+      emit(TaskErrorState(AppFailure.fromException(e)));
+    }
   }
 
   Future<void> _onRequestHintEvent(
@@ -89,27 +99,34 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     if (currentState is! TaskLoadedState) return;
 
     emit(TaskHintLoadingState(currentState.task));
+    try {
+      final result = await _requestTaskHintUseCase(
+        taskId: currentState.task.id,
+        userId: _currentUserId,
+      );
 
-    final result = await _requestTaskHintUseCase(
-      taskId: currentState.task.id,
-      userId: _currentUserId,
-    );
-
-    result.when(
-      success: (hint) {
-        _hintsUsed++;
-        emit(
-          TaskHintLoadedState(
-            task: currentState.task,
-            hint: hint,
-            hintsUsed: _hintsUsed,
-          ),
-        );
-      },
-      failure: (failure) => emit(
-        TaskHintErrorState(task: currentState.task, message: failure.message),
-      ),
-    );
+      result.when(
+        success: (hint) {
+          _hintsUsed++;
+          emit(
+            TaskHintLoadedState(
+              task: currentState.task,
+              hint: hint,
+              hintsUsed: _hintsUsed,
+            ),
+          );
+        },
+        failure: (failure) =>
+            emit(TaskHintErrorState(task: currentState.task, failure: failure)),
+      );
+    } catch (e) {
+      emit(
+        TaskHintErrorState(
+          task: currentState.task,
+          failure: AppFailure.fromException(e),
+        ),
+      );
+    }
   }
 
   Future<void> _onRetryTaskEvent(

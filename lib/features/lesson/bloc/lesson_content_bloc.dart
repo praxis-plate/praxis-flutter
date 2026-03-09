@@ -1,3 +1,5 @@
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/achievement/achievement_data_model.dart';
 import 'package:codium/domain/models/task/course_task.dart';
@@ -50,16 +52,23 @@ class LessonContentBloc extends Bloc<LessonContentEvent, LessonContentState> {
             );
             emit(LessonContentLoaded(lesson: task, isCompleted: isCompleted));
           } else {
-            emit(const LessonContentError(message: 'Lesson not found'));
+            emit(
+              const LessonContentError(
+                failure: AppFailure(
+                  code: AppErrorCode.apiNotFound,
+                  message: '',
+                ),
+              ),
+            );
           }
         },
         failure: (failure) {
-          emit(LessonContentError(message: failure.message));
+          emit(LessonContentError(failure: failure));
         },
       );
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
-      emit(LessonContentError(message: e.toString()));
+      emit(LessonContentError(failure: AppFailure.fromException(e)));
     }
   }
 
@@ -82,12 +91,12 @@ class LessonContentBloc extends Bloc<LessonContentEvent, LessonContentState> {
           emit(const LessonContentCompleted(coinsEarned: 10, achievements: []));
         },
         failure: (failure) {
-          emit(LessonContentError(message: failure.message));
+          emit(LessonContentError(failure: failure));
         },
       );
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
-      emit(LessonContentError(message: e.toString()));
+      emit(LessonContentError(failure: AppFailure.fromException(e)));
     }
   }
 }

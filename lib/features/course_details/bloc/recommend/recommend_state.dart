@@ -21,10 +21,10 @@ final class RecommendLoadSuccessState extends RecommendState {
 }
 
 final class RecommendLoadErrorState extends RecommendState {
-  final String message;
+  final AppFailure failure;
 
-  const RecommendLoadErrorState({required this.message});
+  const RecommendLoadErrorState({required this.failure});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }
