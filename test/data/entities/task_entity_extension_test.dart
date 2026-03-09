@@ -4,11 +4,11 @@ import 'package:codium/domain/enums/task_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('maps snake_case task type from local entity to domain enum', () {
+  test('maps local entity enum task type to domain enum', () {
     final entity = TaskEntity(
       id: 1,
       lessonId: 10,
-      taskType: 'code_completion',
+      taskType: TaskType.codeCompletion,
       questionText: 'Complete the function',
       correctAnswer: 'return 42;',
       optionsJson: null,
