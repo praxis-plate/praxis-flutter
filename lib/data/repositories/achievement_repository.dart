@@ -24,7 +24,7 @@ class AchievementRepository implements IAchievementRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -51,7 +51,7 @@ class AchievementRepository implements IAchievementRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -68,7 +68,7 @@ class AchievementRepository implements IAchievementRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -83,7 +83,7 @@ class AchievementRepository implements IAchievementRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 }

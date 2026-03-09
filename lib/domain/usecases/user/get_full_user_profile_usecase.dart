@@ -49,7 +49,7 @@ class GetFullUserProfileUseCase {
         ),
       );
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 }

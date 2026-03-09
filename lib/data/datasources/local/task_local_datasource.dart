@@ -83,12 +83,9 @@ class TaskLocalDataSource {
       return userId;
     }
 
-    // TODO: Remove after testing
-    final fallbackUser = await (_db.select(
-      _db.user,
-    )..limit(1)).getSingleOrNull();
-
-    return fallbackUser?.id ?? userId;
+    throw StateError(
+      'Cannot resolve local task progress for unknown user: $userId',
+    );
   }
 
   Future<void> updateTaskProgress(TaskProgressCompanion entry) async {

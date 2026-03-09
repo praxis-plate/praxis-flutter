@@ -23,7 +23,7 @@ class UserStatisticsRepository implements IUserStatisticsRepository {
       return Failure(AppFailure.fromError(e));
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 }

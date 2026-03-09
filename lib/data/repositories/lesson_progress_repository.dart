@@ -23,7 +23,7 @@ class LessonProgressRepository implements ILessonProgressRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 }
