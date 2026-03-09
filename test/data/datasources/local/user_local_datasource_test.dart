@@ -40,4 +40,38 @@ void main() {
       expect(userByBackendId!.email, 'test@codium.app');
     },
   );
+
+  test(
+    'upsertFromSession clears dependent records when email already exists',
+    () async {
+      await dataSource.upsertFromSession(
+        userId: 'legacy-id',
+        email: 'test@codium.app',
+      );
+      await database
+          .into(database.userStatistic)
+          .insert(
+            UserStatisticCompanion.insert(
+              userId: 'legacy-id',
+              lastActiveDate: DateTime(2026, 3, 9),
+            ),
+          );
+
+      final updatedUser = await dataSource.upsertFromSession(
+        userId: 'backend-id',
+        email: 'test@codium.app',
+      );
+      final newStatistic = await (database.select(
+        database.userStatistic,
+      )..where((t) => t.userId.equals('backend-id'))).getSingleOrNull();
+      final legacyStatistic = await (database.select(
+        database.userStatistic,
+      )..where((t) => t.userId.equals('legacy-id'))).getSingleOrNull();
+
+      expect(updatedUser, isNotNull);
+      expect(updatedUser!.id, 'backend-id');
+      expect(newStatistic, isNull);
+      expect(legacyStatistic, isNull);
+    },
+  );
 }
