@@ -21,13 +21,13 @@ class UserLocalDataSource {
     }
 
     final existingUserWithEmail = await getUserByEmail(email);
+    if (existingUserWithEmail != null && existingUserWithEmail.id != userId) {
+      await _replaceUserForEmailConflict(
+        existingUser: existingUserWithEmail,
+        newUserId: userId,
+      );
+    }
     if (existingUserWithEmail != null) {
-      if (existingUserWithEmail.id != userId) {
-        await (_db.update(_db.user)..where((t) => t.email.equals(email))).write(
-          UserCompanion(id: Value(userId), email: Value(email)),
-        );
-      }
-
       return getUserById(userId);
     }
 
@@ -56,5 +56,24 @@ class UserLocalDataSource {
     await (_db.update(
       _db.user,
     )..where((t) => t.id.equals(entry.id.value))).write(entry);
+  }
+
+  Future<void> _replaceUserForEmailConflict({
+    required UserEntity existingUser,
+    required String newUserId,
+  }) async {
+    await _db.transaction(() async {
+      await (_db.delete(
+        _db.user,
+      )..where((t) => t.id.equals(existingUser.id))).go();
+
+      await _db.managers.user.create(
+        (o) => o(
+          id: newUserId,
+          email: existingUser.email,
+          createdAt: existingUser.createdAt,
+        ),
+      );
+    });
   }
 }
