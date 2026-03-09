@@ -1,5 +1,6 @@
 import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
+import 'package:codium/data/datasources/local/user_local_datasource.dart';
 import 'package:codium/data/datasources/remote/auth_remote_datasource.dart';
 import 'package:codium/data/datasources/remote/auth_session_remote_datasource.dart';
 import 'package:codium/data/entities/auth_session_entity.dart';
@@ -13,11 +14,13 @@ final class AuthRepository implements IAuthRepository {
   final AuthRemoteDataSource _authDataSource;
   final ISessionService _sessionService;
   final AuthSessionRemoteDataSource _authSessionRemoteDataSource;
+  final UserLocalDataSource _userLocalDataSource;
 
   AuthRepository(
     this._authDataSource,
     this._sessionService,
     this._authSessionRemoteDataSource,
+    this._userLocalDataSource,
   );
 
   @override
@@ -130,9 +133,7 @@ final class AuthRepository implements IAuthRepository {
       await _sessionService.clearSession();
       return const Success(null);
     } catch (e) {
-      return Failure(
-        AppFailure.fromException(e is Exception ? e : Exception(e.toString())),
-      );
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -142,14 +143,16 @@ final class AuthRepository implements IAuthRepository {
       final hasLocalSession = await _sessionService.hasActiveSession();
       return Success(hasLocalSession);
     } catch (e) {
-      return Failure(
-        AppFailure.fromException(e is Exception ? e : Exception(e.toString())),
-      );
+      return Failure(AppFailure.fromException(e));
     }
   }
 
   Future<void> _saveSession(AuthSessionEntity session) async {
     await _sessionService.saveSession(session.toSessionModel());
+    await _userLocalDataSource.upsertFromSession(
+      userId: session.authUserId.toString(),
+      email: session.email,
+    );
   }
 
   Future<void> _updateClientAuthSession(AuthSessionEntity session) async {

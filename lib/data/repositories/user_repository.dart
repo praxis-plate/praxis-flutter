@@ -3,6 +3,7 @@ import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/data/datasources/local/user_local_datasource.dart';
+import 'package:codium/data/database/app_database.dart';
 import 'package:codium/data/entities/user_entity_extension.dart';
 import 'package:codium/domain/models/user/user.dart';
 import 'package:codium/domain/repositories/i_user_repository.dart';
@@ -28,7 +29,7 @@ final class UserRepository implements IUserRepository {
         );
       }
 
-      final user = await _userDataSource.getUserById(session.userId);
+      final user = await _getOrCreateCurrentUser(session.userId, session.email);
       if (user == null) {
         return const Failure(
           AppFailure(
@@ -43,14 +44,21 @@ final class UserRepository implements IUserRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
   @override
   Future<Result<UserProfileModel>> getUserById(String userId) async {
     try {
-      final user = await _userDataSource.getUserById(userId);
+      UserEntity? user = await _userDataSource.getUserById(userId);
+      if (user == null) {
+        final session = await _sessionService.getSession();
+        if (session?.userId == userId) {
+          user = await _getOrCreateCurrentUser(session!.userId, session.email);
+        }
+      }
+
       if (user == null) {
         return const Failure(
           AppFailure(
@@ -65,7 +73,7 @@ final class UserRepository implements IUserRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -77,7 +85,19 @@ final class UserRepository implements IUserRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
+  }
+
+  Future<UserEntity?> _getOrCreateCurrentUser(
+    String userId,
+    String email,
+  ) async {
+    final existingUser = await _userDataSource.getUserById(userId);
+    if (existingUser != null) {
+      return existingUser;
+    }
+
+    return _userDataSource.upsertFromSession(userId: userId, email: email);
   }
 }

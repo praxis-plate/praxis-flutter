@@ -1,22 +1,29 @@
-import 'dart:convert';
-
 import 'package:codium/data/database/app_database.dart';
-import 'package:crypto/crypto.dart';
+import 'package:drift/drift.dart';
 
 class UserLocalDataSource {
   final AppDatabase _db;
 
   const UserLocalDataSource(this._db);
 
-  Future<UserEntity?> create({
+  Future<UserEntity?> upsertFromSession({
+    required String userId,
     required String email,
-    required String password,
   }) async {
+    final existingUser = await getUserById(userId);
+    if (existingUser != null) {
+      if (existingUser.email != email) {
+        await updateUser(UserCompanion(id: Value(userId), email: Value(email)));
+        return getUserById(userId);
+      }
+
+      return existingUser;
+    }
+
     return _db.managers.user.createReturning(
       (o) => o(
-        id: email + password, // TODO: Rewrite this hack
+        id: userId,
         email: email,
-        passwordHash: hashPassword(password),
         createdAt: DateTime.now(),
       ),
     );
@@ -42,11 +49,5 @@ class UserLocalDataSource {
     await (_db.update(
       _db.user,
     )..where((t) => t.id.equals(entry.id.value))).write(entry);
-  }
-
-  String hashPassword(String password) {
-    final bytes = utf8.encode(password);
-    final digest = sha256.convert(bytes);
-    return digest.toString();
   }
 }
