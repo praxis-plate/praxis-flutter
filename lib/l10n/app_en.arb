@@ -319,6 +319,14 @@
   "hoursShort": "h",
   "minutesShort": "m",
   "secondsShort": "s",
+  "tasksCount": "{count, plural, one{{count} task} other{{count} tasks}}",
+  "@tasksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "lessonsCount": "{count} lessons",
   "@lessonsCount": {
     "placeholders": {
@@ -347,6 +355,17 @@
   "coursePurchaseSuccess": "Course purchased successfully!",
   "coursePurchaseError": "Failed to purchase course",
   "coursePurchaseInsufficientBalance": "Insufficient balance",
+  "coursePurchaseInsufficientBalanceMessage": "Not enough coins. Required: {required}, available: {available}",
+  "@coursePurchaseInsufficientBalanceMessage": {
+    "placeholders": {
+      "required": {
+        "type": "int"
+      },
+      "available": {
+        "type": "int"
+      }
+    }
+  },
 
   "taskMultipleChoice": "Multiple Choice",
   "taskCodeCompletion": "Code Completion",
