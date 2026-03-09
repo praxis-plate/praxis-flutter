@@ -9,7 +9,7 @@ import 'package:codium/domain/models/task/test_case_model.dart';
 // TODO: Improve mapping
 extension TaskEntityExtension on TaskEntity {
   TaskModel toDomain() {
-    switch (_parseTaskType(taskType)) {
+    switch (taskType) {
       case TaskType.multipleChoice:
         return _createMultipleChoiceTask();
       case TaskType.codeCompletion:
@@ -147,35 +147,6 @@ extension TaskEntityExtension on TaskEntity {
     );
   }
 
-  TaskType _parseTaskType(String rawTaskType) {
-    final normalizedTaskType = rawTaskType.trim();
-
-    return TaskType.values.firstWhere(
-      (type) =>
-          type.name == normalizedTaskType ||
-          _camelToSnakeCase(type.name) == normalizedTaskType,
-      orElse: () => TaskType.multipleChoice,
-    );
-  }
-
-  String _camelToSnakeCase(String camelCase) {
-    final buffer = StringBuffer();
-
-    for (final rune in camelCase.runes) {
-      final character = String.fromCharCode(rune);
-      final isUppercase =
-          character.toUpperCase() == character &&
-          character.toLowerCase() != character;
-
-      if (isUppercase && buffer.isNotEmpty) {
-        buffer.write('_');
-      }
-
-      buffer.write(character.toLowerCase());
-    }
-
-    return buffer.toString();
-  }
 }
 
 List<TestCaseModel> _decodeTestCasesFromJson(String? json, int taskId) {

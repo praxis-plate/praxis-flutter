@@ -1,4 +1,5 @@
 import 'package:codium/data/database/tables/lesson.dart';
+import 'package:codium/domain/enums/task_type.dart';
 import 'package:drift/drift.dart';
 
 @DataClassName('TaskEntity')
@@ -6,7 +7,7 @@ class Task extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get lessonId =>
       integer().references(Lesson, #id, onDelete: KeyAction.cascade)();
-  TextColumn get taskType => text()();
+  TextColumn get taskType => textEnum<TaskType>()();
   TextColumn get questionText => text()();
   TextColumn get correctAnswer => text()();
   TextColumn get optionsJson => text().nullable()();
