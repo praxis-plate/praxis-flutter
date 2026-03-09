@@ -12,7 +12,7 @@ class CourseDetailLoadingState extends CourseDetailState {
 class CourseDetailLoadSuccessState extends CourseDetailState {
   final CourseModel course;
   final bool isPurchased;
-  final CourseStructureDto? tableOfContents;
+  final CourseStructureModel? tableOfContents;
 
   const CourseDetailLoadSuccessState({
     required this.course,

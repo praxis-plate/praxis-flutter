@@ -14,6 +14,7 @@ extension CoinTransactionEntityExtension on CoinTransactionEntity {
         (e) => e.name == type,
         orElse: () => CoinTransactionType.initialGrant,
       ),
+      transactionKey: 'local_tx_$id', // Generated key for local transactions
       relatedEntityId: relatedEntityId,
       createdAt: createdAt,
     );

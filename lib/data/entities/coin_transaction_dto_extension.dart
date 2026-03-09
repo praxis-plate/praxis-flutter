@@ -13,6 +13,7 @@ extension CoinTransactionDtoExtension on CoinTransactionDto {
       userId: authUserId,
       amount: amount,
       type: _mapServerTypeToDomain(type),
+      transactionKey: transactionKey,
       relatedEntityId: relatedEntityId,
       createdAt: createdAt,
     );

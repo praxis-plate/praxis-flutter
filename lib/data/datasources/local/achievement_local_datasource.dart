@@ -1,26 +1,22 @@
 import 'package:codium/data/database/app_database.dart';
 import 'package:codium/data/entities/unlocked_achievement_entity.dart';
-import 'package:codium/domain/datasources/i_achievement_local_datasource.dart';
 import 'package:drift/drift.dart';
 
-class AchievementLocalDataSource implements IAchievementLocalDataSource {
+class AchievementLocalDataSource {
   final AppDatabase _db;
 
   const AchievementLocalDataSource(this._db);
 
-  @override
   Future<List<AchievementEntity>> getAllAchievements() async {
     return await _db.managers.achievement.get();
   }
 
-  @override
   Future<AchievementEntity?> getAchievementById(int id) async {
     return await _db.managers.achievement
         .filter((f) => f.id(id))
         .getSingleOrNull();
   }
 
-  @override
   Future<List<UnlockedAchievementEntity>> getUserAchievements(
     String userId,
   ) async {
@@ -48,7 +44,6 @@ class AchievementLocalDataSource implements IAchievementLocalDataSource {
     }).toList();
   }
 
-  @override
   Future<void> insertUserAchievement(
     String userId,
     int achievementId,
@@ -63,7 +58,6 @@ class AchievementLocalDataSource implements IAchievementLocalDataSource {
     );
   }
 
-  @override
   Future<AchievementEntity?> getUserAchievement(
     String userId,
     int achievementId,

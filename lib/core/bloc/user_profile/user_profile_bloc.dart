@@ -58,7 +58,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         },
       );
     } catch (e, st) {
-      emit(UserProfileErrorState(AppFailure.fromException(e as Exception)));
+      emit(UserProfileErrorState(AppFailure.fromException(e)));
       GetIt.I<Talker>().handle(e, st);
     }
   }
@@ -96,7 +96,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         },
       );
     } catch (e, st) {
-      emit(UserProfileErrorState(AppFailure.fromException(e as Exception)));
+      emit(UserProfileErrorState(AppFailure.fromException(e)));
       GetIt.I<Talker>().handle(e, st);
     }
   }

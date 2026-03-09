@@ -319,6 +319,14 @@
   "hoursShort": "ч",
   "minutesShort": "м",
   "secondsShort": "с",
+  "tasksCount": "{count, plural, one{{count} задача} few{{count} задачи} many{{count} задач} other{{count} задачи}}",
+  "@tasksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "lessonsCount": "{count} уроков",
   "@lessonsCount": {
     "placeholders": {
@@ -347,6 +355,17 @@
   "coursePurchaseSuccess": "Курс успешно куплен!",
   "coursePurchaseError": "Не удалось купить курс",
   "coursePurchaseInsufficientBalance": "Недостаточно монет",
+  "coursePurchaseInsufficientBalanceMessage": "Недостаточно монет. Нужно: {required}, доступно: {available}",
+  "@coursePurchaseInsufficientBalanceMessage": {
+    "placeholders": {
+      "required": {
+        "type": "int"
+      },
+      "available": {
+        "type": "int"
+      }
+    }
+  },
 
   "taskMultipleChoice": "Множественный выбор",
   "taskCodeCompletion": "Завершение кода",

@@ -4,9 +4,10 @@ import 'package:codium/core/exceptions/app_error.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/data/datasources/remote/course_remote_datasource.dart';
 import 'package:codium/data/entities/course_dto_extension.dart';
+import 'package:codium/data/mappers/course_structure_mapper.dart';
 import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/domain/models/course/course_structure_model.dart';
 import 'package:codium/domain/repositories/i_course_repository.dart';
-import 'package:praxis_client/praxis_client.dart';
 
 class CourseRepository implements ICourseRepository {
   final CourseRemoteDataSource _remoteDataSource;
@@ -24,7 +25,7 @@ class CourseRepository implements ICourseRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -45,7 +46,7 @@ class CourseRepository implements ICourseRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -58,7 +59,7 @@ class CourseRepository implements ICourseRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -77,19 +78,19 @@ class CourseRepository implements ICourseRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
   @override
-  Future<Result<CourseStructureDto>> getTableOfContents(int courseId) async {
+  Future<Result<CourseStructureModel>> getTableOfContents(int courseId) async {
     try {
       final structure = await _remoteDataSource.getTableOfContents(courseId);
-      return Success(structure);
+      return Success(structure.toDomain());
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 }

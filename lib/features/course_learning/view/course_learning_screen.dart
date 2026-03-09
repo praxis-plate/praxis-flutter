@@ -1,5 +1,4 @@
 import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/usecases/tasks/get_task_count_by_lesson_id_usecase.dart';
 import 'package:codium/features/features.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +12,12 @@ class CourseLearningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userId = UserScope.of(context, listen: false).id;
+
     return BlocProvider(
       create: (context) =>
           GetIt.I<CourseLearningBloc>()
-            ..add(LoadCourseLearning(courseId: courseId, userId: '1')),
+            ..add(LoadCourseLearning(courseId: courseId, userId: userId)),
       child: const _CourseLearningView(),
     );
   }
@@ -135,10 +136,6 @@ class _LessonsList extends StatelessWidget {
               return Center(child: Text(s.noLessonsAvailable));
             }
 
-            // TODO: Use bloc/cubit instead of usecase
-            final getTaskCountUseCase =
-                GetIt.I<GetTaskCountByLessonIdUseCase>();
-
             return Wrapper(
               child: ListView.separated(
                 padding: const EdgeInsets.all(16),
@@ -148,7 +145,7 @@ class _LessonsList extends StatelessWidget {
                   final lesson = state.lessons[index];
                   return LessonCard(
                     lesson: lesson,
-                    getTaskCountUseCase: getTaskCountUseCase,
+                    taskCount: state.taskCounts[lesson.id],
                   );
                 },
               ),

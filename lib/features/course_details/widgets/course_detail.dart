@@ -17,14 +17,65 @@ class CourseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrapper(
-      child: ListView(
-        children: [
-          CourseHeader(course: course, isPurchased: isPurchased),
-          CourseMetaInfo(course: course),
-          CourseTabSection(course: course),
-        ],
+    final theme = Theme.of(context);
+
+    return DefaultTabController(
+      length: 2,
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverToBoxAdapter(
+              child: Wrapper(
+                child: Column(
+                  children: [
+                    CourseHeader(course: course, isPurchased: isPurchased),
+                    CourseMetaInfo(course: course),
+                  ],
+                ),
+              ),
+            ),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _CourseDetailTabBarDelegate(
+                child: ColoredBox(
+                  color: theme.scaffoldBackgroundColor,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: CourseTabBar(),
+                  ),
+                ),
+              ),
+            ),
+          ];
+        },
+        body: CourseTabSection(course: course),
       ),
     );
+  }
+}
+
+class _CourseDetailTabBarDelegate extends SliverPersistentHeaderDelegate {
+  const _CourseDetailTabBarDelegate({required this.child});
+
+  final Widget child;
+
+  @override
+  double get minExtent => 48;
+
+  @override
+  double get maxExtent => 48;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(covariant _CourseDetailTabBarDelegate oldDelegate) {
+    return child != oldDelegate.child;
   }
 }

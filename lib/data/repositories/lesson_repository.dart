@@ -20,7 +20,7 @@ class LessonRepository implements ILessonRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -33,7 +33,7 @@ class LessonRepository implements ILessonRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -46,7 +46,7 @@ class LessonRepository implements ILessonRepository {
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 }

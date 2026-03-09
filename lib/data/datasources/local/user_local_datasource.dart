@@ -1,44 +1,46 @@
-import 'dart:convert';
-
 import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/datasources/datasources.dart';
-import 'package:crypto/crypto.dart';
+import 'package:drift/drift.dart';
 
-class UserLocalDataSource implements IUserDataSource {
+class UserLocalDataSource {
   final AppDatabase _db;
 
   const UserLocalDataSource(this._db);
 
-  @override
-  Future<UserEntity?> create({
+  Future<UserEntity?> upsertFromSession({
+    required String userId,
     required String email,
-    required String password,
   }) async {
+    final existingUser = await getUserById(userId);
+    if (existingUser != null) {
+      if (existingUser.email != email) {
+        await updateUser(UserCompanion(id: Value(userId), email: Value(email)));
+        return getUserById(userId);
+      }
+
+      return existingUser;
+    }
+
     return _db.managers.user.createReturning(
       (o) => o(
-        id: email + password, // TODO: Rewrite this hack
+        id: userId,
         email: email,
-        passwordHash: hashPassword(password),
         createdAt: DateTime.now(),
       ),
     );
   }
 
-  @override
   Future<UserEntity?> getUserByEmail(String email) async {
     return await _db.managers.user
         .filter((f) => f.email(email))
         .getSingleOrNull();
   }
 
-  @override
   Future<UserEntity?> getUserById(String userId) async {
     return await _db.managers.user
         .filter((f) => f.id(userId))
         .getSingleOrNull();
   }
 
-  @override
   Future<void> updateUser(UserCompanion entry) async {
     if (!entry.id.present) {
       throw ArgumentError('User id must be present for update');
@@ -47,12 +49,5 @@ class UserLocalDataSource implements IUserDataSource {
     await (_db.update(
       _db.user,
     )..where((t) => t.id.equals(entry.id.value))).write(entry);
-  }
-
-  @override
-  String hashPassword(String password) {
-    final bytes = utf8.encode(password);
-    final digest = sha256.convert(bytes);
-    return digest.toString();
   }
 }

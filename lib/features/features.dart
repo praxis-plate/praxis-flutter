@@ -1,7 +1,6 @@
 export 'auth/auth.dart';
 export 'course_details/course_details.dart';
 export 'course_learning/course_learning.dart';
-export 'course_table_of_contents/course_table_of_contents.dart';
 export 'learning/learning.dart';
 export 'lesson/lesson.dart';
 export 'main/main.dart';

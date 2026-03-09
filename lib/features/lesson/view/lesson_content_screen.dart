@@ -53,7 +53,6 @@ class _LessonContentView extends StatelessWidget {
       },
       child: Stack(
         children: [
-          const BlurredImageBackground(),
           Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(

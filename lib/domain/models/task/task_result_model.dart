@@ -28,12 +28,7 @@ class TaskResultModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-    isCorrect,
-    xpEarned,
-    explanation,
-    correctAnswer,
-  ];
+  List<Object?> get props => [isCorrect, xpEarned, explanation, correctAnswer];
 
   @override
   bool get stringify => true;

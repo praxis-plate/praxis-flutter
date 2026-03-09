@@ -77,7 +77,7 @@ class TaskRepository implements ITaskRepository {
       await _localDataSource.insertTaskProgress(progress.toCompanion());
       return const Success(null);
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -93,7 +93,7 @@ class TaskRepository implements ITaskRepository {
       );
       return Success(progressEntity?.toDomain());
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 
@@ -103,7 +103,7 @@ class TaskRepository implements ITaskRepository {
       await _localDataSource.updateTaskProgress(progress.toCompanion());
       return const Success(null);
     } catch (e) {
-      return Failure(AppFailure.fromException(e as Exception));
+      return Failure(AppFailure.fromException(e));
     }
   }
 }
