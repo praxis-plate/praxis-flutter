@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:codium/core/config/env_config.dart';
 import 'package:codium/data/database/tables/tables.dart';
+import 'package:codium/domain/enums/task_type.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
