@@ -7,6 +7,25 @@ import 'package:go_router/go_router.dart';
 class TableOfContentsContent extends StatelessWidget {
   const TableOfContentsContent({super.key});
 
+  void _handleLessonTap(
+    BuildContext context, {
+    required bool isPurchased,
+    required int lessonId,
+  }) {
+    if (!isPurchased) {
+      final s = S.of(context);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(s.purchaseCourse)));
+      return;
+    }
+
+    context.pushNamed(
+      'lesson-task-session',
+      pathParameters: {'lessonId': lessonId.toString()},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -19,6 +38,7 @@ class TableOfContentsContent extends StatelessWidget {
         }
 
         final tableOfContents = state.tableOfContents;
+        final isPurchased = state.isPurchased;
         if (tableOfContents == null) {
           return Center(child: Text(s.noLessonsAvailable));
         }
@@ -84,13 +104,14 @@ class TableOfContentsContent extends StatelessWidget {
                     ),
                   ),
                   children: module.lessons.map((lesson) {
+                    final canOpenLesson = isPurchased;
+
                     return InkWell(
-                      onTap: () {
-                        context.goNamed(
-                          'lesson-task-session',
-                          pathParameters: {'lessonId': lesson.id.toString()},
-                        );
-                      },
+                      onTap: () => _handleLessonTap(
+                        context,
+                        isPurchased: canOpenLesson,
+                        lessonId: lesson.id,
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 12,
@@ -99,15 +120,27 @@ class TableOfContentsContent extends StatelessWidget {
                         child: Row(
                           children: [
                             Icon(
-                              Icons.play_circle_outline,
+                              canOpenLesson
+                                  ? Icons.play_circle_outline
+                                  : Icons.lock_outline,
                               size: 20,
-                              color: theme.colorScheme.primary,
+                              color: canOpenLesson
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurface.withValues(
+                                      alpha: 0.6,
+                                    ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 lesson.title,
-                                style: theme.textTheme.bodyMedium,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: canOpenLesson
+                                      ? null
+                                      : theme.colorScheme.onSurface.withValues(
+                                          alpha: 0.75,
+                                        ),
+                                ),
                               ),
                             ),
                             if (lesson.durationMinutes > 0) ...[

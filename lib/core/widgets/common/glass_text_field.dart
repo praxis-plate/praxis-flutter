@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:codium/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class GlassTextField extends StatefulWidget {
@@ -74,17 +75,9 @@ class _GlassTextFieldState extends State<GlassTextField> {
       ],
     );
 
-    // TODO: Move input theme configuration to ThemeData once theme refactoring is complete
-    final inputDecorationTheme = theme.inputDecorationTheme.copyWith(
-      isDense: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      border: InputBorder.none,
-      enabledBorder: InputBorder.none,
-      focusedBorder: InputBorder.none,
-      disabledBorder: InputBorder.none,
-      errorBorder: InputBorder.none,
-      focusedErrorBorder: InputBorder.none,
-    );
+    final inputDecorationTheme =
+        theme.extension<GlassTextFieldTheme>()?.inputDecorationTheme ??
+        theme.inputDecorationTheme;
 
     return Opacity(
       opacity: widget.enabled ? 1 : 0.4,

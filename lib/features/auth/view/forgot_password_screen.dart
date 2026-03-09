@@ -54,7 +54,6 @@ class ForgotPasswordScreen extends StatelessWidget {
         child: Scaffold(
           body: Stack(
             children: [
-              const BlurredImageBackground(),
               SafeArea(
                 child: GestureDetector(
                   onTap: FocusScope.of(context).unfocus,
@@ -104,14 +103,10 @@ class _ForgotPasswordForm extends StatelessWidget {
             Text(
               s.displayForgotPasswordSubtitle,
               style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
             ),
             const SizedBox(height: 32),
-            const _EmailInput(),
-            const SizedBox(height: 16),
-            const _VerificationCodeInput(),
-            const SizedBox(height: 16),
-            const _PasswordInput(),
+            const _ForgotPasswordInputs(),
             const SizedBox(height: 24),
             const _SubmitButton(),
             const SizedBox(height: 16),
@@ -129,6 +124,35 @@ class _ForgotPasswordForm extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ForgotPasswordInputs extends StatelessWidget {
+  const _ForgotPasswordInputs();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
+      buildWhen: (previous, current) =>
+          previous.step != current.step || previous.status != current.status,
+      builder: (context, state) {
+        final children = <Widget>[const _EmailInput()];
+
+        if (state.step == ForgotPasswordStep.verifyCode ||
+            state.step == ForgotPasswordStep.newPassword) {
+          children.addAll([
+            const SizedBox(height: 16),
+            const _VerificationCodeInput(),
+          ]);
+        }
+
+        if (state.step == ForgotPasswordStep.newPassword) {
+          children.addAll([const SizedBox(height: 16), const _PasswordInput()]);
+        }
+
+        return Column(children: children);
+      },
     );
   }
 }

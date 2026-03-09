@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-// TODO: Review OnboardingScreen flow and UI, refactor if needed, and verify behavior end-to-end.
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
@@ -24,6 +23,8 @@ class _OnboardingScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+
     return BlocListener<OnboardingBloc, OnboardingState>(
       listener: (context, state) {
         if (state is OnboardingCompleteState) {
@@ -46,8 +47,12 @@ class _OnboardingScreenContent extends StatelessWidget {
                 child: CircularProgressIndicator(),
               ),
               OnboardingErrorState() => Center(
-                child: Text(
-                  'Error: ${state.message ?? S.of(context).onboardingErrorUnknown}',
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    state.message ?? s.onboardingErrorUnknown,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             };
@@ -63,64 +68,12 @@ class _OnboardingPage1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: () {
-                  context.read<OnboardingBloc>().add(CompleteOnboardingEvent());
-                },
-                child: Text(S.of(context).onboardingSkip),
-              ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.auto_awesome,
-                    size: 120,
-                    color: theme.colorScheme.primary,
-                  ),
-                  const SizedBox(height: 32),
-                  Text(
-                    S.of(context).onboardingTitle1,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    S.of(context).onboardingDescription1,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-            const _PageIndicator(currentPage: 0),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  context.read<OnboardingBloc>().add(NextPageEvent());
-                },
-                child: Text(S.of(context).onboardingNext),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return _OnboardingStepPage(
+      icon: Icons.auto_awesome,
+      title: S.of(context).onboardingTitle1,
+      description: S.of(context).onboardingDescription1,
+      currentPage: 0,
+      onNext: () => context.read<OnboardingBloc>().add(NextPageEvent()),
     );
   }
 }
@@ -130,64 +83,12 @@ class _OnboardingPage2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: () {
-                  context.read<OnboardingBloc>().add(CompleteOnboardingEvent());
-                },
-                child: Text(S.of(context).onboardingSkip),
-              ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.menu_book,
-                    size: 120,
-                    color: theme.colorScheme.primary,
-                  ),
-                  const SizedBox(height: 32),
-                  Text(
-                    S.of(context).onboardingTitle2,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    S.of(context).onboardingDescription2,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-            const _PageIndicator(currentPage: 1),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  context.read<OnboardingBloc>().add(NextPageEvent());
-                },
-                child: Text(S.of(context).onboardingNext),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return _OnboardingStepPage(
+      icon: Icons.menu_book,
+      title: S.of(context).onboardingTitle2,
+      description: S.of(context).onboardingDescription2,
+      currentPage: 1,
+      onNext: () => context.read<OnboardingBloc>().add(NextPageEvent()),
     );
   }
 }
@@ -197,6 +98,34 @@ class _OnboardingPage3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _OnboardingStepPage(
+      icon: Icons.bookmark,
+      title: S.of(context).onboardingTitle3,
+      description: S.of(context).onboardingDescription3,
+      currentPage: 2,
+      onNext: () => context.read<OnboardingBloc>().add(NextPageEvent()),
+    );
+  }
+}
+
+class _OnboardingStepPage extends StatelessWidget {
+  const _OnboardingStepPage({
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.currentPage,
+    required this.onNext,
+  });
+
+  final IconData icon;
+  final String title;
+  final String description;
+  final int currentPage;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return SafeArea(
@@ -210,21 +139,17 @@ class _OnboardingPage3 extends StatelessWidget {
                 onPressed: () {
                   context.read<OnboardingBloc>().add(CompleteOnboardingEvent());
                 },
-                child: Text(S.of(context).onboardingSkip),
+                child: Text(s.onboardingSkip),
               ),
             ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.bookmark,
-                    size: 120,
-                    color: theme.colorScheme.primary,
-                  ),
+                  Icon(icon, size: 120, color: theme.colorScheme.primary),
                   const SizedBox(height: 32),
                   Text(
-                    S.of(context).onboardingTitle3,
+                    title,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -232,7 +157,7 @@ class _OnboardingPage3 extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    S.of(context).onboardingDescription3,
+                    description,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
@@ -241,15 +166,13 @@ class _OnboardingPage3 extends StatelessWidget {
                 ],
               ),
             ),
-            const _PageIndicator(currentPage: 2),
+            _PageIndicator(currentPage: currentPage),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: () {
-                  context.read<OnboardingBloc>().add(NextPageEvent());
-                },
-                child: Text(S.of(context).onboardingNext),
+                onPressed: onNext,
+                child: Text(s.onboardingNext),
               ),
             ),
           ],

@@ -29,7 +29,6 @@ class SettingsProfileCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
-                    // TODO: Review whether avatarUrl should be required for users and where it is assigned
                     child: hasAvatar
                         ? CachedNetworkImage(
                             height: 120,
@@ -45,6 +44,7 @@ class SettingsProfileCard extends StatelessWidget {
                             ),
                           )
                         : Image.asset(
+                            // Avatar is optional until the user uploads one.
                             Constants.placeholderProfileImagePath,
                             height: 120,
                             width: 120,

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:codium/core/config/env_config.dart';
 import 'package:codium/data/database/tables/tables.dart';
+import 'package:codium/domain/enums/task_type.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
@@ -29,12 +30,14 @@ part 'app_database.g.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
+  static const int _currentSchemaVersion = 2;
+
   AppDatabase() : super(_openConnection());
 
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => _currentSchemaVersion;
 
   @override
   MigrationStrategy get migration {

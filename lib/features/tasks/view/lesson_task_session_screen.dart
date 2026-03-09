@@ -82,10 +82,6 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
     }
   }
 
-  Widget _wrapWithBackground(Widget child) {
-    return Stack(children: [const BlurredImageBackground(), child]);
-  }
-
   String _resolveSessionErrorMessage(
     SessionErrorState state,
     AppLocalizations s,
@@ -140,29 +136,25 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
         },
         builder: (context, sessionState) {
           if (sessionState is SessionLoadingState) {
-            return _wrapWithBackground(
-              Scaffold(
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                title: Text(s.taskSessionLoading),
                 backgroundColor: Colors.transparent,
-                appBar: AppBar(
-                  title: Text(s.taskSessionLoading),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  surfaceTintColor: Colors.transparent,
-                ),
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        color: theme.colorScheme.primary,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        s.taskSessionLoading,
-                        style: theme.textTheme.bodyLarge,
-                      ),
-                    ],
-                  ),
+                elevation: 0,
+                surfaceTintColor: Colors.transparent,
+              ),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(color: theme.colorScheme.primary),
+                    const SizedBox(height: 16),
+                    Text(
+                      s.taskSessionLoading,
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                  ],
                 ),
               ),
             );
@@ -170,47 +162,45 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
 
           if (sessionState is SessionErrorState) {
             final errorMessage = _resolveSessionErrorMessage(sessionState, s);
-            return _wrapWithBackground(
-              Scaffold(
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                title: Text(s.taskError),
                 backgroundColor: Colors.transparent,
-                appBar: AppBar(
-                  title: Text(s.taskError),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  surfaceTintColor: Colors.transparent,
-                ),
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 64,
+                elevation: 0,
+                surfaceTintColor: Colors.transparent,
+              ),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 64,
+                      color: theme.colorScheme.error,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      s.taskError,
+                      style: theme.textTheme.titleLarge?.copyWith(
                         color: theme.colorScheme.error,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        s.taskError,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: theme.colorScheme.error,
-                        ),
+                    ),
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        errorMessage,
+                        style: theme.textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32),
-                        child: Text(
-                          errorMessage,
-                          style: theme.textTheme.bodyMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      ElevatedButton(
-                        onPressed: () => _exitSession(context),
-                        child: Text(s.goBack),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: () => _exitSession(context),
+                      child: Text(s.goBack),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -221,159 +211,157 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
               listener: (context, taskState) {
                 _handleTaskCompletion(context, taskState, sessionState);
               },
-              child: _wrapWithBackground(
-                PopScope(
-                  canPop: false,
-                  onPopInvokedWithResult: (didPop, result) async {
-                    if (!didPop) {
-                      final shouldExit = await _showExitConfirmationDialog(
-                        context,
-                      );
-                      if (shouldExit && mounted) {
-                        if (context.mounted) {
-                          _exitSession(context);
-                        }
+              child: PopScope(
+                canPop: false,
+                onPopInvokedWithResult: (didPop, result) async {
+                  if (!didPop) {
+                    final shouldExit = await _showExitConfirmationDialog(
+                      context,
+                    );
+                    if (shouldExit && mounted) {
+                      if (context.mounted) {
+                        _exitSession(context);
                       }
                     }
-                  },
-                  child: Scaffold(
+                  }
+                },
+                child: Scaffold(
+                  backgroundColor: Colors.transparent,
+                  appBar: AppBar(
+                    title: Text(
+                      _getTaskTypeTitle(sessionState.currentTask, context),
+                    ),
                     backgroundColor: Colors.transparent,
-                    appBar: AppBar(
-                      title: Text(
-                        _getTaskTypeTitle(sessionState.currentTask, context),
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      surfaceTintColor: Colors.transparent,
-                      leading: IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () async {
-                          final shouldExit = await _showExitConfirmationDialog(
-                            context,
-                          );
-                          if (shouldExit && context.mounted) {
-                            _exitSession(context);
-                          }
-                        },
-                      ),
+                    elevation: 0,
+                    surfaceTintColor: Colors.transparent,
+                    leading: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () async {
+                        final shouldExit = await _showExitConfirmationDialog(
+                          context,
+                        );
+                        if (shouldExit && context.mounted) {
+                          _exitSession(context);
+                        }
+                      },
                     ),
-                    body: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                          child: TaskProgressBar(
-                            completedTasks: sessionState.completedTasksCount,
-                            totalTasks: sessionState.tasks.length,
-                          ),
+                  ),
+                  body: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: TaskProgressBar(
+                          completedTasks: sessionState.completedTasksCount,
+                          totalTasks: sessionState.tasks.length,
                         ),
-                        Expanded(
-                          child: BlocBuilder<TaskBloc, TaskState>(
-                            builder: (context, taskState) {
-                              if (taskState is TaskLoadingState) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      CircularProgressIndicator(
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        s.taskLoading,
-                                        style: theme.textTheme.bodyLarge,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
+                      ),
+                      Expanded(
+                        child: BlocBuilder<TaskBloc, TaskState>(
+                          builder: (context, taskState) {
+                            if (taskState is TaskLoadingState) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      s.taskLoading,
+                                      style: theme.textTheme.bodyLarge,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
 
-                              if (taskState is TaskErrorState) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.error_outline,
-                                        size: 64,
-                                        color: theme.colorScheme.error,
+                            if (taskState is TaskErrorState) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.error_outline,
+                                      size: 64,
+                                      color: theme.colorScheme.error,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      s.taskError,
+                                      style: theme.textTheme.titleLarge
+                                          ?.copyWith(
+                                            color: theme.colorScheme.error,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 32,
                                       ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        s.taskError,
-                                        style: theme.textTheme.titleLarge
-                                            ?.copyWith(
-                                              color: theme.colorScheme.error,
-                                            ),
+                                      child: Text(
+                                        taskState.message,
+                                        style: theme.textTheme.bodyMedium,
+                                        textAlign: TextAlign.center,
                                       ),
-                                      const SizedBox(height: 8),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 32,
-                                        ),
-                                        child: Text(
-                                          taskState.message,
-                                          style: theme.textTheme.bodyMedium,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 24),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          context.read<TaskBloc>().add(
-                                            LoadTaskEvent(
-                                              sessionState.currentTask.id,
-                                            ),
-                                          );
-                                        },
-                                        child: Text(s.retry),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
+                                    ),
+                                    const SizedBox(height: 24),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        context.read<TaskBloc>().add(
+                                          LoadTaskEvent(
+                                            sessionState.currentTask.id,
+                                          ),
+                                        );
+                                      },
+                                      child: Text(s.retry),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
 
-                              if (taskState is TaskLoadedState) {
-                                return renderer.build(context, taskState.task);
-                              }
+                            if (taskState is TaskLoadedState) {
+                              return renderer.build(context, taskState.task);
+                            }
 
-                              if (taskState is TaskAnswerValidatingState) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      CircularProgressIndicator(
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        s.taskValidating,
-                                        style: theme.textTheme.bodyLarge,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
+                            if (taskState is TaskAnswerValidatingState) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      s.taskValidating,
+                                      style: theme.textTheme.bodyLarge,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
 
-                              if (taskState is TaskAnswerCorrectState) {
-                                return TaskFeedbackCorrectWidget(
-                                  task: taskState.task,
-                                  result: taskState.result,
-                                );
-                              }
+                            if (taskState is TaskAnswerCorrectState) {
+                              return TaskFeedbackCorrectWidget(
+                                task: taskState.task,
+                                result: taskState.result,
+                              );
+                            }
 
-                              if (taskState is TaskAnswerIncorrectState) {
-                                return TaskFeedbackIncorrectWidget(
-                                  task: taskState.task,
-                                  result: taskState.result,
-                                );
-                              }
+                            if (taskState is TaskAnswerIncorrectState) {
+                              return TaskFeedbackIncorrectWidget(
+                                task: taskState.task,
+                                result: taskState.result,
+                              );
+                            }
 
-                              return const SizedBox.shrink();
-                            },
-                          ),
+                            return const SizedBox.shrink();
+                          },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -443,7 +431,6 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
         child: SizedBox.expand(
           child: Stack(
             children: [
-              const Positioned.fill(child: BlurredImageBackground()),
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),

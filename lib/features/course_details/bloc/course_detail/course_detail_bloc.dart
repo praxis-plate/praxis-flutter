@@ -1,10 +1,10 @@
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/domain/models/course/course_structure_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:praxis_client/praxis_client.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 part 'course_detail_event.dart';
