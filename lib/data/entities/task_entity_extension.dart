@@ -2,25 +2,22 @@ import 'dart:convert';
 
 import 'package:codium/data/database/app_database.dart';
 import 'package:codium/domain/enums/programming_language.dart';
+import 'package:codium/domain/enums/task_type.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/domain/models/task/test_case_model.dart';
 
 // TODO: Improve mapping
 extension TaskEntityExtension on TaskEntity {
   TaskModel toDomain() {
-    final taskTypeString = _snakeToCamelCase(taskType);
-
-    switch (taskTypeString) {
-      case 'multipleChoice':
+    switch (_parseTaskType(taskType)) {
+      case TaskType.multipleChoice:
         return _createMultipleChoiceTask();
-      case 'codeCompletion':
+      case TaskType.codeCompletion:
         return _createCodeCompletionTask();
-      case 'matching':
+      case TaskType.matching:
         return _createMatchingTask();
-      case 'textInput':
+      case TaskType.textInput:
         return _createTextInputTask();
-      default:
-        return _createMultipleChoiceTask(); // fallback
     }
   }
 
@@ -150,15 +147,34 @@ extension TaskEntityExtension on TaskEntity {
     );
   }
 
-  String _snakeToCamelCase(String snakeCase) {
-    final parts = snakeCase.split('_');
-    if (parts.length == 1) return snakeCase;
+  TaskType _parseTaskType(String rawTaskType) {
+    final normalizedTaskType = rawTaskType.trim();
 
-    return parts.first +
-        parts.skip(1).map((part) {
-          if (part.isEmpty) return '';
-          return part[0].toUpperCase() + part.substring(1);
-        }).join();
+    return TaskType.values.firstWhere(
+      (type) =>
+          type.name == normalizedTaskType ||
+          _camelToSnakeCase(type.name) == normalizedTaskType,
+      orElse: () => TaskType.multipleChoice,
+    );
+  }
+
+  String _camelToSnakeCase(String camelCase) {
+    final buffer = StringBuffer();
+
+    for (final rune in camelCase.runes) {
+      final character = String.fromCharCode(rune);
+      final isUppercase =
+          character.toUpperCase() == character &&
+          character.toLowerCase() != character;
+
+      if (isUppercase && buffer.isNotEmpty) {
+        buffer.write('_');
+      }
+
+      buffer.write(character.toLowerCase());
+    }
+
+    return buffer.toString();
   }
 }
 
