@@ -1,5 +1,6 @@
 class RouteConstants {
   static const String root = '/';
+  static const String onboarding = '/onboarding';
   static const String auth = '/auth';
   static const String signIn = '/auth/sign-in';
   static const String signUp = '/auth/sign-up';
