@@ -6,7 +6,6 @@ import 'package:codium/domain/enums/task_type.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/domain/models/task/test_case_model.dart';
 
-// TODO: Improve mapping
 extension TaskEntityExtension on TaskEntity {
   TaskModel toDomain() {
     switch (taskType) {
