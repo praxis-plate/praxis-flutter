@@ -20,45 +20,19 @@ void main() {
       'For any user who completes onboarding, the system should not show '
       'onboarding again on subsequent app launches',
       () async {
-        final testCases = _generatePropertyTestCases(100);
-
-        for (final testCase in testCases) {
+        for (var i = 0; i < 100; i++) {
           SharedPreferences.setMockInitialValues({});
           final testBloc = OnboardingBloc();
+          testBloc.add(CompleteOnboardingEvent());
+          await testBloc.stream.first;
 
-          final language = testCase['language'] as String?;
-          final shouldCompleteWithLanguage =
-              testCase['completeWithLanguage'] as bool;
+          final state = testBloc.state;
+          expect(state, isA<OnboardingCompleteState>());
 
-          if (shouldCompleteWithLanguage && language != null) {
-            testBloc.add(SelectLanguageEvent(language));
-            await testBloc.stream.first;
+          final prefs = await SharedPreferences.getInstance();
+          final isComplete = prefs.getBool('onboarding_complete') ?? false;
 
-            final state = testBloc.state;
-            expect(state, isA<OnboardingCompleteState>());
-            expect(
-              (state as OnboardingCompleteState).selectedLanguage,
-              equals(language),
-            );
-
-            final prefs = await SharedPreferences.getInstance();
-            final isComplete = prefs.getBool('onboarding_complete') ?? false;
-            final savedLanguage = prefs.getString('selected_language');
-
-            expect(isComplete, isTrue);
-            expect(savedLanguage, equals(language));
-          } else {
-            testBloc.add(CompleteOnboardingEvent());
-            await testBloc.stream.first;
-
-            final state = testBloc.state;
-            expect(state, isA<OnboardingCompleteState>());
-
-            final prefs = await SharedPreferences.getInstance();
-            final isComplete = prefs.getBool('onboarding_complete') ?? false;
-
-            expect(isComplete, isTrue);
-          }
+          expect(isComplete, isTrue);
 
           final newBloc = OnboardingBloc();
           newBloc.add(CheckOnboardingStatusEvent());
@@ -71,14 +45,6 @@ void main() {
             reason:
                 'After completing onboarding, checking status should return OnboardingCompleteState',
           );
-
-          if (shouldCompleteWithLanguage && language != null) {
-            expect(
-              (newState as OnboardingCompleteState).selectedLanguage,
-              equals(language),
-              reason: 'Selected language should persist across app launches',
-            );
-          }
 
           await testBloc.close();
           await newBloc.close();
@@ -104,23 +70,14 @@ void main() {
     test(
       'should emit OnboardingCompleteState when onboarding is already complete',
       () async {
-        SharedPreferences.setMockInitialValues({
-          'onboarding_complete': true,
-          'selected_language': 'Dart',
-        });
+        SharedPreferences.setMockInitialValues({'onboarding_complete': true});
 
         final testBloc = OnboardingBloc();
         testBloc.add(CheckOnboardingStatusEvent());
 
         await expectLater(
           testBloc.stream,
-          emits(
-            isA<OnboardingCompleteState>().having(
-              (state) => state.selectedLanguage,
-              'selectedLanguage',
-              'Dart',
-            ),
-          ),
+          emits(isA<OnboardingCompleteState>()),
         );
 
         await testBloc.close();
@@ -138,10 +95,7 @@ void main() {
       await expectLater(bloc.stream, emits(isA<OnboardingPage3State>()));
 
       bloc.add(NextPageEvent());
-      await expectLater(
-        bloc.stream,
-        emits(isA<OnboardingLanguageSelectionState>()),
-      );
+      await expectLater(bloc.stream, emits(isA<OnboardingCompleteState>()));
     });
 
     test('should complete onboarding and persist state', () async {
@@ -155,32 +109,10 @@ void main() {
       expect(isComplete, isTrue);
     });
 
-    test('should save language selection and complete onboarding', () async {
-      bloc.add(const SelectLanguageEvent('Python'));
-
-      await expectLater(
-        bloc.stream,
-        emits(
-          isA<OnboardingCompleteState>().having(
-            (state) => state.selectedLanguage,
-            'selectedLanguage',
-            'Python',
-          ),
-        ),
-      );
-
-      final prefs = await SharedPreferences.getInstance();
-      final isComplete = prefs.getBool('onboarding_complete');
-      final savedLanguage = prefs.getString('selected_language');
-
-      expect(isComplete, isTrue);
-      expect(savedLanguage, equals('Python'));
-    });
-
     test(
       'should persist onboarding completion across bloc instances',
       () async {
-        bloc.add(const SelectLanguageEvent('JavaScript'));
+        bloc.add(CompleteOnboardingEvent());
         await bloc.stream.first;
 
         final newBloc = OnboardingBloc();
@@ -188,58 +120,11 @@ void main() {
 
         await expectLater(
           newBloc.stream,
-          emits(
-            isA<OnboardingCompleteState>().having(
-              (state) => state.selectedLanguage,
-              'selectedLanguage',
-              'JavaScript',
-            ),
-          ),
+          emits(isA<OnboardingCompleteState>()),
         );
 
         await newBloc.close();
       },
     );
   });
-}
-
-List<Map<String, dynamic>> _generatePropertyTestCases(int count) {
-  final random = DateTime.now().millisecondsSinceEpoch;
-  final cases = <Map<String, dynamic>>[];
-
-  final sampleLanguages = [
-    'Dart',
-    'Python',
-    'JavaScript',
-    'Java',
-    'C++',
-    'Go',
-    'Rust',
-    'TypeScript',
-    'Kotlin',
-    'Swift',
-    'Ruby',
-    'PHP',
-    'C#',
-    'Scala',
-    'Haskell',
-    'Elixir',
-    'Clojure',
-    'F#',
-    'OCaml',
-    'Erlang',
-  ];
-
-  for (var i = 0; i < count; i++) {
-    final completeWithLanguage = ((random + i * 7) % 2) == 0;
-    final languageIndex = (random + i * 11) % sampleLanguages.length;
-    final language = sampleLanguages[languageIndex];
-
-    cases.add({
-      'completeWithLanguage': completeWithLanguage,
-      'language': completeWithLanguage ? language : null,
-    });
-  }
-
-  return cases;
 }

@@ -1,4 +1,6 @@
+import 'package:codium/core/bloc/theme/theme_cubit.dart';
 import 'package:codium/features/onboarding/bloc/onboarding_bloc.dart';
+import 'package:codium/core/router/route_constants.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,8 +20,29 @@ class OnboardingScreen extends StatelessWidget {
   }
 }
 
-class _OnboardingScreenContent extends StatelessWidget {
+class _OnboardingScreenContent extends StatefulWidget {
   const _OnboardingScreenContent();
+
+  @override
+  State<_OnboardingScreenContent> createState() =>
+      _OnboardingScreenContentState();
+}
+
+class _OnboardingScreenContentState extends State<_OnboardingScreenContent> {
+  late final PageController _pageController;
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +51,24 @@ class _OnboardingScreenContent extends StatelessWidget {
     return BlocListener<OnboardingBloc, OnboardingState>(
       listener: (context, state) {
         if (state is OnboardingCompleteState) {
-          context.go('/navigation');
+          context.go(RouteConstants.root);
         }
       },
       child: Scaffold(
         body: BlocBuilder<OnboardingBloc, OnboardingState>(
           builder: (context, state) {
             return switch (state) {
-              OnboardingPage1State() => const _OnboardingPage1(),
-              OnboardingPage2State() => const _OnboardingPage2(),
-              OnboardingPage3State() => const _OnboardingPage3(),
-              OnboardingLanguageSelectionState() =>
-                const _LanguageSelectionPage(),
+              OnboardingPage1State() ||
+              OnboardingPage2State() ||
+              OnboardingPage3State() => _OnboardingPager(
+                pageController: _pageController,
+                currentPage: _currentPage,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+              ),
               OnboardingCompleteState() => const Center(
                 child: CircularProgressIndicator(),
               ),
@@ -63,107 +92,92 @@ class _OnboardingScreenContent extends StatelessWidget {
   }
 }
 
-class _OnboardingPage1 extends StatelessWidget {
-  const _OnboardingPage1();
-
-  @override
-  Widget build(BuildContext context) {
-    return _OnboardingStepPage(
-      icon: Icons.auto_awesome,
-      title: S.of(context).onboardingTitle1,
-      description: S.of(context).onboardingDescription1,
-      currentPage: 0,
-      onNext: () => context.read<OnboardingBloc>().add(NextPageEvent()),
-    );
-  }
-}
-
-class _OnboardingPage2 extends StatelessWidget {
-  const _OnboardingPage2();
-
-  @override
-  Widget build(BuildContext context) {
-    return _OnboardingStepPage(
-      icon: Icons.menu_book,
-      title: S.of(context).onboardingTitle2,
-      description: S.of(context).onboardingDescription2,
-      currentPage: 1,
-      onNext: () => context.read<OnboardingBloc>().add(NextPageEvent()),
-    );
-  }
-}
-
-class _OnboardingPage3 extends StatelessWidget {
-  const _OnboardingPage3();
-
-  @override
-  Widget build(BuildContext context) {
-    return _OnboardingStepPage(
-      icon: Icons.bookmark,
-      title: S.of(context).onboardingTitle3,
-      description: S.of(context).onboardingDescription3,
-      currentPage: 2,
-      onNext: () => context.read<OnboardingBloc>().add(NextPageEvent()),
-    );
-  }
-}
-
-class _OnboardingStepPage extends StatelessWidget {
-  const _OnboardingStepPage({
-    required this.icon,
-    required this.title,
-    required this.description,
+class _OnboardingPager extends StatelessWidget {
+  const _OnboardingPager({
+    required this.pageController,
     required this.currentPage,
-    required this.onNext,
+    required this.onPageChanged,
   });
 
-  final IconData icon;
-  final String title;
-  final String description;
+  final PageController pageController;
   final int currentPage;
-  final VoidCallback onNext;
+  final ValueChanged<int> onPageChanged;
 
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final theme = Theme.of(context);
+    final pages = [
+      (
+        icon: Icons.school_rounded,
+        title: s.onboardingTitle1,
+        description: s.onboardingDescription1,
+      ),
+      (
+        icon: Icons.task_alt_rounded,
+        title: s.onboardingTitle2,
+        description: s.onboardingDescription2,
+      ),
+      (
+        icon: Icons.emoji_events_rounded,
+        title: s.onboardingTitle3,
+        description: s.onboardingDescription3,
+      ),
+    ];
+    final isLastPage = currentPage == pages.length - 1;
 
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: () {
-                  context.read<OnboardingBloc>().add(CompleteOnboardingEvent());
-                },
-                child: Text(s.onboardingSkip),
-              ),
+            Row(
+              children: [
+                BlocBuilder<ThemeCubit, ThemeState>(
+                  builder: (context, themeState) {
+                    final colorScheme = Theme.of(context).colorScheme;
+
+                    return IconButton.outlined(
+                      onPressed: () => context.read<ThemeCubit>().setDarkTheme(
+                        !themeState.isDarkTheme,
+                      ),
+                      tooltip: s.profileSetDarkMode,
+                      style: IconButton.styleFrom(
+                        backgroundColor: colorScheme.surfaceContainerHighest,
+                        foregroundColor: colorScheme.onSurface,
+                        side: BorderSide(color: colorScheme.outlineVariant),
+                      ),
+                      icon: Icon(
+                        themeState.isDarkTheme
+                            ? Icons.light_mode_rounded
+                            : Icons.dark_mode_rounded,
+                      ),
+                    );
+                  },
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: () {
+                    context.read<OnboardingBloc>().add(
+                      CompleteOnboardingEvent(),
+                    );
+                  },
+                  child: Text(s.onboardingSkip),
+                ),
+              ],
             ),
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(icon, size: 120, color: theme.colorScheme.primary),
-                  const SizedBox(height: 32),
-                  Text(
-                    title,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    description,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+              child: PageView.builder(
+                controller: pageController,
+                onPageChanged: onPageChanged,
+                itemCount: pages.length,
+                itemBuilder: (context, index) {
+                  final page = pages[index];
+                  return _OnboardingPageContent(
+                    icon: page.icon,
+                    title: page.title,
+                    description: page.description,
+                  );
+                },
               ),
             ),
             _PageIndicator(currentPage: currentPage),
@@ -171,7 +185,14 @@ class _OnboardingStepPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: onNext,
+                onPressed: () => isLastPage
+                    ? context.read<OnboardingBloc>().add(
+                        CompleteOnboardingEvent(),
+                      )
+                    : pageController.nextPage(
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeOut,
+                      ),
                 child: Text(s.onboardingNext),
               ),
             ),
@@ -182,115 +203,42 @@ class _OnboardingStepPage extends StatelessWidget {
   }
 }
 
-class _LanguageSelectionPage extends StatelessWidget {
-  const _LanguageSelectionPage();
-
-  static const List<Map<String, String>> languages = [
-    {'name': 'Python', 'icon': '🐍'},
-    {'name': 'JavaScript', 'icon': '📜'},
-    {'name': 'Dart', 'icon': '🎯'},
-    {'name': 'Java', 'icon': '☕'},
-    {'name': 'C++', 'icon': '⚡'},
-    {'name': 'Rust', 'icon': '🦀'},
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            const SizedBox(height: 32),
-            Text(
-              S.of(context).onboardingLanguageTitle,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              S.of(context).onboardingLanguageDescription,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.5,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemCount: languages.length,
-                itemBuilder: (context, index) {
-                  final language = languages[index];
-                  return _LanguageCard(
-                    name: language['name']!,
-                    icon: language['icon']!,
-                    onTap: () {
-                      context.read<OnboardingBloc>().add(
-                        SelectLanguageEvent(language['name']!),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextButton(
-              onPressed: () {
-                context.read<OnboardingBloc>().add(CompleteOnboardingEvent());
-              },
-              child: Text(S.of(context).onboardingSkipForNow),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LanguageCard extends StatelessWidget {
-  final String name;
-  final String icon;
-  final VoidCallback onTap;
-
-  const _LanguageCard({
-    required this.name,
+class _OnboardingPageContent extends StatelessWidget {
+  const _OnboardingPageContent({
     required this.icon,
-    required this.onTap,
+    required this.title,
+    required this.description,
   });
 
+  final IconData icon;
+  final String title;
+  final String description;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
-      elevation: 2,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(icon, style: const TextStyle(fontSize: 48)),
-            const SizedBox(height: 8),
-            Text(
-              name,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 120, color: theme.colorScheme.primary),
+        const SizedBox(height: 32),
+        Text(
+          title,
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
         ),
-      ),
+        const SizedBox(height: 16),
+        Text(
+          description,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

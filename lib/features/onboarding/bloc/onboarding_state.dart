@@ -15,16 +15,7 @@ final class OnboardingPage2State extends OnboardingState {}
 
 final class OnboardingPage3State extends OnboardingState {}
 
-final class OnboardingLanguageSelectionState extends OnboardingState {}
-
-final class OnboardingCompleteState extends OnboardingState {
-  final String? selectedLanguage;
-
-  const OnboardingCompleteState({this.selectedLanguage});
-
-  @override
-  List<Object?> get props => [selectedLanguage];
-}
+final class OnboardingCompleteState extends OnboardingState {}
 
 final class OnboardingErrorState extends OnboardingState {
   final AppErrorCode errorCode;
