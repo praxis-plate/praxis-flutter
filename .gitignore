@@ -42,12 +42,10 @@ app.*.map.json
 .fvmrc
 
 # Platform folders
-/android/
 /macos/
 /windows/
 /web/
 /linux/
-/ios/
 
 # Generated files
 /lib/generated/
