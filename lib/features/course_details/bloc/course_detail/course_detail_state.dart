@@ -25,10 +25,10 @@ class CourseDetailLoadSuccessState extends CourseDetailState {
 }
 
 class CourseDetailLoadErrorState extends CourseDetailState {
-  final String message;
+  final AppFailure failure;
 
-  const CourseDetailLoadErrorState(this.message);
+  const CourseDetailLoadErrorState(this.failure);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }

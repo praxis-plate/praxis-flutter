@@ -1,3 +1,4 @@
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
 import 'package:equatable/equatable.dart';
@@ -14,16 +15,19 @@ class TaskHintCubit extends Cubit<TaskHintState> {
 
   Future<void> requestHint(int taskId) async {
     emit(const TaskHintLoading());
+    try {
+      final result = await _requestTaskHintUseCase(
+        taskId: taskId,
+        userId: _userId,
+      );
 
-    final result = await _requestTaskHintUseCase(
-      taskId: taskId,
-      userId: _userId,
-    );
-
-    result.when(
-      success: (hint) => emit(TaskHintLoaded(hint)),
-      failure: (failure) => emit(TaskHintError(failure.message)),
-    );
+      result.when(
+        success: (hint) => emit(TaskHintLoaded(hint)),
+        failure: (failure) => emit(TaskHintError(failure)),
+      );
+    } catch (e) {
+      emit(TaskHintError(AppFailure.fromException(e)));
+    }
   }
 
   void reset() {

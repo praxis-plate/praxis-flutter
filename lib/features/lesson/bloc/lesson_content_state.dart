@@ -43,10 +43,10 @@ class LessonContentCompleted extends LessonContentState {
 }
 
 class LessonContentError extends LessonContentState {
-  final String message;
+  final AppFailure failure;
 
-  const LessonContentError({required this.message});
+  const LessonContentError({required this.failure});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

@@ -25,10 +25,10 @@ class TaskHintLoaded extends TaskHintState {
 }
 
 class TaskHintError extends TaskHintState {
-  final String message;
+  final AppFailure failure;
 
-  const TaskHintError(this.message);
+  const TaskHintError(this.failure);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }

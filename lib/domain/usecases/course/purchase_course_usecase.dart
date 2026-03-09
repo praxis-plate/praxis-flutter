@@ -41,8 +41,8 @@ class PurchaseCourseUseCase {
     if (isEnrolledResult.dataOrNull == true) {
       return const Failure(
         AppFailure(
-          code: AppErrorCode.validationInvalid,
-          message: 'Course already purchased',
+          code: AppErrorCode.courseAlreadyPurchased,
+          message: '',
           canRetry: false,
         ),
       );

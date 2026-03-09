@@ -1,3 +1,4 @@
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/usecases/usecases.dart';
@@ -30,12 +31,15 @@ class MainCarouselBloc extends Bloc<MainCarouselEvent, MainCarouselState> {
       } else {
         emit(
           MainCarouselLoadErrorState(
-            result.failureOrNull?.message ?? 'Unknown error',
+            result.failureOrNull ??
+                AppFailure.fromException(
+                  StateError('Failed to load main carousel'),
+                ),
           ),
         );
       }
     } catch (e) {
-      emit(MainCarouselLoadErrorState(e.toString()));
+      emit(MainCarouselLoadErrorState(AppFailure.fromException(e)));
     }
   }
 }

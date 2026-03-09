@@ -1,3 +1,4 @@
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/lesson/lesson_model.dart';
 import 'package:codium/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
@@ -24,21 +25,26 @@ class LessonsListBloc extends Bloc<LessonsListEvent, LessonsListState> {
     Emitter<LessonsListState> emit,
   ) async {
     emit(const LessonsListLoadingState());
+    try {
+      final result = await _getLessonsByCourseIdUseCase(event.courseId);
 
-    final result = await _getLessonsByCourseIdUseCase(event.courseId);
+      if (result.isSuccess) {
+        final lessons = result.dataOrNull!;
+        final taskCounts = <int, int?>{};
 
-    if (result.isSuccess) {
-      final lessons = result.dataOrNull!;
-      final taskCounts = <int, int?>{};
+        for (final lesson in lessons) {
+          final taskCountResult = await _getTaskCountByLessonIdUseCase(
+            lesson.id,
+          );
+          taskCounts[lesson.id] = taskCountResult.dataOrNull;
+        }
 
-      for (final lesson in lessons) {
-        final taskCountResult = await _getTaskCountByLessonIdUseCase(lesson.id);
-        taskCounts[lesson.id] = taskCountResult.dataOrNull;
+        emit(LessonsListLoadedState(lessons: lessons, taskCounts: taskCounts));
+      } else {
+        emit(LessonsListErrorState(failure: result.failureOrNull!));
       }
-
-      emit(LessonsListLoadedState(lessons: lessons, taskCounts: taskCounts));
-    } else {
-      emit(LessonsListErrorState(message: result.failureOrNull!.message));
+    } catch (e) {
+      emit(LessonsListErrorState(failure: AppFailure.fromException(e)));
     }
   }
 }

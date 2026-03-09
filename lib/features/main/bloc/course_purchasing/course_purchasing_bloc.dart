@@ -1,4 +1,5 @@
 import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
@@ -30,30 +31,40 @@ class CoursePurchasingBloc
 
     emit(CoursePurchasingLoadingState(event.courseId));
 
-    talker.debug('Calling PurchaseCourseUseCase...');
-    final result = await _purchaseCourseUseCase(event.userId, event.courseId);
+    try {
+      talker.debug('Calling PurchaseCourseUseCase...');
+      final result = await _purchaseCourseUseCase(event.userId, event.courseId);
 
-    result.when(
-      success: (_) {
-        talker.info('✅ Course purchased successfully: ${event.courseId}');
-        emit(CoursePurchasingLoadSuccessState(event.courseId));
-      },
-      failure: (failure) {
-        if (failure.code == AppErrorCode.insufficientBalance) {
-          talker.warning('💰 Insufficient balance: ${failure.message}');
-          emit(
-            CoursePurchasingInsufficientBalanceState(
-              event.courseId,
-              required: 0,
-              available: 0,
-            ),
-          );
-          return;
-        }
+      result.when(
+        success: (_) {
+          talker.info('✅ Course purchased successfully: ${event.courseId}');
+          emit(CoursePurchasingLoadSuccessState(event.courseId));
+        },
+        failure: (failure) {
+          if (failure.code == AppErrorCode.insufficientBalance) {
+            talker.warning('💰 Insufficient balance: ${failure.message}');
+            emit(
+              CoursePurchasingInsufficientBalanceState(
+                event.courseId,
+                required: 0,
+                available: 0,
+              ),
+            );
+            return;
+          }
 
-        talker.warning('⚠️ Course purchase failed: ${failure.message}');
-        emit(CoursePurchasingLoadErrorState(event.courseId, failure.message));
-      },
-    );
+          talker.warning('⚠️ Course purchase failed: ${failure.message}');
+          emit(CoursePurchasingLoadErrorState(event.courseId, failure));
+        },
+      );
+    } catch (e, st) {
+      talker.handle(e, st);
+      emit(
+        CoursePurchasingLoadErrorState(
+          event.courseId,
+          AppFailure.fromException(e),
+        ),
+      );
+    }
   }
 }

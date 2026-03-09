@@ -1,3 +1,5 @@
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/domain/usecases/usecases.dart';
@@ -25,22 +27,30 @@ class UserStatisticsBloc
     Emitter<UserStatisticsState> emit,
   ) async {
     emit(const UserStatisticsLoadingState());
+    try {
+      final result = await _getUserStatisticsUseCase(event.userId);
 
-    final result = await _getUserStatisticsUseCase(event.userId);
-
-    result.when(
-      success: (statistics) {
-        if (statistics != null) {
-          emit(UserStatisticsLoadSuccessState(statistics));
-        } else {
-          emit(const UserStatisticsLoadErrorState('Statistics not found'));
-        }
-      },
-      failure: (failure) {
-        GetIt.I<Talker>().error(failure.code);
-        emit(UserStatisticsLoadErrorState('Hello: ${failure.message}'));
-      },
-    );
+      result.when(
+        success: (statistics) {
+          if (statistics != null) {
+            emit(UserStatisticsLoadSuccessState(statistics));
+          } else {
+            emit(
+              const UserStatisticsLoadErrorState(
+                AppFailure(code: AppErrorCode.apiNotFound, message: ''),
+              ),
+            );
+          }
+        },
+        failure: (failure) {
+          GetIt.I<Talker>().error(failure.code);
+          emit(UserStatisticsLoadErrorState(failure));
+        },
+      );
+    } catch (e, st) {
+      GetIt.I<Talker>().handle(e, st);
+      emit(UserStatisticsLoadErrorState(AppFailure.fromException(e)));
+    }
   }
 
   @override

@@ -12,12 +12,12 @@ final class MainCarouselInitialState extends MainCarouselState {}
 final class MainCarouselLoadingState extends MainCarouselState {}
 
 final class MainCarouselLoadErrorState extends MainCarouselState {
-  final String message;
+  final AppFailure failure;
 
-  const MainCarouselLoadErrorState(this.message);
+  const MainCarouselLoadErrorState(this.failure);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }
 
 final class MainCarouselLoadSuccessState extends MainCarouselState {
