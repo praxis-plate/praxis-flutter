@@ -20,12 +20,19 @@ class UserLocalDataSource {
       return existingUser;
     }
 
+    final existingUserWithEmail = await getUserByEmail(email);
+    if (existingUserWithEmail != null) {
+      if (existingUserWithEmail.id != userId) {
+        await (_db.update(_db.user)..where((t) => t.email.equals(email))).write(
+          UserCompanion(id: Value(userId), email: Value(email)),
+        );
+      }
+
+      return getUserById(userId);
+    }
+
     return _db.managers.user.createReturning(
-      (o) => o(
-        id: userId,
-        email: email,
-        createdAt: DateTime.now(),
-      ),
+      (o) => o(id: userId, email: email, createdAt: DateTime.now()),
     );
   }
 
