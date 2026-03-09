@@ -159,6 +159,7 @@ class DependencyInjection {
           GetIt.I<AuthRemoteDataSource>(),
           GetIt.I<ISessionService>(),
           GetIt.I<AuthSessionRemoteDataSource>(),
+          GetIt.I<UserLocalDataSource>(),
         ),
       )
       ..registerLazySingleton<ICourseRepository>(
@@ -356,7 +357,10 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(
-        () => LessonsListBloc(GetIt.I<GetLessonsByCourseIdUseCase>()),
+        () => LessonsListBloc(
+          GetIt.I<GetLessonsByCourseIdUseCase>(),
+          GetIt.I<GetTaskCountByLessonIdUseCase>(),
+        ),
       )
       ..registerFactory(
         () => LessonContentBloc(

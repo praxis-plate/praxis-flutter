@@ -48,12 +48,15 @@ class _NavigationShellInitializerState
             ),
           );
         } else if (state is CoursePurchasingInsufficientBalanceState) {
+          final s = S.of(context);
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              // TODO: Replace with localized string
               content: Text(
-                'Недостаточно монет. Нужно: ${state.required}, '
-                'Доступно: ${state.available}',
+                s.coursePurchaseInsufficientBalanceMessage(
+                  state.required,
+                  state.available,
+                ),
               ),
               backgroundColor: Theme.of(context).colorScheme.error,
               duration: const Duration(seconds: 3),

@@ -1,18 +1,13 @@
-import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/lesson/lesson_model.dart';
-import 'package:codium/domain/usecases/tasks/get_task_count_by_lesson_id_usecase.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class LessonCard extends StatelessWidget {
   final LessonModel lesson;
-  final GetTaskCountByLessonIdUseCase getTaskCountUseCase;
+  final int? taskCount;
 
-  const LessonCard({
-    super.key,
-    required this.lesson,
-    required this.getTaskCountUseCase,
-  });
+  const LessonCard({super.key, required this.lesson, required this.taskCount});
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +21,8 @@ class LessonCard extends StatelessWidget {
         ),
         title: Text(lesson.title),
         subtitle: _TaskCountSubtitle(
-          lessonId: lesson.id,
           durationMinutes: lesson.durationMinutes,
-          getTaskCountUseCase: getTaskCountUseCase,
+          taskCount: taskCount,
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
@@ -42,67 +36,25 @@ class LessonCard extends StatelessWidget {
   }
 }
 
-class _TaskCountSubtitle extends StatefulWidget {
-  final int lessonId;
+class _TaskCountSubtitle extends StatelessWidget {
   final int durationMinutes;
-  final GetTaskCountByLessonIdUseCase getTaskCountUseCase;
+  final int? taskCount;
 
   const _TaskCountSubtitle({
-    required this.lessonId,
     required this.durationMinutes,
-    required this.getTaskCountUseCase,
+    required this.taskCount,
   });
 
   @override
-  State<_TaskCountSubtitle> createState() => _TaskCountSubtitleState();
-}
-
-class _TaskCountSubtitleState extends State<_TaskCountSubtitle> {
-  int? _taskCount;
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTaskCount();
-  }
-
-  Future<void> _loadTaskCount() async {
-    final result = await widget.getTaskCountUseCase(widget.lessonId);
-
-    if (!mounted) return;
-
-    setState(() {
-      _taskCount = result.dataOrNull;
-      _isLoading = false;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
+    final taskCountText = taskCount != null
+        ? ' • ${s.tasksCount(taskCount!)}'
+        : '';
 
-    if (_isLoading) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '${widget.durationMinutes} min',
-            style: theme.textTheme.bodySmall,
-          ),
-          const SizedBox(width: 8),
-          const SizedBox(
-            height: 12,
-            width: 12,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ],
-      );
-    }
-
-    final taskCountText = _taskCount != null ? ' • $_taskCount tasks' : '';
     return Text(
-      '${widget.durationMinutes} min$taskCountText',
+      '${s.minutesCount(durationMinutes)}$taskCountText',
       style: theme.textTheme.bodySmall,
     );
   }

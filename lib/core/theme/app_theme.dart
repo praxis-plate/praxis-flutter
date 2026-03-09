@@ -1,6 +1,36 @@
 import 'package:flutter/material.dart';
 
 @immutable
+class GlassTextFieldTheme extends ThemeExtension<GlassTextFieldTheme> {
+  const GlassTextFieldTheme({required this.inputDecorationTheme});
+
+  final InputDecorationTheme inputDecorationTheme;
+
+  @override
+  GlassTextFieldTheme copyWith({InputDecorationTheme? inputDecorationTheme}) {
+    return GlassTextFieldTheme(
+      inputDecorationTheme: inputDecorationTheme ?? this.inputDecorationTheme,
+    );
+  }
+
+  @override
+  GlassTextFieldTheme lerp(
+    covariant ThemeExtension<GlassTextFieldTheme>? other,
+    double t,
+  ) {
+    if (other is! GlassTextFieldTheme) {
+      return this;
+    }
+
+    return GlassTextFieldTheme(
+      inputDecorationTheme: t < 0.5
+          ? inputDecorationTheme
+          : other.inputDecorationTheme,
+    );
+  }
+}
+
+@immutable
 class AppPalette {
   static const Color star = Color.fromARGB(255, 255, 193, 7);
 
@@ -99,6 +129,11 @@ class AppTheme {
       dividerTheme: _dividerTheme(palette),
       listTileTheme: _listTileTheme(palette),
       cardTheme: _cardTheme(palette),
+      extensions: [
+        GlassTextFieldTheme(
+          inputDecorationTheme: _glassTextFieldInputDecorationTheme(palette),
+        ),
+      ],
     );
   }
 
@@ -162,6 +197,26 @@ class AppTheme {
       hintStyle: text.bodyMedium?.copyWith(
         color: p.onSurface.withValues(alpha: 0.4),
       ),
+      prefixIconColor: p.onSurface.withValues(alpha: 0.7),
+      suffixIconColor: p.onSurface.withValues(alpha: 0.7),
+    );
+  }
+
+  static InputDecorationTheme _glassTextFieldInputDecorationTheme(
+    AppPalette p,
+  ) {
+    return InputDecorationTheme(
+      isDense: true,
+      contentPadding: const EdgeInsets.symmetric(vertical: 8),
+      border: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      disabledBorder: InputBorder.none,
+      errorBorder: InputBorder.none,
+      focusedErrorBorder: InputBorder.none,
+      hintStyle: _textTheme(
+        p,
+      ).bodyMedium?.copyWith(color: p.onSurface.withValues(alpha: 0.4)),
       prefixIconColor: p.onSurface.withValues(alpha: 0.7),
       suffixIconColor: p.onSurface.withValues(alpha: 0.7),
     );
