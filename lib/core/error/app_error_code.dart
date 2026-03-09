@@ -28,6 +28,7 @@ enum AppErrorCode {
   authUserAlreadyExists,
   authFailedToCreateUser,
 
+  courseAlreadyPurchased,
   insufficientBalance,
 
   unknown,

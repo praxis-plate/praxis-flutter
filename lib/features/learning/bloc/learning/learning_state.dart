@@ -25,10 +25,10 @@ final class LearningLoadSuccessState extends LearningState {
 }
 
 final class LearningLoadErrorState extends LearningState {
-  final String message;
+  final AppFailure failure;
 
-  const LearningLoadErrorState({required this.message});
+  const LearningLoadErrorState({required this.failure});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }

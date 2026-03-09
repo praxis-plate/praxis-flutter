@@ -89,21 +89,21 @@ class TaskHintLoadedState extends TaskState implements TaskStateWithTask {
 }
 
 class TaskErrorState extends TaskState {
-  final String message;
+  final AppFailure failure;
 
-  const TaskErrorState(this.message);
+  const TaskErrorState(this.failure);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }
 
 class TaskHintErrorState extends TaskState implements TaskStateWithTask {
   @override
   final TaskModel task;
-  final String message;
+  final AppFailure failure;
 
-  const TaskHintErrorState({required this.task, required this.message});
+  const TaskHintErrorState({required this.task, required this.failure});
 
   @override
-  List<Object> get props => [task, message];
+  List<Object> get props => [task, failure];
 }

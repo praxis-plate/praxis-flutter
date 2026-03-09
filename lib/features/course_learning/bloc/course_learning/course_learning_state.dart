@@ -31,10 +31,10 @@ class CourseLearningLoaded extends CourseLearningState {
 }
 
 class CourseLearningError extends CourseLearningState {
-  final String message;
+  final AppFailure failure;
 
-  const CourseLearningError({required this.message});
+  const CourseLearningError({required this.failure});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

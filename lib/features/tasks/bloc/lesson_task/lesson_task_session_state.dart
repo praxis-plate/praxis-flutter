@@ -106,10 +106,10 @@ enum LessonTaskSessionErrorType { noTasks, generic }
 
 class SessionErrorState extends LessonTaskSessionState {
   final LessonTaskSessionErrorType type;
-  final String? message;
+  final AppFailure? failure;
 
-  const SessionErrorState({required this.type, this.message});
+  const SessionErrorState({required this.type, this.failure});
 
   @override
-  List<Object?> get props => [type, message];
+  List<Object?> get props => [type, failure];
 }

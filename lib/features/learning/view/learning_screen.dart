@@ -1,3 +1,4 @@
+import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
 import 'package:codium/features/learning/widgets/empty_learning_state.dart';
@@ -36,8 +37,8 @@ class LearningScreen extends StatelessWidget {
             LearningLoadingState() => const Center(
               child: CircularProgressIndicator(),
             ),
-            LearningLoadErrorState(:final message) => ErrorScreen(
-              message: message,
+            LearningLoadErrorState(:final failure) => ErrorScreen(
+              message: failure.code.localizedMessage(context),
             ),
             LearningLoadSuccessState() =>
               state.enrolledCourses.isEmpty

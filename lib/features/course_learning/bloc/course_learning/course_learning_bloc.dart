@@ -1,3 +1,5 @@
+import 'package:codium/core/error/app_error_code.dart';
+import 'package:codium/core/error/failure.dart';
 import 'package:codium/core/utils/result.dart';
 import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/lesson_progress/lesson_progress_model.dart';
@@ -68,15 +70,27 @@ class CourseLearningBloc
             ),
           );
         } else {
-          emit(const CourseLearningError(message: 'Course not found'));
+          emit(
+            const CourseLearningError(
+              failure: AppFailure(code: AppErrorCode.apiNotFound, message: ''),
+            ),
+          );
         }
       } else {
         final error = courseResult.failureOrNull;
-        emit(CourseLearningError(message: error?.message ?? 'Unknown error'));
+        emit(
+          CourseLearningError(
+            failure:
+                error ??
+                AppFailure.fromException(
+                  StateError('Failed to load course progress'),
+                ),
+          ),
+        );
       }
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
-      emit(CourseLearningError(message: e.toString()));
+      emit(CourseLearningError(failure: AppFailure.fromException(e)));
     }
   }
 
@@ -106,10 +120,27 @@ class CourseLearningBloc
               statistics: _createStatistics(course, progress),
             ),
           );
+        } else {
+          emit(
+            const CourseLearningError(
+              failure: AppFailure(code: AppErrorCode.apiNotFound, message: ''),
+            ),
+          );
         }
+      } else {
+        emit(
+          CourseLearningError(
+            failure:
+                courseResult.failureOrNull ??
+                AppFailure.fromException(
+                  StateError('Failed to refresh course progress'),
+                ),
+          ),
+        );
       }
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
+      emit(CourseLearningError(failure: AppFailure.fromException(e)));
     }
   }
 }

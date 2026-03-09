@@ -241,6 +241,7 @@
   "errorApiNotFound": "Ресурс не найден.",
   "errorApiGeneral": "Произошла ошибка API.",
   "errorRateLimitExceeded": "Превышен лимит запросов. Попробуйте позже.",
+  "errorCourseAlreadyPurchased": "Этот курс уже приобретен.",
   "errorInsufficientBalance": "Недостаточно средств для завершения покупки.",
   "errorCourseNotPurchased": "Этот курс не был приобретен.",
   "errorLessonNotUnlocked": "Этот урок еще не разблокирован.",

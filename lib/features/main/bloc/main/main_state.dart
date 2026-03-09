@@ -12,12 +12,12 @@ final class MainCoursesLoadingState extends MainState {
 }
 
 final class MainCoursesLoadErrorState extends MainState {
-  final String message;
+  final AppFailure failure;
 
-  const MainCoursesLoadErrorState(this.message);
+  const MainCoursesLoadErrorState(this.failure);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }
 
 final class MainCoursesLoadSuccessState extends MainState {
