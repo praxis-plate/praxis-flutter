@@ -42,18 +42,23 @@ class _AuthPasswordInputState extends State<AuthPasswordInput> {
           decoration: InputDecoration(
             labelText: s.labelPassword,
             hintText: s.displayPasswordHint,
-            suffixIcon: IconButton(
-              icon: Icon(
-                _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
-                color: widget.isEnabled
-                    ? theme.colorScheme.onSurface
-                    : theme.disabledColor,
+            suffixIcon: Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                style: IconButton.styleFrom(shape: const CircleBorder()),
+                icon: Icon(
+                  _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                  color: widget.isEnabled
+                      ? theme.colorScheme.onSurface
+                      : theme.disabledColor,
+                ),
+                splashRadius: 20,
+                onPressed: () {
+                  _isPasswordHidden = !_isPasswordHidden;
+                  setState(() {});
+                },
               ),
-              splashRadius: 20,
-              onPressed: () {
-                _isPasswordHidden = !_isPasswordHidden;
-                setState(() {});
-              },
             ),
           ),
           onChanged: widget.onChanged,
