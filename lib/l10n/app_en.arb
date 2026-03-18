@@ -12,6 +12,42 @@
   "displayAlreadyHaveAnAccount": "Already have an account?",
   "displaySignIn": "Sign In",
   "displayOr": "or",
+  "displaySignUpStepEmail": "Email",
+  "displaySignUpStepVerifyCode": "Code",
+  "displaySignUpStepPassword": "Password",
+  "displaySignUpStepProgress": "Step {current}/{total}: {label}",
+  "@displaySignUpStepProgress": {
+    "description": "Sign up progress label",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "displayForgotStepEmail": "Email",
+  "displayForgotStepVerifyCode": "Code",
+  "displayForgotStepNewPassword": "New password",
+  "displayForgotStepProgress": "Step {current}/{total}: {label}",
+  "@displayForgotStepProgress": {
+    "description": "Forgot password progress label",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "displayEmailHint": "example@gmail.com",
   "displayPasswordHint": "•••••••••",
   "displayDontHaveAnAccount": "Don't have an account?",

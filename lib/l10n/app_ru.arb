@@ -12,6 +12,42 @@
   "displayAlreadyHaveAnAccount": "Уже есть аккаунт?",
   "displaySignIn": "Войти",
   "displayOr": "или",
+  "displaySignUpStepEmail": "Email",
+  "displaySignUpStepVerifyCode": "Код",
+  "displaySignUpStepPassword": "Пароль",
+  "displaySignUpStepProgress": "Шаг {current}/{total}: {label}",
+  "@displaySignUpStepProgress": {
+    "description": "Подпись прогресса регистрации",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "displayForgotStepEmail": "Email",
+  "displayForgotStepVerifyCode": "Код",
+  "displayForgotStepNewPassword": "Новый пароль",
+  "displayForgotStepProgress": "Шаг {current}/{total}: {label}",
+  "@displayForgotStepProgress": {
+    "description": "Подпись прогресса восстановления пароля",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "displayEmailHint": "example@yandex.ru",
   "displayPasswordHint": "•••••••••",
   "displayDontHaveAnAccount": "Нет аккаунта?",
