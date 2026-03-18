@@ -16,7 +16,28 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: theme.colorScheme.onPrimary,
+        title: Text(s.displaySignUp),
+        titleTextStyle: theme.textTheme.titleLarge?.copyWith(
+          color: theme.colorScheme.onPrimary,
+          fontWeight: FontWeight.w700,
+        ),
+        leading: Icon(Icons.lock_outline, color: theme.colorScheme.onPrimary),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(34),
+          child: Container(
+            color: theme.colorScheme.primary,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: const _SignUpProgress(),
+          ),
+        ),
+      ),
       extendBody: true,
       body: SafeArea(
         bottom: false,
@@ -31,13 +52,6 @@ class SignUpScreen extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-      bottomNavigationBar: const BottomAppBar(
-        child: SafeArea(
-          top: false,
-          minimum: EdgeInsets.fromLTRB(16, 8, 16, 12),
-          child: _SignUpProgress(),
         ),
       ),
     );
@@ -60,20 +74,30 @@ class _SignUpForm extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(
-              Icons.lock_outline,
-              size: 48,
-              color: theme.colorScheme.primary,
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                s.displaySignUpSubtitle,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.left,
+              ),
             ),
-            const SizedBox(height: 12),
-            Text(s.displaySignUp, style: theme.textTheme.displayLarge),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
             const _SignUpInputs(),
             const SizedBox(height: 16),
             const _SubmitButton(),
-            const SizedBox(height: 16),
-            AuthOrDivider(text: s.displayOr),
-            const SizedBox(height: 4),
+            const SizedBox(height: 12),
+            Divider(
+              height: 14,
+              thickness: 0.75,
+              indent: 48,
+              endIndent: 48,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.12),
+            ),
+            const SizedBox(height: 8),
             _SignInRedirect(onSwitchToSignIn: onSwitchToSignIn),
           ],
         ),
@@ -102,10 +126,7 @@ class _SignUpInputs extends StatelessWidget {
         }
 
         if (state.step == SignUpStep.password) {
-          children.addAll([
-            const SizedBox(height: 16),
-            const _PasswordInput(),
-          ]);
+          children.addAll([const SizedBox(height: 16), const _PasswordInput()]);
         }
 
         return Column(children: children);
@@ -138,31 +159,21 @@ class _SignUpProgress extends StatelessWidget {
         return Column(
           children: [
             Text(
-              s.displaySignUpStepProgress(
-                currentStep + 1,
-                3,
-                stepLabel,
-              ),
+              s.displaySignUpStepProgress(currentStep + 1, 3, stepLabel),
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
+                color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Row(
               children: [
-                Expanded(
-                  child: _StepBar(isActive: currentStep == 0),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _StepBar(isActive: currentStep == 1),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _StepBar(isActive: currentStep == 2),
-                ),
+                Expanded(child: _StepBar(isActive: currentStep == 0)),
+                const SizedBox(width: 6),
+                Expanded(child: _StepBar(isActive: currentStep == 1)),
+                const SizedBox(width: 6),
+                Expanded(child: _StepBar(isActive: currentStep == 2)),
               ],
             ),
           ],
@@ -180,12 +191,12 @@ class _StepBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final activeColor = theme.colorScheme.primary;
-    final inactiveColor = theme.colorScheme.onSurface.withValues(alpha: 0.2);
+    final activeColor = theme.colorScheme.onPrimary;
+    final inactiveColor = theme.colorScheme.onPrimary.withValues(alpha: 0.3);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
-      height: 6,
+      height: 4,
       decoration: BoxDecoration(
         color: isActive ? activeColor : inactiveColor,
         borderRadius: BorderRadius.circular(999),
@@ -280,6 +291,7 @@ class _SubmitButton extends StatelessWidget {
                 authState is AuthLoadingState ||
                 formState.status == FormzSubmissionStatus.inProgress;
             final s = S.of(context);
+            final theme = Theme.of(context);
             final cubit = context.read<SignUpCubit>();
 
             return isLoading
@@ -287,6 +299,12 @@ class _SubmitButton extends StatelessWidget {
                 : SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        disabledForegroundColor: theme.colorScheme.onSurface
+                            .withValues(alpha: 0.6),
+                        disabledBackgroundColor: theme.colorScheme.onSurface
+                            .withValues(alpha: 0.12),
+                      ),
                       onPressed: formState.isValid
                           ? () => _handleSubmit(cubit, formState)
                           : null,
