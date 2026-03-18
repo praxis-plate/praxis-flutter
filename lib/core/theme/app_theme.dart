@@ -205,6 +205,8 @@ class AppTheme {
   static InputDecorationTheme _glassTextFieldInputDecorationTheme(
     AppPalette p,
   ) {
+    final text = _textTheme(p);
+
     return InputDecorationTheme(
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(vertical: 8),
@@ -214,9 +216,13 @@ class AppTheme {
       disabledBorder: InputBorder.none,
       errorBorder: InputBorder.none,
       focusedErrorBorder: InputBorder.none,
-      hintStyle: _textTheme(
-        p,
-      ).bodyMedium?.copyWith(color: p.onSurface.withValues(alpha: 0.4)),
+      labelStyle: text.bodyMedium?.copyWith(
+        color: p.onSurface.withValues(alpha: 0.7),
+      ),
+      floatingLabelStyle: TextStyle(color: p.primary),
+      hintStyle: text.bodyMedium?.copyWith(
+        color: p.onSurface.withValues(alpha: 0.6),
+      ),
       prefixIconColor: p.onSurface.withValues(alpha: 0.7),
       suffixIconColor: p.onSurface.withValues(alpha: 0.7),
     );

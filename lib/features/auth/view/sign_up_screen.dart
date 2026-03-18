@@ -55,6 +55,12 @@ class _SignUpForm extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Icon(
+              Icons.lock_outline,
+              size: 48,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(height: 12),
             Text(s.displaySignUp, style: theme.textTheme.displayLarge),
             const SizedBox(height: 32),
             const _EmailInput(),

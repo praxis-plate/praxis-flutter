@@ -64,6 +64,12 @@ class _SignInForm extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Icon(
+              Icons.door_front_door_outlined,
+              size: 48,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(height: 12),
             Text(s.displaySignIn, style: theme.textTheme.displayLarge),
             const SizedBox(height: 32),
             const _EmailInput(),
@@ -80,6 +86,8 @@ class _SignInForm extends StatelessWidget {
             const SizedBox(height: 16),
             const _SubmitButton(),
             const SizedBox(height: 16),
+            _OrDivider(text: s.displayOr),
+            const SizedBox(height: 16),
             AuthRedirectText(
               questionText: s.displayDontHaveAnAccount,
               actionText: s.displaySignUp,
@@ -88,6 +96,33 @@ class _SignInForm extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _OrDivider extends StatelessWidget {
+  const _OrDivider({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        const Expanded(child: Divider()),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            text,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+          ),
+        ),
+        const Expanded(child: Divider()),
+      ],
     );
   }
 }
