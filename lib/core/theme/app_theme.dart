@@ -154,7 +154,8 @@ class AppTheme {
       isDense: true,
       filled: true,
       fillColor: p.card.withValues(alpha: 0.92),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      constraints: const BoxConstraints(minHeight: 60),
       border: _border(p, neutralBorderColor),
       enabledBorder: _border(p, neutralBorderColor),
       focusedBorder: _border(p, p.primary),
@@ -167,7 +168,7 @@ class AppTheme {
       ),
       prefixIconColor: p.onSurface.withValues(alpha: 0.7),
       suffixIconColor: p.onSurface.withValues(alpha: 0.7),
-      suffixIconConstraints: const BoxConstraints(minWidth: 60, minHeight: 48),
+      suffixIconConstraints: const BoxConstraints(minWidth: 50, minHeight: 50),
     );
   }
 
