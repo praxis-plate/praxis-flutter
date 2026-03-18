@@ -11,6 +11,7 @@
   "errorPasswordsDoNotMatch": "Passwords do not match",
   "displayAlreadyHaveAnAccount": "Already have an account?",
   "displaySignIn": "Sign In",
+  "displayOr": "or",
   "displayEmailHint": "example@gmail.com",
   "displayPasswordHint": "•••••••••",
   "displayDontHaveAnAccount": "Don't have an account?",

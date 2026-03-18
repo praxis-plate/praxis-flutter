@@ -11,6 +11,7 @@
   "errorPasswordsDoNotMatch": "Пароли не совпадают",
   "displayAlreadyHaveAnAccount": "Уже есть аккаунт?",
   "displaySignIn": "Войти",
+  "displayOr": "или",
   "displayEmailHint": "example@yandex.ru",
   "displayPasswordHint": "•••••••••",
   "displayDontHaveAnAccount": "Нет аккаунта?",
