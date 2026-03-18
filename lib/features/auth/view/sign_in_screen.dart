@@ -19,7 +19,23 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: theme.colorScheme.onPrimary,
+        title: Text(s.displaySignIn),
+        titleTextStyle: theme.textTheme.titleLarge?.copyWith(
+          color: theme.colorScheme.onPrimary,
+          fontWeight: FontWeight.w700,
+        ),
+        leading: Icon(
+          Icons.door_front_door_outlined,
+          color: theme.colorScheme.onPrimary,
+        ),
+      ),
       body: Stack(
         children: [
           SafeArea(
@@ -28,7 +44,7 @@ class SignInScreen extends StatelessWidget {
               child: Wrapper(
                 child: Center(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                     child: _SignInForm(
                       onSwitchToSignUp: onSwitchToSignUp,
                       onSwitchToForgotPassword: onSwitchToForgotPassword,
@@ -64,14 +80,18 @@ class _SignInForm extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(
-              Icons.door_front_door_outlined,
-              size: 48,
-              color: theme.colorScheme.primary,
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                s.displaySignInSubtitle,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.left,
+              ),
             ),
-            const SizedBox(height: 12),
-            Text(s.displaySignIn, style: theme.textTheme.displayLarge),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
             const _EmailInput(),
             const SizedBox(height: 16),
             const _PasswordInput(),
@@ -85,9 +105,15 @@ class _SignInForm extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const _SubmitButton(),
-            const SizedBox(height: 16),
-            AuthOrDivider(text: s.displayOr),
-            const SizedBox(height: 4),
+            const SizedBox(height: 12),
+            Divider(
+              height: 14,
+              thickness: 0.75,
+              indent: 48,
+              endIndent: 48,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.12),
+            ),
+            const SizedBox(height: 8),
             AuthRedirectText(
               questionText: s.displayDontHaveAnAccount,
               actionText: s.displaySignUp,
@@ -150,6 +176,7 @@ class _SubmitButton extends StatelessWidget {
         return BlocBuilder<AuthBloc, AuthState>(
           builder: (context, authState) {
             final isLoading = authState is AuthLoadingState;
+            final theme = Theme.of(context);
 
             if (isLoading) {
               return const CircularProgressIndicator();
@@ -158,6 +185,12 @@ class _SubmitButton extends StatelessWidget {
             return SizedBox(
               width: double.infinity,
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  disabledForegroundColor: theme.colorScheme.onSurface
+                      .withValues(alpha: 0.6),
+                  disabledBackgroundColor: theme.colorScheme.onSurface
+                      .withValues(alpha: 0.12),
+                ),
                 onPressed: formState.isValid
                     ? () => _handleSignIn(context, formState)
                     : null,

@@ -22,6 +22,7 @@ class ForgotPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final theme = Theme.of(context);
 
     return BlocProvider(
       create: (context) => GetIt.I<ForgotPasswordCubit>(),
@@ -52,6 +53,24 @@ class ForgotPasswordScreen extends StatelessWidget {
           );
         },
         child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: theme.colorScheme.onPrimary,
+            title: Text(s.displayForgotPasswordTitle),
+            titleTextStyle: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
+              fontWeight: FontWeight.w600,
+            ),
+            leading: Icon(Icons.lock_reset, color: theme.colorScheme.onPrimary),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(34),
+              child: Container(
+                color: theme.colorScheme.primary,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: const _ForgotPasswordProgress(),
+              ),
+            ),
+          ),
           extendBody: true,
           body: SafeArea(
             bottom: false,
@@ -68,13 +87,6 @@ class ForgotPasswordScreen extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-          ),
-          bottomNavigationBar: const BottomAppBar(
-            child: SafeArea(
-              top: false,
-              minimum: EdgeInsets.fromLTRB(16, 8, 16, 12),
-              child: _ForgotPasswordProgress(),
             ),
           ),
         ),
@@ -95,34 +107,35 @@ class _ForgotPasswordForm extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Form(
-        child: ConstrainedBox(
+      child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(
-              Icons.lock_reset,
-              size: 48,
-              color: theme.colorScheme.primary,
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                s.displayForgotPasswordSubtitle,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.left,
+              ),
             ),
-            const SizedBox(height: 12),
-            Text(
-              s.displayForgotPasswordTitle,
-              style: theme.textTheme.displayLarge,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              s.displayForgotPasswordSubtitle,
-              style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 40),
             const _ForgotPasswordInputs(),
             const SizedBox(height: 16),
             const _SubmitButton(),
-            const SizedBox(height: 16),
-            AuthOrDivider(text: s.displayOr),
-            const SizedBox(height: 4),
+            const SizedBox(height: 12),
+            Divider(
+              height: 14,
+              thickness: 0.75,
+              indent: 48,
+              endIndent: 48,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.12),
+            ),
+            const SizedBox(height: 8),
             AuthRedirectText(
               questionText: s.displayRememberPassword,
               actionText: s.displaySignIn,
@@ -162,17 +175,17 @@ class _ForgotPasswordProgress extends StatelessWidget {
               s.displayForgotStepProgress(currentStep + 1, 3, stepLabel),
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
+                color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Row(
               children: [
                 Expanded(child: _StepBar(isActive: currentStep == 0)),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 Expanded(child: _StepBar(isActive: currentStep == 1)),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 Expanded(child: _StepBar(isActive: currentStep == 2)),
               ],
             ),
@@ -191,12 +204,12 @@ class _StepBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final activeColor = theme.colorScheme.primary;
-    final inactiveColor = theme.colorScheme.onSurface.withValues(alpha: 0.2);
+    final activeColor = theme.colorScheme.onPrimary;
+    final inactiveColor = theme.colorScheme.onPrimary.withValues(alpha: 0.3);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
-      height: 6,
+      height: 4,
       decoration: BoxDecoration(
         color: isActive ? activeColor : inactiveColor,
         borderRadius: BorderRadius.circular(999),
@@ -323,6 +336,7 @@ class _SubmitButton extends StatelessWidget {
         }
 
         final s = S.of(context);
+        final theme = Theme.of(context);
         final label = switch (state.step) {
           ForgotPasswordStep.email => s.displaySendVerificationCode,
           ForgotPasswordStep.verifyCode => s.displayVerifyCode,
@@ -332,6 +346,14 @@ class _SubmitButton extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              disabledForegroundColor: theme.colorScheme.onSurface.withValues(
+                alpha: 0.6,
+              ),
+              disabledBackgroundColor: theme.colorScheme.onSurface.withValues(
+                alpha: 0.12,
+              ),
+            ),
             onPressed: state.isValid
                 ? context.read<ForgotPasswordCubit>().submit
                 : null,
