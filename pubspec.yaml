@@ -70,7 +70,6 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/images/blur-backgrounds/
     - assets/icons/
     - assets/prompts/
 flutter_intl:

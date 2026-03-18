@@ -1,4 +1,3 @@
-import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
@@ -29,38 +28,35 @@ class _AuthPasswordInputState extends State<AuthPasswordInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GlassTextField(
+        TextFormField(
           enabled: widget.isEnabled,
-          child: TextFormField(
-            enabled: widget.isEnabled,
-            obscureText: _isPasswordHidden,
-            keyboardType: TextInputType.visiblePassword,
-            enableSuggestions: false,
-            autocorrect: false,
-            textInputAction: TextInputAction.done,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface,
-            ),
-            obscuringCharacter: '•',
-            decoration: InputDecoration(
-              labelText: s.labelPassword,
-              hintText: s.displayPasswordHint,
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
-                  color: widget.isEnabled
-                      ? theme.colorScheme.onSurface
-                      : theme.disabledColor,
-                ),
-                splashRadius: 20,
-                onPressed: () {
-                  _isPasswordHidden = !_isPasswordHidden;
-                  setState(() {});
-                },
-              ),
-            ),
-            onChanged: widget.onChanged,
+          obscureText: _isPasswordHidden,
+          keyboardType: TextInputType.visiblePassword,
+          enableSuggestions: false,
+          autocorrect: false,
+          textInputAction: TextInputAction.done,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurface,
           ),
+          obscuringCharacter: '•',
+          decoration: InputDecoration(
+            labelText: s.labelPassword,
+            hintText: s.displayPasswordHint,
+            suffixIcon: IconButton(
+              icon: Icon(
+                _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                color: widget.isEnabled
+                    ? theme.colorScheme.onSurface
+                    : theme.disabledColor,
+              ),
+              splashRadius: 20,
+              onPressed: () {
+                _isPasswordHidden = !_isPasswordHidden;
+                setState(() {});
+              },
+            ),
+          ),
+          onChanged: widget.onChanged,
         ),
         if (widget.errorText != null) ...[
           const SizedBox(height: 6),
