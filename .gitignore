@@ -62,3 +62,6 @@ lib/l10n/app_localizations*.dart
 
 # Secrets
 /lib/core/secrets/
+
+# Ideas and brainstorming
+/ideas/
