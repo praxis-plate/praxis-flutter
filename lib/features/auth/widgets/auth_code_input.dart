@@ -1,4 +1,3 @@
-import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
@@ -22,15 +21,12 @@ class AuthCodeInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GlassTextField(
+        TextFormField(
           enabled: enabled,
-          child: TextFormField(
-            enabled: enabled,
-            keyboardType: TextInputType.text,
-            style: theme.textTheme.bodyMedium,
-            decoration: InputDecoration(labelText: s.taskEnterCode),
-            onChanged: onChanged,
-          ),
+          keyboardType: TextInputType.text,
+          style: theme.textTheme.bodyMedium,
+          decoration: InputDecoration(labelText: s.taskEnterCode),
+          onChanged: onChanged,
         ),
         if (errorText != null) ...[
           const SizedBox(height: 8),

@@ -1,4 +1,3 @@
-import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/features.dart';
 import 'package:codium/s.dart';
@@ -48,19 +47,15 @@ class _TextInputTaskState extends State<TextInputTask> {
             ),
           ),
           const SizedBox(height: 24),
-          GlassTextField(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: TextField(
-              controller: _answerController,
-              style: theme.textTheme.bodyLarge,
-              decoration: InputDecoration(
-                hintText: s.taskEnterAnswer,
-                hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant.withValues(
-                    alpha: 0.5,
-                  ),
+          TextField(
+            controller: _answerController,
+            style: theme.textTheme.bodyLarge,
+            decoration: InputDecoration(
+              hintText: s.taskEnterAnswer,
+              hintStyle: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.5,
                 ),
-                border: InputBorder.none,
               ),
             ),
           ),
