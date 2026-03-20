@@ -71,7 +71,18 @@
   "navigationHistoryTitle": "History",
   "navigationProfileTitle": "Profile",
 
-  "mainTitle": "Main",
+  "mainTitle": "Catalog",
+  "mainHeroTitle": "Keep learning",
+  "mainHeroSubtitle": "Pick a course and continue where you left off",
+  "mainCoursesAvailableCount": "{count, plural, one {# course available} other {# courses available}}",
+  "@mainCoursesAvailableCount": {
+    "description": "Number of available courses in the main hero section",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "balance": "Balance",
   "recommend": "Recommend",
   "courses": "Courses",

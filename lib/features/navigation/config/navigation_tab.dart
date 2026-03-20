@@ -21,8 +21,8 @@ class NavigationTab {
         route: RouteConstants.home,
         routePrefix: RouteConstants.home,
         destination: NavigationDestination(
-          selectedIcon: const Icon(Icons.home_rounded),
-          icon: const Icon(Icons.home_outlined),
+          selectedIcon: const Icon(Icons.grid_view_rounded),
+          icon: const Icon(Icons.grid_view_rounded),
           label: s.navigationHomeTitle,
         ),
       ),
@@ -33,8 +33,8 @@ class NavigationTab {
         route: RouteConstants.learning,
         routePrefix: RouteConstants.learning,
         destination: NavigationDestination(
-          selectedIcon: const Icon(Icons.science_rounded),
-          icon: const Icon(Icons.science_outlined),
+          selectedIcon: const Icon(Icons.play_circle_outline_rounded),
+          icon: const Icon(Icons.play_circle_outline_rounded),
           label: s.navigationLearningTitle,
         ),
       ),
@@ -45,8 +45,8 @@ class NavigationTab {
         route: RouteConstants.profile,
         routePrefix: RouteConstants.profile,
         destination: NavigationDestination(
-          selectedIcon: const Icon(Icons.person_rounded),
-          icon: const Icon(Icons.person_outlined),
+          selectedIcon: const Icon(Icons.person_outline_rounded),
+          icon: const Icon(Icons.person_outline_rounded),
           label: s.navigationProfileTitle,
         ),
       ),

@@ -21,7 +21,14 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(s.profileTitle, style: theme.textTheme.titleLarge),
+        title: Text(
+          s.profileTitle,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        centerTitle: false,
+        titleSpacing: 16,
       ),
       body: Wrapper(
         child: Column(
