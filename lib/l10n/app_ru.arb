@@ -100,6 +100,12 @@
   "learningBrowseCourses": "Просмотрите курсы на главном экране, чтобы начать обучение",
 
   "profileTitle": "Профиль",
+  "profileThemeTitle": "Тема",
+  "profileThemeLight": "Светлая",
+  "profileThemeDark": "Тёмная",
+  "profileLanguageTitle": "Язык",
+  "profileLanguageRu": "Русский",
+  "profileLanguageEn": "English",
   "profileSetRussian": "Русский",
   "profileSetDarkMode": "Тёмный режим",
   "profileLogOut": "Выйти",

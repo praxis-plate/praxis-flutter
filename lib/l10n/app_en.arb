@@ -100,6 +100,12 @@
   "learningBrowseCourses": "Browse courses from the home screen to start learning",
 
   "profileTitle": "Profile",
+  "profileThemeTitle": "Theme",
+  "profileThemeLight": "Light",
+  "profileThemeDark": "Dark",
+  "profileLanguageTitle": "Language",
+  "profileLanguageRu": "Russian",
+  "profileLanguageEn": "English",
   "profileSetRussian": "Russian",
   "profileSetDarkMode": "Dark theme",
   "profileLogOut": "Sign out",

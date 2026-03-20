@@ -7,12 +7,14 @@ class SettingsTile extends StatelessWidget {
     this.subtitle,
     this.onTap,
     this.icon,
+    this.trailing,
   });
 
   final String title;
   final String? subtitle;
   final VoidCallback? onTap;
   final Icon? icon;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,10 @@ class SettingsTile extends StatelessWidget {
                     Text(subtitle!, style: theme.textTheme.labelSmall),
                 ],
               ),
+              if (trailing != null) ...[
+                const Spacer(),
+                trailing!,
+              ],
             ],
           ),
         ),
