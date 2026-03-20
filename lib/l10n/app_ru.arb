@@ -71,7 +71,18 @@
   "navigationHistoryTitle": "История",
   "navigationProfileTitle": "Профиль",
 
-  "mainTitle": "Обзор",
+  "mainTitle": "Каталог",
+  "mainHeroTitle": "Продолжай обучение",
+  "mainHeroSubtitle": "Выберите курс и продолжите обучение",
+  "mainCoursesAvailableCount": "{count, plural, one {# курс доступен} few {# курса доступно} many {# курсов доступно} other {# курса доступно}}",
+  "@mainCoursesAvailableCount": {
+    "description": "Количество доступных курсов в hero-блоке главного экрана",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "balance": "Balance",
   "recommend": "Рекомендации:",
   "courses": "Курсы:",

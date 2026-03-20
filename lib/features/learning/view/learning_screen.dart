@@ -19,7 +19,14 @@ class LearningScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(s.learningTitle, style: theme.textTheme.titleLarge),
+        title: Text(
+          s.learningTitle,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        centerTitle: false,
+        titleSpacing: 16,
       ),
       body: BlocListener<CoursePurchasingBloc, CoursePurchasingState>(
         listenWhen: (previous, current) =>

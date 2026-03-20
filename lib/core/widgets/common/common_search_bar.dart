@@ -27,24 +27,72 @@ class _CommonSearchBarState extends State<CommonSearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return TextField(
       controller: _controller,
+      style: theme.textTheme.titleSmall,
       decoration: InputDecoration(
+        isDense: true,
+        filled: true,
+        fillColor: theme.cardColor,
         hintText: widget.hintText,
-        prefixIcon: const Icon(Icons.search),
-        suffixIcon: _controller.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  _controller.clear();
-                  widget.onChanged('');
-                  if (widget.onClear != null) {
-                    widget.onClear!();
-                  }
-                },
-              )
-            : null,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        hintStyle: theme.textTheme.titleSmall?.copyWith(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
+        prefixIconColor: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+        suffixIconColor: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+        prefixIcon: const Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: Icon(Icons.search, size: 20),
+        ),
+        prefixIconConstraints: const BoxConstraints(
+          minWidth: 36,
+          minHeight: 36,
+        ),
+        suffixIcon: Opacity(
+          opacity: _controller.text.isNotEmpty ? 1 : 0,
+          child: IgnorePointer(
+            ignoring: _controller.text.isEmpty,
+            child: IconButton(
+              icon: const Icon(Icons.clear, size: 18),
+              onPressed: () {
+                _controller.clear();
+                widget.onChanged('');
+                if (widget.onClear != null) {
+                  widget.onClear!();
+                }
+              },
+            ),
+          ),
+        ),
+        suffixIconConstraints: const BoxConstraints(
+          minWidth: 36,
+          minHeight: 36,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: theme.dividerColor.withValues(alpha: 0.5),
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: theme.dividerColor.withValues(alpha: 0.6),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: theme.colorScheme.primary.withValues(alpha: 0.8),
+            width: 1.4,
+          ),
+        ),
       ),
       onChanged: (value) {
         setState(() {});

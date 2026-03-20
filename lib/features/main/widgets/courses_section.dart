@@ -2,7 +2,6 @@ import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/main/main.dart';
-import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,29 +13,14 @@ class CoursesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = S.of(context);
-    final theme = Theme.of(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(s.courses, style: theme.textTheme.titleSmall),
-        const SizedBox(height: 8),
-        CommonSearchBar(
-          hintText: s.searchCourse,
-          onChanged: (value) {
-            context.read<MainBloc>().add(SearchCoursesEvent(value));
-          },
-          onClear: () {
-            context.read<MainBloc>().add(const SearchCoursesEvent(''));
-          },
-        ),
-        const SizedBox(height: 16),
         BlocBuilder<MainBloc, MainState>(
           builder: (context, state) {
             return switch (state) {
               MainCoursesLoadSuccessState() => ListView.builder(
-                physics: const ClampingScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: state.filteredCourses.length,
                 itemBuilder: (context, index) {
