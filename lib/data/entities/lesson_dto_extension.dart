@@ -1,4 +1,6 @@
+import 'package:codium/data/database/app_database.dart';
 import 'package:codium/domain/models/lesson/lesson_model.dart';
+import 'package:drift/drift.dart';
 import 'package:praxis_client/praxis_client.dart';
 
 extension LessonDtoExtension on LessonDto {
@@ -13,6 +15,22 @@ extension LessonDtoExtension on LessonDto {
       orderIndex: orderIndex,
       durationMinutes: durationMinutes,
       createdAt: createdAt,
+    );
+  }
+}
+
+extension LessonDtoCompanionExtension on LessonDto {
+  LessonCompanion toCompanion() {
+    return LessonCompanion(
+      id: Value(id),
+      moduleId: Value(moduleId),
+      title: Value(title),
+      contentText: Value(contentText),
+      videoUrl: Value(videoUrl),
+      imageUrls: Value(imageUrls),
+      orderIndex: Value(orderIndex),
+      durationMinutes: Value(durationMinutes),
+      createdAt: Value(createdAt),
     );
   }
 }
