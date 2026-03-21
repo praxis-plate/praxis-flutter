@@ -1,4 +1,4 @@
-import 'package:codium/data/database/tables/module.dart';
+import 'package:praxis/data/database/tables/module.dart';
 import 'package:drift/drift.dart';
 
 @DataClassName('LessonEntity')

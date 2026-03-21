@@ -1,9 +1,9 @@
-import 'package:codium/core/error/app_error_code_extension.dart';
-import 'package:codium/core/bloc/achievement_notification/achievement_notification_cubit.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/task/course_task.dart';
-import 'package:codium/features/lesson/bloc/lesson_content_bloc.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/error/app_error_code_extension.dart';
+import 'package:praxis/core/bloc/achievement_notification/achievement_notification_cubit.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/task/course_task.dart';
+import 'package:praxis/features/lesson/bloc/lesson_content_bloc.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -153,7 +153,7 @@ class _LessonContentView extends StatelessWidget {
               Navigator.of(dialogContext).pop();
               context.pop();
             },
-            child: const Text('OK'),
+            child: Text(s.ok),
           ),
         ],
       ),

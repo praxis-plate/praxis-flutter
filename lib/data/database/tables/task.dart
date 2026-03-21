@@ -1,5 +1,5 @@
-import 'package:codium/data/database/tables/lesson.dart';
-import 'package:codium/domain/enums/task_type.dart';
+import 'package:praxis/data/database/tables/lesson.dart';
+import 'package:praxis/domain/enums/task_type.dart';
 import 'package:drift/drift.dart';
 
 @DataClassName('TaskEntity')

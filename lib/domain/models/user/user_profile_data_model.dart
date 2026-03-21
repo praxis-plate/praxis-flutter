@@ -1,5 +1,5 @@
-import 'package:codium/domain/models/achievement/achievement_data_model.dart';
-import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:praxis/domain/models/achievement/achievement_data_model.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
 import 'package:equatable/equatable.dart';
 
 class UserProfileDataModel extends Equatable {

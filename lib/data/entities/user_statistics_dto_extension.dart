@@ -1,5 +1,5 @@
-import 'package:codium/domain/models/user/money.dart';
-import 'package:codium/domain/models/user/user_statistic_model.dart';
+import 'package:praxis/domain/models/user/money.dart';
+import 'package:praxis/domain/models/user/user_statistic_model.dart';
 import 'package:praxis_client/praxis_client.dart';
 
 extension UserStatisticsDtoExtension on UserStatisticsDto {

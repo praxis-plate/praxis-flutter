@@ -1,6 +1,6 @@
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/domain/models/user/user_course_statistics.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/course/course_model.dart';
+import 'package:praxis/domain/models/user/user_course_statistics.dart';
 import 'package:flutter/material.dart';
 
 import 'enrolled_course_card.dart';

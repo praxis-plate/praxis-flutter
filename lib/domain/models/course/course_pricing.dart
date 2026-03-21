@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/user/money.dart';
+import 'package:praxis/domain/models/user/money.dart';
 
 class CoursePricing {
   final Money price;

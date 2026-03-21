@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:codium/core/utils/constants.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/models.dart';
-import 'package:codium/features/course_details/widgets/course_meta_info.dart';
-import 'package:codium/features/course_details/widgets/course_purchase_button.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/utils/constants.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/models.dart';
+import 'package:praxis/features/course_details/widgets/course_meta_info.dart';
+import 'package:praxis/features/course_details/widgets/course_purchase_button.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

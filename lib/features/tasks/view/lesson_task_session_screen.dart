@@ -1,20 +1,20 @@
-import 'package:codium/core/error/app_error_code_extension.dart';
+import 'package:praxis/core/error/app_error_code_extension.dart';
 import 'dart:async';
 
-import 'package:codium/core/router/route_constants.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/core/utils/duration.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/task/task_models.dart';
-import 'package:codium/domain/usecases/lesson/get_lesson_by_id_usecase.dart';
-import 'package:codium/domain/usecases/tasks/get_task_by_id_usecase.dart';
-import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
-import 'package:codium/domain/usecases/tasks/submit_task_answer_usecase.dart';
-import 'package:codium/features/tasks/bloc/bloc.dart';
-import 'package:codium/features/tasks/renderers/task_renderer.dart';
-import 'package:codium/features/tasks/widgets/widgets.dart';
-import 'package:codium/l10n/app_localizations.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/router/route_constants.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/core/utils/duration.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/task/task_models.dart';
+import 'package:praxis/domain/usecases/lesson/get_lesson_by_id_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/get_task_by_id_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/request_task_hint_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/submit_task_answer_usecase.dart';
+import 'package:praxis/features/tasks/bloc/bloc.dart';
+import 'package:praxis/features/tasks/renderers/task_renderer.dart';
+import 'package:praxis/features/tasks/widgets/widgets.dart';
+import 'package:praxis/l10n/app_localizations.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -493,7 +493,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: GlassCard(
+                  child: SurfaceCard(
                     borderRadius: BorderRadius.circular(20),
                     padding: const EdgeInsets.all(20),
                     child: Column(

@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:codium/core/theme/app_theme.dart';
-import 'package:codium/core/utils/constants.dart';
-import 'package:codium/core/utils/duration.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/models.dart';
-import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/theme/app_theme.dart';
+import 'package:praxis/core/utils/constants.dart';
+import 'package:praxis/core/utils/duration.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/models.dart';
+import 'package:praxis/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

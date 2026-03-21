@@ -1,5 +1,5 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
 
 abstract interface class IAuthRepository {
   Future<Result<String>> startRegistration(String email);

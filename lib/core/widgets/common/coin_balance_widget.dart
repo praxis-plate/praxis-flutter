@@ -1,5 +1,5 @@
-import 'package:codium/core/widgets/common/svg_asset.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/widgets/common/svg_asset.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 
 class CoinBalanceWidget extends StatelessWidget {

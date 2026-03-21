@@ -1,7 +1,7 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/models/lesson/create_lesson_model.dart';
-import 'package:codium/domain/models/lesson/lesson_model.dart';
-import 'package:codium/domain/models/lesson/update_lesson_model.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/domain/models/lesson/create_lesson_model.dart';
+import 'package:praxis/domain/models/lesson/lesson_model.dart';
+import 'package:praxis/domain/models/lesson/update_lesson_model.dart';
 import 'package:drift/drift.dart';
 
 extension LessonEntityExtension on LessonEntity {

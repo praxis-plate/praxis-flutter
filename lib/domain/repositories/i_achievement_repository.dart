@@ -1,5 +1,5 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/achievement/achievement_data_model.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/achievement/achievement_data_model.dart';
 
 abstract interface class IAchievementRepository {
   Future<Result<List<AchievementModel>>> getUserAchievements(String userId);

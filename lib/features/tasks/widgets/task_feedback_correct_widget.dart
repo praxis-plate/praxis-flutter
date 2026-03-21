@@ -1,5 +1,5 @@
-import 'package:codium/domain/models/task/task_model.dart';
-import 'package:codium/domain/models/task/task_result_model.dart';
+import 'package:praxis/domain/models/task/task_model.dart';
+import 'package:praxis/domain/models/task/task_result_model.dart';
 import 'package:flutter/material.dart';
 
 import 'task_feedback_content.dart';

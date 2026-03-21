@@ -1,5 +1,5 @@
-import 'package:codium/domain/models/lesson/lesson_model.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/domain/models/lesson/lesson_model.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

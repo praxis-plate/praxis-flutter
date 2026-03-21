@@ -1,4 +1,4 @@
-import 'package:codium/s.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 
 import 'step_progress_bar.dart';

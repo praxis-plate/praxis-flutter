@@ -1,5 +1,5 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/enums/programming_language.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/enums/programming_language.dart';
 
 abstract interface class IAiService {
   Future<Result<String>> generateHint({

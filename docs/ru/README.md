@@ -96,7 +96,7 @@ fvm flutter pub get
 SERVERPOD_HOST=http://localhost:8080
 
 # Конфигурация базы данных
-DB_PATH=codium.db
+DB_PATH=praxis.db
 
 # Конфигурация Gemini API (опционально для AI-функций)
 GEMINI_API_KEY=your_gemini_api_key_here

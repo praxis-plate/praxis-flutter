@@ -1,4 +1,4 @@
-import 'package:codium/domain/enums/coin_transaction_type.dart' as domain;
+import 'package:praxis/domain/enums/coin_transaction_type.dart' as domain;
 import 'package:praxis_client/praxis_client.dart' as server;
 
 class CoinTransactionTypeMapper {

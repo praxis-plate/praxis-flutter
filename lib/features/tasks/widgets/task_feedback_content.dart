@@ -1,6 +1,6 @@
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/task/task_result_model.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/task/task_result_model.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 
 Widget buildTaskFeedbackContent({
@@ -24,7 +24,7 @@ Widget buildTaskFeedbackContent({
       children: [
         ScaleTransition(
           scale: scaleAnimation,
-          child: GlassCard(
+          child: SurfaceCard(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             borderRadius: BorderRadius.circular(16),
             borderColor:
@@ -81,7 +81,7 @@ Widget buildTaskFeedbackContent({
           const SizedBox(height: 24),
           FadeTransition(
             opacity: fadeAnimation,
-            child: GlassCard(
+            child: SurfaceCard(
               padding: const EdgeInsets.all(20),
               borderRadius: BorderRadius.circular(12),
               borderColor: theme.colorScheme.primary.withValues(alpha: 0.25),
@@ -104,7 +104,7 @@ Widget buildTaskFeedbackContent({
         ],
         if (!isCorrect && result.correctAnswer != null) ...[
           const SizedBox(height: 24),
-          GlassCard(
+          SurfaceCard(
             padding: const EdgeInsets.all(16),
             borderRadius: BorderRadius.circular(12),
             borderColor: theme.colorScheme.outline.withValues(alpha: 0.3),
@@ -136,7 +136,7 @@ Widget buildTaskFeedbackContent({
         ],
         if (explanation != null) ...[
           const SizedBox(height: 24),
-          GlassCard(
+          SurfaceCard(
             padding: const EdgeInsets.all(16),
             borderRadius: BorderRadius.circular(12),
             borderColor: theme.colorScheme.outline.withValues(alpha: 0.3),

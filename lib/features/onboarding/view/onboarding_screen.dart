@@ -1,7 +1,7 @@
-import 'package:codium/core/bloc/theme/theme_cubit.dart';
-import 'package:codium/features/onboarding/bloc/onboarding_bloc.dart';
-import 'package:codium/core/router/route_constants.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/bloc/theme/theme_cubit.dart';
+import 'package:praxis/features/onboarding/bloc/onboarding_bloc.dart';
+import 'package:praxis/core/router/route_constants.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';

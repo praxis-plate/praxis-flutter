@@ -1,5 +1,5 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/models/achievement/achievement_data_model.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/domain/models/achievement/achievement_data_model.dart';
 
 extension AchievementEntityExtension on AchievementEntity {
   AchievementModel toDomain() {

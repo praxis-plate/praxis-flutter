@@ -1,10 +1,10 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/domain/models/lesson_progress/lesson_progress_model.dart';
-import 'package:codium/domain/models/user/user_course_statistics.dart';
-import 'package:codium/domain/usecases/usecases.dart';
-import 'package:codium/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/course/course_model.dart';
+import 'package:praxis/domain/models/lesson_progress/lesson_progress_model.dart';
+import 'package:praxis/domain/models/user/user_course_statistics.dart';
+import 'package:praxis/domain/usecases/usecases.dart';
+import 'package:praxis/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';

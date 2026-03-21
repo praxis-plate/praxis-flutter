@@ -1,6 +1,6 @@
-import 'package:codium/domain/models/task/task_model.dart';
-import 'package:codium/domain/models/task/task_result_model.dart';
-import 'package:codium/features/tasks/bloc/bloc.dart';
+import 'package:praxis/domain/models/task/task_model.dart';
+import 'package:praxis/domain/models/task/task_result_model.dart';
+import 'package:praxis/features/tasks/bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

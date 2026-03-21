@@ -1,11 +1,11 @@
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/enums/coin_transaction_type.dart';
-import 'package:codium/domain/models/coin_transaction/create_coin_transaction_model.dart';
-import 'package:codium/domain/repositories/i_coin_transaction_repository.dart';
-import 'package:codium/domain/repositories/i_course_repository.dart';
-import 'package:codium/domain/repositories/i_user_statistics_repository.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/enums/coin_transaction_type.dart';
+import 'package:praxis/domain/models/coin_transaction/create_coin_transaction_model.dart';
+import 'package:praxis/domain/repositories/i_coin_transaction_repository.dart';
+import 'package:praxis/domain/repositories/i_course_repository.dart';
+import 'package:praxis/domain/repositories/i_user_statistics_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

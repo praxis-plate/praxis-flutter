@@ -1,16 +1,16 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/datasources/local/task_local_datasource.dart';
-import 'package:codium/data/datasources/remote/task_remote_datasource.dart';
-import 'package:codium/data/entities/task_dto_extension.dart';
-import 'package:codium/data/entities/task_progress_entity_extension.dart';
-import 'package:codium/domain/models/task/create_task_progress_model.dart';
-import 'package:codium/domain/models/task/task_models.dart';
-import 'package:codium/domain/models/task/task_progress_model.dart';
-import 'package:codium/domain/models/task/task_result_model.dart';
-import 'package:codium/domain/models/task/update_task_progress_model.dart';
-import 'package:codium/domain/repositories/i_task_repository.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/data/datasources/local/task_local_datasource.dart';
+import 'package:praxis/data/datasources/remote/task_remote_datasource.dart';
+import 'package:praxis/data/entities/task_dto_extension.dart';
+import 'package:praxis/data/entities/task_progress_entity_extension.dart';
+import 'package:praxis/domain/models/task/create_task_progress_model.dart';
+import 'package:praxis/domain/models/task/task_models.dart';
+import 'package:praxis/domain/models/task/task_progress_model.dart';
+import 'package:praxis/domain/models/task/task_result_model.dart';
+import 'package:praxis/domain/models/task/update_task_progress_model.dart';
+import 'package:praxis/domain/repositories/i_task_repository.dart';
 
 class TaskRepository implements ITaskRepository {
   final TaskRemoteDataSource _remoteDataSource;

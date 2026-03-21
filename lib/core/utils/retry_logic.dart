@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:codium/core/exceptions/exceptions.dart';
+import 'package:praxis/core/exceptions/exceptions.dart';
 
 class RetryLogic {
   static Future<T> retry<T>({

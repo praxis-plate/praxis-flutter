@@ -1,7 +1,7 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/domain/usecases/usecases.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/course/course_model.dart';
+import 'package:praxis/domain/usecases/usecases.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

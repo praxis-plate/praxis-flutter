@@ -1,6 +1,6 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/models/user/update_user_profile_model.dart';
-import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/domain/models/user/update_user_profile_model.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
 import 'package:drift/drift.dart';
 
 extension UserEntityExtension on UserEntity {

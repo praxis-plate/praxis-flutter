@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/session/session.dart';
+import 'package:praxis/domain/models/session/session.dart';
 
 abstract interface class ISessionService {
   Future<void> saveSession(SessionModel session);

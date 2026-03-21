@@ -1,5 +1,5 @@
-import 'package:codium/domain/models/course/course_pricing.dart';
-import 'package:codium/domain/models/course/course_statistics.dart';
+import 'package:praxis/domain/models/course/course_pricing.dart';
+import 'package:praxis/domain/models/course/course_statistics.dart';
 import 'package:equatable/equatable.dart';
 
 class CourseModel extends Equatable {

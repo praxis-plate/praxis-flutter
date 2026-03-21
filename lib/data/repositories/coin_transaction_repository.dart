@@ -1,11 +1,11 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/datasources/remote/coin_transaction_remote_datasource.dart';
-import 'package:codium/data/entities/coin_transaction_dto_extension.dart';
-import 'package:codium/data/mappers/coin_transaction_type_mapper.dart';
-import 'package:codium/domain/models/coin_transaction/coin_transaction_model.dart';
-import 'package:codium/domain/models/coin_transaction/create_coin_transaction_model.dart';
-import 'package:codium/domain/models/coin_transaction/wallet_balance.dart';
-import 'package:codium/domain/repositories/i_coin_transaction_repository.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/data/datasources/remote/coin_transaction_remote_datasource.dart';
+import 'package:praxis/data/entities/coin_transaction_dto_extension.dart';
+import 'package:praxis/data/mappers/coin_transaction_type_mapper.dart';
+import 'package:praxis/domain/models/coin_transaction/coin_transaction_model.dart';
+import 'package:praxis/domain/models/coin_transaction/create_coin_transaction_model.dart';
+import 'package:praxis/domain/models/coin_transaction/wallet_balance.dart';
+import 'package:praxis/domain/repositories/i_coin_transaction_repository.dart';
 
 class CoinTransactionRepository implements ICoinTransactionRepository {
   final CoinTransactionRemoteDataSource _remoteDataSource;

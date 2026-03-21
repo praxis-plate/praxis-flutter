@@ -1,6 +1,6 @@
-import 'package:codium/data/entities/auth_session_entity.dart';
-import 'package:codium/domain/models/session/session_model.dart';
-import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:praxis/data/entities/auth_session_entity.dart';
+import 'package:praxis/domain/models/session/session_model.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
 
 extension AuthSessionEntityExtension on AuthSessionEntity {
   SessionModel toSessionModel() {

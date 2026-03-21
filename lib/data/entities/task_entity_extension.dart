@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/enums/programming_language.dart';
-import 'package:codium/domain/enums/task_type.dart';
-import 'package:codium/domain/models/task/task_models.dart';
-import 'package:codium/domain/models/task/test_case_model.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/domain/enums/programming_language.dart';
+import 'package:praxis/domain/enums/task_type.dart';
+import 'package:praxis/domain/models/task/task_models.dart';
+import 'package:praxis/domain/models/task/test_case_model.dart';
 
 extension TaskEntityExtension on TaskEntity {
   TaskModel toDomain() {
