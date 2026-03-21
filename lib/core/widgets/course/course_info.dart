@@ -1,4 +1,5 @@
-import 'package:codium/domain/models/course/course_model.dart';
+import 'package:praxis/domain/models/course/course_model.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 
 class CourseInfo extends StatelessWidget {
@@ -9,6 +10,7 @@ class CourseInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
 
     return Row(
@@ -20,7 +22,10 @@ class CourseInfo extends StatelessWidget {
           color: theme.colorScheme.primary,
           size: 18,
         ),
-        Text(' ${course.durationMinutes}м', style: theme.textTheme.labelSmall),
+        Text(
+          ' ${course.durationMinutes}${s.minutesShort}',
+          style: theme.textTheme.labelSmall,
+        ),
         const SizedBox(width: 8),
         Icon(Icons.star_rounded, color: theme.colorScheme.primary, size: 18),
         Text(

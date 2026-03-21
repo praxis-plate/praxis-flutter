@@ -1,5 +1,5 @@
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/error/failure.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/error/failure.dart';
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart';
 
 class AuthExceptionMapper {

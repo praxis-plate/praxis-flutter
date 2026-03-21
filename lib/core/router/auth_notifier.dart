@@ -1,4 +1,4 @@
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
+import 'package:praxis/core/bloc/auth/auth_bloc.dart';
 import 'package:flutter/foundation.dart';
 
 class AuthNotifier extends ChangeNotifier {

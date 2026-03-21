@@ -1,7 +1,7 @@
 {
-  "appTitle": "Codium",
+  "appTitle": "Praxis",
   "@appTitle": {
-    "description": "Codium"
+    "description": "Praxis"
   },
   "displaySignUp": "Регистрация",
   "labelPhoneNumber": "Номер телефона:",
@@ -325,7 +325,9 @@
   "lessonsCompleted": "{completed} из {total} уроков",
   "continueLearning": "Продолжить обучение",
   "lessonCompleted": "Урок завершен!",
+  "lessonComingSoon": "Урок — скоро",
   "coinsEarned": "Вы заработали {amount} монет",
+  "codeCompletionPlaceholder": "...",
   "achievements": "Достижения",
   "achievementUnlocked": "Достижение разблокировано!",
   "totalCoursesCompleted": "Курсов завершено",

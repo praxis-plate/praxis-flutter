@@ -100,7 +100,7 @@ final class SomeErrorState extends SomeState {
 - Extension `AppErrorCodeExtension` с методом `localizedMessage(context)`
 
 ```dart
-import 'package:codium/core/exceptions/app_error_extensions.dart';
+import 'package:praxis/core/exceptions/app_error_extensions.dart';
 
 Widget build(BuildContext context) {
   return BlocBuilder<SomeBloc, SomeState>(

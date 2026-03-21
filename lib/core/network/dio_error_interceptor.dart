@@ -1,5 +1,5 @@
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/exceptions/app_exception.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/exceptions/app_exception.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';

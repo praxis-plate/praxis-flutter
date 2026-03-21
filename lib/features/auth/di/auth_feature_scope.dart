@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/domain/usecases/auth/auth.dart';
-import 'package:codium/features/auth/bloc/forgot_password/forgot_password_cubit.dart';
-import 'package:codium/features/auth/bloc/sign_in/sign_in_cubit.dart';
-import 'package:codium/features/auth/bloc/sign_up/sign_up_cubit.dart';
+import 'package:praxis/core/bloc/auth/auth_bloc.dart';
+import 'package:praxis/domain/usecases/auth/auth.dart';
+import 'package:praxis/features/auth/bloc/forgot_password/forgot_password_cubit.dart';
+import 'package:praxis/features/auth/bloc/sign_in/sign_in_cubit.dart';
+import 'package:praxis/features/auth/bloc/sign_up/sign_up_cubit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 

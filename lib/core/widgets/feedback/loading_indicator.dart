@@ -1,5 +1,5 @@
-import 'package:codium/core/utils/duration.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/utils/duration.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 
 class LoadingIndicator extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:codium/data/entities/auth_session_entity.dart';
+import 'package:praxis/data/entities/auth_session_entity.dart';
 import 'package:praxis_client/praxis_client.dart';
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart';
 

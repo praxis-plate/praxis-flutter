@@ -1,8 +1,8 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/domain/models/course/course_pricing.dart';
-import 'package:codium/domain/models/course/course_statistics.dart';
-import 'package:codium/domain/models/user/money.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/domain/models/course/course_model.dart';
+import 'package:praxis/domain/models/course/course_pricing.dart';
+import 'package:praxis/domain/models/course/course_statistics.dart';
+import 'package:praxis/domain/models/user/money.dart';
 
 extension CourseEntityExtension on CourseEntity {
   CourseModel toDomain() {

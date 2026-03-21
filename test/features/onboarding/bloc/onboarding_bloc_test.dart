@@ -1,4 +1,4 @@
-import 'package:codium/features/onboarding/bloc/onboarding_bloc.dart';
+import 'package:praxis/features/onboarding/bloc/onboarding_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,7 +16,7 @@ void main() {
 
   group('OnboardingBloc - Property Tests', () {
     test(
-      'Feature: codium-ai-enhancement, Property 21: Onboarding State Persistence - '
+      'Feature: praxis-ai-enhancement, Property 21: Onboarding State Persistence - '
       'For any user who completes onboarding, the system should not show '
       'onboarding again on subsequent app launches',
       () async {

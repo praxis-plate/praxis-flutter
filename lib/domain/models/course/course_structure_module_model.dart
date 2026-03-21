@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/course/course_structure_lesson_model.dart';
+import 'package:praxis/domain/models/course/course_structure_lesson_model.dart';
 import 'package:equatable/equatable.dart';
 
 class CourseStructureModuleModel extends Equatable {

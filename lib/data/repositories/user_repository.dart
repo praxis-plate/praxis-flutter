@@ -1,13 +1,13 @@
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/datasources/local/user_local_datasource.dart';
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/data/entities/user_entity_extension.dart';
-import 'package:codium/domain/models/user/user.dart';
-import 'package:codium/domain/repositories/i_user_repository.dart';
-import 'package:codium/domain/services/services.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/data/datasources/local/user_local_datasource.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/data/entities/user_entity_extension.dart';
+import 'package:praxis/domain/models/user/user.dart';
+import 'package:praxis/domain/repositories/i_user_repository.dart';
+import 'package:praxis/domain/services/services.dart';
 
 final class UserRepository implements IUserRepository {
   final UserLocalDataSource _userDataSource;

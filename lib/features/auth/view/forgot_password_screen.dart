@@ -1,8 +1,8 @@
-import 'package:codium/core/error/app_error_code_extension.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/features/auth/bloc/forgot_password/forgot_password_cubit.dart';
-import 'package:codium/features/auth/widgets/widgets.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/error/app_error_code_extension.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/features/auth/bloc/forgot_password/forgot_password_cubit.dart';
+import 'package:praxis/features/auth/widgets/widgets.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';

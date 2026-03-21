@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:codium/domain/enums/programming_language.dart';
-import 'package:codium/domain/enums/task_type.dart';
-import 'package:codium/domain/models/task/test_case_model.dart';
+import 'package:praxis/domain/enums/programming_language.dart';
+import 'package:praxis/domain/enums/task_type.dart';
+import 'package:praxis/domain/models/task/test_case_model.dart';
 import 'package:equatable/equatable.dart';
 
 part 'code_completion_task_model.dart';

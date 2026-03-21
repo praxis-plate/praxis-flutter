@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:codium/core/config/env_config.dart';
+import 'package:praxis/core/config/env_config.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 

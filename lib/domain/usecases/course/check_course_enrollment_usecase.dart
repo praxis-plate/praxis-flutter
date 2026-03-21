@@ -1,5 +1,5 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/repositories/i_course_repository.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/repositories/i_course_repository.dart';
 
 class CheckCourseEnrollmentUseCase {
   final ICourseRepository _courseRepository;

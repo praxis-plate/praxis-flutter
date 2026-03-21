@@ -1,6 +1,6 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/data/entities/task_entity_extension.dart';
-import 'package:codium/domain/enums/task_type.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/data/entities/task_entity_extension.dart';
+import 'package:praxis/domain/enums/task_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,10 +1,10 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/enums/coin_transaction_type.dart';
-import 'package:codium/domain/models/coin_transaction/create_coin_transaction_model.dart';
-import 'package:codium/domain/models/task/create_task_progress_model.dart';
-import 'package:codium/domain/models/task/task_result_model.dart';
-import 'package:codium/domain/repositories/i_coin_transaction_repository.dart';
-import 'package:codium/domain/repositories/i_task_repository.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/enums/coin_transaction_type.dart';
+import 'package:praxis/domain/models/coin_transaction/create_coin_transaction_model.dart';
+import 'package:praxis/domain/models/task/create_task_progress_model.dart';
+import 'package:praxis/domain/models/task/task_result_model.dart';
+import 'package:praxis/domain/repositories/i_coin_transaction_repository.dart';
+import 'package:praxis/domain/repositories/i_task_repository.dart';
 
 class SubmitTaskAnswerUseCase {
   final ITaskRepository _taskRepository;

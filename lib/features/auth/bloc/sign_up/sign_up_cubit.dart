@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/error/error.dart';
-import 'package:codium/core/utils/utils.dart';
-import 'package:codium/core/validators/email_validator.dart';
-import 'package:codium/core/validators/password_validator.dart';
-import 'package:codium/core/validators/verification_code_validator.dart';
-import 'package:codium/domain/usecases/auth/start_registration_usecase.dart';
-import 'package:codium/domain/usecases/auth/verify_registration_code_usecase.dart';
+import 'package:praxis/core/bloc/auth/auth_bloc.dart';
+import 'package:praxis/core/error/error.dart';
+import 'package:praxis/core/utils/utils.dart';
+import 'package:praxis/core/validators/email_validator.dart';
+import 'package:praxis/core/validators/password_validator.dart';
+import 'package:praxis/core/validators/verification_code_validator.dart';
+import 'package:praxis/domain/usecases/auth/start_registration_usecase.dart';
+import 'package:praxis/domain/usecases/auth/verify_registration_code_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';

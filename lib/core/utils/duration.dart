@@ -1,4 +1,4 @@
-import 'package:codium/l10n/app_localizations.dart';
+import 'package:praxis/l10n/app_localizations.dart';
 
 class DurationFormatter {
   static String formatCompact(Duration duration, AppLocalizations s) {

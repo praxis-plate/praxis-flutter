@@ -1,7 +1,7 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/user/user_statistic_model.dart';
-import 'package:codium/domain/repositories/i_user_statistics_repository.dart';
-import 'package:codium/domain/usecases/activity/generate_activity_usecase.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/user/user_statistic_model.dart';
+import 'package:praxis/domain/repositories/i_user_statistics_repository.dart';
+import 'package:praxis/domain/usecases/activity/generate_activity_usecase.dart';
 
 class GetLearningDataUseCase {
   final IUserStatisticsRepository _userStatisticsRepository;

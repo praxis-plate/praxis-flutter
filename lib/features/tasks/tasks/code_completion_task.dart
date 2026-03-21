@@ -1,11 +1,8 @@
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/task/task_models.dart';
-import 'package:codium/features/tasks/bloc/bloc.dart';
-import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
-import 'package:codium/features/tasks/widgets/submit_task_button.dart';
-import 'package:codium/features/tasks/widgets/task_hint_button.dart';
-import 'package:codium/features/tasks/widgets/task_view_layout.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/domain/models/task/task_models.dart';
+import 'package:praxis/features/tasks/bloc/bloc.dart';
+import 'package:praxis/features/tasks/bloc/task/task_bloc.dart';
+import 'package:praxis/features/tasks/widgets/widgets.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -99,10 +96,9 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
             ),
           ),
           const SizedBox(height: 4),
-          GlassCard(
-            borderRadius: BorderRadius.circular(12),
-            padding: const EdgeInsets.all(16),
-            child: _buildCodeWithInputs(theme),
+          CodeCompletionInputCard(
+            codeParts: _codeParts,
+            inputControllers: _inputControllers,
           ),
         ],
       ),
@@ -126,88 +122,4 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
     );
   }
 
-  Widget _buildCodeWithInputs(ThemeData theme) {
-    final widgets = <Widget>[];
-
-    for (int i = 0; i < _codeParts.length; i++) {
-      if (_codeParts[i].isNotEmpty) {
-        widgets.add(
-          SelectableText(
-            _codeParts[i],
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontFamily: 'monospace',
-              fontSize: 14,
-              height: 1.5,
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
-        );
-      }
-
-      if (i < _inputControllers.length) {
-        widgets.add(
-          IntrinsicWidth(
-            child: Theme(
-              data: theme.copyWith(
-                inputDecorationTheme: theme.inputDecorationTheme.copyWith(
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.12,
-                      ),
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.12,
-                      ),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: theme.colorScheme.primary),
-                  ),
-                  fillColor: theme.colorScheme.surfaceContainerHighest,
-                ),
-              ),
-              child: TextField(
-                controller: _inputControllers[i],
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontFamily: 'monospace',
-                  fontSize: 14,
-                  height: 1.5,
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-                decoration: InputDecoration(
-                  constraints: const BoxConstraints(minWidth: 100),
-                  hintText: '...',
-                  hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                    fontFamily: 'monospace',
-                    fontSize: 14,
-                    color: theme.colorScheme.onSurfaceVariant.withValues(
-                      alpha: 0.5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-    }
-
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: widgets,
-    );
-  }
 }

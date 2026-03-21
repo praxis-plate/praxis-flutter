@@ -1,10 +1,10 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/datasources/remote/achievement_remote_datasource.dart';
-import 'package:codium/data/entities/achievement_dto_extension.dart';
-import 'package:codium/domain/models/achievement/achievement_data_model.dart';
-import 'package:codium/domain/repositories/i_achievement_repository.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/data/datasources/remote/achievement_remote_datasource.dart';
+import 'package:praxis/data/entities/achievement_dto_extension.dart';
+import 'package:praxis/domain/models/achievement/achievement_data_model.dart';
+import 'package:praxis/domain/repositories/i_achievement_repository.dart';
 
 class AchievementRepository implements IAchievementRepository {
   final AchievementRemoteDataSource _remoteDataSource;

@@ -1,9 +1,9 @@
-import 'package:codium/core/error/error.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/core/validators/email_validator.dart';
-import 'package:codium/core/validators/password_validator.dart';
-import 'package:codium/core/validators/verification_code_validator.dart';
-import 'package:codium/domain/usecases/auth/auth.dart';
+import 'package:praxis/core/error/error.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/core/validators/email_validator.dart';
+import 'package:praxis/core/validators/password_validator.dart';
+import 'package:praxis/core/validators/verification_code_validator.dart';
+import 'package:praxis/domain/usecases/auth/auth.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';

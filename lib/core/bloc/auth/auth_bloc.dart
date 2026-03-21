@@ -1,9 +1,9 @@
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/user/user_profile_model.dart';
-import 'package:codium/domain/usecases/auth/sign_in_usecase.dart';
-import 'package:codium/domain/usecases/auth/sign_out_usecase.dart';
-import 'package:codium/domain/usecases/auth/sign_up_usecase.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
+import 'package:praxis/domain/usecases/auth/sign_in_usecase.dart';
+import 'package:praxis/domain/usecases/auth/sign_out_usecase.dart';
+import 'package:praxis/domain/usecases/auth/sign_up_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';

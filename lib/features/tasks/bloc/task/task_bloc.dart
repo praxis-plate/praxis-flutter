@@ -1,11 +1,11 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/task/task_model.dart';
-import 'package:codium/domain/models/task/task_progress_model.dart';
-import 'package:codium/domain/models/task/task_result_model.dart';
-import 'package:codium/domain/usecases/tasks/get_task_by_id_usecase.dart';
-import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
-import 'package:codium/domain/usecases/tasks/submit_task_answer_usecase.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/task/task_model.dart';
+import 'package:praxis/domain/models/task/task_progress_model.dart';
+import 'package:praxis/domain/models/task/task_result_model.dart';
+import 'package:praxis/domain/usecases/tasks/get_task_by_id_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/request_task_hint_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/submit_task_answer_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

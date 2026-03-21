@@ -1,7 +1,7 @@
-import 'package:codium/core/error/app_error_code_extension.dart';
-import 'package:codium/core/widgets/common/glass_card.dart';
-import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/error/app_error_code_extension.dart';
+import 'package:praxis/core/widgets/common/surface_card.dart';
+import 'package:praxis/features/tasks/bloc/task_hint/task_hint_cubit.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,7 +45,7 @@ class _TaskHintButtonState extends State<TaskHintButton> {
 
           return SizedBox(
             height: 48,
-            child: GlassCard(
+            child: SurfaceCard(
               borderRadius: BorderRadius.circular(12),
               padding: EdgeInsets.zero,
               enabled: canRequestHint,

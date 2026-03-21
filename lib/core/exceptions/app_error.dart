@@ -1,4 +1,4 @@
-import 'package:codium/core/error/app_error_code.dart';
+import 'package:praxis/core/error/app_error_code.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AppError extends Equatable implements Exception {

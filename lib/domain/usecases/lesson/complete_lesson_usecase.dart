@@ -1,5 +1,5 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/repositories/i_lesson_progress_repository.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/repositories/i_lesson_progress_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

@@ -1,8 +1,8 @@
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/features/auth/bloc/sign_in/sign_in_cubit.dart';
-import 'package:codium/features/auth/widgets/widgets.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/bloc/auth/auth_bloc.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/features/auth/bloc/sign_in/sign_in_cubit.dart';
+import 'package:praxis/features/auth/widgets/widgets.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';

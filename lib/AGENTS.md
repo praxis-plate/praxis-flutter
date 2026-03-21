@@ -33,7 +33,7 @@ Presentation (`lib/features/`, `lib/app/`, `lib/core/`)
 
 ## Code organization
 
-- Use absolute `package:` imports based on the package name in `pubspec.yaml` (e.g., `package:praxis_flutter/...`). Do not use relative imports.
+- Use absolute `package:` imports based on the package name in `pubspec.yaml` (e.g., `package:praxis/...`). Do not use relative imports.
 - Prefer barrel files only for public exports of a folder; avoid overusing barrels that hide dependencies.
 
 ## Code style (high signal)
