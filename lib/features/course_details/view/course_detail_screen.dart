@@ -27,7 +27,7 @@ class CourseDetailScreen extends StatelessWidget {
           CourseDetailLoadEvent(courseId: courseId, userId: userProfile.id),
         );
       },
-      child: const Scaffold(appBar: CourseAppBar(), body: CourseBody()),
+      child: const Scaffold(body: CourseBody()),
     );
   }
 }

@@ -1,9 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:codium/core/utils/constants.dart';
 import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/course/course_model.dart';
+import 'package:codium/domain/models/models.dart';
 import 'package:codium/features/course_details/widgets/course_header.dart';
-import 'package:codium/features/course_details/widgets/course_meta_info.dart';
+import 'package:codium/features/course_details/widgets/course_purchase_button.dart';
 import 'package:codium/features/course_details/widgets/course_tab_section.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CourseDetail extends StatelessWidget {
   final CourseModel course;
@@ -18,64 +22,166 @@ class CourseDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final userProfile = UserScope.of(context);
 
-    return DefaultTabController(
-      length: 2,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverToBoxAdapter(
-              child: Wrapper(
-                child: Column(
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 180,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            automaticallyImplyLeading: false,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                final topPadding = MediaQuery.of(context).padding.top;
+                final collapsed =
+                    constraints.maxHeight <= kToolbarHeight + topPadding + 8;
+
+                return Stack(
+                  fit: StackFit.expand,
                   children: [
-                    CourseHeader(course: course, isPurchased: isPurchased),
-                    CourseMetaInfo(course: course),
+                    CachedNetworkImage(
+                      imageUrl: course.thumbnailUrl ?? '',
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        Constants.placeholderCourseImagePath,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            theme.scaffoldBackgroundColor.withValues(
+                              alpha: 0.65,
+                            ),
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
+                    SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  if (context.canPop()) {
+                                    context.pop();
+                                  }
+                                },
+                                icon: const Icon(Icons.arrow_back),
+                                label: Text(S.of(context).goBack),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: theme.colorScheme.onSurface,
+                                  textStyle: theme.textTheme.bodyMedium
+                                      ?.copyWith(fontWeight: FontWeight.w600),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 6,
+                                  ),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IgnorePointer(
+                                ignoring: !collapsed,
+                                child: AnimatedOpacity(
+                                  opacity: collapsed ? 1 : 0,
+                                  duration: const Duration(milliseconds: 180),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: _AppBarAction(
+                                      course: course,
+                                      isPurchased: isPurchased,
+                                      userProfile: userProfile,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
-                ),
+                );
+              },
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Wrapper(
+              child: Column(
+                children: [
+                  CourseHeader(course: course, isPurchased: isPurchased),
+                ],
               ),
             ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _CourseDetailTabBarDelegate(
-                child: ColoredBox(
-                  color: theme.scaffoldBackgroundColor,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: CourseTabBar(),
-                  ),
-                ),
-              ),
-            ),
-          ];
-        },
-        body: CourseTabSection(course: course),
-      ),
+          ),
+        ];
+      },
+      body: CourseTabSection(course: course),
     );
   }
 }
 
-class _CourseDetailTabBarDelegate extends SliverPersistentHeaderDelegate {
-  const _CourseDetailTabBarDelegate({required this.child});
+class _AppBarAction extends StatelessWidget {
+  final CourseModel course;
+  final bool isPurchased;
+  final UserProfileModel userProfile;
 
-  final Widget child;
-
-  @override
-  double get minExtent => 48;
-
-  @override
-  double get maxExtent => 48;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return child;
-  }
+  const _AppBarAction({
+    required this.course,
+    required this.isPurchased,
+    required this.userProfile,
+  });
 
   @override
-  bool shouldRebuild(covariant _CourseDetailTabBarDelegate oldDelegate) {
-    return child != oldDelegate.child;
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final s = S.of(context);
+
+    if (isPurchased) {
+      return SizedBox(
+        height: 32,
+        child: ElevatedButton(
+          onPressed: () => context.push('/course/${course.id}/learn'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: theme.colorScheme.onPrimary,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            textStyle: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          child: Text(s.startLearning),
+        ),
+      );
+    }
+
+    return CoursePurchaseButton(
+      courseId: course.id,
+      priceInCoins: course.priceInCoins,
+      userProfile: userProfile,
+      compact: true,
+    );
   }
 }

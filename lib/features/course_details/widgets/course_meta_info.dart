@@ -10,34 +10,51 @@ class CourseMetaInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SizedBox(
-      height: 100,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Builder(
-          builder: (context) {
-            final s = S.of(context);
-            final priceDisplay = course.pricing.price.amount == 0
-                ? s.free
-                : '${course.pricing.price.amount}';
+      height: 92,
+      child: Builder(
+        builder: (context) {
+          final s = S.of(context);
+          final priceDisplay = course.pricing.price.amount == 0
+              ? s.free
+              : '${course.pricing.price.amount}';
 
-            return ListView(
+          final items = [
+            MetaItem(value: priceDisplay, label: s.courseDetailsPrice),
+            MetaItem(value: course.author, label: s.courseDetailsAuthor),
+            MetaItem(
+              value: '${course.statistics.averageRating}/5',
+              label: s.courseDetailsRating,
+            ),
+            MetaItem(
+              value: '${course.totalTasks}',
+              label: s.courseDetailsLessonsLabel,
+            ),
+          ];
+
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            decoration: BoxDecoration(
+              color: theme.cardColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: theme.dividerColor.withValues(alpha: 0.6),
+              ),
+            ),
+            child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              children: [
-                MetaItem(value: priceDisplay, label: s.courseDetailsPrice),
-                MetaItem(value: course.author, label: s.courseDetailsAuthor),
-                MetaItem(
-                  value: '${course.statistics.averageRating}/5',
-                  label: s.courseDetailsRating,
-                ),
-                MetaItem(
-                  value: '${course.totalTasks}',
-                  label: s.courseDetailsLessonsLabel,
-                ),
-              ],
-            );
-          },
-        ),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: items.length,
+              separatorBuilder: (context, index) => VerticalDivider(
+                width: 24,
+                thickness: 1,
+                color: theme.dividerColor.withValues(alpha: 0.6),
+              ),
+              itemBuilder: (context, index) => items[index],
+            ),
+          );
+        },
       ),
     );
   }
