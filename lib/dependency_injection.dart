@@ -21,6 +21,7 @@ import 'package:codium/domain/usecases/tasks/get_completed_task_count_by_lesson_
 import 'package:codium/domain/usecases/tasks/get_lesson_tasks_usecase.dart';
 import 'package:codium/domain/usecases/tasks/get_task_by_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/get_task_count_by_lesson_id_usecase.dart';
+import 'package:codium/domain/usecases/modules/get_modules_by_course_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
 import 'package:codium/domain/usecases/tasks/submit_task_answer_usecase.dart';
 import 'package:codium/domain/usecases/usecases.dart';
@@ -278,6 +279,9 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(
+        () => GetModulesByCourseIdUseCase(GetIt.I<IModuleRepository>()),
+      )
+      ..registerFactory(
         () => PurchaseCourseUseCase(
           courseRepository: GetIt.I<ICourseRepository>(),
           userStatisticsRepository: GetIt.I<IUserStatisticsRepository>(),
@@ -395,6 +399,7 @@ class DependencyInjection {
       )
       ..registerFactory(
         () => LessonsListBloc(
+          GetIt.I<GetModulesByCourseIdUseCase>(),
           GetIt.I<GetLessonsByCourseIdUseCase>(),
           GetIt.I<GetTaskCountByLessonIdUseCase>(),
           GetIt.I<GetCompletedTaskCountByLessonIdUseCase>(),
