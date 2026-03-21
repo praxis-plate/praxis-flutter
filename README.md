@@ -14,9 +14,9 @@ Cross-platform mobile and web application for the **Praxis** educational platfor
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/code-completion-ios-eng-dark.png" width="30%" />
-  <img src="docs/screenshots/multiple-choice-ios-eng-dark.png" width="30%" />
-  <img src="docs/screenshots/matching-ios-eng-dark.png" width="30%" />
+  <img src="docs/screenshots/detailed-course-eng-dark.png" width="30%" />
+  <img src="docs/screenshots/course-learning-eng-dark.png" width="30%" />
+  <img src="docs/screenshots/lesson-matching-eng-dark.png" width="30%" />
 </p>
 
 ## Overview
