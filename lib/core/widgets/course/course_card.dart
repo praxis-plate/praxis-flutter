@@ -94,8 +94,7 @@ class CourseCard extends StatelessWidget {
                               child: Text(
                                 course.description,
                                 style: theme.textTheme.bodySmall?.copyWith(
-                                  color:
-                                      theme.colorScheme.onSurface.withValues(
+                                  color: theme.colorScheme.onSurface.withValues(
                                     alpha: 0.8,
                                   ),
                                 ),
@@ -180,10 +179,7 @@ class _CourseMetaInfoRow extends StatelessWidget {
             color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           ),
         ),
-        if (action != null) ...[
-          const Spacer(),
-          action!,
-        ],
+        if (action != null) ...[const Spacer(), action!],
       ],
     );
   }
@@ -207,7 +203,9 @@ class _CourseActionChip extends StatelessWidget {
     final theme = Theme.of(context);
 
     return InkWell(
-      onTap: isProcessing ? null : () => _onPurchasePressed(context, userProfile),
+      onTap: isProcessing
+          ? null
+          : () => _onPurchasePressed(context, userProfile),
       borderRadius: BorderRadius.circular(10),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -294,7 +292,6 @@ class _PurchaseChipContent extends StatelessWidget {
             fontWeight: FontWeight.w600,
             color: theme.colorScheme.primary,
           ),
-          iconColor: theme.colorScheme.primary,
         ),
       ],
     );

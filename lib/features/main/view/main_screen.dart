@@ -116,7 +116,6 @@ class _BalanceChip extends StatelessWidget {
           fontWeight: FontWeight.w500,
           color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
         ),
-        iconColor: theme.colorScheme.onSurface.withValues(alpha: 0.7),
       ),
     );
   }

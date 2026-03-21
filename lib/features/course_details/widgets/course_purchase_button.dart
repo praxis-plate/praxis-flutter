@@ -27,8 +27,7 @@ class CoursePurchaseButton extends StatelessWidget {
     return BlocBuilder<CoursePurchasingBloc, CoursePurchasingState>(
       builder: (context, state) {
         final isProcessing =
-            state is CoursePurchasingLoadingState &&
-            state.courseId == courseId;
+            state is CoursePurchasingLoadingState && state.courseId == courseId;
 
         return SizedBox(
           width: compact ? null : double.infinity,
@@ -62,9 +61,7 @@ class CoursePurchaseButton extends StatelessWidget {
                     )
                   : _PurchaseButtonLabel(
                       priceInCoins: priceInCoins,
-                      label: priceInCoins == 0
-                          ? s.add
-                          : s.courseDetailsGet,
+                      label: priceInCoins == 0 ? s.add : s.courseDetailsGet,
                       compact: compact,
                     ),
             ),
@@ -80,10 +77,7 @@ class CoursePurchaseButton extends StatelessWidget {
     }
 
     context.read<CoursePurchasingBloc>().add(
-      CoursePurchasingRequestEvent(
-        userId: userProfile.id,
-        courseId: courseId,
-      ),
+      CoursePurchasingRequestEvent(userId: userProfile.id, courseId: courseId),
     );
   }
 }
@@ -103,34 +97,23 @@ class _PurchaseButtonLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final textStyle = (compact
-            ? theme.textTheme.bodySmall
-            : theme.textTheme.bodyLarge)
-        ?.copyWith(
-          color: theme.colorScheme.onPrimary,
-          fontWeight: FontWeight.w600,
-        );
+    final textStyle =
+        (compact ? theme.textTheme.bodySmall : theme.textTheme.bodyLarge)
+            ?.copyWith(
+              color: theme.colorScheme.onPrimary,
+              fontWeight: FontWeight.w600,
+            );
 
     if (priceInCoins == 0) {
-      return Text(
-        label,
-        style: textStyle,
-      );
+      return Text(label, style: textStyle);
     }
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          label,
-          style: textStyle,
-        ),
+        Text(label, style: textStyle),
         SizedBox(width: compact ? 6 : 8),
-        CoinAmount(
-          amount: priceInCoins,
-          style: textStyle,
-          iconColor: theme.colorScheme.onPrimary,
-        ),
+        CoinAmount(amount: priceInCoins, style: textStyle),
       ],
     );
   }
