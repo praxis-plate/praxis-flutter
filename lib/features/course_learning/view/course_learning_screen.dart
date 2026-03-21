@@ -1,5 +1,6 @@
 import 'package:codium/core/error/app_error_code_extension.dart';
 import 'package:codium/core/widgets/widgets.dart';
+import 'package:codium/domain/models/lesson/lesson_model.dart';
 import 'package:codium/features/features.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
@@ -180,27 +181,147 @@ class _LessonsList extends StatelessWidget {
               return Center(child: Text(s.noLessonsAvailable));
             }
 
+            final widgets = _buildLessonSectionWidgets(
+              context,
+              state,
+              completedLessonIds,
+            );
+
             return Wrapper(
-              child: ListView.separated(
+              child: ListView(
                 padding: EdgeInsets.zero,
-                itemCount: state.lessons.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  final lesson = state.lessons[index];
-                  return LessonCard(
-                    lesson: lesson,
-                    taskCount: state.taskCounts[lesson.id],
-                    completedTaskCount:
-                        state.completedTaskCounts[lesson.id] ?? 0,
-                    isCompleted: completedLessonIds.contains(lesson.id),
-                  );
-                },
+                children: widgets,
               ),
             );
           }
 
           return const SizedBox.shrink();
         },
+      ),
+    );
+  }
+
+  List<Widget> _buildLessonSectionWidgets(
+    BuildContext context,
+    LessonsListLoadedState state,
+    Set<int> completedLessonIds,
+  ) {
+    final modules = List.of(state.modules)
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    final lessonsByModule = <int, List<LessonModel>>{};
+
+    if (modules.isEmpty) {
+      return _buildFlatLessonWidgets(state, completedLessonIds);
+    }
+
+    for (final lesson in state.lessons) {
+      lessonsByModule.putIfAbsent(lesson.moduleId, () => []).add(lesson);
+    }
+
+    for (final lessons in lessonsByModule.values) {
+      lessons.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    }
+
+    final widgets = <Widget>[];
+
+    for (final module in modules) {
+      final lessons = lessonsByModule[module.id] ?? [];
+      if (lessons.isEmpty) {
+        continue;
+      }
+
+      widgets.add(
+        _ModuleHeader(
+          title: module.title,
+          description: module.description,
+        ),
+      );
+
+      for (final lesson in lessons) {
+        widgets.add(
+          LessonCard(
+            lesson: lesson,
+            taskCount: state.taskCounts[lesson.id],
+            completedTaskCount: state.completedTaskCounts[lesson.id] ?? 0,
+            isCompleted: completedLessonIds.contains(lesson.id),
+          ),
+        );
+        widgets.add(const SizedBox(height: 8));
+      }
+
+      widgets.add(const SizedBox(height: 8));
+    }
+
+    if (widgets.isNotEmpty) {
+      widgets.removeLast();
+    }
+
+    return widgets;
+  }
+
+  List<Widget> _buildFlatLessonWidgets(
+    LessonsListLoadedState state,
+    Set<int> completedLessonIds,
+  ) {
+    final lessons = List.of(state.lessons)
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    final widgets = <Widget>[];
+
+    for (final lesson in lessons) {
+      widgets.add(
+        LessonCard(
+          lesson: lesson,
+          taskCount: state.taskCounts[lesson.id],
+          completedTaskCount: state.completedTaskCounts[lesson.id] ?? 0,
+          isCompleted: completedLessonIds.contains(lesson.id),
+        ),
+      );
+      widgets.add(const SizedBox(height: 8));
+    }
+
+    if (widgets.isNotEmpty) {
+      widgets.removeLast();
+    }
+
+    return widgets;
+  }
+}
+
+class _ModuleHeader extends StatelessWidget {
+  final String title;
+  final String description;
+
+  const _ModuleHeader({
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasDescription = description.trim().isNotEmpty;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 8, 4, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          if (hasDescription) ...[
+            const SizedBox(height: 4),
+            Text(
+              description,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
