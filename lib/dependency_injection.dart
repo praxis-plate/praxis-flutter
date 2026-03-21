@@ -371,6 +371,7 @@ class DependencyInjection {
           getEnrolledCoursesUseCase: GetIt.I<GetEnrolledCoursesUseCase>(),
           getCourseLessonProgressUseCase:
               GetIt.I<GetCourseLessonProgressUseCase>(),
+          getLessonsByCourseIdUseCase: GetIt.I<GetLessonsByCourseIdUseCase>(),
         ),
       )
       ..registerFactory<CourseDetailBloc>(
@@ -396,6 +397,7 @@ class DependencyInjection {
           getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
           getCourseLessonProgressUseCase:
               GetIt.I<GetCourseLessonProgressUseCase>(),
+          getLessonsByCourseIdUseCase: GetIt.I<GetLessonsByCourseIdUseCase>(),
         ),
       )
       ..registerFactory(

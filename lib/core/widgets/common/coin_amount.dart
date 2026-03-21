@@ -1,3 +1,4 @@
+import 'package:codium/core/widgets/common/svg_asset.dart';
 import 'package:flutter/material.dart';
 
 class CoinAmount extends StatelessWidget {
@@ -5,6 +6,7 @@ class CoinAmount extends StatelessWidget {
   final TextStyle? style;
   final double iconSize;
   final Color? iconColor;
+  final String iconAssetPath;
 
   const CoinAmount({
     super.key,
@@ -12,6 +14,7 @@ class CoinAmount extends StatelessWidget {
     this.style,
     this.iconSize = 16,
     this.iconColor,
+    this.iconAssetPath = 'assets/icons/currency/default.svg',
   });
 
   @override
@@ -22,7 +25,12 @@ class CoinAmount extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.monetization_on, size: iconSize, color: effectiveIconColor),
+        SvgAsset(
+          iconAssetPath,
+          width: iconSize,
+          height: iconSize,
+          color: effectiveIconColor,
+        ),
         const SizedBox(width: 4),
         Text('$amount', style: style),
       ],

@@ -127,8 +127,9 @@ class ProfileScreen extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.wb_sunny_outlined),
                 title: Text(s.profileThemeLight),
-                trailing:
-                    isDark ? null : const Icon(Icons.check_rounded, size: 20),
+                trailing: isDark
+                    ? null
+                    : const Icon(Icons.check_rounded, size: 20),
                 onTap: () {
                   context.read<ThemeCubit>().setDarkTheme(false);
                   Navigator.of(context).pop();
@@ -137,8 +138,9 @@ class ProfileScreen extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.nights_stay_outlined),
                 title: Text(s.profileThemeDark),
-                trailing:
-                    isDark ? const Icon(Icons.check_rounded, size: 20) : null,
+                trailing: isDark
+                    ? const Icon(Icons.check_rounded, size: 20)
+                    : null,
                 onTap: () {
                   context.read<ThemeCubit>().setDarkTheme(true);
                   Navigator.of(context).pop();
@@ -253,9 +255,7 @@ class _ProfileHeaderCard extends StatelessWidget {
                 return const SizedBox.shrink();
               }
 
-              return _BalancePill(
-                amount: state.userStatistics.balance.amount,
-              );
+              return _BalancePill(amount: state.userStatistics.balance.amount);
             },
           ),
         ],
@@ -283,10 +283,10 @@ class _BalancePill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.monetization_on,
-            size: 16,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+          const SvgAsset(
+            'assets/icons/currency/default.svg',
+            width: 16,
+            height: 16,
           ),
           const SizedBox(width: 4),
           Text(
@@ -317,9 +317,7 @@ class _SettingsCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: theme.dividerColor.withValues(alpha: 0.6)),
       ),
-      child: Column(
-        children: children,
-      ),
+      child: Column(children: children),
     );
   }
 }

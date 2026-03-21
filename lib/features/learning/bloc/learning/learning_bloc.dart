@@ -4,6 +4,7 @@ import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/lesson_progress/lesson_progress_model.dart';
 import 'package:codium/domain/models/user/user_course_statistics.dart';
 import 'package:codium/domain/usecases/usecases.dart';
+import 'package:codium/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -16,28 +17,34 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
   final GetLearningDataUseCase _getLearningDataUseCase;
   final GetEnrolledCoursesUseCase _getEnrolledCoursesUseCase;
   final GetCourseLessonProgressUseCase _getCourseLessonProgressUseCase;
+  final GetLessonsByCourseIdUseCase _getLessonsByCourseIdUseCase;
 
   LearningBloc({
     required GetLearningDataUseCase getLearningDataUseCase,
     required GetEnrolledCoursesUseCase getEnrolledCoursesUseCase,
     required GetCourseLessonProgressUseCase getCourseLessonProgressUseCase,
+    required GetLessonsByCourseIdUseCase getLessonsByCourseIdUseCase,
   }) : _getLearningDataUseCase = getLearningDataUseCase,
        _getEnrolledCoursesUseCase = getEnrolledCoursesUseCase,
        _getCourseLessonProgressUseCase = getCourseLessonProgressUseCase,
+       _getLessonsByCourseIdUseCase = getLessonsByCourseIdUseCase,
        super(const LearningLoadingState()) {
     on<LearningLoadEvent>(_onLoadData);
   }
 
   UserCourseStatistics _createStatistics(
-    CourseModel course,
     List<LessonProgressModel> progress,
+    int totalLessons,
+    String courseId,
   ) {
     final completedCount = progress.where((p) => p.isCompleted).length;
-    final totalCount = course.totalTasks > 0 ? course.totalTasks : 1;
+    final totalCount = totalLessons > 0
+        ? totalLessons
+        : (progress.isNotEmpty ? progress.length : 1);
     final progressPercent = (completedCount / totalCount) * 100;
 
     return UserCourseStatistics(
-      courseId: course.id.toString(),
+      courseId: courseId,
       progress: progressPercent,
       totalTasks: totalCount,
       solvedTasks: completedCount,
@@ -74,7 +81,12 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
             courseId: course.id,
           );
           final progress = progressResult.dataOrNull ?? <LessonProgressModel>[];
-          return MapEntry(course.id, _createStatistics(course, progress));
+          final lessonsResult = await _getLessonsByCourseIdUseCase(course.id);
+          final totalLessons = lessonsResult.dataOrNull?.length ?? 0;
+          return MapEntry(
+            course.id,
+            _createStatistics(progress, totalLessons, course.id.toString()),
+          );
         }),
       );
 
