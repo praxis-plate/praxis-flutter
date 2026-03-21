@@ -143,12 +143,15 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
         builder: (context, sessionState) {
           if (sessionState is SessionLoadingState) {
             return Scaffold(
-              backgroundColor: Colors.transparent,
               appBar: AppBar(
-                title: Text(s.taskSessionLoading),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                surfaceTintColor: Colors.transparent,
+                centerTitle: false,
+                titleSpacing: 16,
+                title: Text(
+                  s.taskSessionLoading,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               body: Center(
                 child: Column(
@@ -173,12 +176,15 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
               context,
             );
             return Scaffold(
-              backgroundColor: Colors.transparent,
               appBar: AppBar(
-                title: Text(s.taskError),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                surfaceTintColor: Colors.transparent,
+                centerTitle: false,
+                titleSpacing: 16,
+                title: Text(
+                  s.taskError,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               body: Center(
                 child: Column(
@@ -236,14 +242,15 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                   }
                 },
                 child: Scaffold(
-                  backgroundColor: Colors.transparent,
                   appBar: AppBar(
                     title: Text(
                       _getTaskTypeTitle(sessionState.currentTask, context),
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    surfaceTintColor: Colors.transparent,
+                    centerTitle: false,
+                    titleSpacing: 16,
                     leading: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () async {
@@ -260,9 +267,9 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: TaskProgressBar(
-                          completedTasks: sessionState.completedTasksCount,
-                          totalTasks: sessionState.tasks.length,
+                        child: LabeledStepProgressBar(
+                          completedCount: sessionState.completedTasksCount,
+                          totalSteps: sessionState.tasks.length,
                         ),
                       ),
                       Expanded(
