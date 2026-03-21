@@ -21,6 +21,7 @@ class CourseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
     final userProfile = UserScope.of(context);
 
@@ -80,7 +81,7 @@ class CourseDetail extends StatelessWidget {
                                 }
                               },
                               icon: const Icon(Icons.arrow_back_ios_rounded),
-                              label: Text(S.of(context).goBack),
+                              label: Text(s.goBack),
                               style: TextButton.styleFrom(
                                 foregroundColor: theme.colorScheme.onSurface,
                                 textStyle: theme.textTheme.bodyMedium?.copyWith(

@@ -46,7 +46,7 @@ class _TaskScreenState extends State<TaskScreen> {
                 final task = (state as TaskStateWithTask).task;
                 return Text(_getTaskTypeTitle(task, context));
               }
-              return Text(S.of(context).taskMultipleChoice);
+              return Text(s.taskMultipleChoice);
             },
           ),
           backgroundColor: theme.colorScheme.surface,

@@ -106,6 +106,7 @@ class _OnboardingPager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final theme = Theme.of(context);
     final pages = [
       (
         icon: Icons.school_rounded,
@@ -134,7 +135,7 @@ class _OnboardingPager extends StatelessWidget {
               children: [
                 BlocBuilder<ThemeCubit, ThemeState>(
                   builder: (context, themeState) {
-                    final colorScheme = Theme.of(context).colorScheme;
+                    final colorScheme = theme.colorScheme;
 
                     return IconButton.outlined(
                       onPressed: () => context.read<ThemeCubit>().setDarkTheme(
