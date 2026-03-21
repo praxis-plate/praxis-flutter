@@ -171,6 +171,7 @@ class _SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     return BlocBuilder<SignInCubit, SignInState>(
       builder: (context, formState) {
         return BlocBuilder<AuthBloc, AuthState>(
@@ -194,7 +195,7 @@ class _SubmitButton extends StatelessWidget {
                 onPressed: formState.isValid
                     ? () => _handleSignIn(context, formState)
                     : null,
-                child: Text(S.of(context).displaySignIn),
+                child: Text(s.displaySignIn),
               ),
             );
           },

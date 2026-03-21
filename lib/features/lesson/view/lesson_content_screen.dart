@@ -122,6 +122,7 @@ class _LessonContentView extends StatelessWidget {
     LessonContentCompleted state,
   ) {
     final s = S.of(context);
+    final theme = Theme.of(context);
 
     showDialog(
       context: context,
@@ -134,7 +135,7 @@ class _LessonContentView extends StatelessWidget {
             Icon(
               Icons.check_circle,
               size: 64,
-              color: Theme.of(context).colorScheme.primary,
+              color: theme.colorScheme.primary,
             ),
             const SizedBox(height: 16),
             Text(s.coinsEarned(state.coinsEarned)),
