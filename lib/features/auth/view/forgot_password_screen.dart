@@ -22,6 +22,7 @@ class ForgotPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
+    final theme = Theme.of(context);
 
     return BlocProvider(
       create: (context) => GetIt.I<ForgotPasswordCubit>(),
@@ -52,25 +53,41 @@ class ForgotPasswordScreen extends StatelessWidget {
           );
         },
         child: Scaffold(
-          body: Stack(
-            children: [
-              SafeArea(
-                child: GestureDetector(
-                  onTap: FocusScope.of(context).unfocus,
-                  child: Wrapper(
-                    child: Center(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _ForgotPasswordForm(
-                          onSwitchToSignIn: onSwitchToSignIn,
-                          onSwitchToSignUp: onSwitchToSignUp,
-                        ),
-                      ),
+          appBar: AppBar(
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: theme.colorScheme.onPrimary,
+            title: Text(s.displayForgotPasswordTitle),
+            titleTextStyle: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
+              fontWeight: FontWeight.w600,
+            ),
+            leading: Icon(Icons.lock_reset, color: theme.colorScheme.onPrimary),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(34),
+              child: Container(
+                color: theme.colorScheme.primary,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: const _ForgotPasswordProgress(),
+              ),
+            ),
+          ),
+          extendBody: true,
+          body: SafeArea(
+            bottom: false,
+            child: GestureDetector(
+              onTap: FocusScope.of(context).unfocus,
+              child: Wrapper(
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
+                    child: _ForgotPasswordForm(
+                      onSwitchToSignIn: onSwitchToSignIn,
+                      onSwitchToSignUp: onSwitchToSignUp,
                     ),
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -95,35 +112,84 @@ class _ForgotPasswordForm extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              s.displayForgotPasswordTitle,
-              style: theme.textTheme.displayLarge,
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                s.displayForgotPasswordSubtitle,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.left,
+              ),
             ),
-            const SizedBox(height: 12),
-            Text(
-              s.displayForgotPasswordSubtitle,
-              style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.left,
-            ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 40),
             const _ForgotPasswordInputs(),
-            const SizedBox(height: 24),
-            const _SubmitButton(),
             const SizedBox(height: 16),
+            const _SubmitButton(),
+            const SizedBox(height: 12),
+            Divider(
+              height: 14,
+              thickness: 0.75,
+              indent: 48,
+              endIndent: 48,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.12),
+            ),
+            const SizedBox(height: 8),
             AuthRedirectText(
               questionText: s.displayRememberPassword,
               actionText: s.displaySignIn,
               onTap: onSwitchToSignIn ?? () => context.go('/auth/sign-in'),
             ),
-            const SizedBox(height: 8),
-            AuthRedirectText(
-              questionText: s.displayDontHaveAnAccount,
-              actionText: s.displaySignUp,
-              onTap: onSwitchToSignUp ?? () => context.go('/auth/sign-up'),
-            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ForgotPasswordProgress extends StatelessWidget {
+  const _ForgotPasswordProgress();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
+      buildWhen: (previous, current) => previous.step != current.step,
+      builder: (context, state) {
+        final theme = Theme.of(context);
+        final s = S.of(context);
+        final currentStep = switch (state.step) {
+          ForgotPasswordStep.email => 0,
+          ForgotPasswordStep.verifyCode => 1,
+          ForgotPasswordStep.newPassword => 2,
+        };
+        final stepLabel = switch (state.step) {
+          ForgotPasswordStep.email => s.displayForgotStepEmail,
+          ForgotPasswordStep.verifyCode => s.displayForgotStepVerifyCode,
+          ForgotPasswordStep.newPassword => s.displayForgotStepNewPassword,
+        };
+
+        return Column(
+          children: [
+            Text(
+              s.displayForgotStepProgress(currentStep + 1, 3, stepLabel),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 6),
+            StepProgressBar(
+              totalSteps: 3,
+              activeIndex: currentStep,
+              activeColor: theme.colorScheme.onPrimary,
+              inactiveColor:
+                  theme.colorScheme.onPrimary.withValues(alpha: 0.3),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -246,6 +312,7 @@ class _SubmitButton extends StatelessWidget {
         }
 
         final s = S.of(context);
+        final theme = Theme.of(context);
         final label = switch (state.step) {
           ForgotPasswordStep.email => s.displaySendVerificationCode,
           ForgotPasswordStep.verifyCode => s.displayVerifyCode,
@@ -255,6 +322,14 @@ class _SubmitButton extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              disabledForegroundColor: theme.colorScheme.onSurface.withValues(
+                alpha: 0.6,
+              ),
+              disabledBackgroundColor: theme.colorScheme.onSurface.withValues(
+                alpha: 0.12,
+              ),
+            ),
             onPressed: state.isValid
                 ? context.read<ForgotPasswordCubit>().submit
                 : null,

@@ -1,36 +1,6 @@
 import 'package:flutter/material.dart';
 
 @immutable
-class GlassTextFieldTheme extends ThemeExtension<GlassTextFieldTheme> {
-  const GlassTextFieldTheme({required this.inputDecorationTheme});
-
-  final InputDecorationTheme inputDecorationTheme;
-
-  @override
-  GlassTextFieldTheme copyWith({InputDecorationTheme? inputDecorationTheme}) {
-    return GlassTextFieldTheme(
-      inputDecorationTheme: inputDecorationTheme ?? this.inputDecorationTheme,
-    );
-  }
-
-  @override
-  GlassTextFieldTheme lerp(
-    covariant ThemeExtension<GlassTextFieldTheme>? other,
-    double t,
-  ) {
-    if (other is! GlassTextFieldTheme) {
-      return this;
-    }
-
-    return GlassTextFieldTheme(
-      inputDecorationTheme: t < 0.5
-          ? inputDecorationTheme
-          : other.inputDecorationTheme,
-    );
-  }
-}
-
-@immutable
 class AppPalette {
   static const Color star = Color.fromARGB(255, 255, 193, 7);
 
@@ -122,6 +92,16 @@ class AppTheme {
         selectionColor: palette.primary.withValues(alpha: 0.3),
         selectionHandleColor: palette.primary,
       ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: palette.surface,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (context) =>
+            const Icon(Icons.arrow_back_ios_rounded),
+      ),
       elevatedButtonTheme: _elevatedButtonTheme(palette),
       navigationBarTheme: _navigationBarTheme(palette),
       tabBarTheme: _tabBarTheme(palette),
@@ -129,11 +109,6 @@ class AppTheme {
       dividerTheme: _dividerTheme(palette),
       listTileTheme: _listTileTheme(palette),
       cardTheme: _cardTheme(palette),
-      extensions: [
-        GlassTextFieldTheme(
-          inputDecorationTheme: _glassTextFieldInputDecorationTheme(palette),
-        ),
-      ],
     );
   }
 
@@ -186,7 +161,11 @@ class AppTheme {
     final neutralBorderColor = p.onSurface.withValues(alpha: 0.3);
 
     return InputDecorationTheme(
-      contentPadding: const EdgeInsets.all(16),
+      isDense: true,
+      filled: true,
+      fillColor: p.card.withValues(alpha: 0.92),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      constraints: const BoxConstraints(minHeight: 60),
       border: _border(p, neutralBorderColor),
       enabledBorder: _border(p, neutralBorderColor),
       focusedBorder: _border(p, p.primary),
@@ -199,26 +178,7 @@ class AppTheme {
       ),
       prefixIconColor: p.onSurface.withValues(alpha: 0.7),
       suffixIconColor: p.onSurface.withValues(alpha: 0.7),
-    );
-  }
-
-  static InputDecorationTheme _glassTextFieldInputDecorationTheme(
-    AppPalette p,
-  ) {
-    return InputDecorationTheme(
-      isDense: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      border: InputBorder.none,
-      enabledBorder: InputBorder.none,
-      focusedBorder: InputBorder.none,
-      disabledBorder: InputBorder.none,
-      errorBorder: InputBorder.none,
-      focusedErrorBorder: InputBorder.none,
-      hintStyle: _textTheme(
-        p,
-      ).bodyMedium?.copyWith(color: p.onSurface.withValues(alpha: 0.4)),
-      prefixIconColor: p.onSurface.withValues(alpha: 0.7),
-      suffixIconColor: p.onSurface.withValues(alpha: 0.7),
+      suffixIconConstraints: const BoxConstraints(minWidth: 50, minHeight: 50),
     );
   }
 

@@ -2,9 +2,11 @@ import 'package:codium/core/error/app_error_code_extension.dart';
 import 'dart:async';
 
 import 'package:codium/core/router/route_constants.dart';
+import 'package:codium/core/utils/result.dart';
 import 'package:codium/core/utils/duration.dart';
 import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
+import 'package:codium/domain/usecases/lesson/get_lesson_by_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/get_task_by_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
 import 'package:codium/domain/usecases/tasks/submit_task_answer_usecase.dart';
@@ -30,6 +32,7 @@ class LessonTaskSessionScreen extends StatefulWidget {
 
 class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
   Timer? _autoAdvanceTimer;
+  String? _lessonTitle;
 
   void _exitSession(BuildContext context) {
     if (context.canPop()) {
@@ -44,6 +47,22 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
   void dispose() {
     _autoAdvanceTimer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLessonTitle();
+  }
+
+  Future<void> _loadLessonTitle() async {
+    final result = await GetIt.I<GetLessonByIdUseCase>()(widget.lessonId);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _lessonTitle = result.dataOrNull?.title;
+    });
   }
 
   void _handleTaskCompletion(
@@ -104,6 +123,27 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
     }
   }
 
+  String _resolveAppBarTitle(
+    LessonTaskSessionState state,
+    AppLocalizations s,
+    BuildContext context,
+  ) {
+    final lessonTitle = _lessonTitle;
+    if (lessonTitle != null && lessonTitle.isNotEmpty) {
+      return lessonTitle;
+    }
+
+    if (state is SessionActiveState) {
+      return _getTaskTypeTitle(state.currentTask, context);
+    }
+
+    if (state is SessionErrorState) {
+      return s.taskError;
+    }
+
+    return s.taskSessionLoading;
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -143,12 +183,15 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
         builder: (context, sessionState) {
           if (sessionState is SessionLoadingState) {
             return Scaffold(
-              backgroundColor: Colors.transparent,
               appBar: AppBar(
-                title: Text(s.taskSessionLoading),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                surfaceTintColor: Colors.transparent,
+                centerTitle: false,
+                titleSpacing: 16,
+                title: Text(
+                  _resolveAppBarTitle(sessionState, s, context),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               body: Center(
                 child: Column(
@@ -173,12 +216,15 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
               context,
             );
             return Scaffold(
-              backgroundColor: Colors.transparent,
               appBar: AppBar(
-                title: Text(s.taskError),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                surfaceTintColor: Colors.transparent,
+                centerTitle: false,
+                titleSpacing: 16,
+                title: Text(
+                  _resolveAppBarTitle(sessionState, s, context),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               body: Center(
                 child: Column(
@@ -236,14 +282,15 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                   }
                 },
                 child: Scaffold(
-                  backgroundColor: Colors.transparent,
                   appBar: AppBar(
                     title: Text(
-                      _getTaskTypeTitle(sessionState.currentTask, context),
+                      _resolveAppBarTitle(sessionState, s, context),
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    surfaceTintColor: Colors.transparent,
+                    centerTitle: false,
+                    titleSpacing: 16,
                     leading: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () async {
@@ -260,9 +307,9 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: TaskProgressBar(
-                          completedTasks: sessionState.completedTasksCount,
-                          totalTasks: sessionState.tasks.length,
+                        child: LabeledStepProgressBar(
+                          completedCount: sessionState.completedTasksCount,
+                          totalSteps: sessionState.tasks.length,
                         ),
                       ),
                       Expanded(

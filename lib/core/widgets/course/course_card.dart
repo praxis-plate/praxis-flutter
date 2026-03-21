@@ -33,83 +33,97 @@ class CourseCard extends StatelessWidget {
             state is CoursePurchasingLoadingState &&
             state.courseId == course.id;
 
-        return InkWell(
-          onTap: onPressed,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
+        return Material(
+          color: theme.cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: theme.dividerColor.withValues(alpha: 0.6)),
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: onPressed,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: CachedNetworkImage(
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                      imageUrl: course.thumbnailUrl ?? '',
-                      placeholder: (context, url) => Container(
-                        color: theme.colorScheme.surfaceContainerHighest,
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CachedNetworkImage(
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                          imageUrl: course.thumbnailUrl ?? '',
+                          placeholder: (context, url) => Container(
+                            color: theme.colorScheme.surfaceContainerHighest,
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            Constants.placeholderCourseImagePath,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                      errorWidget: (context, url, error) => Image.asset(
-                        Constants.placeholderCourseImagePath,
-                        fit: BoxFit.cover,
+                      if (isPurchased)
+                        const Positioned(
+                          top: 4,
+                          right: 4,
+                          child: _PurchasedBadge(),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: SizedBox(
+                      height: 100,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            course.title,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                course.description,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.8,
+                                  ),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                          _CourseMetaInfoRow(
+                            key: Key(course.id.toString()),
+                            rating: course.rating,
+                            duration: Duration(minutes: course.durationMinutes),
+                            lessonsCount: course.totalTasks,
+                            action: isPurchased
+                                ? null
+                                : _CourseActionChip(
+                                    courseId: course.id,
+                                    priceInCoins: course.priceInCoins,
+                                    isProcessing: isProcessing,
+                                    userProfile: userProfile,
+                                  ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  if (isPurchased)
-                    const Positioned(
-                      top: 4,
-                      right: 4,
-                      child: _PurchasedBadge(),
-                    ),
                 ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            course.title,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        _CourseRating(rating: course.rating),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      course.description,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.8,
-                        ),
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 8),
-                    _CourseMetaInfo(
-                      key: Key(course.id.toString()),
-                      duration: Duration(minutes: course.durationMinutes),
-                      courseId: course.id,
-                      lessonsCount: course.totalTasks,
-                      priceInCoins: course.priceInCoins,
-                      isPurchased: isPurchased,
-                      isProcessing: isProcessing,
-                      userProfile: userProfile,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
         );
       },
@@ -117,35 +131,19 @@ class CourseCard extends StatelessWidget {
   }
 }
 
-class _CourseMetaInfo extends StatelessWidget {
-  const _CourseMetaInfo({
+class _CourseMetaInfoRow extends StatelessWidget {
+  const _CourseMetaInfoRow({
     super.key,
-    required this.courseId,
+    required this.rating,
     required this.duration,
     required this.lessonsCount,
-    required this.priceInCoins,
-    required this.isPurchased,
-    required this.isProcessing,
-    required this.userProfile,
+    this.action,
   });
 
-  final int courseId;
+  final double rating;
   final Duration duration;
   final int lessonsCount;
-  final int priceInCoins;
-  final bool isPurchased;
-  final bool isProcessing;
-  final UserProfileModel userProfile;
-
-  void onPurchasePressed(BuildContext context, UserProfileModel userProfile) {
-    if (!context.mounted) {
-      return;
-    }
-
-    context.read<CoursePurchasingBloc>().add(
-      CoursePurchasingRequestEvent(userId: userProfile.id, courseId: courseId),
-    );
-  }
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -153,59 +151,51 @@ class _CourseMetaInfo extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Icon(
-              Icons.schedule,
-              size: 16,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              DurationFormatter.formatCompact(duration, s),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Icon(
-              Icons.menu_book,
-              size: 16,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              s.lessonsCount(lessonsCount),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-            ),
-          ],
+        _CourseRating(rating: rating),
+        const SizedBox(width: 12),
+        Icon(
+          Icons.schedule,
+          size: 16,
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
         ),
-        _CompactPurchaseButton(
-          priceInCoins: priceInCoins,
-          isProcessing: isProcessing,
-          isPurchased: isPurchased,
-          onPressed: () => onPurchasePressed(context, userProfile),
+        const SizedBox(width: 4),
+        Text(
+          DurationFormatter.formatCompact(duration, s),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
         ),
+        const SizedBox(width: 12),
+        Icon(
+          Icons.menu_book,
+          size: 16,
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          s.lessonsCount(lessonsCount),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
+        ),
+        if (action != null) ...[const Spacer(), action!],
       ],
     );
   }
 }
 
-class _CompactPurchaseButton extends StatelessWidget {
+class _CourseActionChip extends StatelessWidget {
+  final int courseId;
   final int priceInCoins;
   final bool isProcessing;
-  final bool isPurchased;
-  final VoidCallback onPressed;
+  final UserProfileModel userProfile;
 
-  const _CompactPurchaseButton({
+  const _CourseActionChip({
+    required this.courseId,
     required this.priceInCoins,
     required this.isProcessing,
-    required this.isPurchased,
-    required this.onPressed,
+    required this.userProfile,
   });
 
   @override
@@ -213,23 +203,25 @@ class _CompactPurchaseButton extends StatelessWidget {
     final theme = Theme.of(context);
 
     return InkWell(
-      onTap: isPurchased || isProcessing ? null : onPressed,
+      onTap: isProcessing
+          ? null
+          : () => _onPurchasePressed(context, userProfile),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
-        constraints: const BoxConstraints(
-          minHeight: 30,
-          maxHeight: 30,
-          minWidth: 50,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: _getBackgroundColor(theme),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: _getBorderColor(theme), width: 1),
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.6,
+          ),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: theme.dividerColor.withValues(alpha: 0.6),
+            width: 1,
+          ),
         ),
         child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: _CompactPurchaseButtonContent(
-            isPurchased: isPurchased,
+          duration: const Duration(milliseconds: 200),
+          child: _PurchaseChipContent(
             isProcessing: isProcessing,
             priceInCoins: priceInCoins,
             theme: theme,
@@ -239,28 +231,23 @@ class _CompactPurchaseButton extends StatelessWidget {
     );
   }
 
-  Color _getBackgroundColor(ThemeData theme) {
-    if (isPurchased) return theme.colorScheme.primary.withValues(alpha: 0.1);
-    if (isProcessing) return theme.colorScheme.surfaceContainerHighest;
-    return theme.colorScheme.primary.withValues(alpha: 0.1);
-  }
-
-  Color _getBorderColor(ThemeData theme) {
-    if (isPurchased || isProcessing) {
-      return theme.colorScheme.primary.withValues(alpha: 0.3);
+  void _onPurchasePressed(BuildContext context, UserProfileModel userProfile) {
+    if (!context.mounted) {
+      return;
     }
-    return theme.colorScheme.primary.withValues(alpha: 0.3);
+
+    context.read<CoursePurchasingBloc>().add(
+      CoursePurchasingRequestEvent(userId: userProfile.id, courseId: courseId),
+    );
   }
 }
 
-class _CompactPurchaseButtonContent extends StatelessWidget {
-  final bool isPurchased;
+class _PurchaseChipContent extends StatelessWidget {
   final bool isProcessing;
   final int priceInCoins;
   final ThemeData theme;
 
-  const _CompactPurchaseButtonContent({
-    required this.isPurchased,
+  const _PurchaseChipContent({
     required this.isProcessing,
     required this.priceInCoins,
     required this.theme,
@@ -270,50 +257,43 @@ class _CompactPurchaseButtonContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = S.of(context);
 
-    if (isPurchased) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.check_circle, size: 20, color: theme.colorScheme.primary),
-        ],
-      );
-    }
-
     if (isProcessing) {
-      return const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 16,
-            height: 16,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ],
+      return const SizedBox(
+        width: 14,
+        height: 14,
+        child: CircularProgressIndicator(strokeWidth: 2),
       );
     }
 
     if (priceInCoins == 0) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            s.add,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-        ],
+      return Text(
+        s.add,
+        style: theme.textTheme.bodySmall?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: theme.colorScheme.primary,
+        ),
       );
     }
 
-    return CoinAmount(
-      amount: priceInCoins,
-      style: theme.textTheme.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w600,
-        color: theme.colorScheme.primary,
-      ),
-      iconColor: theme.colorScheme.primary,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          s.courseDetailsGet,
+          style: theme.textTheme.bodySmall?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: theme.colorScheme.primary,
+          ),
+        ),
+        const SizedBox(width: 6),
+        CoinAmount(
+          amount: priceInCoins,
+          style: theme.textTheme.bodySmall?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: theme.colorScheme.primary,
+          ),
+        ),
+      ],
     );
   }
 }

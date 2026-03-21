@@ -17,9 +17,11 @@ import 'package:codium/domain/services/i_ai_service.dart';
 import 'package:codium/domain/services/services.dart';
 import 'package:codium/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/complete_lesson_session_usecase.dart';
+import 'package:codium/domain/usecases/tasks/get_completed_task_count_by_lesson_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/get_lesson_tasks_usecase.dart';
 import 'package:codium/domain/usecases/tasks/get_task_by_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/get_task_count_by_lesson_id_usecase.dart';
+import 'package:codium/domain/usecases/modules/get_modules_by_course_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
 import 'package:codium/domain/usecases/tasks/submit_task_answer_usecase.dart';
 import 'package:codium/domain/usecases/usecases.dart';
@@ -122,6 +124,21 @@ class DependencyInjection {
       ..registerLazySingleton<UserLocalDataSource>(
         () => UserLocalDataSource(GetIt.I<AppDatabase>()),
       )
+      ..registerLazySingleton<CourseLocalDataSource>(
+        () => CourseLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<ModuleLocalDataSource>(
+        () => ModuleLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<LessonLocalDataSource>(
+        () => LessonLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<TaskLocalDataSource>(
+        () => TaskLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<LessonProgressLocalDataSource>(
+        () => LessonProgressLocalDataSource(GetIt.I<AppDatabase>()),
+      )
       // Use remote datasources
       ..registerLazySingleton<AuthRemoteDataSource>(
         () => AuthRemoteDataSource(GetIt.I<Client>()),
@@ -163,7 +180,13 @@ class DependencyInjection {
         ),
       )
       ..registerLazySingleton<ICourseRepository>(
-        () => CourseRepository(GetIt.I<CourseRemoteDataSource>()),
+        () => CourseRepository(
+          GetIt.I<CourseRemoteDataSource>(),
+          GetIt.I<CourseLocalDataSource>(),
+          GetIt.I<ModuleLocalDataSource>(),
+          GetIt.I<LessonLocalDataSource>(),
+          GetIt.I<TaskLocalDataSource>(),
+        ),
       )
       ..registerLazySingleton<IUserRepository>(
         () => UserRepository(
@@ -182,7 +205,10 @@ class DependencyInjection {
         () => LessonRepository(GetIt.I<LessonRemoteDataSource>()),
       )
       ..registerLazySingleton<ILessonProgressRepository>(
-        () => LessonProgressRepository(GetIt.I<LessonRemoteDataSource>()),
+        () => LessonProgressRepository(
+          GetIt.I<LessonRemoteDataSource>(),
+          GetIt.I<LessonProgressLocalDataSource>(),
+        ),
       )
       ..registerLazySingleton<IAchievementRepository>(
         () => AchievementRepository(GetIt.I<AchievementRemoteDataSource>()),
@@ -248,6 +274,13 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(
+        () =>
+            GetCompletedTaskCountByLessonIdUseCase(GetIt.I<ITaskRepository>()),
+      )
+      ..registerFactory(
+        () => GetModulesByCourseIdUseCase(GetIt.I<IModuleRepository>()),
+      )
+      ..registerFactory(
         () => PurchaseCourseUseCase(
           courseRepository: GetIt.I<ICourseRepository>(),
           userStatisticsRepository: GetIt.I<IUserStatisticsRepository>(),
@@ -274,6 +307,11 @@ class DependencyInjection {
       )
       ..registerFactory(
         () => GetLessonByIdUseCase(GetIt.I<ILessonRepository>()),
+      )
+      ..registerFactory(
+        () => GetCourseLessonProgressUseCase(
+          lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
+        ),
       )
       ..registerFactory(
         () => GetUserProfileDataUseCase(
@@ -331,6 +369,9 @@ class DependencyInjection {
         () => LearningBloc(
           getLearningDataUseCase: GetIt.I<GetLearningDataUseCase>(),
           getEnrolledCoursesUseCase: GetIt.I<GetEnrolledCoursesUseCase>(),
+          getCourseLessonProgressUseCase:
+              GetIt.I<GetCourseLessonProgressUseCase>(),
+          getLessonsByCourseIdUseCase: GetIt.I<GetLessonsByCourseIdUseCase>(),
         ),
       )
       ..registerFactory<CourseDetailBloc>(
@@ -354,12 +395,17 @@ class DependencyInjection {
       ..registerFactory(
         () => CourseLearningBloc(
           getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
+          getCourseLessonProgressUseCase:
+              GetIt.I<GetCourseLessonProgressUseCase>(),
+          getLessonsByCourseIdUseCase: GetIt.I<GetLessonsByCourseIdUseCase>(),
         ),
       )
       ..registerFactory(
         () => LessonsListBloc(
+          GetIt.I<GetModulesByCourseIdUseCase>(),
           GetIt.I<GetLessonsByCourseIdUseCase>(),
           GetIt.I<GetTaskCountByLessonIdUseCase>(),
+          GetIt.I<GetCompletedTaskCountByLessonIdUseCase>(),
         ),
       )
       ..registerFactory(
@@ -378,9 +424,6 @@ class DependencyInjection {
       )
       ..registerLazySingleton<TaskRemoteDataSource>(
         () => TaskRemoteDataSource(GetIt.I<Client>()),
-      )
-      ..registerLazySingleton<TaskLocalDataSource>(
-        () => TaskLocalDataSource(GetIt.I<AppDatabase>()),
       )
       ..registerLazySingleton<ITaskRepository>(
         () => TaskRepository(

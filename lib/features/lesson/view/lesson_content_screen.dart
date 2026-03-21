@@ -55,63 +55,64 @@ class _LessonContentView extends StatelessWidget {
           _showCompletionDialog(context, state);
         }
       },
-      child: Stack(
-        children: [
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              surfaceTintColor: Colors.transparent,
-              title: BlocBuilder<LessonContentBloc, LessonContentState>(
-                builder: (context, state) {
-                  if (state is LessonContentLoaded) {
-                    return Text(
-                      state.lesson.title,
-                      style: theme.textTheme.titleLarge,
-                    );
-                  }
-                  return Text(s.loading, style: theme.textTheme.titleLarge);
-                },
-              ),
-            ),
-            body: BlocBuilder<LessonContentBloc, LessonContentState>(
-              builder: (context, state) {
-                if (state is LessonContentLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state is LessonContentError) {
-                  return ErrorScreen(
-                    message: state.failure.code.localizedMessage(context),
-                    onRetry: () {
-                      context.read<LessonContentBloc>().add(
-                        LoadLessonContent(
-                          lessonId: lessonId,
-                          userId: '',
-                          courseId: courseId,
-                        ),
-                      );
-                    },
-                  );
-                }
-
-                if (state is LessonContentLoaded) {
-                  return _LessonContent(
-                    lesson: state.lesson,
-                    isCompleted: state.isCompleted,
-                  );
-                }
-
-                if (state is LessonContentCompleting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                return const SizedBox.shrink();
-              },
-            ),
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: false,
+          titleSpacing: 16,
+          title: BlocBuilder<LessonContentBloc, LessonContentState>(
+            builder: (context, state) {
+              if (state is LessonContentLoaded) {
+                return Text(
+                  state.lesson.title,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                );
+              }
+              return Text(
+                s.loading,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              );
+            },
           ),
-        ],
+        ),
+        body: BlocBuilder<LessonContentBloc, LessonContentState>(
+          builder: (context, state) {
+            if (state is LessonContentLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is LessonContentError) {
+              return ErrorScreen(
+                message: state.failure.code.localizedMessage(context),
+                onRetry: () {
+                  context.read<LessonContentBloc>().add(
+                    LoadLessonContent(
+                      lessonId: lessonId,
+                      userId: '',
+                      courseId: courseId,
+                    ),
+                  );
+                },
+              );
+            }
+
+            if (state is LessonContentLoaded) {
+              return _LessonContent(
+                lesson: state.lesson,
+                isCompleted: state.isCompleted,
+              );
+            }
+
+            if (state is LessonContentCompleting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
@@ -171,28 +172,37 @@ class _LessonContent extends StatelessWidget {
     final s = S.of(context);
     final theme = Theme.of(context);
 
-    return Wrapper(
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    lesson.title,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+        return Wrapper(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        lesson.title,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        lesson.content,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.85,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                    ],
                   ),
-                  const SizedBox(height: 24),
-                  Text(lesson.content, style: theme.textTheme.bodyLarge),
-                  const SizedBox(height: 32),
-                ],
+                ),
               ),
-            ),
-          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16),

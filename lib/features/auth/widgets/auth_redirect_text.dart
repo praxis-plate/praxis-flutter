@@ -15,8 +15,8 @@ class AuthRedirectText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return GestureDetector(
-      onTap: onTap,
+    return TextButton(
+      onPressed: onTap,
       child: RichText(
         text: TextSpan(
           style: theme.textTheme.bodySmall,

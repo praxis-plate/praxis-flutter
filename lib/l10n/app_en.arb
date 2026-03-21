@@ -11,12 +11,51 @@
   "errorPasswordsDoNotMatch": "Passwords do not match",
   "displayAlreadyHaveAnAccount": "Already have an account?",
   "displaySignIn": "Sign In",
+  "displayOr": "or",
+  "displaySignUpStepEmail": "Email",
+  "displaySignUpStepVerifyCode": "Code",
+  "displaySignUpStepPassword": "Password",
+  "displaySignUpStepProgress": "Step {current}/{total}: {label}",
+  "@displaySignUpStepProgress": {
+    "description": "Sign up progress label",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "displayForgotStepEmail": "Email",
+  "displayForgotStepVerifyCode": "Code",
+  "displayForgotStepNewPassword": "New password",
+  "displayForgotStepProgress": "Step {current}/{total}: {label}",
+  "@displayForgotStepProgress": {
+    "description": "Forgot password progress label",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "displayEmailHint": "example@gmail.com",
   "displayPasswordHint": "•••••••••",
   "displayDontHaveAnAccount": "Don't have an account?",
   "displayForgotPassword": "Forgot password?",
   "displayForgotPasswordTitle": "Forgot password?",
-  "displayForgotPasswordSubtitle": "Enter your email and we'll send you a verification code.",
+  "displayForgotPasswordSubtitle": "Enter your email and we'll send a code\nfor resetting your password",
+  "displaySignInSubtitle": "Sign in to continue",
+  "displaySignUpSubtitle": "Enter your email to create an account",
   "displaySendResetLink": "Send code",
   "displayRememberPassword": "Remembered your password?",
   "displayResetLinkSent": "Check your email for a verification code",
@@ -32,7 +71,18 @@
   "navigationHistoryTitle": "History",
   "navigationProfileTitle": "Profile",
 
-  "mainTitle": "Main",
+  "mainTitle": "Catalog",
+  "mainHeroTitle": "Keep learning",
+  "mainHeroSubtitle": "Pick a course and continue where you left off",
+  "mainCoursesAvailableCount": "{count, plural, one {# course available} other {# courses available}}",
+  "@mainCoursesAvailableCount": {
+    "description": "Number of available courses in the main hero section",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "balance": "Balance",
   "recommend": "Recommend",
   "courses": "Courses",
@@ -50,6 +100,12 @@
   "learningBrowseCourses": "Browse courses from the home screen to start learning",
 
   "profileTitle": "Profile",
+  "profileThemeTitle": "Theme",
+  "profileThemeLight": "Light",
+  "profileThemeDark": "Dark",
+  "profileLanguageTitle": "Language",
+  "profileLanguageRu": "Russian",
+  "profileLanguageEn": "English",
   "profileSetRussian": "Russian",
   "profileSetDarkMode": "Dark theme",
   "profileLogOut": "Sign out",
@@ -213,12 +269,17 @@
   "courseDetailsRecommend": "Recommend",
   "courseDetailsDescriptionTab": "Description",
   "courseDetailsContentsTab": "Contents",
+  "courseDetailsScreenshotsTitle": "Screenshots",
+  "showMore": "Show more",
+  "showLess": "Show less",
   "startLearning": "Start Learning",
   "pdfBookRenameLabel": "Title",
   "pdfReaderTitleDefault": "PDF Reader",
   "pdfReaderNoPdfLoadedMessage": "No PDF loaded",
   "pdfReaderContextInfo": "From {title}, page {page}",
   "learningContinue": "Continue",
+  "learningCourseCard": "Course card",
+  "learningContinueHint": "Continue from where you left off",
   "errorRateLimitMessage": "API rate limit exceeded. Please wait a moment and try again.",
   "errorNetworkTimeout": "Network timeout. Please check your connection.",
   "errorNetworkNoInternet": "No internet connection.",
@@ -252,6 +313,15 @@
   "ok": "OK",
   "coins": "Coins",
   "courseProgress": "Course Progress",
+  "courseProgressPercent": "{percent}% completed",
+  "@courseProgressPercent": {
+    "description": "Course progress percent label",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "lessonsCompleted": "{completed} of {total} lessons",
   "continueLearning": "Continue Learning",
   "lessonCompleted": "Lesson Completed!",

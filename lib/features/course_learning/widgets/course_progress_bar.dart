@@ -11,10 +11,11 @@ class CourseProgressBar extends StatelessWidget {
     final theme = Theme.of(context);
 
     return LinearProgressIndicator(
-      value: userCourseStatistics.progress,
-      backgroundColor: theme.colorScheme.primaryContainer,
+      value: userCourseStatistics.progress / 100,
+      minHeight: 4,
+      backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.12),
       valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(999),
     );
   }
 }

@@ -14,7 +14,10 @@ class CompleteLessonUseCase {
     required String userId,
     required int lessonId,
   }) async {
-    final result = await _lessonProgressRepository.markComplete(lessonId);
+    final result = await _lessonProgressRepository.markComplete(
+      lessonId,
+      userId: userId,
+    );
 
     result.when(
       success: (_) {
