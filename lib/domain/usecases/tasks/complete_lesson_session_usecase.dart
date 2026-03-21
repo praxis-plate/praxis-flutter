@@ -22,7 +22,10 @@ class CompleteLessonSessionUseCase {
     required int bonusXp,
   }) async {
     try {
-      await _lessonProgressRepository.markComplete(lessonId);
+      await _lessonProgressRepository.markComplete(
+        lessonId,
+        userId: userId,
+      );
 
       await _coinTransactionRepository.create(
         CreateCoinTransactionModel(
