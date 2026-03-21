@@ -7,6 +7,7 @@ import 'package:codium/domain/models/task/task_model.dart';
 import 'package:codium/domain/repositories/i_lesson_repository.dart';
 import 'package:codium/domain/repositories/i_task_repository.dart';
 import 'package:codium/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
+import 'package:codium/domain/usecases/tasks/get_completed_task_count_by_lesson_id_usecase.dart';
 import 'package:codium/domain/usecases/tasks/get_task_count_by_lesson_id_usecase.dart';
 import 'package:codium/features/course_learning/bloc/lesson/lessons_list_bloc.dart';
 import 'package:mocktail/mocktail.dart';
@@ -28,6 +29,7 @@ void main() {
     bloc = LessonsListBloc(
       GetLessonsByCourseIdUseCase(lessonRepository),
       GetTaskCountByLessonIdUseCase(taskRepository),
+      GetCompletedTaskCountByLessonIdUseCase(taskRepository),
     );
   });
 
@@ -47,14 +49,23 @@ void main() {
       when(
         () => taskRepository.getTasksByLessonId(2),
       ).thenAnswer((_) async => const Failure(_failure));
+      when(
+        () => taskRepository.getCompletedTaskCount('user-1', 1),
+      ).thenAnswer((_) async => const Success(0));
+      when(
+        () => taskRepository.getCompletedTaskCount('user-1', 2),
+      ).thenAnswer((_) async => const Failure(_failure));
     },
     build: () => bloc,
-    act: (bloc) => bloc.add(const LoadLessonsListEvent(courseId: 1)),
+    act: (bloc) => bloc.add(
+      const LoadLessonsListEvent(courseId: 1, userId: 'user-1'),
+    ),
     expect: () => [
       const LessonsListLoadingState(),
       LessonsListLoadedState(
         lessons: _lessons,
         taskCounts: const {1: 0, 2: null},
+        completedTaskCounts: const {1: 0, 2: 0},
       ),
     ],
   );
