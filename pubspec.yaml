@@ -70,8 +70,8 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/images/blur-backgrounds/
     - assets/icons/
+    - assets/icons/currency/
     - assets/prompts/
 flutter_intl:
   enabled: true

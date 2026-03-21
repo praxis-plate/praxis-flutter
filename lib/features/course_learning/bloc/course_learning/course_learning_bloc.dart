@@ -5,6 +5,8 @@ import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/lesson_progress/lesson_progress_model.dart';
 import 'package:codium/domain/models/user/user_course_statistics.dart';
 import 'package:codium/domain/usecases/course/get_course_detail_usecase.dart';
+import 'package:codium/domain/usecases/lesson/get_course_lesson_progress_usecase.dart';
+import 'package:codium/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -16,27 +18,37 @@ part 'course_learning_state.dart';
 class CourseLearningBloc
     extends Bloc<CourseLearningEvent, CourseLearningState> {
   final GetCourseDetailUseCase _getCourseDetailUseCase;
+  final GetCourseLessonProgressUseCase _getCourseLessonProgressUseCase;
+  final GetLessonsByCourseIdUseCase _getLessonsByCourseIdUseCase;
 
   int? _currentCourseId;
   String? _currentUserId;
 
-  CourseLearningBloc({required GetCourseDetailUseCase getCourseDetailUseCase})
-    : _getCourseDetailUseCase = getCourseDetailUseCase,
-      super(const CourseLearningInitial()) {
+  CourseLearningBloc({
+    required GetCourseDetailUseCase getCourseDetailUseCase,
+    required GetCourseLessonProgressUseCase getCourseLessonProgressUseCase,
+    required GetLessonsByCourseIdUseCase getLessonsByCourseIdUseCase,
+  }) : _getCourseDetailUseCase = getCourseDetailUseCase,
+       _getCourseLessonProgressUseCase = getCourseLessonProgressUseCase,
+       _getLessonsByCourseIdUseCase = getLessonsByCourseIdUseCase,
+       super(const CourseLearningInitial()) {
     on<LoadCourseLearning>(_onLoadCourseLearning);
     on<RefreshProgress>(_onRefreshProgress);
   }
 
   UserCourseStatistics _createStatistics(
-    CourseModel course,
     List<LessonProgressModel> progress,
+    int totalLessons,
+    String courseId,
   ) {
     final completedCount = progress.where((p) => p.isCompleted).length;
-    final totalCount = course.totalTasks > 0 ? course.totalTasks : 1;
+    final totalCount = totalLessons > 0
+        ? totalLessons
+        : (progress.isNotEmpty ? progress.length : 1);
     final progressPercent = (completedCount / totalCount) * 100;
 
     return UserCourseStatistics(
-      courseId: course.id.toString(),
+      courseId: courseId,
       progress: progressPercent,
       totalTasks: totalCount,
       solvedTasks: completedCount,
@@ -58,15 +70,26 @@ class CourseLearningBloc
 
       if (courseResult.isSuccess) {
         final course = courseResult.dataOrNull;
-        // For now, we'll use empty progress list until lesson progress use case is implemented
-        final progress = <LessonProgressModel>[];
+        final progressResult = await _getCourseLessonProgressUseCase(
+          userId: event.userId,
+          courseId: event.courseId,
+        );
+        final progress = progressResult.dataOrNull ?? <LessonProgressModel>[];
+        final lessonsResult = await _getLessonsByCourseIdUseCase(
+          event.courseId,
+        );
+        final totalLessons = lessonsResult.dataOrNull?.length ?? 0;
 
         if (course != null) {
           emit(
             CourseLearningLoaded(
               course: course,
               lessonProgress: progress,
-              statistics: _createStatistics(course, progress),
+              statistics: _createStatistics(
+                progress,
+                totalLessons,
+                course.id.toString(),
+              ),
             ),
           );
         } else {
@@ -109,15 +132,26 @@ class CourseLearningBloc
 
       if (courseResult.isSuccess) {
         final course = courseResult.dataOrNull;
-        // For now, we'll use empty progress list until lesson progress use case is implemented
-        final progress = <LessonProgressModel>[];
+        final progressResult = await _getCourseLessonProgressUseCase(
+          userId: _currentUserId!,
+          courseId: _currentCourseId!,
+        );
+        final progress = progressResult.dataOrNull ?? <LessonProgressModel>[];
+        final lessonsResult = await _getLessonsByCourseIdUseCase(
+          _currentCourseId!,
+        );
+        final totalLessons = lessonsResult.dataOrNull?.length ?? 0;
 
         if (course != null) {
           emit(
             CourseLearningLoaded(
               course: course,
               lessonProgress: progress,
-              statistics: _createStatistics(course, progress),
+              statistics: _createStatistics(
+                progress,
+                totalLessons,
+                course.id.toString(),
+              ),
             ),
           );
         } else {

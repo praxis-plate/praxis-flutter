@@ -16,16 +16,21 @@ final class LessonsListLoadingState extends LessonsListState {
 }
 
 final class LessonsListLoadedState extends LessonsListState {
+  final List<ModuleModel> modules;
   final List<LessonModel> lessons;
   final Map<int, int?> taskCounts;
+  final Map<int, int> completedTaskCounts;
 
   const LessonsListLoadedState({
+    required this.modules,
     required this.lessons,
     required this.taskCounts,
+    required this.completedTaskCounts,
   });
 
   @override
-  List<Object> get props => [lessons, taskCounts];
+  List<Object> get props =>
+      [modules, lessons, taskCounts, completedTaskCounts];
 }
 
 final class LessonsListErrorState extends LessonsListState {

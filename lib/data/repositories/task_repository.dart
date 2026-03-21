@@ -98,6 +98,24 @@ class TaskRepository implements ITaskRepository {
   }
 
   @override
+  Future<Result<int>> getCompletedTaskCount(
+    String userId,
+    int lessonId,
+  ) async {
+    try {
+      final progress = await _localDataSource.getUserTaskProgress(
+        userId,
+        lessonId,
+      );
+      final completedCount =
+          progress.where((entry) => entry.isCompleted).length;
+      return Success(completedCount);
+    } catch (e) {
+      return Failure(AppFailure.fromException(e));
+    }
+  }
+
+  @override
   Future<Result<void>> updateProgress(UpdateTaskProgressModel progress) async {
     try {
       await _localDataSource.updateTaskProgress(progress.toCompanion());

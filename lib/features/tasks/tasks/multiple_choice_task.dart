@@ -1,4 +1,3 @@
-import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/bloc.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
@@ -58,16 +57,21 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
                   });
                 },
                 borderRadius: BorderRadius.circular(12),
-                child: GlassCard(
-                  borderRadius: BorderRadius.circular(12),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
                   padding: const EdgeInsets.all(16),
-                  backgroundColor: isSelected
-                      ? theme.colorScheme.primaryContainer.withValues(
-                          alpha: 0.35,
-                        )
-                      : null,
-                  borderColor: isSelected ? theme.colorScheme.primary : null,
-                  borderWidth: isSelected ? 2 : 1,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? theme.colorScheme.primary.withValues(alpha: 0.08)
+                        : theme.cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected
+                          ? theme.colorScheme.primary
+                          : theme.dividerColor.withValues(alpha: 0.6),
+                      width: 1,
+                    ),
+                  ),
                   child: Row(
                     children: [
                       Container(
@@ -79,7 +83,7 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
                           border: Border.all(
                             color: isSelected
                                 ? theme.colorScheme.primary
-                                : theme.colorScheme.outline,
+                                : theme.dividerColor.withValues(alpha: 0.6),
                             width: 2,
                           ),
                         ),
@@ -99,18 +103,13 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
                       Expanded(
                         child: Text(
                           option,
-                          style: theme.textTheme.bodyLarge?.copyWith(
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             color: isSelected
                                 ? theme.colorScheme.primary
                                 : theme.colorScheme.onSurface,
                           ),
                         ),
                       ),
-                      if (isSelected)
-                        Icon(
-                          Icons.check_circle,
-                          color: theme.colorScheme.primary,
-                        ),
                     ],
                   ),
                 ),

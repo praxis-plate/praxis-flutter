@@ -9,9 +9,13 @@ sealed class LessonsListEvent extends Equatable {
 
 final class LoadLessonsListEvent extends LessonsListEvent {
   final int courseId;
+  final String userId;
 
-  const LoadLessonsListEvent({required this.courseId});
+  const LoadLessonsListEvent({
+    required this.courseId,
+    required this.userId,
+  });
 
   @override
-  List<Object> get props => [courseId];
+  List<Object> get props => [courseId, userId];
 }

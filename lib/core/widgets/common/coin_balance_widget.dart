@@ -1,30 +1,34 @@
+import 'package:codium/core/widgets/common/svg_asset.dart';
 import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
 class CoinBalanceWidget extends StatelessWidget {
   final int balance;
   final bool compact;
+  final String iconAssetPath;
 
   const CoinBalanceWidget({
     required this.balance,
     this.compact = false,
+    this.iconAssetPath = 'assets/icons/currency/default.svg',
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     if (compact) {
-      return _CompactBalance(balance: balance);
+      return _CompactBalance(balance: balance, iconAssetPath: iconAssetPath);
     }
 
-    return _FullBalance(balance: balance);
+    return _FullBalance(balance: balance, iconAssetPath: iconAssetPath);
   }
 }
 
 class _CompactBalance extends StatelessWidget {
   final int balance;
+  final String iconAssetPath;
 
-  const _CompactBalance({required this.balance});
+  const _CompactBalance({required this.balance, required this.iconAssetPath});
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +47,7 @@ class _CompactBalance extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.monetization_on,
-            size: 18,
-            color: theme.colorScheme.primary,
-          ),
+          SvgAsset(iconAssetPath, width: 18, height: 18),
           const SizedBox(width: 6),
           Text(
             balance.toString(),
@@ -64,8 +64,9 @@ class _CompactBalance extends StatelessWidget {
 
 class _FullBalance extends StatelessWidget {
   final int balance;
+  final String iconAssetPath;
 
-  const _FullBalance({required this.balance});
+  const _FullBalance({required this.balance, required this.iconAssetPath});
 
   @override
   Widget build(BuildContext context) {
@@ -91,11 +92,7 @@ class _FullBalance extends StatelessWidget {
               color: theme.colorScheme.primary,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.monetization_on,
-              size: 24,
-              color: theme.colorScheme.onPrimary,
-            ),
+            child: SvgAsset(iconAssetPath, width: 24, height: 24),
           ),
           const SizedBox(width: 12),
           Column(

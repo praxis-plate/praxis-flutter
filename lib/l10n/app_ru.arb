@@ -11,12 +11,51 @@
   "errorPasswordsDoNotMatch": "Пароли не совпадают",
   "displayAlreadyHaveAnAccount": "Уже есть аккаунт?",
   "displaySignIn": "Войти",
+  "displayOr": "или",
+  "displaySignUpStepEmail": "Email",
+  "displaySignUpStepVerifyCode": "Код",
+  "displaySignUpStepPassword": "Пароль",
+  "displaySignUpStepProgress": "Шаг {current}/{total}: {label}",
+  "@displaySignUpStepProgress": {
+    "description": "Подпись прогресса регистрации",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "displayForgotStepEmail": "Email",
+  "displayForgotStepVerifyCode": "Код",
+  "displayForgotStepNewPassword": "Новый пароль",
+  "displayForgotStepProgress": "Шаг {current}/{total}: {label}",
+  "@displayForgotStepProgress": {
+    "description": "Подпись прогресса восстановления пароля",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
   "displayEmailHint": "example@yandex.ru",
   "displayPasswordHint": "•••••••••",
   "displayDontHaveAnAccount": "Нет аккаунта?",
   "displayForgotPassword": "Забыли пароль?",
   "displayForgotPasswordTitle": "Забыли пароль?",
-  "displayForgotPasswordSubtitle": "Введите email, и мы отправим код для сброса пароля.",
+  "displayForgotPasswordSubtitle": "Введите email, и мы отправим код\nдля сброса пароля",
+  "displaySignInSubtitle": "Войдите, чтобы продолжить",
+  "displaySignUpSubtitle": "Введите email, чтобы создать аккаунт",
   "displaySendResetLink": "Отправить код",
   "displayRememberPassword": "Вспомнили пароль?",
   "displayResetLinkSent": "Проверьте почту — мы отправили код для сброса",
@@ -32,7 +71,18 @@
   "navigationHistoryTitle": "История",
   "navigationProfileTitle": "Профиль",
 
-  "mainTitle": "Обзор",
+  "mainTitle": "Каталог",
+  "mainHeroTitle": "Продолжай обучение",
+  "mainHeroSubtitle": "Выберите курс и продолжите обучение",
+  "mainCoursesAvailableCount": "{count, plural, one {# курс доступен} few {# курса доступно} many {# курсов доступно} other {# курса доступно}}",
+  "@mainCoursesAvailableCount": {
+    "description": "Количество доступных курсов в hero-блоке главного экрана",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "balance": "Balance",
   "recommend": "Рекомендации:",
   "courses": "Курсы:",
@@ -50,6 +100,12 @@
   "learningBrowseCourses": "Просмотрите курсы на главном экране, чтобы начать обучение",
 
   "profileTitle": "Профиль",
+  "profileThemeTitle": "Тема",
+  "profileThemeLight": "Светлая",
+  "profileThemeDark": "Тёмная",
+  "profileLanguageTitle": "Язык",
+  "profileLanguageRu": "Русский",
+  "profileLanguageEn": "English",
   "profileSetRussian": "Русский",
   "profileSetDarkMode": "Тёмный режим",
   "profileLogOut": "Выйти",
@@ -213,12 +269,17 @@
   "courseDetailsRecommend": "Рекомендации",
   "courseDetailsDescriptionTab": "Описание",
   "courseDetailsContentsTab": "Содержание",
+  "courseDetailsScreenshotsTitle": "Скриншоты",
+  "showMore": "Показать еще",
+  "showLess": "Скрыть",
   "startLearning": "Начать обучение",
   "pdfBookRenameLabel": "Название",
   "pdfReaderTitleDefault": "Просмотр PDF",
   "pdfReaderNoPdfLoadedMessage": "PDF не загружен",
   "pdfReaderContextInfo": "Из {title}, страница {page}",
   "learningContinue": "Продолжить",
+  "learningCourseCard": "К карточке курса",
+  "learningContinueHint": "Продолжите с места, где остановились",
   "errorRateLimitMessage": "Превышен лимит запросов API. Подождите немного и попробуйте снова.",
   "errorNetworkTimeout": "Тайм-аут сети. Проверьте подключение.",
   "errorNetworkNoInternet": "Нет подключения к интернету.",
@@ -252,6 +313,15 @@
   "ok": "ОК",
   "coins": "Монеты",
   "courseProgress": "Прогресс курса",
+  "courseProgressPercent": "{percent}% завершено",
+  "@courseProgressPercent": {
+    "description": "Course progress percent label",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "lessonsCompleted": "{completed} из {total} уроков",
   "continueLearning": "Продолжить обучение",
   "lessonCompleted": "Урок завершен!",

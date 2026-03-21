@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:codium/core/widgets/widgets.dart';
 import 'package:codium/domain/models/task/task_models.dart';
 import 'package:codium/features/tasks/bloc/bloc.dart';
 import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
@@ -23,9 +22,10 @@ class MatchingTask extends StatefulWidget {
 class _MatchingTaskState extends State<MatchingTask> {
   final Map<String, String> _matches = {};
   String? _selectedTerm;
+  String? _selectedDefinition;
   List<String> _terms = [];
   List<String> _definitions = [];
-  static const double _itemHeight = 88;
+  static const double _itemMinHeight = 72;
 
   @override
   void initState() {
@@ -41,7 +41,10 @@ class _MatchingTaskState extends State<MatchingTask> {
 
   void _onTermTap(String term) {
     setState(() {
-      if (_selectedTerm == term) {
+      if (_matches.containsKey(term)) {
+        _matches.remove(term);
+        _selectedTerm = null;
+      } else if (_selectedTerm == term) {
         _selectedTerm = null;
       } else {
         _selectedTerm = term;
@@ -50,17 +53,45 @@ class _MatchingTaskState extends State<MatchingTask> {
   }
 
   void _onDefinitionTap(String definition) {
-    if (_selectedTerm != null) {
+    final matchedTerm = _findTermForDefinition(definition);
+    if (matchedTerm != null && _selectedTerm == null) {
       setState(() {
-        _matches[_selectedTerm!] = definition;
-        _selectedTerm = null;
+        _matches.remove(matchedTerm);
+        _selectedDefinition = null;
       });
+      return;
     }
+
+    setState(() {
+      if (_selectedDefinition == definition) {
+        _selectedDefinition = null;
+      } else {
+        _selectedDefinition = definition;
+      }
+    });
   }
 
-  void _removeMatch(String term) {
+  void _applySelectionMatch() {
+    final term = _selectedTerm;
+    final definition = _selectedDefinition;
+    if (term == null || definition == null) {
+      return;
+    }
+
     setState(() {
-      _matches.remove(term);
+      final previousTerm = _findTermForDefinition(definition);
+      if (previousTerm == term) {
+        _matches.remove(term);
+        _selectedTerm = null;
+        _selectedDefinition = null;
+        return;
+      }
+      if (previousTerm != null) {
+        _matches.remove(previousTerm);
+      }
+      _matches[term] = definition;
+      _selectedTerm = null;
+      _selectedDefinition = null;
     });
   }
 
@@ -76,6 +107,19 @@ class _MatchingTaskState extends State<MatchingTask> {
     }
     return ordered;
   }
+
+  String? _findTermForDefinition(String definition) {
+    for (final entry in _matches.entries) {
+      if (entry.value == definition) {
+        return entry.key;
+      }
+    }
+    return null;
+  }
+
+  String _leftLabel(int index) => '${index + 1}';
+
+  String _rightLabel(int index) => String.fromCharCode(65 + index);
 
   @override
   Widget build(BuildContext context) {
@@ -106,59 +150,85 @@ class _MatchingTaskState extends State<MatchingTask> {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _terms.map((term) {
+                  children: _terms.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final term = entry.value;
                     final isSelected = _selectedTerm == term;
-                    final isMatched = _matches.containsKey(term);
+                    final matchedDefinition = _matches[term];
+                    final isMatched = matchedDefinition != null;
+                    final isHighlighted = isMatched || isSelected;
+                    final leftLabel = _leftLabel(index);
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: InkWell(
-                        onTap: isMatched ? null : () => _onTermTap(term),
+                        onTap: () {
+                          _onTermTap(term);
+                          _applySelectionMatch();
+                        },
                         borderRadius: BorderRadius.circular(12),
-                        child: SizedBox(
-                          height: _itemHeight,
-                          child: GlassCard(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minHeight: _itemMinHeight,
+                          ),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
                             padding: const EdgeInsets.all(12),
-                            borderRadius: BorderRadius.circular(12),
-                            backgroundColor: isMatched
-                                ? theme.colorScheme.primary.withValues(
-                                    alpha: 0.18,
-                                  )
-                                : isSelected
-                                ? theme.colorScheme.primary.withValues(
-                                    alpha: 0.12,
-                                  )
-                                : null,
-                            borderColor: isMatched || isSelected
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.outline.withValues(
-                                    alpha: 0.3,
-                                  ),
-                            borderWidth: isSelected || isMatched ? 2 : 1,
-                            child: Row(
+                            decoration: BoxDecoration(
+                              color: isHighlighted
+                                  ? theme.colorScheme.primary
+                                  : theme.cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isHighlighted
+                                    ? theme.colorScheme.primary
+                                    : theme.dividerColor.withValues(
+                                        alpha: 0.6,
+                                      ),
+                                width: 1,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Expanded(
-                                  child: Text(
-                                    term,
-                                    maxLines: 3,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.onSurface,
+                                Row(
+                                  children: [
+                                    _MatchBadge(
+                                      label: leftLabel,
+                                      isHighlighted: isHighlighted,
                                     ),
+                                    if (isMatched) ...[
+                                      const SizedBox(width: 6),
+                                      Icon(
+                                        Icons.link,
+                                        size: 14,
+                                        color: theme.colorScheme.onPrimary,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      _MatchBadge(
+                                        label: _rightLabel(
+                                          _definitions.indexOf(
+                                            matchedDefinition,
+                                          ),
+                                        ),
+                                        isHighlighted: true,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  term,
+                                  maxLines: 2,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: isHighlighted
+                                        ? theme.colorScheme.onPrimary
+                                        : theme.colorScheme.onSurface,
                                   ),
                                 ),
-                                if (isMatched)
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.close,
-                                      size: 20,
-                                      color: theme.colorScheme.onSurface,
-                                    ),
-                                    onPressed: () => _removeMatch(term),
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                  ),
                               ],
                             ),
                           ),
@@ -172,40 +242,84 @@ class _MatchingTaskState extends State<MatchingTask> {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _definitions.map((definition) {
-                    final isMatched = _matches.containsValue(definition);
+                  children: _definitions.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final definition = entry.value;
+                    final matchedTerm = _findTermForDefinition(definition);
+                    final isMatched = matchedTerm != null;
+                    final isSelected = _selectedDefinition == definition;
+                    final isHighlighted = isMatched || isSelected;
+                    final rightLabel = _rightLabel(index);
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: InkWell(
-                        onTap: isMatched
-                            ? null
-                            : () => _onDefinitionTap(definition),
+                        onTap: () {
+                          _onDefinitionTap(definition);
+                          _applySelectionMatch();
+                        },
                         borderRadius: BorderRadius.circular(12),
-                        child: SizedBox(
-                          height: _itemHeight,
-                          child: GlassCard(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minHeight: _itemMinHeight,
+                          ),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
                             padding: const EdgeInsets.all(12),
-                            borderRadius: BorderRadius.circular(12),
-                            backgroundColor: isMatched
-                                ? theme.colorScheme.primary.withValues(
-                                    alpha: 0.18,
-                                  )
-                                : null,
-                            borderColor: isMatched
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.outline.withValues(
-                                    alpha: 0.3,
-                                  ),
-                            borderWidth: isMatched ? 2 : 1,
-                            child: Text(
-                              definition,
-                              maxLines: 3,
-                              softWrap: true,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurface,
+                            decoration: BoxDecoration(
+                              color: isHighlighted
+                                  ? theme.colorScheme.primary
+                                  : theme.cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isHighlighted
+                                    ? theme.colorScheme.primary
+                                    : theme.dividerColor.withValues(
+                                        alpha: 0.6,
+                                      ),
+                                width: 1,
                               ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    _MatchBadge(
+                                      label: rightLabel,
+                                      isHighlighted: isHighlighted,
+                                    ),
+                                    if (isMatched) ...[
+                                      const SizedBox(width: 6),
+                                      Icon(
+                                        Icons.link,
+                                        size: 14,
+                                        color: theme.colorScheme.onPrimary,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      _MatchBadge(
+                                        label: _leftLabel(
+                                          _terms.indexOf(matchedTerm),
+                                        ),
+                                        isHighlighted: true,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  definition,
+                                  maxLines: 2,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: isHighlighted
+                                        ? theme.colorScheme.onPrimary
+                                        : theme.colorScheme.onSurface,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -235,6 +349,42 @@ class _MatchingTaskState extends State<MatchingTask> {
                 : null,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _MatchBadge extends StatelessWidget {
+  final String label;
+  final bool isHighlighted;
+
+  const _MatchBadge({
+    required this.label,
+    required this.isHighlighted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final background = isHighlighted
+        ? theme.colorScheme.onPrimary.withValues(alpha: 0.2)
+        : theme.colorScheme.surfaceContainerHighest;
+    final foreground = isHighlighted
+        ? theme.colorScheme.onPrimary
+        : theme.colorScheme.onSurface;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label,
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: foreground,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

@@ -147,9 +147,37 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
       if (i < _inputControllers.length) {
         widgets.add(
           IntrinsicWidth(
-            child: GlassTextField(
-              borderRadius: BorderRadius.circular(8),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Theme(
+              data: theme.copyWith(
+                inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.12,
+                      ),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.12,
+                      ),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: theme.colorScheme.primary),
+                  ),
+                  fillColor: theme.colorScheme.surfaceContainerHighest,
+                ),
+              ),
               child: TextField(
                 controller: _inputControllers[i],
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -169,8 +197,6 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
                       alpha: 0.5,
                     ),
                   ),
-                  isDense: true,
-                  border: InputBorder.none,
                 ),
               ),
             ),

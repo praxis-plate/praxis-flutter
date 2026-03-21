@@ -3,6 +3,7 @@ export 'course_body.dart';
 export 'course_detail.dart';
 export 'course_header.dart';
 export 'course_meta_info.dart';
+export 'course_purchase_button.dart';
 export 'course_tab_section.dart';
 export 'description_content.dart';
 export 'meta_item.dart';
