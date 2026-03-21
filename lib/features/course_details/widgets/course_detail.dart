@@ -24,118 +24,114 @@ class CourseDetail extends StatelessWidget {
     final theme = Theme.of(context);
     final userProfile = UserScope.of(context);
 
-    return NestedScrollView(
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            pinned: true,
-            expandedHeight: 180,
-            backgroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            automaticallyImplyLeading: false,
-            flexibleSpace: LayoutBuilder(
-              builder: (context, constraints) {
-                final topPadding = MediaQuery.of(context).padding.top;
-                final collapsed =
-                    constraints.maxHeight <= kToolbarHeight + topPadding + 8;
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          pinned: true,
+          expandedHeight: 180,
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          automaticallyImplyLeading: false,
+          flexibleSpace: LayoutBuilder(
+            builder: (context, constraints) {
+              final topPadding = MediaQuery.of(context).padding.top;
+              final collapsed =
+                  constraints.maxHeight <= kToolbarHeight + topPadding + 8;
 
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: course.thumbnailUrl ?? '',
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                      ),
-                      errorWidget: (context, url, error) => Image.asset(
-                        Constants.placeholderCourseImagePath,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            theme.scaffoldBackgroundColor.withValues(
-                              alpha: 0.65,
-                            ),
-                            Colors.transparent,
-                          ],
-                        ),
-                      ),
-                    ),
-                    SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Stack(
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: TextButton.icon(
-                                onPressed: () {
-                                  if (context.canPop()) {
-                                    context.pop();
-                                  }
-                                },
-                                icon: const Icon(Icons.arrow_back),
-                                label: Text(S.of(context).goBack),
-                                style: TextButton.styleFrom(
-                                  foregroundColor: theme.colorScheme.onSurface,
-                                  textStyle: theme.textTheme.bodyMedium
-                                      ?.copyWith(fontWeight: FontWeight.w600),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 6,
-                                  ),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: IgnorePointer(
-                                ignoring: !collapsed,
-                                child: AnimatedOpacity(
-                                  opacity: collapsed ? 1 : 0,
-                                  duration: const Duration(milliseconds: 180),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: _AppBarAction(
-                                      course: course,
-                                      isPurchased: isPurchased,
-                                      userProfile: userProfile,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Wrapper(
-              child: Column(
+              return Stack(
+                fit: StackFit.expand,
                 children: [
-                  CourseHeader(course: course, isPurchased: isPurchased),
+                  CachedNetworkImage(
+                    imageUrl: course.thumbnailUrl ?? '',
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      Constants.placeholderCourseImagePath,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          theme.scaffoldBackgroundColor.withValues(alpha: 0.65),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: TextButton.icon(
+                              onPressed: () {
+                                if (context.canPop()) {
+                                  context.pop();
+                                }
+                              },
+                              icon: const Icon(Icons.arrow_back_ios_rounded),
+                              label: Text(S.of(context).goBack),
+                              style: TextButton.styleFrom(
+                                foregroundColor: theme.colorScheme.onSurface,
+                                textStyle: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 6,
+                                ),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IgnorePointer(
+                              ignoring: !collapsed,
+                              child: AnimatedOpacity(
+                                opacity: collapsed ? 1 : 0,
+                                duration: const Duration(milliseconds: 180),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: _AppBarAction(
+                                    course: course,
+                                    isPurchased: isPurchased,
+                                    userProfile: userProfile,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
-              ),
+              );
+            },
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Wrapper(
+            child: Column(
+              children: [
+                CourseHeader(course: course, isPurchased: isPurchased),
+              ],
             ),
           ),
-        ];
-      },
-      body: CourseTabSection(course: course),
+        ),
+        SliverToBoxAdapter(child: CourseTabSection(course: course)),
+      ],
     );
   }
 }

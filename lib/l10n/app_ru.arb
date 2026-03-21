@@ -278,6 +278,8 @@
   "pdfReaderNoPdfLoadedMessage": "PDF не загружен",
   "pdfReaderContextInfo": "Из {title}, страница {page}",
   "learningContinue": "Продолжить",
+  "learningCourseCard": "К карточке курса",
+  "learningContinueHint": "Продолжите с места, где остановились",
   "errorRateLimitMessage": "Превышен лимит запросов API. Подождите немного и попробуйте снова.",
   "errorNetworkTimeout": "Тайм-аут сети. Проверьте подключение.",
   "errorNetworkNoInternet": "Нет подключения к интернету.",

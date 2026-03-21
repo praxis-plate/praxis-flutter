@@ -278,6 +278,8 @@
   "pdfReaderNoPdfLoadedMessage": "No PDF loaded",
   "pdfReaderContextInfo": "From {title}, page {page}",
   "learningContinue": "Continue",
+  "learningCourseCard": "Course card",
+  "learningContinueHint": "Continue from where you left off",
   "errorRateLimitMessage": "API rate limit exceeded. Please wait a moment and try again.",
   "errorNetworkTimeout": "Network timeout. Please check your connection.",
   "errorNetworkNoInternet": "No internet connection.",

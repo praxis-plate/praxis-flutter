@@ -274,9 +274,8 @@ class DependencyInjection {
         ),
       )
       ..registerFactory(
-        () => GetCompletedTaskCountByLessonIdUseCase(
-          GetIt.I<ITaskRepository>(),
-        ),
+        () =>
+            GetCompletedTaskCountByLessonIdUseCase(GetIt.I<ITaskRepository>()),
       )
       ..registerFactory(
         () => GetModulesByCourseIdUseCase(GetIt.I<IModuleRepository>()),
@@ -370,6 +369,8 @@ class DependencyInjection {
         () => LearningBloc(
           getLearningDataUseCase: GetIt.I<GetLearningDataUseCase>(),
           getEnrolledCoursesUseCase: GetIt.I<GetEnrolledCoursesUseCase>(),
+          getCourseLessonProgressUseCase:
+              GetIt.I<GetCourseLessonProgressUseCase>(),
         ),
       )
       ..registerFactory<CourseDetailBloc>(
