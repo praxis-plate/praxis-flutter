@@ -15,5 +15,6 @@ abstract interface class ITaskRepository {
   );
   Future<Result<void>> saveTaskProgress(CreateTaskProgressModel progress);
   Future<Result<TaskProgressModel?>> getTaskProgress(String userId, int taskId);
+  Future<Result<int>> getCompletedTaskCount(String userId, int lessonId);
   Future<Result<void>> updateProgress(UpdateTaskProgressModel progress);
 }

@@ -6,12 +6,14 @@ import 'package:go_router/go_router.dart';
 class LessonCard extends StatelessWidget {
   final LessonModel lesson;
   final int? taskCount;
+  final int completedTaskCount;
   final bool isCompleted;
 
   const LessonCard({
     super.key,
     required this.lesson,
     required this.taskCount,
+    required this.completedTaskCount,
     required this.isCompleted,
   });
 
@@ -19,11 +21,20 @@ class LessonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final backgroundColor =
+        isCompleted ? theme.colorScheme.primary : theme.cardColor;
+    final foregroundColor =
+        isCompleted ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface;
+
     return Material(
-      color: theme.cardColor,
+      color: backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: theme.dividerColor.withValues(alpha: 0.6)),
+        side: BorderSide(
+          color: isCompleted
+              ? theme.colorScheme.primary
+              : theme.dividerColor.withValues(alpha: 0.6),
+        ),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -33,19 +44,10 @@ class LessonCard extends StatelessWidget {
             pathParameters: {'lessonId': lesson.id.toString()},
           );
         },
-        child: Padding(
+          child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Row(
             children: [
-              Icon(
-                isCompleted
-                    ? Icons.check_circle_outline
-                    : Icons.play_circle_outline,
-                color: isCompleted
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.primary,
-              ),
-              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,6 +56,7 @@ class LessonCard extends StatelessWidget {
                       lesson.title,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: foregroundColor,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -62,38 +65,25 @@ class LessonCard extends StatelessWidget {
                     _TaskCountSubtitle(
                       durationMinutes: lesson.durationMinutes,
                       taskCount: taskCount,
+                      color: foregroundColor.withValues(alpha: 0.8),
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              if (isCompleted) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest
-                        .withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: theme.dividerColor.withValues(alpha: 0.6),
-                    ),
-                  ),
-                  child: Text(
-                    S.of(context).complete,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                      fontWeight: FontWeight.w600,
-                    ),
+              if (taskCount != null) ...[
+                Text(
+                  '$completedTaskCount/$taskCount',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: foregroundColor.withValues(alpha: 0.8),
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(width: 8),
               ],
               Icon(
                 Icons.chevron_right,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                color: foregroundColor.withValues(alpha: 0.7),
               ),
             ],
           ),
@@ -106,10 +96,12 @@ class LessonCard extends StatelessWidget {
 class _TaskCountSubtitle extends StatelessWidget {
   final int durationMinutes;
   final int? taskCount;
+  final Color color;
 
   const _TaskCountSubtitle({
     required this.durationMinutes,
     required this.taskCount,
+    required this.color,
   });
 
   @override
@@ -122,7 +114,7 @@ class _TaskCountSubtitle extends StatelessWidget {
 
     return Text(
       '${s.minutesCount(durationMinutes)}$taskCountText',
-      style: theme.textTheme.bodySmall,
+      style: theme.textTheme.bodySmall?.copyWith(color: color),
     );
   }
 }

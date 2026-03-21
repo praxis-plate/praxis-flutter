@@ -19,13 +19,15 @@ class CourseLearningScreen extends StatelessWidget {
       create: (context) =>
           GetIt.I<CourseLearningBloc>()
             ..add(LoadCourseLearning(courseId: courseId, userId: userId)),
-      child: const _CourseLearningView(),
+      child: _CourseLearningView(userId: userId),
     );
   }
 }
 
 class _CourseLearningView extends StatelessWidget {
-  const _CourseLearningView();
+  const _CourseLearningView({required this.userId});
+
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +126,7 @@ class _CourseLearningView extends StatelessWidget {
             return _LessonsList(
               courseId: state.course.id,
               completedLessonIds: completedLessonIds,
+              userId: userId,
             );
           }
 
@@ -137,10 +140,12 @@ class _CourseLearningView extends StatelessWidget {
 class _LessonsList extends StatelessWidget {
   final int courseId;
   final Set<int> completedLessonIds;
+  final String userId;
 
   const _LessonsList({
     required this.courseId,
     required this.completedLessonIds,
+    required this.userId,
   });
 
   @override
@@ -150,7 +155,9 @@ class _LessonsList extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           GetIt.I<LessonsListBloc>()
-            ..add(LoadLessonsListEvent(courseId: courseId)),
+            ..add(
+              LoadLessonsListEvent(courseId: courseId, userId: userId),
+            ),
       child: BlocBuilder<LessonsListBloc, LessonsListState>(
         builder: (context, state) {
           if (state is LessonsListLoadingState) {
@@ -162,7 +169,7 @@ class _LessonsList extends StatelessWidget {
               message: state.failure.code.localizedMessage(context),
               onRetry: () {
                 context.read<LessonsListBloc>().add(
-                  LoadLessonsListEvent(courseId: courseId),
+                  LoadLessonsListEvent(courseId: courseId, userId: userId),
                 );
               },
             );
@@ -183,6 +190,8 @@ class _LessonsList extends StatelessWidget {
                   return LessonCard(
                     lesson: lesson,
                     taskCount: state.taskCounts[lesson.id],
+                    completedTaskCount:
+                        state.completedTaskCounts[lesson.id] ?? 0,
                     isCompleted: completedLessonIds.contains(lesson.id),
                   );
                 },
