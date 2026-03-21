@@ -308,6 +308,15 @@
   "ok": "ОК",
   "coins": "Монеты",
   "courseProgress": "Прогресс курса",
+  "courseProgressPercent": "{percent}% завершено",
+  "@courseProgressPercent": {
+    "description": "Course progress percent label",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "lessonsCompleted": "{completed} из {total} уроков",
   "continueLearning": "Продолжить обучение",
   "lessonCompleted": "Урок завершен!",

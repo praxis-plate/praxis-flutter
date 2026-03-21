@@ -5,6 +5,7 @@ import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/lesson_progress/lesson_progress_model.dart';
 import 'package:codium/domain/models/user/user_course_statistics.dart';
 import 'package:codium/domain/usecases/course/get_course_detail_usecase.dart';
+import 'package:codium/domain/usecases/lesson/get_course_lesson_progress_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -16,12 +17,16 @@ part 'course_learning_state.dart';
 class CourseLearningBloc
     extends Bloc<CourseLearningEvent, CourseLearningState> {
   final GetCourseDetailUseCase _getCourseDetailUseCase;
+  final GetCourseLessonProgressUseCase _getCourseLessonProgressUseCase;
 
   int? _currentCourseId;
   String? _currentUserId;
 
-  CourseLearningBloc({required GetCourseDetailUseCase getCourseDetailUseCase})
-    : _getCourseDetailUseCase = getCourseDetailUseCase,
+  CourseLearningBloc({
+    required GetCourseDetailUseCase getCourseDetailUseCase,
+    required GetCourseLessonProgressUseCase getCourseLessonProgressUseCase,
+  }) : _getCourseDetailUseCase = getCourseDetailUseCase,
+       _getCourseLessonProgressUseCase = getCourseLessonProgressUseCase,
       super(const CourseLearningInitial()) {
     on<LoadCourseLearning>(_onLoadCourseLearning);
     on<RefreshProgress>(_onRefreshProgress);
@@ -58,8 +63,11 @@ class CourseLearningBloc
 
       if (courseResult.isSuccess) {
         final course = courseResult.dataOrNull;
-        // For now, we'll use empty progress list until lesson progress use case is implemented
-        final progress = <LessonProgressModel>[];
+        final progressResult = await _getCourseLessonProgressUseCase(
+          userId: event.userId,
+          courseId: event.courseId,
+        );
+        final progress = progressResult.dataOrNull ?? <LessonProgressModel>[];
 
         if (course != null) {
           emit(
@@ -109,8 +117,11 @@ class CourseLearningBloc
 
       if (courseResult.isSuccess) {
         final course = courseResult.dataOrNull;
-        // For now, we'll use empty progress list until lesson progress use case is implemented
-        final progress = <LessonProgressModel>[];
+        final progressResult = await _getCourseLessonProgressUseCase(
+          userId: _currentUserId!,
+          courseId: _currentCourseId!,
+        );
+        final progress = progressResult.dataOrNull ?? <LessonProgressModel>[];
 
         if (course != null) {
           emit(

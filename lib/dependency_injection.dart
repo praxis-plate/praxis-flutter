@@ -122,6 +122,9 @@ class DependencyInjection {
       ..registerLazySingleton<UserLocalDataSource>(
         () => UserLocalDataSource(GetIt.I<AppDatabase>()),
       )
+      ..registerLazySingleton<LessonProgressLocalDataSource>(
+        () => LessonProgressLocalDataSource(GetIt.I<AppDatabase>()),
+      )
       // Use remote datasources
       ..registerLazySingleton<AuthRemoteDataSource>(
         () => AuthRemoteDataSource(GetIt.I<Client>()),
@@ -182,7 +185,10 @@ class DependencyInjection {
         () => LessonRepository(GetIt.I<LessonRemoteDataSource>()),
       )
       ..registerLazySingleton<ILessonProgressRepository>(
-        () => LessonProgressRepository(GetIt.I<LessonRemoteDataSource>()),
+        () => LessonProgressRepository(
+          GetIt.I<LessonRemoteDataSource>(),
+          GetIt.I<LessonProgressLocalDataSource>(),
+        ),
       )
       ..registerLazySingleton<IAchievementRepository>(
         () => AchievementRepository(GetIt.I<AchievementRemoteDataSource>()),
@@ -276,6 +282,11 @@ class DependencyInjection {
         () => GetLessonByIdUseCase(GetIt.I<ILessonRepository>()),
       )
       ..registerFactory(
+        () => GetCourseLessonProgressUseCase(
+          lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
+        ),
+      )
+      ..registerFactory(
         () => GetUserProfileDataUseCase(
           userRepository: GetIt.I<IUserRepository>(),
           userStatisticsRepository: GetIt.I<IUserStatisticsRepository>(),
@@ -354,6 +365,8 @@ class DependencyInjection {
       ..registerFactory(
         () => CourseLearningBloc(
           getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
+          getCourseLessonProgressUseCase:
+              GetIt.I<GetCourseLessonProgressUseCase>(),
         ),
       )
       ..registerFactory(

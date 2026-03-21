@@ -308,6 +308,15 @@
   "ok": "OK",
   "coins": "Coins",
   "courseProgress": "Course Progress",
+  "courseProgressPercent": "{percent}% completed",
+  "@courseProgressPercent": {
+    "description": "Course progress percent label",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "lessonsCompleted": "{completed} of {total} lessons",
   "continueLearning": "Continue Learning",
   "lessonCompleted": "Lesson Completed!",

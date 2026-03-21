@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:codium/core/utils/constants.dart';
 import 'package:codium/domain/models/course/course_model.dart';
 import 'package:codium/domain/models/user/user_course_statistics.dart';
+import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 
 class CourseProgressCard extends StatelessWidget {
@@ -19,6 +20,7 @@ class CourseProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final s = S.of(context);
 
     return InkWell(
       onTap: onTap,
@@ -51,8 +53,10 @@ class CourseProgressCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       _LessonProgress(
-                        completed: statistics.solvedTasks,
-                        total: statistics.totalTasks,
+                        label: s.lessonsCompleted(
+                          statistics.solvedTasks,
+                          statistics.totalTasks,
+                        ),
                         theme: theme,
                       ),
                     ],
@@ -67,7 +71,7 @@ class CourseProgressCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${statistics.progress.toStringAsFixed(0)}% завершено',
+                  s.courseProgressPercent(statistics.progress.round()),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
@@ -83,7 +87,7 @@ class CourseProgressCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Завершено',
+                        s.complete,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.w600,
@@ -127,13 +131,11 @@ class _CourseThumbnail extends StatelessWidget {
 }
 
 class _LessonProgress extends StatelessWidget {
-  final int completed;
-  final int total;
+  final String label;
   final ThemeData theme;
 
   const _LessonProgress({
-    required this.completed,
-    required this.total,
+    required this.label,
     required this.theme,
   });
 
@@ -148,7 +150,7 @@ class _LessonProgress extends StatelessWidget {
         ),
         const SizedBox(width: 4),
         Text(
-          '$completed из $total уроков',
+          label,
           style: theme.textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           ),

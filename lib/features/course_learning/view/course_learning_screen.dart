@@ -34,35 +34,63 @@ class _CourseLearningView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
+        titleSpacing: 16,
         title: BlocBuilder<CourseLearningBloc, CourseLearningState>(
           builder: (context, state) {
             if (state is CourseLearningLoaded) {
               return Text(
                 state.course.title,
-                style: theme.textTheme.titleLarge,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               );
             }
-            return Text(s.loading, style: theme.textTheme.titleLarge);
+            return Text(
+              s.loading,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            );
           },
         ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
+          preferredSize: const Size.fromHeight(64),
           child: BlocBuilder<CourseLearningBloc, CourseLearningState>(
             builder: (context, state) {
               if (state is CourseLearningLoaded) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 16,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                   child: Column(
                     children: [
-                      CourseProgressBar(userCourseStatistics: state.statistics),
-                      const SizedBox(height: 8),
-                      Text(
-                        '${state.statistics.progress.toStringAsFixed(0)}% ${s.complete}',
-                        style: theme.textTheme.bodySmall,
+                      Row(
+                        children: [
+                          Text(
+                            s.lessonsCompleted(
+                              state.statistics.solvedTasks,
+                              state.statistics.totalTasks,
+                            ),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.7,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            s.courseProgressPercent(
+                              state.statistics.progress.round(),
+                            ),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.7,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: 6),
+                      CourseProgressBar(userCourseStatistics: state.statistics),
                     ],
                   ),
                 );
@@ -88,7 +116,15 @@ class _CourseLearningView extends StatelessWidget {
           }
 
           if (state is CourseLearningLoaded) {
-            return _LessonsList(courseId: state.course.id);
+            final completedLessonIds = state.lessonProgress
+                .where((progress) => progress.isCompleted)
+                .map((progress) => progress.lessonId)
+                .toSet();
+
+            return _LessonsList(
+              courseId: state.course.id,
+              completedLessonIds: completedLessonIds,
+            );
           }
 
           return const SizedBox.shrink();
@@ -100,8 +136,12 @@ class _CourseLearningView extends StatelessWidget {
 
 class _LessonsList extends StatelessWidget {
   final int courseId;
+  final Set<int> completedLessonIds;
 
-  const _LessonsList({required this.courseId});
+  const _LessonsList({
+    required this.courseId,
+    required this.completedLessonIds,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +175,7 @@ class _LessonsList extends StatelessWidget {
 
             return Wrapper(
               child: ListView.separated(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.zero,
                 itemCount: state.lessons.length,
                 separatorBuilder: (context, index) => const SizedBox(height: 8),
                 itemBuilder: (context, index) {
@@ -143,6 +183,7 @@ class _LessonsList extends StatelessWidget {
                   return LessonCard(
                     lesson: lesson,
                     taskCount: state.taskCounts[lesson.id],
+                    isCompleted: completedLessonIds.contains(lesson.id),
                   );
                 },
               ),

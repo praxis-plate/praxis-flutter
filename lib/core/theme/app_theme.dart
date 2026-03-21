@@ -92,6 +92,12 @@ class AppTheme {
         selectionColor: palette.primary.withValues(alpha: 0.3),
         selectionHandleColor: palette.primary,
       ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: palette.surface,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
       elevatedButtonTheme: _elevatedButtonTheme(palette),
       navigationBarTheme: _navigationBarTheme(palette),
       tabBarTheme: _tabBarTheme(palette),
