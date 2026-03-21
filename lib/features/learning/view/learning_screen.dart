@@ -50,7 +50,10 @@ class LearningScreen extends StatelessWidget {
             LearningLoadSuccessState() =>
               state.enrolledCourses.isEmpty
                   ? const EmptyLearningState()
-                  : EnrolledCoursesList(courses: state.enrolledCourses),
+                  : EnrolledCoursesList(
+                      courses: state.enrolledCourses,
+                      courseStatistics: state.courseStatistics,
+                    ),
           },
         ),
       ),

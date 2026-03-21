@@ -6,6 +6,7 @@ import 'package:codium/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
 class CourseLearningScreen extends StatelessWidget {
   const CourseLearningScreen({super.key, required this.courseId});
@@ -20,15 +21,16 @@ class CourseLearningScreen extends StatelessWidget {
       create: (context) =>
           GetIt.I<CourseLearningBloc>()
             ..add(LoadCourseLearning(courseId: courseId, userId: userId)),
-      child: _CourseLearningView(userId: userId),
+      child: _CourseLearningView(userId: userId, courseId: courseId),
     );
   }
 }
 
 class _CourseLearningView extends StatelessWidget {
-  const _CourseLearningView({required this.userId});
+  const _CourseLearningView({required this.userId, required this.courseId});
 
   final String userId;
+  final int courseId;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,20 @@ class _CourseLearningView extends StatelessWidget {
             );
           },
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              onPressed: () => context.push('/course/$courseId'),
+              tooltip: s.courseDetailsTitle,
+              style: IconButton.styleFrom(
+                backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                foregroundColor: theme.colorScheme.primary,
+              ),
+              icon: const Icon(Icons.info_outline),
+            ),
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(64),
           child: BlocBuilder<CourseLearningBloc, CourseLearningState>(
@@ -156,9 +172,7 @@ class _LessonsList extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           GetIt.I<LessonsListBloc>()
-            ..add(
-              LoadLessonsListEvent(courseId: courseId, userId: userId),
-            ),
+            ..add(LoadLessonsListEvent(courseId: courseId, userId: userId)),
       child: BlocBuilder<LessonsListBloc, LessonsListState>(
         builder: (context, state) {
           if (state is LessonsListLoadingState) {
@@ -181,17 +195,21 @@ class _LessonsList extends StatelessWidget {
               return Center(child: Text(s.noLessonsAvailable));
             }
 
+            final nextLessonId = _resolveNextLessonId(
+              state.lessons,
+              completedLessonIds,
+            );
+
             final widgets = _buildLessonSectionWidgets(
               context,
               state,
               completedLessonIds,
+              courseId,
+              nextLessonId,
             );
 
             return Wrapper(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: widgets,
-              ),
+              child: ListView(padding: EdgeInsets.zero, children: widgets),
             );
           }
 
@@ -205,13 +223,16 @@ class _LessonsList extends StatelessWidget {
     BuildContext context,
     LessonsListLoadedState state,
     Set<int> completedLessonIds,
+    int courseId,
+    int? nextLessonId,
   ) {
     final modules = List.of(state.modules)
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
     final lessonsByModule = <int, List<LessonModel>>{};
 
     if (modules.isEmpty) {
-      return _buildFlatLessonWidgets(state, completedLessonIds);
+      final flatWidgets = _buildFlatLessonWidgets(state, completedLessonIds);
+      return _prependLearningActions(flatWidgets, courseId, nextLessonId);
     }
 
     for (final lesson in state.lessons) {
@@ -231,10 +252,7 @@ class _LessonsList extends StatelessWidget {
       }
 
       widgets.add(
-        _ModuleHeader(
-          title: module.title,
-          description: module.description,
-        ),
+        _ModuleHeader(title: module.title, description: module.description),
       );
 
       for (final lesson in lessons) {
@@ -256,7 +274,7 @@ class _LessonsList extends StatelessWidget {
       widgets.removeLast();
     }
 
-    return widgets;
+    return _prependLearningActions(widgets, courseId, nextLessonId);
   }
 
   List<Widget> _buildFlatLessonWidgets(
@@ -285,16 +303,99 @@ class _LessonsList extends StatelessWidget {
 
     return widgets;
   }
+
+  int? _resolveNextLessonId(
+    List<LessonModel> lessons,
+    Set<int> completedLessonIds,
+  ) {
+    if (lessons.isEmpty) {
+      return null;
+    }
+
+    final ordered = List.of(lessons)
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+
+    final nextLesson = ordered.firstWhere(
+      (lesson) => !completedLessonIds.contains(lesson.id),
+      orElse: () => ordered.last,
+    );
+
+    return nextLesson.id;
+  }
+
+  List<Widget> _prependLearningActions(
+    List<Widget> widgets,
+    int courseId,
+    int? nextLessonId,
+  ) {
+    if (nextLessonId == null) {
+      return widgets;
+    }
+
+    return [
+      _CourseLearningResumeCard(nextLessonId: nextLessonId),
+      const SizedBox(height: 12),
+      ...widgets,
+    ];
+  }
+}
+
+class _CourseLearningResumeCard extends StatelessWidget {
+  const _CourseLearningResumeCard({required this.nextLessonId});
+
+  final int nextLessonId;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final s = S.of(context);
+
+    return Material(
+      color: theme.cardColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: theme.dividerColor.withValues(alpha: 0.6)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              s.learningContinueHint,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () => context.push('/lesson/$nextLessonId/tasks'),
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(0, 36),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  s.learningContinue,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _ModuleHeader extends StatelessWidget {
   final String title;
   final String description;
 
-  const _ModuleHeader({
-    required this.title,
-    required this.description,
-  });
+  const _ModuleHeader({required this.title, required this.description});
 
   @override
   Widget build(BuildContext context) {

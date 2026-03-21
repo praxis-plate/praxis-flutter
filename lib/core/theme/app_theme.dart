@@ -98,6 +98,10 @@ class AppTheme {
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
       ),
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (context) =>
+            const Icon(Icons.arrow_back_ios_rounded),
+      ),
       elevatedButtonTheme: _elevatedButtonTheme(palette),
       navigationBarTheme: _navigationBarTheme(palette),
       tabBarTheme: _tabBarTheme(palette),
