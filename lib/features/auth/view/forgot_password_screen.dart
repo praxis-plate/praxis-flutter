@@ -180,40 +180,16 @@ class _ForgotPasswordProgress extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            Row(
-              children: [
-                Expanded(child: _StepBar(isActive: currentStep == 0)),
-                const SizedBox(width: 6),
-                Expanded(child: _StepBar(isActive: currentStep == 1)),
-                const SizedBox(width: 6),
-                Expanded(child: _StepBar(isActive: currentStep == 2)),
-              ],
+            StepProgressBar(
+              totalSteps: 3,
+              activeIndex: currentStep,
+              activeColor: theme.colorScheme.onPrimary,
+              inactiveColor:
+                  theme.colorScheme.onPrimary.withValues(alpha: 0.3),
             ),
           ],
         );
       },
-    );
-  }
-}
-
-class _StepBar extends StatelessWidget {
-  const _StepBar({required this.isActive});
-
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final activeColor = theme.colorScheme.onPrimary;
-    final inactiveColor = theme.colorScheme.onPrimary.withValues(alpha: 0.3);
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
-      height: 4,
-      decoration: BoxDecoration(
-        color: isActive ? activeColor : inactiveColor,
-        borderRadius: BorderRadius.circular(999),
-      ),
     );
   }
 }
