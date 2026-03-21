@@ -122,6 +122,18 @@ class DependencyInjection {
       ..registerLazySingleton<UserLocalDataSource>(
         () => UserLocalDataSource(GetIt.I<AppDatabase>()),
       )
+      ..registerLazySingleton<CourseLocalDataSource>(
+        () => CourseLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<ModuleLocalDataSource>(
+        () => ModuleLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<LessonLocalDataSource>(
+        () => LessonLocalDataSource(GetIt.I<AppDatabase>()),
+      )
+      ..registerLazySingleton<TaskLocalDataSource>(
+        () => TaskLocalDataSource(GetIt.I<AppDatabase>()),
+      )
       ..registerLazySingleton<LessonProgressLocalDataSource>(
         () => LessonProgressLocalDataSource(GetIt.I<AppDatabase>()),
       )
@@ -166,7 +178,13 @@ class DependencyInjection {
         ),
       )
       ..registerLazySingleton<ICourseRepository>(
-        () => CourseRepository(GetIt.I<CourseRemoteDataSource>()),
+        () => CourseRepository(
+          GetIt.I<CourseRemoteDataSource>(),
+          GetIt.I<CourseLocalDataSource>(),
+          GetIt.I<ModuleLocalDataSource>(),
+          GetIt.I<LessonLocalDataSource>(),
+          GetIt.I<TaskLocalDataSource>(),
+        ),
       )
       ..registerLazySingleton<IUserRepository>(
         () => UserRepository(
@@ -391,9 +409,6 @@ class DependencyInjection {
       )
       ..registerLazySingleton<TaskRemoteDataSource>(
         () => TaskRemoteDataSource(GetIt.I<Client>()),
-      )
-      ..registerLazySingleton<TaskLocalDataSource>(
-        () => TaskLocalDataSource(GetIt.I<AppDatabase>()),
       )
       ..registerLazySingleton<ITaskRepository>(
         () => TaskRepository(
