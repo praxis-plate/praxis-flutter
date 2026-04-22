@@ -1,5 +1,5 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/models/user/user_course_model.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/domain/models/user/user_course_model.dart';
 
 extension UserCourseEntityExtension on UserCourseEntity {
   UserCourseModel toDomain() {

@@ -1,5 +1,5 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/data/entities/unlocked_achievement_entity.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/data/entities/unlocked_achievement_entity.dart';
 import 'package:drift/drift.dart';
 
 class AchievementLocalDataSource {

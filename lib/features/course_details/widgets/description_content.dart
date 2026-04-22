@@ -1,5 +1,5 @@
-import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/domain/models/course/course_model.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionContent extends StatefulWidget {

@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/validators/email_validator.dart';
-import 'package:codium/core/validators/password_validator.dart';
+import 'package:praxis/core/bloc/auth/auth_bloc.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/validators/email_validator.dart';
+import 'package:praxis/core/validators/password_validator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';

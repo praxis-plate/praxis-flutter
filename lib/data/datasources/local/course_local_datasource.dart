@@ -1,4 +1,4 @@
-import 'package:codium/data/database/app_database.dart';
+import 'package:praxis/data/database/app_database.dart';
 
 class CourseLocalDataSource {
   final AppDatabase _db;

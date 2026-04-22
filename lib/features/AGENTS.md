@@ -25,4 +25,4 @@ Prefer the rule:
 
 - BLoC/Cubit depends on Domain use cases; do not inject repositories directly into BLoC/Cubit.
 
-See `docs/codium_code_quality_standards.md` for detailed UI conventions.
+See `docs/praxis_code_quality_standards.md` for detailed UI conventions.

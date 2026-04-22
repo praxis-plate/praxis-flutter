@@ -1,11 +1,11 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/domain/enums/programming_language.dart';
-import 'package:codium/domain/models/task/task_models.dart';
-import 'package:codium/domain/models/task/update_task_progress_model.dart';
-import 'package:codium/domain/repositories/i_task_repository.dart';
-import 'package:codium/domain/services/i_ai_service.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/domain/enums/programming_language.dart';
+import 'package:praxis/domain/models/task/task_models.dart';
+import 'package:praxis/domain/models/task/update_task_progress_model.dart';
+import 'package:praxis/domain/repositories/i_task_repository.dart';
+import 'package:praxis/domain/services/i_ai_service.dart';
 
 class RequestTaskHintUseCase {
   final ITaskRepository _taskRepository;

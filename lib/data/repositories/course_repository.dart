@@ -1,20 +1,20 @@
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/datasources/local/course_local_datasource.dart';
-import 'package:codium/data/datasources/local/lesson_local_datasource.dart';
-import 'package:codium/data/datasources/local/module_local_datasource.dart';
-import 'package:codium/data/datasources/local/task_local_datasource.dart';
-import 'package:codium/data/datasources/remote/course_remote_datasource.dart';
-import 'package:codium/data/entities/course_dto_extension.dart';
-import 'package:codium/data/entities/lesson_dto_extension.dart';
-import 'package:codium/data/entities/module_dto_extension.dart';
-import 'package:codium/data/entities/task_dto_extension.dart';
-import 'package:codium/data/mappers/course_structure_mapper.dart';
-import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/domain/models/course/course_structure_model.dart';
-import 'package:codium/domain/repositories/i_course_repository.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/data/datasources/local/course_local_datasource.dart';
+import 'package:praxis/data/datasources/local/lesson_local_datasource.dart';
+import 'package:praxis/data/datasources/local/module_local_datasource.dart';
+import 'package:praxis/data/datasources/local/task_local_datasource.dart';
+import 'package:praxis/data/datasources/remote/course_remote_datasource.dart';
+import 'package:praxis/data/entities/course_dto_extension.dart';
+import 'package:praxis/data/entities/lesson_dto_extension.dart';
+import 'package:praxis/data/entities/module_dto_extension.dart';
+import 'package:praxis/data/entities/task_dto_extension.dart';
+import 'package:praxis/data/mappers/course_structure_mapper.dart';
+import 'package:praxis/domain/models/course/course_model.dart';
+import 'package:praxis/domain/models/course/course_structure_model.dart';
+import 'package:praxis/domain/repositories/i_course_repository.dart';
 import 'package:praxis_client/praxis_client.dart';
 
 class CourseRepository implements ICourseRepository {

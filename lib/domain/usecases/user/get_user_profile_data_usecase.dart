@@ -1,8 +1,8 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/user/user.dart';
-import 'package:codium/domain/repositories/i_achievement_repository.dart';
-import 'package:codium/domain/repositories/i_user_repository.dart';
-import 'package:codium/domain/repositories/i_user_statistics_repository.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/user/user.dart';
+import 'package:praxis/domain/repositories/i_achievement_repository.dart';
+import 'package:praxis/domain/repositories/i_user_repository.dart';
+import 'package:praxis/domain/repositories/i_user_statistics_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

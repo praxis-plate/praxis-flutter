@@ -1,6 +1,6 @@
-import 'package:codium/domain/models/task/task_models.dart';
-import 'package:codium/features/tasks/renderers/task_renderer.dart';
-import 'package:codium/features/tasks/tasks/tasks.dart';
+import 'package:praxis/domain/models/task/task_models.dart';
+import 'package:praxis/features/tasks/renderers/task_renderer.dart';
+import 'package:praxis/features/tasks/tasks/tasks.dart';
 import 'package:flutter/widgets.dart';
 
 class DefaultTaskRenderer implements TaskRenderer {

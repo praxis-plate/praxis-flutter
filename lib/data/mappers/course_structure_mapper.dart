@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:praxis/domain/models/models.dart';
 import 'package:praxis_client/praxis_client.dart';
 
 extension CourseStructureDtoMapper on CourseStructureDto {

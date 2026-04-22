@@ -1,9 +1,9 @@
-import 'package:codium/app/app_initializer.dart';
-import 'package:codium/core/bloc/locale/locale.dart';
-import 'package:codium/core/bloc/theme/theme_cubit.dart';
-import 'package:codium/core/config/app_config.dart';
-import 'package:codium/core/router/router.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/app/app_initializer.dart';
+import 'package:praxis/core/bloc/locale/locale.dart';
+import 'package:praxis/core/bloc/theme/theme_cubit.dart';
+import 'package:praxis/core/config/app_config.dart';
+import 'package:praxis/core/router/router.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

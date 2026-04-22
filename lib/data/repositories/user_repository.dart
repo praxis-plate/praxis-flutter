@@ -1,13 +1,12 @@
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/datasources/local/user_local_datasource.dart';
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/data/entities/user_entity_extension.dart';
-import 'package:codium/domain/models/user/user.dart';
-import 'package:codium/domain/repositories/i_user_repository.dart';
-import 'package:codium/domain/services/services.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/data/datasources/local/user_local_datasource.dart';
+import 'package:praxis/data/entities/user_entity_extension.dart';
+import 'package:praxis/domain/models/user/user.dart';
+import 'package:praxis/domain/repositories/i_user_repository.dart';
+import 'package:praxis/domain/services/services.dart';
 
 final class UserRepository implements IUserRepository {
   final UserLocalDataSource _userDataSource;
@@ -40,7 +39,7 @@ final class UserRepository implements IUserRepository {
         );
       }
 
-      return Success(user.toDomain());
+      return Success(user);
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
@@ -51,7 +50,12 @@ final class UserRepository implements IUserRepository {
   @override
   Future<Result<UserProfileModel>> getUserById(String userId) async {
     try {
-      UserEntity? user = await _userDataSource.getUserById(userId);
+      UserProfileModel? user;
+      final userEntity = await _userDataSource.getUserById(userId);
+      if (userEntity != null) {
+        user = userEntity.toDomain();
+      }
+
       if (user == null) {
         final session = await _sessionService.getSession();
         if (session?.userId == userId) {
@@ -69,7 +73,7 @@ final class UserRepository implements IUserRepository {
         );
       }
 
-      return Success(user.toDomain());
+      return Success(user);
     } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
@@ -89,15 +93,19 @@ final class UserRepository implements IUserRepository {
     }
   }
 
-  Future<UserEntity?> _getOrCreateCurrentUser(
+  Future<UserProfileModel?> _getOrCreateCurrentUser(
     String userId,
     String email,
   ) async {
     final existingUser = await _userDataSource.getUserById(userId);
     if (existingUser != null) {
-      return existingUser;
+      return existingUser.toDomain();
     }
 
-    return _userDataSource.upsertFromSession(userId: userId, email: email);
+    final createdUser = await _userDataSource.upsertFromSession(
+      userId: userId,
+      email: email,
+    );
+    return createdUser?.toDomain();
   }
 }

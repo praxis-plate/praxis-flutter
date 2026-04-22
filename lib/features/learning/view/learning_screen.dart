@@ -1,10 +1,10 @@
-import 'package:codium/core/error/app_error_code_extension.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/features/learning/bloc/learning/learning_bloc.dart';
-import 'package:codium/features/learning/widgets/empty_learning_state.dart';
-import 'package:codium/features/learning/widgets/enrolled_courses_list.dart';
-import 'package:codium/features/main/main.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/error/app_error_code_extension.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/features/learning/bloc/learning/learning_bloc.dart';
+import 'package:praxis/features/learning/widgets/empty_learning_state.dart';
+import 'package:praxis/features/learning/widgets/enrolled_courses_list.dart';
+import 'package:praxis/features/main/main.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

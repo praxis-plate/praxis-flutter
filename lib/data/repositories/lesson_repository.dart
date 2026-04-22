@@ -1,10 +1,10 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/datasources/remote/lesson_remote_datasource.dart';
-import 'package:codium/data/entities/lesson_dto_extension.dart';
-import 'package:codium/domain/models/lesson/lesson_model.dart';
-import 'package:codium/domain/repositories/i_lesson_repository.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/data/datasources/remote/lesson_remote_datasource.dart';
+import 'package:praxis/data/entities/lesson_dto_extension.dart';
+import 'package:praxis/domain/models/lesson/lesson_model.dart';
+import 'package:praxis/domain/repositories/i_lesson_repository.dart';
 
 class LessonRepository implements ILessonRepository {
   final LessonRemoteDataSource _remoteDataSource;

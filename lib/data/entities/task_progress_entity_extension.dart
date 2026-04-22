@@ -1,7 +1,7 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/models/task/create_task_progress_model.dart';
-import 'package:codium/domain/models/task/task_progress_model.dart';
-import 'package:codium/domain/models/task/update_task_progress_model.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/domain/models/task/create_task_progress_model.dart';
+import 'package:praxis/domain/models/task/task_progress_model.dart';
+import 'package:praxis/domain/models/task/update_task_progress_model.dart';
 import 'package:drift/drift.dart';
 
 extension TaskProgressEntityExtension on TaskProgressEntity {

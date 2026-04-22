@@ -1,7 +1,7 @@
-import 'package:codium/core/error/app_error_code_extension.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
-import 'package:codium/features/course_details/widgets/course_detail.dart';
+import 'package:praxis/core/error/app_error_code_extension.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/features/course_details/bloc/course_detail/course_detail_bloc.dart';
+import 'package:praxis/features/course_details/widgets/course_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

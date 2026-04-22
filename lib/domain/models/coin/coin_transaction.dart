@@ -1,4 +1,4 @@
-import 'package:codium/domain/enums/coin_transaction_type.dart';
+import 'package:praxis/domain/enums/coin_transaction_type.dart';
 import 'package:equatable/equatable.dart';
 
 class CoinTransaction extends Equatable {

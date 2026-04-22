@@ -21,4 +21,4 @@ Minimum coverage target: 80% for critical logic (use cases/repositories).
 - Run all tests: `flutter test`
 - If a task mentions a specific suite, run the smallest relevant subset first, then the full suite.
 
-See `docs/codium_code_quality_standards.md` for additional test conventions.
+See `docs/praxis_code_quality_standards.md` for additional test conventions.

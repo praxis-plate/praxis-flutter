@@ -1,10 +1,10 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/user/full_user_profile_model.dart';
-import 'package:codium/domain/models/user/money.dart';
-import 'package:codium/domain/models/user/user_profile_model.dart';
-import 'package:codium/domain/repositories/i_course_repository.dart';
-import 'package:codium/domain/repositories/i_user_statistics_repository.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/user/full_user_profile_model.dart';
+import 'package:praxis/domain/models/user/money.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
+import 'package:praxis/domain/repositories/i_course_repository.dart';
+import 'package:praxis/domain/repositories/i_user_statistics_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

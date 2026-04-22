@@ -1,5 +1,5 @@
-import 'package:codium/core/services/session_service.dart';
-import 'package:codium/domain/models/models.dart';
+import 'package:praxis/core/services/session_service.dart';
+import 'package:praxis/domain/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
 import 'package:flutter/material.dart';
 
 class UserScope extends InheritedWidget {

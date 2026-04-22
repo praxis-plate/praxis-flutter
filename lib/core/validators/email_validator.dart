@@ -1,4 +1,4 @@
-import 'package:codium/l10n/app_localizations.dart';
+import 'package:praxis/l10n/app_localizations.dart';
 import 'package:formz/formz.dart';
 
 class EmailValidator extends FormzInput<String, EmailValidationError> {

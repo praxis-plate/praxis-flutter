@@ -1,9 +1,9 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/task/create_task_progress_model.dart';
-import 'package:codium/domain/models/task/task_model.dart';
-import 'package:codium/domain/models/task/task_progress_model.dart';
-import 'package:codium/domain/models/task/task_result_model.dart';
-import 'package:codium/domain/models/task/update_task_progress_model.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/task/create_task_progress_model.dart';
+import 'package:praxis/domain/models/task/task_model.dart';
+import 'package:praxis/domain/models/task/task_progress_model.dart';
+import 'package:praxis/domain/models/task/task_result_model.dart';
+import 'package:praxis/domain/models/task/update_task_progress_model.dart';
 
 abstract interface class ITaskRepository {
   Future<Result<List<TaskModel>>> getTasksByLessonId(int lessonId);

@@ -24,4 +24,4 @@ Domain must remain pure and framework-agnostic.
 - Use intention-revealing names; avoid abbreviations.
 - Keep public APIs stable and predictable.
 
-If you need details (examples, patterns), open `docs/codium_code_quality_standards.md`.
+If you need details (examples, patterns), open `docs/praxis_code_quality_standards.md`.

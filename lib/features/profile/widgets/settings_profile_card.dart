@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:codium/core/utils/constants.dart';
-import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:praxis/core/utils/constants.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
 import 'package:flutter/material.dart';
 
 class SettingsProfileCard extends StatelessWidget {
