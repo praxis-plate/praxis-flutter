@@ -1,10 +1,10 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/datasources/remote/module_remote_datasource.dart';
-import 'package:codium/data/entities/module_dto_extension.dart';
-import 'package:codium/domain/models/module/module_model.dart';
-import 'package:codium/domain/repositories/i_module_repository.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/data/datasources/remote/module_remote_datasource.dart';
+import 'package:praxis/data/entities/module_dto_extension.dart';
+import 'package:praxis/domain/models/module/module_model.dart';
+import 'package:praxis/domain/repositories/i_module_repository.dart';
 
 class ModuleRepository implements IModuleRepository {
   final ModuleRemoteDataSource _remoteDataSource;

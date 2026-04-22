@@ -1,5 +1,5 @@
-import 'package:codium/core/router/router_exports.dart';
-import 'package:codium/l10n/app_localizations.dart';
+import 'package:praxis/core/router/router_exports.dart';
+import 'package:praxis/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class NavigationTab {

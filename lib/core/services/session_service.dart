@@ -1,5 +1,5 @@
-import 'package:codium/domain/models/session/session.dart';
-import 'package:codium/domain/services/i_session_service.dart';
+import 'package:praxis/domain/models/session/session.dart';
+import 'package:praxis/domain/services/i_session_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionService implements ISessionService {

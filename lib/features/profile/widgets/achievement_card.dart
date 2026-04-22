@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/achievement/achievement_data_model.dart';
+import 'package:praxis/domain/models/achievement/achievement_data_model.dart';
 import 'package:flutter/material.dart';
 
 class AchievementCard extends StatelessWidget {

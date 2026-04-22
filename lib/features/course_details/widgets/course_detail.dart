@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:codium/core/utils/constants.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/models.dart';
-import 'package:codium/features/course_details/widgets/course_header.dart';
-import 'package:codium/features/course_details/widgets/course_purchase_button.dart';
-import 'package:codium/features/course_details/widgets/course_tab_section.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/utils/constants.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/models.dart';
+import 'package:praxis/features/course_details/widgets/course_header.dart';
+import 'package:praxis/features/course_details/widgets/course_purchase_button.dart';
+import 'package:praxis/features/course_details/widgets/course_tab_section.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,6 +21,7 @@ class CourseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context);
     final theme = Theme.of(context);
     final userProfile = UserScope.of(context);
 
@@ -80,7 +81,7 @@ class CourseDetail extends StatelessWidget {
                                 }
                               },
                               icon: const Icon(Icons.arrow_back_ios_rounded),
-                              label: Text(S.of(context).goBack),
+                              label: Text(s.goBack),
                               style: TextButton.styleFrom(
                                 foregroundColor: theme.colorScheme.onSurface,
                                 textStyle: theme.textTheme.bodyMedium?.copyWith(

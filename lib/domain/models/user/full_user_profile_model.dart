@@ -1,5 +1,5 @@
-import 'package:codium/domain/models/user/money.dart';
-import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:praxis/domain/models/user/money.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
 import 'package:equatable/equatable.dart';
 
 class FullUserProfileModel extends Equatable {

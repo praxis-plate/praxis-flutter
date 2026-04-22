@@ -1,20 +1,21 @@
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/router/auth_notifier.dart';
-import 'package:codium/core/router/navigation_shell_initializer.dart';
-import 'package:codium/core/router/route_constants.dart';
-import 'package:codium/core/router/router_exports.dart';
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/features/auth/auth.dart';
-import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
-import 'package:codium/features/course_details/view/course_detail_screen.dart';
-import 'package:codium/features/course_learning/view/course_learning_screen.dart';
-import 'package:codium/features/learning/learning.dart';
-import 'package:codium/features/main/main.dart';
-import 'package:codium/features/navigation/view/navigation_screen.dart';
-import 'package:codium/features/onboarding/view/onboarding_screen.dart';
-import 'package:codium/features/profile/profile.dart';
-import 'package:codium/features/tasks/view/lesson_task_session_screen.dart';
-import 'package:codium/features/tasks/view/task_screen.dart';
+import 'package:praxis/core/bloc/auth/auth_bloc.dart';
+import 'package:praxis/core/router/auth_notifier.dart';
+import 'package:praxis/core/router/navigation_shell_initializer.dart';
+import 'package:praxis/core/router/route_constants.dart';
+import 'package:praxis/core/router/router_exports.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/features/auth/auth.dart';
+import 'package:praxis/features/course_details/bloc/course_detail/course_detail_bloc.dart';
+import 'package:praxis/features/course_details/view/course_detail_screen.dart';
+import 'package:praxis/features/course_learning/view/course_learning_screen.dart';
+import 'package:praxis/features/learning/learning.dart';
+import 'package:praxis/features/main/main.dart';
+import 'package:praxis/features/navigation/view/navigation_screen.dart';
+import 'package:praxis/features/onboarding/view/onboarding_screen.dart';
+import 'package:praxis/features/profile/profile.dart';
+import 'package:praxis/features/tasks/view/lesson_task_session_screen.dart';
+import 'package:praxis/features/tasks/view/task_screen.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -218,10 +219,11 @@ class AppRouter {
               path: '/lesson/:lessonId',
               name: 'lesson-content',
               pageBuilder: (context, state) {
+                final s = S.of(context);
                 return MaterialPage(
                   key: state.pageKey,
-                  child: const Scaffold(
-                    body: Center(child: Text('Lesson - Coming Soon')),
+                  child: Scaffold(
+                    body: Center(child: Text(s.lessonComingSoon)),
                   ),
                 );
               },

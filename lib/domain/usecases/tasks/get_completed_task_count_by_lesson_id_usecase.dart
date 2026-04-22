@@ -1,5 +1,5 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/repositories/i_task_repository.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/repositories/i_task_repository.dart';
 
 class GetCompletedTaskCountByLessonIdUseCase {
   final ITaskRepository _taskRepository;

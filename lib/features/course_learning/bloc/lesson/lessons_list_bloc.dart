@@ -1,11 +1,11 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/lesson/lesson_model.dart';
-import 'package:codium/domain/models/module/module_model.dart';
-import 'package:codium/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
-import 'package:codium/domain/usecases/modules/get_modules_by_course_id_usecase.dart';
-import 'package:codium/domain/usecases/tasks/get_completed_task_count_by_lesson_id_usecase.dart';
-import 'package:codium/domain/usecases/tasks/get_task_count_by_lesson_id_usecase.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/lesson/lesson_model.dart';
+import 'package:praxis/domain/models/module/module_model.dart';
+import 'package:praxis/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
+import 'package:praxis/domain/usecases/modules/get_modules_by_course_id_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/get_completed_task_count_by_lesson_id_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/get_task_count_by_lesson_id_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,11 +1,11 @@
-import 'package:codium/core/error/app_error_code_extension.dart';
-import 'package:codium/core/widgets/common/user_scope.dart';
-import 'package:codium/domain/models/task/task_models.dart';
-import 'package:codium/features/tasks/bloc/task/task_bloc.dart';
-import 'package:codium/features/tasks/bloc/task_hint/task_hint_cubit.dart';
-import 'package:codium/features/tasks/renderers/task_renderer.dart';
-import 'package:codium/features/tasks/widgets/widgets.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/error/app_error_code_extension.dart';
+import 'package:praxis/core/widgets/common/user_scope.dart';
+import 'package:praxis/domain/models/task/task_models.dart';
+import 'package:praxis/features/tasks/bloc/task/task_bloc.dart';
+import 'package:praxis/features/tasks/bloc/task_hint/task_hint_cubit.dart';
+import 'package:praxis/features/tasks/renderers/task_renderer.dart';
+import 'package:praxis/features/tasks/widgets/widgets.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -46,7 +46,7 @@ class _TaskScreenState extends State<TaskScreen> {
                 final task = (state as TaskStateWithTask).task;
                 return Text(_getTaskTypeTitle(task, context));
               }
-              return Text(S.of(context).taskMultipleChoice);
+              return Text(s.taskMultipleChoice);
             },
           ),
           backgroundColor: theme.colorScheme.surface,

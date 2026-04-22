@@ -1,5 +1,5 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/data/datasources/local/user_local_datasource.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/data/datasources/local/user_local_datasource.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -21,12 +21,12 @@ void main() {
     () async {
       await dataSource.upsertFromSession(
         userId: 'legacy-id',
-        email: 'test@codium.app',
+        email: 'test@praxis.app',
       );
 
       final updatedUser = await dataSource.upsertFromSession(
         userId: 'backend-id',
-        email: 'test@codium.app',
+        email: 'test@praxis.app',
       );
 
       final userByLegacyId = await dataSource.getUserById('legacy-id');
@@ -34,10 +34,10 @@ void main() {
 
       expect(updatedUser, isNotNull);
       expect(updatedUser!.id, 'backend-id');
-      expect(updatedUser.email, 'test@codium.app');
+      expect(updatedUser.email, 'test@praxis.app');
       expect(userByLegacyId, isNull);
       expect(userByBackendId, isNotNull);
-      expect(userByBackendId!.email, 'test@codium.app');
+      expect(userByBackendId!.email, 'test@praxis.app');
     },
   );
 
@@ -46,7 +46,7 @@ void main() {
     () async {
       await dataSource.upsertFromSession(
         userId: 'legacy-id',
-        email: 'test@codium.app',
+        email: 'test@praxis.app',
       );
       await database
           .into(database.userStatistic)
@@ -59,7 +59,7 @@ void main() {
 
       final updatedUser = await dataSource.upsertFromSession(
         userId: 'backend-id',
-        email: 'test@codium.app',
+        email: 'test@praxis.app',
       );
       final newStatistic = await (database.select(
         database.userStatistic,

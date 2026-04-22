@@ -1,6 +1,6 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/lesson_progress/lesson_progress_model.dart';
-import 'package:codium/domain/repositories/i_lesson_progress_repository.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/lesson_progress/lesson_progress_model.dart';
+import 'package:praxis/domain/repositories/i_lesson_progress_repository.dart';
 
 class GetCourseLessonProgressUseCase {
   final ILessonProgressRepository _lessonProgressRepository;

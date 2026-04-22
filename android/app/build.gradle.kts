@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.codium"
+    namespace = "com.chxrus.praxis"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.codium"
+        applicationId = "com.chxrus.praxis"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

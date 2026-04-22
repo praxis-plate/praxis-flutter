@@ -1,10 +1,10 @@
-import 'package:codium/core/widgets/widgets.dart';
-import 'package:codium/domain/models/models.dart';
-import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
-import 'package:codium/features/main/bloc/main/main_bloc.dart';
-import 'package:codium/features/main/bloc/user_statistics/user_statistics_bloc.dart';
-import 'package:codium/features/main/widgets/courses_section.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/models.dart';
+import 'package:praxis/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
+import 'package:praxis/features/main/bloc/main/main_bloc.dart';
+import 'package:praxis/features/main/bloc/user_statistics/user_statistics_bloc.dart';
+import 'package:praxis/features/main/widgets/courses_section.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';

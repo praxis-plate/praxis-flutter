@@ -1,4 +1,4 @@
-import 'package:codium/core/error/error.dart';
+import 'package:praxis/core/error/error.dart';
 
 sealed class Result<T> {
   const Result();

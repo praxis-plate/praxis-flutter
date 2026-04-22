@@ -1,5 +1,5 @@
-import 'package:codium/features/course_details/widgets/table_of_contents_content.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/features/course_details/widgets/table_of_contents_content.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 
 class CourseContentsScreen extends StatelessWidget {

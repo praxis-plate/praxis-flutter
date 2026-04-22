@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:codium/app/app.dart';
-import 'package:codium/core/router/router_exports.dart';
-import 'package:codium/dependency_injection.dart';
+import 'package:praxis/app/app.dart';
+import 'package:praxis/core/router/router_exports.dart';
+import 'package:praxis/dependency_injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

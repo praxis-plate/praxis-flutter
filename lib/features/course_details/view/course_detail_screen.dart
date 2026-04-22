@@ -1,7 +1,7 @@
-import 'package:codium/domain/models/models.dart';
-import 'package:codium/features/course_details/bloc/course_detail/course_detail_bloc.dart';
-import 'package:codium/features/course_details/widgets/widgets.dart';
-import 'package:codium/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
+import 'package:praxis/domain/models/models.dart';
+import 'package:praxis/features/course_details/bloc/course_detail/course_detail_bloc.dart';
+import 'package:praxis/features/course_details/widgets/widgets.dart';
+import 'package:praxis/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

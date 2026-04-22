@@ -1,4 +1,4 @@
-import 'package:codium/core/widgets/widgets.dart';
+import 'package:praxis/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class TaskProgressBar extends StatelessWidget {
@@ -16,7 +16,7 @@ class TaskProgressBar extends StatelessWidget {
     final theme = Theme.of(context);
     final progress = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
 
-    return GlassCard(
+    return SurfaceCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       borderRadius: BorderRadius.circular(12),
       child: Column(

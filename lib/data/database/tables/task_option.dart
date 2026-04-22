@@ -1,4 +1,4 @@
-import 'package:codium/data/database/tables/task.dart';
+import 'package:praxis/data/database/tables/task.dart';
 import 'package:drift/drift.dart';
 
 @DataClassName('TaskOptionEntity')

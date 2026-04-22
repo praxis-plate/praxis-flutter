@@ -1,7 +1,7 @@
-import 'package:codium/core/utils/duration.dart';
-import 'package:codium/domain/models/learning/lesson_progress.dart';
-import 'package:codium/domain/models/task/course_task.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/utils/duration.dart';
+import 'package:praxis/domain/models/learning/lesson_progress.dart';
+import 'package:praxis/domain/models/task/course_task.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 
 class LessonListItem extends StatelessWidget {

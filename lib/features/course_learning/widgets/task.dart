@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/task/course_task.dart';
+import 'package:praxis/domain/models/task/course_task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 

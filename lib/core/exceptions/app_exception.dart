@@ -1,5 +1,5 @@
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/exceptions/app_error.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
 
 class NetworkError extends AppError {
   const NetworkError.timeout({super.message})

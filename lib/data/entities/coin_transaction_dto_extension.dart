@@ -1,6 +1,6 @@
-import 'package:codium/domain/enums/coin_transaction_type.dart';
-import 'package:codium/domain/models/coin_transaction/coin_transaction_model.dart';
-import 'package:codium/domain/models/coin_transaction/wallet_balance.dart';
+import 'package:praxis/domain/enums/coin_transaction_type.dart';
+import 'package:praxis/domain/models/coin_transaction/coin_transaction_model.dart';
+import 'package:praxis/domain/models/coin_transaction/wallet_balance.dart';
 import 'package:praxis_client/praxis_client.dart'
     as client
     show CoinTransactionType;

@@ -1,6 +1,6 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/usecases/tasks/request_task_hint_usecase.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/usecases/tasks/request_task_hint_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

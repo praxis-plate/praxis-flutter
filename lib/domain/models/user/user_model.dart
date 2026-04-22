@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:codium/domain/models/user/money.dart';
+import 'package:praxis/domain/models/user/money.dart';
 import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {

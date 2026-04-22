@@ -1,7 +1,7 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/enums/programming_language.dart';
-import 'package:codium/domain/services/i_ai_service.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/enums/programming_language.dart';
+import 'package:praxis/domain/services/i_ai_service.dart';
 import 'package:praxis_client/praxis_client.dart';
 
 class AiRemoteService implements IAiService {

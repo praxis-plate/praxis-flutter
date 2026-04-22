@@ -1,6 +1,6 @@
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/module/module_model.dart';
-import 'package:codium/domain/repositories/i_module_repository.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/module/module_model.dart';
+import 'package:praxis/domain/repositories/i_module_repository.dart';
 
 class GetModulesByCourseIdUseCase {
   final IModuleRepository _moduleRepository;

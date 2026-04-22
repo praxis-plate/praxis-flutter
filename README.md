@@ -96,7 +96,7 @@ Create `.env` file (copy from `.env.example`):
 SERVERPOD_HOST=http://localhost:8080
 
 # Database Configuration
-DB_PATH=codium.db
+DB_PATH=praxis.db
 
 # Gemini API Configuration (optional for AI features)
 GEMINI_API_KEY=your_gemini_api_key_here

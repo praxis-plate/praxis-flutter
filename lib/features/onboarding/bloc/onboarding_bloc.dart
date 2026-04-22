@@ -1,6 +1,6 @@
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/exceptions/app_exception.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/exceptions/app_exception.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';

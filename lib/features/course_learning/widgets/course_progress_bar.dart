@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/models.dart';
+import 'package:praxis/domain/models/models.dart';
 import 'package:flutter/material.dart';
 
 class CourseProgressBar extends StatelessWidget {

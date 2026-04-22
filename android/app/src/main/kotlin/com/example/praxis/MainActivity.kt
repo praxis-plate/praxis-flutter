@@ -1,4 +1,4 @@
-package com.example.codium
+package com.chxrus.praxis
 
 import io.flutter.embedding.android.FlutterActivity
 

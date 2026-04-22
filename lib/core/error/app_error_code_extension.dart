@@ -1,5 +1,5 @@
-import 'package:codium/core/error/app_error_code.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/error/app_error_code.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/widgets.dart';
 
 extension AppErrorCodeExtension on AppErrorCode {

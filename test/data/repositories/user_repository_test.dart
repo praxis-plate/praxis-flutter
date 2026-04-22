@@ -1,9 +1,9 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/data/datasources/local/user_local_datasource.dart';
-import 'package:codium/data/repositories/user_repository.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/domain/models/session/session_model.dart';
-import 'package:codium/domain/services/i_session_service.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/data/datasources/local/user_local_datasource.dart';
+import 'package:praxis/data/repositories/user_repository.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/session/session_model.dart';
+import 'package:praxis/domain/services/i_session_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

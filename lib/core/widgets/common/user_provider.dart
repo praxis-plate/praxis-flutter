@@ -1,4 +1,4 @@
-import 'package:codium/domain/models/user/full_user_profile_model.dart';
+import 'package:praxis/domain/models/user/full_user_profile_model.dart';
 import 'package:flutter/material.dart';
 
 class UserProvider extends InheritedWidget {

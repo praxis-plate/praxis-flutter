@@ -1,4 +1,4 @@
-import 'package:codium/domain/enums/task_type.dart';
+import 'package:praxis/domain/enums/task_type.dart';
 import 'package:equatable/equatable.dart';
 
 class CourseStatistics extends Equatable {

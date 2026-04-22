@@ -1,7 +1,7 @@
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/domain/models/module/create_module_model.dart';
-import 'package:codium/domain/models/module/module_model.dart';
-import 'package:codium/domain/models/module/update_module_model.dart';
+import 'package:praxis/data/database/app_database.dart';
+import 'package:praxis/domain/models/module/create_module_model.dart';
+import 'package:praxis/domain/models/module/module_model.dart';
+import 'package:praxis/domain/models/module/update_module_model.dart';
 import 'package:drift/drift.dart';
 
 extension ModuleEntityExtension on ModuleEntity {

@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:codium/core/utils/constants.dart';
-import 'package:codium/domain/models/course/course_model.dart';
-import 'package:codium/domain/models/user/user_course_statistics.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/core/utils/constants.dart';
+import 'package:praxis/domain/models/course/course_model.dart';
+import 'package:praxis/domain/models/user/user_course_statistics.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 
 class CourseProgressCard extends StatelessWidget {

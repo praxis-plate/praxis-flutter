@@ -1,7 +1,7 @@
-import 'package:codium/core/bloc/auth/auth_bloc.dart';
-import 'package:codium/core/router/route_constants.dart';
-import 'package:codium/core/router/router.dart';
-import 'package:codium/domain/models/user/user_profile_model.dart';
+import 'package:praxis/core/bloc/auth/auth_bloc.dart';
+import 'package:praxis/core/router/route_constants.dart';
+import 'package:praxis/core/router/router.dart';
+import 'package:praxis/domain/models/user/user_profile_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

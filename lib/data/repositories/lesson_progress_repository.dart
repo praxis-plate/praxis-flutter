@@ -1,14 +1,13 @@
-import 'package:codium/core/error/failure.dart';
-import 'package:codium/core/exceptions/app_error.dart';
-import 'package:codium/core/utils/result.dart';
-import 'package:codium/data/database/app_database.dart';
-import 'package:codium/data/datasources/local/lesson_progress_local_datasource.dart';
-import 'package:codium/data/datasources/remote/lesson_remote_datasource.dart';
-import 'package:codium/data/entities/lesson_progress_entity_extension.dart';
-import 'package:codium/domain/models/lesson_progress/create_lesson_progress_model.dart';
-import 'package:codium/domain/models/lesson_progress/lesson_progress_model.dart';
-import 'package:codium/domain/repositories/i_lesson_progress_repository.dart';
-import 'package:drift/drift.dart';
+import 'package:praxis/core/error/failure.dart';
+import 'package:praxis/core/exceptions/app_error.dart';
+import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/data/datasources/local/lesson_progress_local_datasource.dart';
+import 'package:praxis/data/datasources/remote/lesson_remote_datasource.dart';
+import 'package:praxis/data/entities/lesson_progress_entity_extension.dart';
+import 'package:praxis/domain/models/lesson_progress/create_lesson_progress_model.dart';
+import 'package:praxis/domain/models/lesson_progress/lesson_progress_model.dart';
+import 'package:praxis/domain/models/lesson_progress/update_lesson_progress_model.dart';
+import 'package:praxis/domain/repositories/i_lesson_progress_repository.dart';
 
 class LessonProgressRepository implements ILessonProgressRepository {
   final LessonRemoteDataSource _remoteDataSource;
@@ -45,15 +44,14 @@ class LessonProgressRepository implements ILessonProgressRepository {
         );
         await _localDataSource.insertLessonProgress(model.toCompanion());
       } else {
+        final updateModel = UpdateLessonProgressModel(
+          id: existing.id,
+          isCompleted: true,
+          completedAt: DateTime.now(),
+          timeSpentSeconds: timeSpentSeconds,
+        );
         await _localDataSource.updateLessonProgress(
-          LessonProgressCompanion(
-            id: Value(existing.id),
-            lessonId: Value(lessonId),
-            userId: Value(userId),
-            isCompleted: const Value(true),
-            completedAt: Value(DateTime.now()),
-            timeSpentSeconds: Value(timeSpentSeconds),
-          ),
+          updateModel.toCompanion(),
         );
       }
 

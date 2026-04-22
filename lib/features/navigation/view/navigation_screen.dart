@@ -1,5 +1,5 @@
-import 'package:codium/features/navigation/config/navigation_tab.dart';
-import 'package:codium/s.dart';
+import 'package:praxis/features/navigation/config/navigation_tab.dart';
+import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
