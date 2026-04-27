@@ -11,10 +11,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../enums/content_status.dart' as _i2;
 
-abstract class CourseDto implements _i1.SerializableModel {
-  CourseDto._({
+abstract class UpdateCourseRequest implements _i1.SerializableModel {
+  UpdateCourseRequest._({
     required this.id,
     required this.title,
     required this.description,
@@ -25,15 +24,9 @@ abstract class CourseDto implements _i1.SerializableModel {
     required this.rating,
     this.thumbnailUrl,
     this.coverImage,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.contentStatus,
-    this.publishedAt,
-    required this.totalLessons,
-    required this.totalTasks,
   });
 
-  factory CourseDto({
+  factory UpdateCourseRequest({
     required int id,
     required String title,
     required String description,
@@ -44,16 +37,10 @@ abstract class CourseDto implements _i1.SerializableModel {
     required double rating,
     String? thumbnailUrl,
     String? coverImage,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    required _i2.ContentStatus contentStatus,
-    DateTime? publishedAt,
-    required int totalLessons,
-    required int totalTasks,
-  }) = _CourseDtoImpl;
+  }) = _UpdateCourseRequestImpl;
 
-  factory CourseDto.fromJson(Map<String, dynamic> jsonSerialization) {
-    return CourseDto(
+  factory UpdateCourseRequest.fromJson(Map<String, dynamic> jsonSerialization) {
+    return UpdateCourseRequest(
       id: jsonSerialization['id'] as int,
       title: jsonSerialization['title'] as String,
       description: jsonSerialization['description'] as String,
@@ -64,22 +51,6 @@ abstract class CourseDto implements _i1.SerializableModel {
       rating: (jsonSerialization['rating'] as num).toDouble(),
       thumbnailUrl: jsonSerialization['thumbnailUrl'] as String?,
       coverImage: jsonSerialization['coverImage'] as String?,
-      createdAt: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['createdAt'],
-      ),
-      updatedAt: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updatedAt'],
-      ),
-      contentStatus: _i2.ContentStatus.fromJson(
-        (jsonSerialization['contentStatus'] as String),
-      ),
-      publishedAt: jsonSerialization['publishedAt'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['publishedAt'],
-            ),
-      totalLessons: jsonSerialization['totalLessons'] as int,
-      totalTasks: jsonSerialization['totalTasks'] as int,
     );
   }
 
@@ -103,22 +74,10 @@ abstract class CourseDto implements _i1.SerializableModel {
 
   String? coverImage;
 
-  DateTime createdAt;
-
-  DateTime updatedAt;
-
-  _i2.ContentStatus contentStatus;
-
-  DateTime? publishedAt;
-
-  int totalLessons;
-
-  int totalTasks;
-
-  /// Returns a shallow copy of this [CourseDto]
+  /// Returns a shallow copy of this [UpdateCourseRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  CourseDto copyWith({
+  UpdateCourseRequest copyWith({
     int? id,
     String? title,
     String? description,
@@ -129,17 +88,11 @@ abstract class CourseDto implements _i1.SerializableModel {
     double? rating,
     String? thumbnailUrl,
     String? coverImage,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    _i2.ContentStatus? contentStatus,
-    DateTime? publishedAt,
-    int? totalLessons,
-    int? totalTasks,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'CourseDto',
+      '__className__': 'UpdateCourseRequest',
       'id': id,
       'title': title,
       'description': description,
@@ -150,12 +103,6 @@ abstract class CourseDto implements _i1.SerializableModel {
       'rating': rating,
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
-      'createdAt': createdAt.toJson(),
-      'updatedAt': updatedAt.toJson(),
-      'contentStatus': contentStatus.toJson(),
-      if (publishedAt != null) 'publishedAt': publishedAt?.toJson(),
-      'totalLessons': totalLessons,
-      'totalTasks': totalTasks,
     };
   }
 
@@ -167,8 +114,8 @@ abstract class CourseDto implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _CourseDtoImpl extends CourseDto {
-  _CourseDtoImpl({
+class _UpdateCourseRequestImpl extends UpdateCourseRequest {
+  _UpdateCourseRequestImpl({
     required int id,
     required String title,
     required String description,
@@ -179,12 +126,6 @@ class _CourseDtoImpl extends CourseDto {
     required double rating,
     String? thumbnailUrl,
     String? coverImage,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    required _i2.ContentStatus contentStatus,
-    DateTime? publishedAt,
-    required int totalLessons,
-    required int totalTasks,
   }) : super._(
          id: id,
          title: title,
@@ -196,19 +137,13 @@ class _CourseDtoImpl extends CourseDto {
          rating: rating,
          thumbnailUrl: thumbnailUrl,
          coverImage: coverImage,
-         createdAt: createdAt,
-         updatedAt: updatedAt,
-         contentStatus: contentStatus,
-         publishedAt: publishedAt,
-         totalLessons: totalLessons,
-         totalTasks: totalTasks,
        );
 
-  /// Returns a shallow copy of this [CourseDto]
+  /// Returns a shallow copy of this [UpdateCourseRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  CourseDto copyWith({
+  UpdateCourseRequest copyWith({
     int? id,
     String? title,
     String? description,
@@ -219,14 +154,8 @@ class _CourseDtoImpl extends CourseDto {
     double? rating,
     Object? thumbnailUrl = _Undefined,
     Object? coverImage = _Undefined,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    _i2.ContentStatus? contentStatus,
-    Object? publishedAt = _Undefined,
-    int? totalLessons,
-    int? totalTasks,
   }) {
-    return CourseDto(
+    return UpdateCourseRequest(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -237,12 +166,6 @@ class _CourseDtoImpl extends CourseDto {
       rating: rating ?? this.rating,
       thumbnailUrl: thumbnailUrl is String? ? thumbnailUrl : this.thumbnailUrl,
       coverImage: coverImage is String? ? coverImage : this.coverImage,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      contentStatus: contentStatus ?? this.contentStatus,
-      publishedAt: publishedAt is DateTime? ? publishedAt : this.publishedAt,
-      totalLessons: totalLessons ?? this.totalLessons,
-      totalTasks: totalTasks ?? this.totalTasks,
     );
   }
 }

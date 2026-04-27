@@ -3,6 +3,7 @@ part of 'task_model.dart';
 /// Задача с множественным выбором
 final class MultipleChoiceTaskModel extends TaskModel {
   final List<String> options;
+  final TaskType taskTypeValue;
 
   const MultipleChoiceTaskModel({
     required super.id,
@@ -10,6 +11,7 @@ final class MultipleChoiceTaskModel extends TaskModel {
     required super.questionText,
     required super.correctAnswer,
     required this.options,
+    this.taskTypeValue = TaskType.multipleChoice,
     required super.difficultyLevel,
     required super.xpValue,
     required super.orderIndex,
@@ -20,7 +22,7 @@ final class MultipleChoiceTaskModel extends TaskModel {
   });
 
   @override
-  TaskType get taskType => TaskType.multipleChoice;
+  TaskType get taskType => taskTypeValue;
 
   @override
   String getLocalizedTitle(
@@ -38,6 +40,7 @@ final class MultipleChoiceTaskModel extends TaskModel {
     String? questionText,
     String? correctAnswer,
     List<String>? options,
+    TaskType? taskTypeValue,
     int? difficultyLevel,
     int? xpValue,
     int? orderIndex,
@@ -52,6 +55,7 @@ final class MultipleChoiceTaskModel extends TaskModel {
       questionText: questionText ?? this.questionText,
       correctAnswer: correctAnswer ?? this.correctAnswer,
       options: options ?? this.options,
+      taskTypeValue: taskTypeValue ?? this.taskTypeValue,
       difficultyLevel: difficultyLevel ?? this.difficultyLevel,
       xpValue: xpValue ?? this.xpValue,
       orderIndex: orderIndex ?? this.orderIndex,
@@ -63,5 +67,5 @@ final class MultipleChoiceTaskModel extends TaskModel {
   }
 
   @override
-  List<Object?> get props => [...super.props, options];
+  List<Object?> get props => [...super.props, options, taskTypeValue];
 }

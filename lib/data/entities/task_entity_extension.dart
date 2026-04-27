@@ -10,6 +10,7 @@ extension TaskEntityExtension on TaskEntity {
   TaskModel toDomain() {
     switch (taskType) {
       case TaskType.multipleChoice:
+      case TaskType.multipleAnswer:
         return _createMultipleChoiceTask();
       case TaskType.codeCompletion:
         return _createCodeCompletionTask();
@@ -31,6 +32,7 @@ extension TaskEntityExtension on TaskEntity {
                 .map((e) => e.toString())
                 .toList()
           : [],
+      taskTypeValue: taskType,
       difficultyLevel: difficultyLevel,
       xpValue: xpValue,
       orderIndex: orderIndex,

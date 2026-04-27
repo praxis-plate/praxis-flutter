@@ -12,27 +12,26 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-enum TaskType implements _i1.SerializableModel {
-  multipleChoice,
-  multipleAnswer,
-  codeCompletion,
-  matching,
-  textInput;
+enum AdaptiveLearningPathType implements _i1.SerializableModel {
+  standard,
+  remedial,
+  accelerated,
+  completed;
 
-  static TaskType fromJson(String name) {
+  static AdaptiveLearningPathType fromJson(String name) {
     switch (name) {
-      case 'multipleChoice':
-        return TaskType.multipleChoice;
-      case 'multipleAnswer':
-        return TaskType.multipleAnswer;
-      case 'codeCompletion':
-        return TaskType.codeCompletion;
-      case 'matching':
-        return TaskType.matching;
-      case 'textInput':
-        return TaskType.textInput;
+      case 'standard':
+        return AdaptiveLearningPathType.standard;
+      case 'remedial':
+        return AdaptiveLearningPathType.remedial;
+      case 'accelerated':
+        return AdaptiveLearningPathType.accelerated;
+      case 'completed':
+        return AdaptiveLearningPathType.completed;
       default:
-        throw ArgumentError('Value "$name" cannot be converted to "TaskType"');
+        throw ArgumentError(
+          'Value "$name" cannot be converted to "AdaptiveLearningPathType"',
+        );
     }
   }
 

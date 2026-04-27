@@ -13,7 +13,11 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
 abstract class AiResponse implements _i1.SerializableModel {
-  AiResponse._({required this.content, required this.success, this.error});
+  AiResponse._({
+    required this.content,
+    required this.success,
+    this.error,
+  });
 
   factory AiResponse({
     required String content,
@@ -38,7 +42,11 @@ abstract class AiResponse implements _i1.SerializableModel {
   /// Returns a shallow copy of this [AiResponse]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  AiResponse copyWith({String? content, bool? success, String? error});
+  AiResponse copyWith({
+    String? content,
+    bool? success,
+    String? error,
+  });
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -62,7 +70,11 @@ class _AiResponseImpl extends AiResponse {
     required String content,
     required bool success,
     String? error,
-  }) : super._(content: content, success: success, error: error);
+  }) : super._(
+         content: content,
+         success: success,
+         error: error,
+       );
 
   /// Returns a shallow copy of this [AiResponse]
   /// with some or all fields replaced by the given arguments.

@@ -12,55 +12,37 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-abstract class LessonDto implements _i1.SerializableModel {
-  LessonDto._({
+abstract class UpdateLessonRequest implements _i1.SerializableModel {
+  UpdateLessonRequest._({
     required this.id,
-    required this.moduleId,
     required this.title,
     required this.contentText,
     this.videoUrl,
     this.imageUrls,
-    required this.orderIndex,
     required this.durationMinutes,
-    required this.createdAt,
-    required this.updatedAt,
   });
 
-  factory LessonDto({
+  factory UpdateLessonRequest({
     required int id,
-    required int moduleId,
     required String title,
     required String contentText,
     String? videoUrl,
     String? imageUrls,
-    required int orderIndex,
     required int durationMinutes,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-  }) = _LessonDtoImpl;
+  }) = _UpdateLessonRequestImpl;
 
-  factory LessonDto.fromJson(Map<String, dynamic> jsonSerialization) {
-    return LessonDto(
+  factory UpdateLessonRequest.fromJson(Map<String, dynamic> jsonSerialization) {
+    return UpdateLessonRequest(
       id: jsonSerialization['id'] as int,
-      moduleId: jsonSerialization['moduleId'] as int,
       title: jsonSerialization['title'] as String,
       contentText: jsonSerialization['contentText'] as String,
       videoUrl: jsonSerialization['videoUrl'] as String?,
       imageUrls: jsonSerialization['imageUrls'] as String?,
-      orderIndex: jsonSerialization['orderIndex'] as int,
       durationMinutes: jsonSerialization['durationMinutes'] as int,
-      createdAt: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['createdAt'],
-      ),
-      updatedAt: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updatedAt'],
-      ),
     );
   }
 
   int id;
-
-  int moduleId;
 
   String title;
 
@@ -70,43 +52,29 @@ abstract class LessonDto implements _i1.SerializableModel {
 
   String? imageUrls;
 
-  int orderIndex;
-
   int durationMinutes;
 
-  DateTime createdAt;
-
-  DateTime updatedAt;
-
-  /// Returns a shallow copy of this [LessonDto]
+  /// Returns a shallow copy of this [UpdateLessonRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  LessonDto copyWith({
+  UpdateLessonRequest copyWith({
     int? id,
-    int? moduleId,
     String? title,
     String? contentText,
     String? videoUrl,
     String? imageUrls,
-    int? orderIndex,
     int? durationMinutes,
-    DateTime? createdAt,
-    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'LessonDto',
+      '__className__': 'UpdateLessonRequest',
       'id': id,
-      'moduleId': moduleId,
       'title': title,
       'contentText': contentText,
       if (videoUrl != null) 'videoUrl': videoUrl,
       if (imageUrls != null) 'imageUrls': imageUrls,
-      'orderIndex': orderIndex,
       'durationMinutes': durationMinutes,
-      'createdAt': createdAt.toJson(),
-      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -118,58 +86,42 @@ abstract class LessonDto implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _LessonDtoImpl extends LessonDto {
-  _LessonDtoImpl({
+class _UpdateLessonRequestImpl extends UpdateLessonRequest {
+  _UpdateLessonRequestImpl({
     required int id,
-    required int moduleId,
     required String title,
     required String contentText,
     String? videoUrl,
     String? imageUrls,
-    required int orderIndex,
     required int durationMinutes,
-    required DateTime createdAt,
-    required DateTime updatedAt,
   }) : super._(
          id: id,
-         moduleId: moduleId,
          title: title,
          contentText: contentText,
          videoUrl: videoUrl,
          imageUrls: imageUrls,
-         orderIndex: orderIndex,
          durationMinutes: durationMinutes,
-         createdAt: createdAt,
-         updatedAt: updatedAt,
        );
 
-  /// Returns a shallow copy of this [LessonDto]
+  /// Returns a shallow copy of this [UpdateLessonRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  LessonDto copyWith({
+  UpdateLessonRequest copyWith({
     int? id,
-    int? moduleId,
     String? title,
     String? contentText,
     Object? videoUrl = _Undefined,
     Object? imageUrls = _Undefined,
-    int? orderIndex,
     int? durationMinutes,
-    DateTime? createdAt,
-    DateTime? updatedAt,
   }) {
-    return LessonDto(
+    return UpdateLessonRequest(
       id: id ?? this.id,
-      moduleId: moduleId ?? this.moduleId,
       title: title ?? this.title,
       contentText: contentText ?? this.contentText,
       videoUrl: videoUrl is String? ? videoUrl : this.videoUrl,
       imageUrls: imageUrls is String? ? imageUrls : this.imageUrls,
-      orderIndex: orderIndex ?? this.orderIndex,
       durationMinutes: durationMinutes ?? this.durationMinutes,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

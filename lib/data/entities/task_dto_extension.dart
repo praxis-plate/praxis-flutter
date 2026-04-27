@@ -12,12 +12,17 @@ extension TaskDtoExtension on TaskDto {
   TaskModel toDomain() {
     switch (taskType) {
       case TaskType.multipleChoice:
+      case TaskType.multipleAnswer:
         return MultipleChoiceTaskModel(
           id: id,
           lessonId: lessonId,
           questionText: questionText,
           correctAnswer: correctAnswer,
           options: options.map((o) => o.optionText).toList(),
+          taskTypeValue: domain.TaskType.values.firstWhere(
+            (value) => value.name == taskType.name,
+            orElse: () => domain.TaskType.multipleChoice,
+          ),
           difficultyLevel: difficultyLevel,
           xpValue: xpValue,
           orderIndex: orderIndex,
@@ -121,7 +126,8 @@ extension TaskDtoCompanionExtension on TaskDto {
       return optionsJson;
     }
 
-    if (taskType == TaskType.multipleChoice) {
+    if (taskType == TaskType.multipleChoice ||
+        taskType == TaskType.multipleAnswer) {
       final optionsList = options.map((option) => option.optionText).toList();
       return jsonEncode(optionsList);
     }

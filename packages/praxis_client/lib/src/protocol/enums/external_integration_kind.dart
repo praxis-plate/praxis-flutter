@@ -12,27 +12,20 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-enum TaskType implements _i1.SerializableModel {
-  multipleChoice,
-  multipleAnswer,
-  codeCompletion,
-  matching,
-  textInput;
+enum ExternalIntegrationKind implements _i1.SerializableModel {
+  lms,
+  videoConferencing;
 
-  static TaskType fromJson(String name) {
+  static ExternalIntegrationKind fromJson(String name) {
     switch (name) {
-      case 'multipleChoice':
-        return TaskType.multipleChoice;
-      case 'multipleAnswer':
-        return TaskType.multipleAnswer;
-      case 'codeCompletion':
-        return TaskType.codeCompletion;
-      case 'matching':
-        return TaskType.matching;
-      case 'textInput':
-        return TaskType.textInput;
+      case 'lms':
+        return ExternalIntegrationKind.lms;
+      case 'videoConferencing':
+        return ExternalIntegrationKind.videoConferencing;
       default:
-        throw ArgumentError('Value "$name" cannot be converted to "TaskType"');
+        throw ArgumentError(
+          'Value "$name" cannot be converted to "ExternalIntegrationKind"',
+        );
     }
   }
 

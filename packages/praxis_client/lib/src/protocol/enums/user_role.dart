@@ -12,27 +12,21 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-enum TaskType implements _i1.SerializableModel {
-  multipleChoice,
-  multipleAnswer,
-  codeCompletion,
-  matching,
-  textInput;
+enum UserRole implements _i1.SerializableModel {
+  learner,
+  author,
+  admin;
 
-  static TaskType fromJson(String name) {
+  static UserRole fromJson(String name) {
     switch (name) {
-      case 'multipleChoice':
-        return TaskType.multipleChoice;
-      case 'multipleAnswer':
-        return TaskType.multipleAnswer;
-      case 'codeCompletion':
-        return TaskType.codeCompletion;
-      case 'matching':
-        return TaskType.matching;
-      case 'textInput':
-        return TaskType.textInput;
+      case 'learner':
+        return UserRole.learner;
+      case 'author':
+        return UserRole.author;
+      case 'admin':
+        return UserRole.admin;
       default:
-        throw ArgumentError('Value "$name" cannot be converted to "TaskType"');
+        throw ArgumentError('Value "$name" cannot be converted to "UserRole"');
     }
   }
 
