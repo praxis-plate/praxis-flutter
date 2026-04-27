@@ -1,1 +1,7 @@
-enum TaskType { multipleChoice, codeCompletion, matching, textInput }
+enum TaskType {
+  multipleChoice,
+  multipleAnswer,
+  codeCompletion,
+  matching,
+  textInput,
+}

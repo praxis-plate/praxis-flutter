@@ -20,6 +20,7 @@ abstract class ModuleDto implements _i1.SerializableModel {
     required this.description,
     required this.orderIndex,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   factory ModuleDto({
@@ -29,6 +30,7 @@ abstract class ModuleDto implements _i1.SerializableModel {
     required String description,
     required int orderIndex,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _ModuleDtoImpl;
 
   factory ModuleDto.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -40,6 +42,9 @@ abstract class ModuleDto implements _i1.SerializableModel {
       orderIndex: jsonSerialization['orderIndex'] as int,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
+      ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
       ),
     );
   }
@@ -56,6 +61,8 @@ abstract class ModuleDto implements _i1.SerializableModel {
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
   /// Returns a shallow copy of this [ModuleDto]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -66,6 +73,7 @@ abstract class ModuleDto implements _i1.SerializableModel {
     String? description,
     int? orderIndex,
     DateTime? createdAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -77,6 +85,7 @@ abstract class ModuleDto implements _i1.SerializableModel {
       'description': description,
       'orderIndex': orderIndex,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -94,6 +103,7 @@ class _ModuleDtoImpl extends ModuleDto {
     required String description,
     required int orderIndex,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) : super._(
          id: id,
          courseId: courseId,
@@ -101,6 +111,7 @@ class _ModuleDtoImpl extends ModuleDto {
          description: description,
          orderIndex: orderIndex,
          createdAt: createdAt,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [ModuleDto]
@@ -114,6 +125,7 @@ class _ModuleDtoImpl extends ModuleDto {
     String? description,
     int? orderIndex,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return ModuleDto(
       id: id ?? this.id,
@@ -122,6 +134,7 @@ class _ModuleDtoImpl extends ModuleDto {
       description: description ?? this.description,
       orderIndex: orderIndex ?? this.orderIndex,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

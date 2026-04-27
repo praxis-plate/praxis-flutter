@@ -11,29 +11,25 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../dto/course_structure_module_dto.dart' as _i2;
-import 'package:praxis_client/src/protocol/protocol.dart' as _i3;
 
-abstract class CourseStructureDto implements _i1.SerializableModel {
-  CourseStructureDto._({
+abstract class CreateModuleRequest implements _i1.SerializableModel {
+  CreateModuleRequest._({
     required this.courseId,
     required this.title,
-    required this.modules,
+    required this.description,
   });
 
-  factory CourseStructureDto({
+  factory CreateModuleRequest({
     required int courseId,
     required String title,
-    required List<_i2.CourseStructureModuleDto> modules,
-  }) = _CourseStructureDtoImpl;
+    required String description,
+  }) = _CreateModuleRequestImpl;
 
-  factory CourseStructureDto.fromJson(Map<String, dynamic> jsonSerialization) {
-    return CourseStructureDto(
+  factory CreateModuleRequest.fromJson(Map<String, dynamic> jsonSerialization) {
+    return CreateModuleRequest(
       courseId: jsonSerialization['courseId'] as int,
       title: jsonSerialization['title'] as String,
-      modules: _i3.Protocol().deserialize<List<_i2.CourseStructureModuleDto>>(
-        jsonSerialization['modules'],
-      ),
+      description: jsonSerialization['description'] as String,
     );
   }
 
@@ -41,23 +37,23 @@ abstract class CourseStructureDto implements _i1.SerializableModel {
 
   String title;
 
-  List<_i2.CourseStructureModuleDto> modules;
+  String description;
 
-  /// Returns a shallow copy of this [CourseStructureDto]
+  /// Returns a shallow copy of this [CreateModuleRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  CourseStructureDto copyWith({
+  CreateModuleRequest copyWith({
     int? courseId,
     String? title,
-    List<_i2.CourseStructureModuleDto>? modules,
+    String? description,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'CourseStructureDto',
+      '__className__': 'CreateModuleRequest',
       'courseId': courseId,
       'title': title,
-      'modules': modules.toJson(valueToJson: (v) => v.toJson()),
+      'description': description,
     };
   }
 
@@ -67,30 +63,30 @@ abstract class CourseStructureDto implements _i1.SerializableModel {
   }
 }
 
-class _CourseStructureDtoImpl extends CourseStructureDto {
-  _CourseStructureDtoImpl({
+class _CreateModuleRequestImpl extends CreateModuleRequest {
+  _CreateModuleRequestImpl({
     required int courseId,
     required String title,
-    required List<_i2.CourseStructureModuleDto> modules,
+    required String description,
   }) : super._(
          courseId: courseId,
          title: title,
-         modules: modules,
+         description: description,
        );
 
-  /// Returns a shallow copy of this [CourseStructureDto]
+  /// Returns a shallow copy of this [CreateModuleRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  CourseStructureDto copyWith({
+  CreateModuleRequest copyWith({
     int? courseId,
     String? title,
-    List<_i2.CourseStructureModuleDto>? modules,
+    String? description,
   }) {
-    return CourseStructureDto(
+    return CreateModuleRequest(
       courseId: courseId ?? this.courseId,
       title: title ?? this.title,
-      modules: modules ?? this.modules.map((e0) => e0.copyWith()).toList(),
+      description: description ?? this.description,
     );
   }
 }
