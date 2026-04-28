@@ -11,12 +11,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import '../dto/lesson_content_document_dto.dart' as _i2;
+import 'package:praxis_client/src/protocol/protocol.dart' as _i3;
 
 abstract class CreateLessonRequest implements _i1.SerializableModel {
   CreateLessonRequest._({
     required this.moduleId,
     required this.title,
     required this.contentText,
+    this.contentDocument,
     this.videoUrl,
     this.imageUrls,
     this.durationMinutes,
@@ -26,6 +29,7 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
     required int moduleId,
     required String title,
     required String contentText,
+    _i2.LessonContentDocumentDto? contentDocument,
     String? videoUrl,
     String? imageUrls,
     int? durationMinutes,
@@ -36,6 +40,11 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
       moduleId: jsonSerialization['moduleId'] as int,
       title: jsonSerialization['title'] as String,
       contentText: jsonSerialization['contentText'] as String,
+      contentDocument: jsonSerialization['contentDocument'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.LessonContentDocumentDto>(
+              jsonSerialization['contentDocument'],
+            ),
       videoUrl: jsonSerialization['videoUrl'] as String?,
       imageUrls: jsonSerialization['imageUrls'] as String?,
       durationMinutes: jsonSerialization['durationMinutes'] as int?,
@@ -47,6 +56,8 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
   String title;
 
   String contentText;
+
+  _i2.LessonContentDocumentDto? contentDocument;
 
   String? videoUrl;
 
@@ -61,6 +72,7 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
     int? moduleId,
     String? title,
     String? contentText,
+    _i2.LessonContentDocumentDto? contentDocument,
     String? videoUrl,
     String? imageUrls,
     int? durationMinutes,
@@ -72,6 +84,7 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
       'moduleId': moduleId,
       'title': title,
       'contentText': contentText,
+      if (contentDocument != null) 'contentDocument': contentDocument?.toJson(),
       if (videoUrl != null) 'videoUrl': videoUrl,
       if (imageUrls != null) 'imageUrls': imageUrls,
       if (durationMinutes != null) 'durationMinutes': durationMinutes,
@@ -91,6 +104,7 @@ class _CreateLessonRequestImpl extends CreateLessonRequest {
     required int moduleId,
     required String title,
     required String contentText,
+    _i2.LessonContentDocumentDto? contentDocument,
     String? videoUrl,
     String? imageUrls,
     int? durationMinutes,
@@ -98,6 +112,7 @@ class _CreateLessonRequestImpl extends CreateLessonRequest {
          moduleId: moduleId,
          title: title,
          contentText: contentText,
+         contentDocument: contentDocument,
          videoUrl: videoUrl,
          imageUrls: imageUrls,
          durationMinutes: durationMinutes,
@@ -111,6 +126,7 @@ class _CreateLessonRequestImpl extends CreateLessonRequest {
     int? moduleId,
     String? title,
     String? contentText,
+    Object? contentDocument = _Undefined,
     Object? videoUrl = _Undefined,
     Object? imageUrls = _Undefined,
     Object? durationMinutes = _Undefined,
@@ -119,6 +135,9 @@ class _CreateLessonRequestImpl extends CreateLessonRequest {
       moduleId: moduleId ?? this.moduleId,
       title: title ?? this.title,
       contentText: contentText ?? this.contentText,
+      contentDocument: contentDocument is _i2.LessonContentDocumentDto?
+          ? contentDocument
+          : this.contentDocument?.copyWith(),
       videoUrl: videoUrl is String? ? videoUrl : this.videoUrl,
       imageUrls: imageUrls is String? ? imageUrls : this.imageUrls,
       durationMinutes: durationMinutes is int?

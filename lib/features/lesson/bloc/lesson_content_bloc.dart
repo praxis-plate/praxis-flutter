@@ -1,6 +1,7 @@
 import 'package:praxis/core/error/app_error_code.dart';
 import 'package:praxis/core/error/failure.dart';
 import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/lesson/lesson_content_document.dart';
 import 'package:praxis/domain/models/achievement/achievement_data_model.dart';
 import 'package:praxis/domain/models/task/course_task.dart';
 import 'package:praxis/domain/usecases/lesson/complete_lesson_usecase.dart';
@@ -47,6 +48,9 @@ class LessonContentBloc extends Bloc<LessonContentEvent, LessonContentState> {
               title: lesson.title,
               description: lesson.contentText,
               content: lesson.contentText,
+              contentDocument: LessonContentDocument.fromStoredContent(
+                lesson.contentText,
+              ),
               moduleId: lesson.moduleId,
               orderIndex: lesson.orderIndex,
             );
