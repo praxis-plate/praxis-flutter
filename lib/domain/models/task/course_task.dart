@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:praxis/domain/models/lesson/lesson_content_document.dart';
 
 class CourseTask extends Equatable {
   final int id;
@@ -9,6 +10,7 @@ class CourseTask extends Equatable {
   final Duration? estimatedTime;
   final String type;
   final String content;
+  final LessonContentDocument contentDocument;
 
   const CourseTask({
     required this.id,
@@ -19,6 +21,7 @@ class CourseTask extends Equatable {
     this.estimatedTime,
     this.type = 'lesson',
     this.content = '',
+    required this.contentDocument,
   });
 
   CourseTask copyWith({
@@ -30,6 +33,7 @@ class CourseTask extends Equatable {
     Duration? estimatedTime,
     String? type,
     String? content,
+    LessonContentDocument? contentDocument,
   }) {
     return CourseTask(
       id: id ?? this.id,
@@ -40,6 +44,7 @@ class CourseTask extends Equatable {
       estimatedTime: estimatedTime ?? this.estimatedTime,
       type: type ?? this.type,
       content: content ?? this.content,
+      contentDocument: contentDocument ?? this.contentDocument,
     );
   }
 
@@ -53,6 +58,7 @@ class CourseTask extends Equatable {
     estimatedTime,
     type,
     content,
+    contentDocument,
   ];
 
   @override

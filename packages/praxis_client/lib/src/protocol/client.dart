@@ -15,81 +15,82 @@ import 'dart:async' as _i2;
 import 'package:praxis_client/src/protocol/dto/access_profile_dto.dart' as _i3;
 import 'package:praxis_client/src/protocol/enums/user_role.dart' as _i4;
 import 'package:praxis_client/src/protocol/dto/achievement_dto.dart' as _i5;
-import 'package:praxis_client/src/protocol/responses/ai_response.dart' as _i6;
+import 'package:praxis_client/src/protocol/dto/governance_user_dto.dart' as _i6;
+import 'package:praxis_client/src/protocol/dto/course_dto.dart' as _i7;
+import 'package:praxis_client/src/protocol/responses/ai_response.dart' as _i8;
 import 'package:praxis_client/src/protocol/requests/generate_hint_request.dart'
-    as _i7;
+    as _i9;
 import 'package:praxis_client/src/protocol/requests/generate_explanation_request.dart'
-    as _i8;
-import 'package:praxis_client/src/protocol/dto/course_dto.dart' as _i9;
-import 'package:praxis_client/src/protocol/enums/content_status.dart' as _i10;
+    as _i10;
+import 'package:praxis_client/src/protocol/enums/content_status.dart' as _i11;
 import 'package:praxis_client/src/protocol/requests/create_course_request.dart'
-    as _i11;
-import 'package:praxis_client/src/protocol/requests/update_course_request.dart'
     as _i12;
-import 'package:praxis_client/src/protocol/dto/course_analytics_dashboard_dto.dart'
+import 'package:praxis_client/src/protocol/requests/update_course_request.dart'
     as _i13;
-import 'package:praxis_client/src/protocol/dto/course_detail_dto.dart' as _i14;
+import 'package:praxis_client/src/protocol/dto/course_analytics_dashboard_dto.dart'
+    as _i14;
+import 'package:praxis_client/src/protocol/dto/course_detail_dto.dart' as _i15;
 import 'package:praxis_client/src/protocol/dto/course_recommendation_dto.dart'
-    as _i15;
-import 'package:praxis_client/src/protocol/dto/adaptive_learning_path_dto.dart'
     as _i16;
-import 'package:praxis_client/src/protocol/dto/course_structure_dto.dart'
+import 'package:praxis_client/src/protocol/dto/adaptive_learning_path_dto.dart'
     as _i17;
-import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+import 'package:praxis_client/src/protocol/dto/course_structure_dto.dart'
     as _i18;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _i19;
-import 'package:praxis_client/src/protocol/dto/external_integration_provider_dto.dart'
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i20;
-import 'package:praxis_client/src/protocol/dto/external_course_sync_dto.dart'
+import 'package:praxis_client/src/protocol/dto/external_integration_provider_dto.dart'
     as _i21;
-import 'package:praxis_client/src/protocol/requests/sync_course_to_external_provider_request.dart'
+import 'package:praxis_client/src/protocol/dto/external_course_sync_dto.dart'
     as _i22;
-import 'package:praxis_client/src/protocol/dto/external_video_session_dto.dart'
+import 'package:praxis_client/src/protocol/requests/sync_course_to_external_provider_request.dart'
     as _i23;
-import 'package:praxis_client/src/protocol/requests/provision_external_video_session_request.dart'
+import 'package:praxis_client/src/protocol/dto/external_video_session_dto.dart'
     as _i24;
-import 'package:praxis_client/src/protocol/dto/lesson_dto.dart' as _i25;
+import 'package:praxis_client/src/protocol/requests/provision_external_video_session_request.dart'
+    as _i25;
+import 'package:praxis_client/src/protocol/dto/lesson_dto.dart' as _i26;
 import 'package:praxis_client/src/protocol/requests/create_lesson_request.dart'
-    as _i26;
-import 'package:praxis_client/src/protocol/requests/update_lesson_request.dart'
     as _i27;
-import 'package:praxis_client/src/protocol/requests/reorder_lessons_request.dart'
+import 'package:praxis_client/src/protocol/requests/update_lesson_request.dart'
     as _i28;
-import 'package:praxis_client/src/protocol/dto/lesson_completion_result_dto.dart'
+import 'package:praxis_client/src/protocol/requests/reorder_lessons_request.dart'
     as _i29;
-import 'package:praxis_client/src/protocol/requests/complete_lesson_session_request.dart'
+import 'package:praxis_client/src/protocol/dto/lesson_completion_result_dto.dart'
     as _i30;
-import 'package:praxis_client/src/protocol/dto/module_dto.dart' as _i31;
+import 'package:praxis_client/src/protocol/requests/complete_lesson_session_request.dart'
+    as _i31;
+import 'package:praxis_client/src/protocol/dto/module_dto.dart' as _i32;
 import 'package:praxis_client/src/protocol/requests/create_module_request.dart'
-    as _i32;
-import 'package:praxis_client/src/protocol/requests/update_module_request.dart'
     as _i33;
-import 'package:praxis_client/src/protocol/requests/reorder_modules_request.dart'
+import 'package:praxis_client/src/protocol/requests/update_module_request.dart'
     as _i34;
-import 'package:praxis_client/src/protocol/dto/task_dto.dart' as _i35;
+import 'package:praxis_client/src/protocol/requests/reorder_modules_request.dart'
+    as _i35;
+import 'package:praxis_client/src/protocol/dto/task_dto.dart' as _i36;
 import 'package:praxis_client/src/protocol/requests/create_task_request.dart'
-    as _i36;
-import 'package:praxis_client/src/protocol/requests/update_task_request.dart'
     as _i37;
-import 'package:praxis_client/src/protocol/requests/reorder_tasks_request.dart'
+import 'package:praxis_client/src/protocol/requests/update_task_request.dart'
     as _i38;
-import 'package:praxis_client/src/protocol/dto/task_option_dto.dart' as _i39;
+import 'package:praxis_client/src/protocol/requests/reorder_tasks_request.dart'
+    as _i39;
+import 'package:praxis_client/src/protocol/dto/task_option_dto.dart' as _i40;
 import 'package:praxis_client/src/protocol/requests/upsert_task_options_request.dart'
-    as _i40;
-import 'package:praxis_client/src/protocol/dto/task_test_case_dto.dart' as _i41;
+    as _i41;
+import 'package:praxis_client/src/protocol/dto/task_test_case_dto.dart' as _i42;
 import 'package:praxis_client/src/protocol/requests/upsert_task_test_cases_request.dart'
-    as _i42;
-import 'package:praxis_client/src/protocol/dto/task_answer_result_dto.dart'
     as _i43;
-import 'package:praxis_client/src/protocol/dto/user_statistics_dto.dart'
+import 'package:praxis_client/src/protocol/dto/task_answer_result_dto.dart'
     as _i44;
-import 'package:praxis_client/src/protocol/dto/wallet_balance_dto.dart' as _i45;
+import 'package:praxis_client/src/protocol/dto/user_statistics_dto.dart'
+    as _i45;
+import 'package:praxis_client/src/protocol/dto/wallet_balance_dto.dart' as _i46;
 import 'package:praxis_client/src/protocol/dto/coin_transaction_dto.dart'
-    as _i46;
-import 'package:praxis_client/src/protocol/requests/create_coin_transaction_request.dart'
     as _i47;
-import 'protocol.dart' as _i48;
+import 'package:praxis_client/src/protocol/requests/create_coin_transaction_request.dart'
+    as _i48;
+import 'protocol.dart' as _i49;
 
 /// {@category Endpoint}
 class EndpointAccessControl extends _i1.EndpointRef {
@@ -187,22 +188,103 @@ class EndpointAchievement extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointAdminGovernance extends _i1.EndpointRef {
+  EndpointAdminGovernance(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'adminGovernance';
+
+  _i2.Future<List<_i6.GovernanceUserDto>> listUsers() =>
+      caller.callServerEndpoint<List<_i6.GovernanceUserDto>>(
+        'adminGovernance',
+        'listUsers',
+        {},
+      );
+
+  _i2.Future<_i3.AccessProfileDto> assignRole({
+    required _i1.UuidValue authUserId,
+    required _i4.UserRole role,
+  }) => caller.callServerEndpoint<_i3.AccessProfileDto>(
+    'adminGovernance',
+    'assignRole',
+    {
+      'authUserId': authUserId,
+      'role': role,
+    },
+  );
+
+  _i2.Future<_i3.AccessProfileDto> revokeRole({
+    required _i1.UuidValue authUserId,
+    required _i4.UserRole role,
+  }) => caller.callServerEndpoint<_i3.AccessProfileDto>(
+    'adminGovernance',
+    'revokeRole',
+    {
+      'authUserId': authUserId,
+      'role': role,
+    },
+  );
+
+  _i2.Future<List<_i7.CourseDto>> listPublicationQueue({
+    String? query,
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<List<_i7.CourseDto>>(
+    'adminGovernance',
+    'listPublicationQueue',
+    {
+      'query': query,
+      'limit': limit,
+      'offset': offset,
+    },
+  );
+
+  _i2.Future<List<_i7.CourseDto>> listPublishedCourses({
+    String? query,
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<List<_i7.CourseDto>>(
+    'adminGovernance',
+    'listPublishedCourses',
+    {
+      'query': query,
+      'limit': limit,
+      'offset': offset,
+    },
+  );
+
+  _i2.Future<_i7.CourseDto> approvePublication(int courseId) =>
+      caller.callServerEndpoint<_i7.CourseDto>(
+        'adminGovernance',
+        'approvePublication',
+        {'courseId': courseId},
+      );
+
+  _i2.Future<_i7.CourseDto> unpublishCourse(int courseId) =>
+      caller.callServerEndpoint<_i7.CourseDto>(
+        'adminGovernance',
+        'unpublishCourse',
+        {'courseId': courseId},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointAi extends _i1.EndpointRef {
   EndpointAi(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'ai';
 
-  _i2.Future<_i6.AiResponse> generateHint(_i7.GenerateHintRequest request) =>
-      caller.callServerEndpoint<_i6.AiResponse>(
+  _i2.Future<_i8.AiResponse> generateHint(_i9.GenerateHintRequest request) =>
+      caller.callServerEndpoint<_i8.AiResponse>(
         'ai',
         'generateHint',
         {'request': request},
       );
 
-  _i2.Future<_i6.AiResponse> generateExplanation(
-    _i8.GenerateExplanationRequest request,
-  ) => caller.callServerEndpoint<_i6.AiResponse>(
+  _i2.Future<_i8.AiResponse> generateExplanation(
+    _i10.GenerateExplanationRequest request,
+  ) => caller.callServerEndpoint<_i8.AiResponse>(
     'ai',
     'generateExplanation',
     {'request': request},
@@ -216,12 +298,12 @@ class EndpointCourseAdmin extends _i1.EndpointRef {
   @override
   String get name => 'courseAdmin';
 
-  _i2.Future<List<_i9.CourseDto>> list({
-    _i10.ContentStatus? status,
+  _i2.Future<List<_i7.CourseDto>> list({
+    _i11.ContentStatus? status,
     String? query,
     int? limit,
     int? offset,
-  }) => caller.callServerEndpoint<List<_i9.CourseDto>>(
+  }) => caller.callServerEndpoint<List<_i7.CourseDto>>(
     'courseAdmin',
     'list',
     {
@@ -232,29 +314,29 @@ class EndpointCourseAdmin extends _i1.EndpointRef {
     },
   );
 
-  _i2.Future<_i9.CourseDto> create(_i11.CreateCourseRequest request) =>
-      caller.callServerEndpoint<_i9.CourseDto>(
+  _i2.Future<_i7.CourseDto> create(_i12.CreateCourseRequest request) =>
+      caller.callServerEndpoint<_i7.CourseDto>(
         'courseAdmin',
         'create',
         {'request': request},
       );
 
-  _i2.Future<_i9.CourseDto> update(_i12.UpdateCourseRequest request) =>
-      caller.callServerEndpoint<_i9.CourseDto>(
+  _i2.Future<_i7.CourseDto> update(_i13.UpdateCourseRequest request) =>
+      caller.callServerEndpoint<_i7.CourseDto>(
         'courseAdmin',
         'update',
         {'request': request},
       );
 
-  _i2.Future<_i9.CourseDto> publish(int courseId) =>
-      caller.callServerEndpoint<_i9.CourseDto>(
+  _i2.Future<_i7.CourseDto> publish(int courseId) =>
+      caller.callServerEndpoint<_i7.CourseDto>(
         'courseAdmin',
         'publish',
         {'courseId': courseId},
       );
 
-  _i2.Future<_i9.CourseDto> unpublish(int courseId) =>
-      caller.callServerEndpoint<_i9.CourseDto>(
+  _i2.Future<_i7.CourseDto> unpublish(int courseId) =>
+      caller.callServerEndpoint<_i7.CourseDto>(
         'courseAdmin',
         'unpublish',
         {'courseId': courseId},
@@ -268,10 +350,10 @@ class EndpointCourseAnalyticsAdmin extends _i1.EndpointRef {
   @override
   String get name => 'courseAnalyticsAdmin';
 
-  _i2.Future<_i13.CourseAnalyticsDashboardDto> getDashboard(
+  _i2.Future<_i14.CourseAnalyticsDashboardDto> getDashboard(
     int courseId, {
     required int commonWrongAnswersLimit,
-  }) => caller.callServerEndpoint<_i13.CourseAnalyticsDashboardDto>(
+  }) => caller.callServerEndpoint<_i14.CourseAnalyticsDashboardDto>(
     'courseAnalyticsAdmin',
     'getDashboard',
     {
@@ -288,10 +370,10 @@ class EndpointCourse extends _i1.EndpointRef {
   @override
   String get name => 'course';
 
-  _i2.Future<List<_i9.CourseDto>> get({
+  _i2.Future<List<_i7.CourseDto>> get({
     required int limit,
     required int offset,
-  }) => caller.callServerEndpoint<List<_i9.CourseDto>>(
+  }) => caller.callServerEndpoint<List<_i7.CourseDto>>(
     'course',
     'get',
     {
@@ -300,15 +382,15 @@ class EndpointCourse extends _i1.EndpointRef {
     },
   );
 
-  _i2.Future<_i14.CourseDetailDto> getById(int courseId) =>
-      caller.callServerEndpoint<_i14.CourseDetailDto>(
+  _i2.Future<_i15.CourseDetailDto> getById(int courseId) =>
+      caller.callServerEndpoint<_i15.CourseDetailDto>(
         'course',
         'getById',
         {'courseId': courseId},
       );
 
-  _i2.Future<List<_i9.CourseDto>> getEnrolled() =>
-      caller.callServerEndpoint<List<_i9.CourseDto>>(
+  _i2.Future<List<_i7.CourseDto>> getEnrolled() =>
+      caller.callServerEndpoint<List<_i7.CourseDto>>(
         'course',
         'getEnrolled',
         {},
@@ -326,24 +408,24 @@ class EndpointCourse extends _i1.EndpointRef {
     {'courseId': courseId},
   );
 
-  _i2.Future<List<_i15.CourseRecommendationDto>> getRecommendations({
+  _i2.Future<List<_i16.CourseRecommendationDto>> getRecommendations({
     required int limit,
-  }) => caller.callServerEndpoint<List<_i15.CourseRecommendationDto>>(
+  }) => caller.callServerEndpoint<List<_i16.CourseRecommendationDto>>(
     'course',
     'getRecommendations',
     {'limit': limit},
   );
 
-  _i2.Future<_i16.AdaptiveLearningPathDto> getAdaptiveLearningPath(
+  _i2.Future<_i17.AdaptiveLearningPathDto> getAdaptiveLearningPath(
     int courseId,
-  ) => caller.callServerEndpoint<_i16.AdaptiveLearningPathDto>(
+  ) => caller.callServerEndpoint<_i17.AdaptiveLearningPathDto>(
     'course',
     'getAdaptiveLearningPath',
     {'courseId': courseId},
   );
 
-  _i2.Future<_i17.CourseStructureDto> getTableOfContents(int courseId) =>
-      caller.callServerEndpoint<_i17.CourseStructureDto>(
+  _i2.Future<_i18.CourseStructureDto> getTableOfContents(int courseId) =>
+      caller.callServerEndpoint<_i18.CourseStructureDto>(
         'course',
         'getTableOfContents',
         {'courseId': courseId},
@@ -354,7 +436,7 @@ class EndpointCourse extends _i1.EndpointRef {
 /// are made available on the server and enable the corresponding sign-in widget
 /// on the client.
 /// {@category Endpoint}
-class EndpointEmailIdp extends _i18.EndpointEmailIdpBase {
+class EndpointEmailIdp extends _i19.EndpointEmailIdpBase {
   EndpointEmailIdp(_i1.EndpointCaller caller) : super(caller);
 
   @override
@@ -370,10 +452,10 @@ class EndpointEmailIdp extends _i18.EndpointEmailIdpBase {
   ///
   /// Throws an [AuthUserBlockedException] if the auth user is blocked.
   @override
-  _i2.Future<_i19.AuthSuccess> login({
+  _i2.Future<_i20.AuthSuccess> login({
     required String email,
     required String password,
-  }) => caller.callServerEndpoint<_i19.AuthSuccess>(
+  }) => caller.callServerEndpoint<_i20.AuthSuccess>(
     'emailIdp',
     'login',
     {
@@ -438,10 +520,10 @@ class EndpointEmailIdp extends _i18.EndpointEmailIdpBase {
   ///
   /// Returns a session for the newly created user.
   @override
-  _i2.Future<_i19.AuthSuccess> finishRegistration({
+  _i2.Future<_i20.AuthSuccess> finishRegistration({
     required String registrationToken,
     required String password,
-  }) => caller.callServerEndpoint<_i19.AuthSuccess>(
+  }) => caller.callServerEndpoint<_i20.AuthSuccess>(
     'emailIdp',
     'finishRegistration',
     {
@@ -533,24 +615,24 @@ class EndpointExternalIntegrationAdmin extends _i1.EndpointRef {
   @override
   String get name => 'externalIntegrationAdmin';
 
-  _i2.Future<List<_i20.ExternalIntegrationProviderDto>> listProviders() =>
-      caller.callServerEndpoint<List<_i20.ExternalIntegrationProviderDto>>(
+  _i2.Future<List<_i21.ExternalIntegrationProviderDto>> listProviders() =>
+      caller.callServerEndpoint<List<_i21.ExternalIntegrationProviderDto>>(
         'externalIntegrationAdmin',
         'listProviders',
         {},
       );
 
-  _i2.Future<_i21.ExternalCourseSyncDto> syncCourse(
-    _i22.SyncCourseToExternalProviderRequest request,
-  ) => caller.callServerEndpoint<_i21.ExternalCourseSyncDto>(
+  _i2.Future<_i22.ExternalCourseSyncDto> syncCourse(
+    _i23.SyncCourseToExternalProviderRequest request,
+  ) => caller.callServerEndpoint<_i22.ExternalCourseSyncDto>(
     'externalIntegrationAdmin',
     'syncCourse',
     {'request': request},
   );
 
-  _i2.Future<_i23.ExternalVideoSessionDto> provisionLessonVideoSession(
-    _i24.ProvisionExternalVideoSessionRequest request,
-  ) => caller.callServerEndpoint<_i23.ExternalVideoSessionDto>(
+  _i2.Future<_i24.ExternalVideoSessionDto> provisionLessonVideoSession(
+    _i25.ProvisionExternalVideoSessionRequest request,
+  ) => caller.callServerEndpoint<_i24.ExternalVideoSessionDto>(
     'externalIntegrationAdmin',
     'provisionLessonVideoSession',
     {'request': request},
@@ -574,7 +656,7 @@ class EndpointHealth extends _i1.EndpointRef {
 /// By extending [RefreshJwtTokensEndpoint], the JWT token refresh endpoint
 /// is made available on the server and enables automatic token refresh on the client.
 /// {@category Endpoint}
-class EndpointJwtRefresh extends _i19.EndpointRefreshJwtTokens {
+class EndpointJwtRefresh extends _i20.EndpointRefreshJwtTokens {
   EndpointJwtRefresh(_i1.EndpointCaller caller) : super(caller);
 
   @override
@@ -599,9 +681,9 @@ class EndpointJwtRefresh extends _i19.EndpointRefreshJwtTokens {
   /// This endpoint is unauthenticated, meaning the client won't include any
   /// authentication information with the call.
   @override
-  _i2.Future<_i19.AuthSuccess> refreshAccessToken({
+  _i2.Future<_i20.AuthSuccess> refreshAccessToken({
     required String refreshToken,
-  }) => caller.callServerEndpoint<_i19.AuthSuccess>(
+  }) => caller.callServerEndpoint<_i20.AuthSuccess>(
     'jwtRefresh',
     'refreshAccessToken',
     {'refreshToken': refreshToken},
@@ -616,30 +698,30 @@ class EndpointLessonAdmin extends _i1.EndpointRef {
   @override
   String get name => 'lessonAdmin';
 
-  _i2.Future<List<_i25.LessonDto>> list(int moduleId) =>
-      caller.callServerEndpoint<List<_i25.LessonDto>>(
+  _i2.Future<List<_i26.LessonDto>> list(int moduleId) =>
+      caller.callServerEndpoint<List<_i26.LessonDto>>(
         'lessonAdmin',
         'list',
         {'moduleId': moduleId},
       );
 
-  _i2.Future<_i25.LessonDto> create(_i26.CreateLessonRequest request) =>
-      caller.callServerEndpoint<_i25.LessonDto>(
+  _i2.Future<_i26.LessonDto> create(_i27.CreateLessonRequest request) =>
+      caller.callServerEndpoint<_i26.LessonDto>(
         'lessonAdmin',
         'create',
         {'request': request},
       );
 
-  _i2.Future<_i25.LessonDto> update(_i27.UpdateLessonRequest request) =>
-      caller.callServerEndpoint<_i25.LessonDto>(
+  _i2.Future<_i26.LessonDto> update(_i28.UpdateLessonRequest request) =>
+      caller.callServerEndpoint<_i26.LessonDto>(
         'lessonAdmin',
         'update',
         {'request': request},
       );
 
-  _i2.Future<List<_i25.LessonDto>> reorder(
-    _i28.ReorderLessonsRequest request,
-  ) => caller.callServerEndpoint<List<_i25.LessonDto>>(
+  _i2.Future<List<_i26.LessonDto>> reorder(
+    _i29.ReorderLessonsRequest request,
+  ) => caller.callServerEndpoint<List<_i26.LessonDto>>(
     'lessonAdmin',
     'reorder',
     {'request': request},
@@ -653,22 +735,22 @@ class EndpointLesson extends _i1.EndpointRef {
   @override
   String get name => 'lesson';
 
-  _i2.Future<List<_i25.LessonDto>> getByCourseId(int courseId) =>
-      caller.callServerEndpoint<List<_i25.LessonDto>>(
+  _i2.Future<List<_i26.LessonDto>> getByCourseId(int courseId) =>
+      caller.callServerEndpoint<List<_i26.LessonDto>>(
         'lesson',
         'getByCourseId',
         {'courseId': courseId},
       );
 
-  _i2.Future<List<_i25.LessonDto>> getByModuleId(int moduleId) =>
-      caller.callServerEndpoint<List<_i25.LessonDto>>(
+  _i2.Future<List<_i26.LessonDto>> getByModuleId(int moduleId) =>
+      caller.callServerEndpoint<List<_i26.LessonDto>>(
         'lesson',
         'getByModuleId',
         {'moduleId': moduleId},
       );
 
-  _i2.Future<_i25.LessonDto> getById(int lessonId) =>
-      caller.callServerEndpoint<_i25.LessonDto>(
+  _i2.Future<_i26.LessonDto> getById(int lessonId) =>
+      caller.callServerEndpoint<_i26.LessonDto>(
         'lesson',
         'getById',
         {'lessonId': lessonId},
@@ -686,9 +768,9 @@ class EndpointLesson extends _i1.EndpointRef {
     },
   );
 
-  _i2.Future<_i29.LessonCompletionResultDto> complete(
-    _i30.CompleteLessonSessionRequest request,
-  ) => caller.callServerEndpoint<_i29.LessonCompletionResultDto>(
+  _i2.Future<_i30.LessonCompletionResultDto> complete(
+    _i31.CompleteLessonSessionRequest request,
+  ) => caller.callServerEndpoint<_i30.LessonCompletionResultDto>(
     'lesson',
     'complete',
     {'request': request},
@@ -702,30 +784,30 @@ class EndpointModuleAdmin extends _i1.EndpointRef {
   @override
   String get name => 'moduleAdmin';
 
-  _i2.Future<List<_i31.ModuleDto>> list(int courseId) =>
-      caller.callServerEndpoint<List<_i31.ModuleDto>>(
+  _i2.Future<List<_i32.ModuleDto>> list(int courseId) =>
+      caller.callServerEndpoint<List<_i32.ModuleDto>>(
         'moduleAdmin',
         'list',
         {'courseId': courseId},
       );
 
-  _i2.Future<_i31.ModuleDto> create(_i32.CreateModuleRequest request) =>
-      caller.callServerEndpoint<_i31.ModuleDto>(
+  _i2.Future<_i32.ModuleDto> create(_i33.CreateModuleRequest request) =>
+      caller.callServerEndpoint<_i32.ModuleDto>(
         'moduleAdmin',
         'create',
         {'request': request},
       );
 
-  _i2.Future<_i31.ModuleDto> update(_i33.UpdateModuleRequest request) =>
-      caller.callServerEndpoint<_i31.ModuleDto>(
+  _i2.Future<_i32.ModuleDto> update(_i34.UpdateModuleRequest request) =>
+      caller.callServerEndpoint<_i32.ModuleDto>(
         'moduleAdmin',
         'update',
         {'request': request},
       );
 
-  _i2.Future<List<_i31.ModuleDto>> reorder(
-    _i34.ReorderModulesRequest request,
-  ) => caller.callServerEndpoint<List<_i31.ModuleDto>>(
+  _i2.Future<List<_i32.ModuleDto>> reorder(
+    _i35.ReorderModulesRequest request,
+  ) => caller.callServerEndpoint<List<_i32.ModuleDto>>(
     'moduleAdmin',
     'reorder',
     {'request': request},
@@ -739,8 +821,8 @@ class EndpointModule extends _i1.EndpointRef {
   @override
   String get name => 'module';
 
-  _i2.Future<List<_i31.ModuleDto>> get(int courseId) =>
-      caller.callServerEndpoint<List<_i31.ModuleDto>>(
+  _i2.Future<List<_i32.ModuleDto>> get(int courseId) =>
+      caller.callServerEndpoint<List<_i32.ModuleDto>>(
         'module',
         'get',
         {'courseId': courseId},
@@ -754,45 +836,45 @@ class EndpointTaskAdmin extends _i1.EndpointRef {
   @override
   String get name => 'taskAdmin';
 
-  _i2.Future<List<_i35.TaskDto>> list(int lessonId) =>
-      caller.callServerEndpoint<List<_i35.TaskDto>>(
+  _i2.Future<List<_i36.TaskDto>> list(int lessonId) =>
+      caller.callServerEndpoint<List<_i36.TaskDto>>(
         'taskAdmin',
         'list',
         {'lessonId': lessonId},
       );
 
-  _i2.Future<_i35.TaskDto> create(_i36.CreateTaskRequest request) =>
-      caller.callServerEndpoint<_i35.TaskDto>(
+  _i2.Future<_i36.TaskDto> create(_i37.CreateTaskRequest request) =>
+      caller.callServerEndpoint<_i36.TaskDto>(
         'taskAdmin',
         'create',
         {'request': request},
       );
 
-  _i2.Future<_i35.TaskDto> update(_i37.UpdateTaskRequest request) =>
-      caller.callServerEndpoint<_i35.TaskDto>(
+  _i2.Future<_i36.TaskDto> update(_i38.UpdateTaskRequest request) =>
+      caller.callServerEndpoint<_i36.TaskDto>(
         'taskAdmin',
         'update',
         {'request': request},
       );
 
-  _i2.Future<List<_i35.TaskDto>> reorder(_i38.ReorderTasksRequest request) =>
-      caller.callServerEndpoint<List<_i35.TaskDto>>(
+  _i2.Future<List<_i36.TaskDto>> reorder(_i39.ReorderTasksRequest request) =>
+      caller.callServerEndpoint<List<_i36.TaskDto>>(
         'taskAdmin',
         'reorder',
         {'request': request},
       );
 
-  _i2.Future<List<_i39.TaskOptionDto>> upsertOptions(
-    _i40.UpsertTaskOptionsRequest request,
-  ) => caller.callServerEndpoint<List<_i39.TaskOptionDto>>(
+  _i2.Future<List<_i40.TaskOptionDto>> upsertOptions(
+    _i41.UpsertTaskOptionsRequest request,
+  ) => caller.callServerEndpoint<List<_i40.TaskOptionDto>>(
     'taskAdmin',
     'upsertOptions',
     {'request': request},
   );
 
-  _i2.Future<List<_i41.TaskTestCaseDto>> upsertTestCases(
-    _i42.UpsertTaskTestCasesRequest request,
-  ) => caller.callServerEndpoint<List<_i41.TaskTestCaseDto>>(
+  _i2.Future<List<_i42.TaskTestCaseDto>> upsertTestCases(
+    _i43.UpsertTaskTestCasesRequest request,
+  ) => caller.callServerEndpoint<List<_i42.TaskTestCaseDto>>(
     'taskAdmin',
     'upsertTestCases',
     {'request': request},
@@ -806,24 +888,24 @@ class EndpointTask extends _i1.EndpointRef {
   @override
   String get name => 'task';
 
-  _i2.Future<_i35.TaskDto> getById(int taskId) =>
-      caller.callServerEndpoint<_i35.TaskDto>(
+  _i2.Future<_i36.TaskDto> getById(int taskId) =>
+      caller.callServerEndpoint<_i36.TaskDto>(
         'task',
         'getById',
         {'taskId': taskId},
       );
 
-  _i2.Future<List<_i35.TaskDto>> getByLessonId(int lessonId) =>
-      caller.callServerEndpoint<List<_i35.TaskDto>>(
+  _i2.Future<List<_i36.TaskDto>> getByLessonId(int lessonId) =>
+      caller.callServerEndpoint<List<_i36.TaskDto>>(
         'task',
         'getByLessonId',
         {'lessonId': lessonId},
       );
 
-  _i2.Future<_i43.TaskAnswerResultDto> answer(
+  _i2.Future<_i44.TaskAnswerResultDto> answer(
     int taskId,
     String userAnswer,
-  ) => caller.callServerEndpoint<_i43.TaskAnswerResultDto>(
+  ) => caller.callServerEndpoint<_i44.TaskAnswerResultDto>(
     'task',
     'answer',
     {
@@ -852,8 +934,8 @@ class EndpointUserStatistics extends _i1.EndpointRef {
   /// Always returns statistics, creates empty statistics for first-time users
   ///
   /// Throws [NotAuthorizedException] if user is not authenticated
-  _i2.Future<_i44.UserStatisticsDto> get() =>
-      caller.callServerEndpoint<_i44.UserStatisticsDto>(
+  _i2.Future<_i45.UserStatisticsDto> get() =>
+      caller.callServerEndpoint<_i45.UserStatisticsDto>(
         'userStatistics',
         'get',
         {},
@@ -877,8 +959,8 @@ class EndpointWallet extends _i1.EndpointRef {
   /// - currency: Always 'COIN'
   ///
   /// Throws [NotAuthorizedException] if user is not authenticated
-  _i2.Future<_i45.WalletBalanceDto> getBalance() =>
-      caller.callServerEndpoint<_i45.WalletBalanceDto>(
+  _i2.Future<_i46.WalletBalanceDto> getBalance() =>
+      caller.callServerEndpoint<_i46.WalletBalanceDto>(
         'wallet',
         'getBalance',
         {},
@@ -903,9 +985,9 @@ class EndpointWallet extends _i1.EndpointRef {
   /// - [NotAuthorizedException] if user is not authenticated
   /// - [ValidationException] if request validation fails
   /// - [ValidationException] if transaction key already exists with different parameters
-  _i2.Future<_i46.CoinTransactionDto> topUp(
-    _i47.CreateCoinTransactionRequest request,
-  ) => caller.callServerEndpoint<_i46.CoinTransactionDto>(
+  _i2.Future<_i47.CoinTransactionDto> topUp(
+    _i48.CreateCoinTransactionRequest request,
+  ) => caller.callServerEndpoint<_i47.CoinTransactionDto>(
     'wallet',
     'topUp',
     {'request': request},
@@ -926,9 +1008,9 @@ class EndpointWallet extends _i1.EndpointRef {
   /// - [ValidationException] if insufficient available balance
   /// - [ValidationException] if request validation fails
   /// - [ValidationException] if transaction key already exists with different parameters
-  _i2.Future<_i46.CoinTransactionDto> buy(
-    _i47.CreateCoinTransactionRequest request,
-  ) => caller.callServerEndpoint<_i46.CoinTransactionDto>(
+  _i2.Future<_i47.CoinTransactionDto> buy(
+    _i48.CreateCoinTransactionRequest request,
+  ) => caller.callServerEndpoint<_i47.CoinTransactionDto>(
     'wallet',
     'buy',
     {'request': request},
@@ -949,10 +1031,10 @@ class EndpointWallet extends _i1.EndpointRef {
   /// - Related entity information if applicable
   ///
   /// Throws [NotAuthorizedException] if user is not authenticated
-  _i2.Future<List<_i46.CoinTransactionDto>> getHistory({
+  _i2.Future<List<_i47.CoinTransactionDto>> getHistory({
     int? limit,
     int? offset,
-  }) => caller.callServerEndpoint<List<_i46.CoinTransactionDto>>(
+  }) => caller.callServerEndpoint<List<_i47.CoinTransactionDto>>(
     'wallet',
     'getHistory',
     {
@@ -964,13 +1046,13 @@ class EndpointWallet extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    serverpod_auth_core = _i19.Caller(client);
-    serverpod_auth_idp = _i18.Caller(client);
+    serverpod_auth_core = _i20.Caller(client);
+    serverpod_auth_idp = _i19.Caller(client);
   }
 
-  late final _i19.Caller serverpod_auth_core;
+  late final _i20.Caller serverpod_auth_core;
 
-  late final _i18.Caller serverpod_auth_idp;
+  late final _i19.Caller serverpod_auth_idp;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -993,7 +1075,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i48.Protocol(),
+         _i49.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -1004,6 +1086,7 @@ class Client extends _i1.ServerpodClientShared {
        ) {
     accessControl = EndpointAccessControl(this);
     achievement = EndpointAchievement(this);
+    adminGovernance = EndpointAdminGovernance(this);
     ai = EndpointAi(this);
     courseAdmin = EndpointCourseAdmin(this);
     courseAnalyticsAdmin = EndpointCourseAnalyticsAdmin(this);
@@ -1026,6 +1109,8 @@ class Client extends _i1.ServerpodClientShared {
   late final EndpointAccessControl accessControl;
 
   late final EndpointAchievement achievement;
+
+  late final EndpointAdminGovernance adminGovernance;
 
   late final EndpointAi ai;
 
@@ -1065,6 +1150,7 @@ class Client extends _i1.ServerpodClientShared {
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
     'accessControl': accessControl,
     'achievement': achievement,
+    'adminGovernance': adminGovernance,
     'ai': ai,
     'courseAdmin': courseAdmin,
     'courseAnalyticsAdmin': courseAnalyticsAdmin,
