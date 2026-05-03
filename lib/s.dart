@@ -12,6 +12,8 @@ class S {
     GlobalCupertinoLocalizations.delegate,
   ];
 
-  static AppLocalizations of(BuildContext context) =>
-      AppLocalizations.of(context);
+  static AppLocalizations of(BuildContext context) {
+    // ignore: unnecessary_non_null_assertion
+    return AppLocalizations.of(context)!;
+  }
 }
