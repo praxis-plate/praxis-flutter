@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:praxis/core/theme/app_theme.dart';
 import 'package:praxis/core/utils/constants.dart';
 import 'package:praxis/core/utils/duration.dart';
@@ -6,8 +8,6 @@ import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/domain/models/models.dart';
 import 'package:praxis/features/main/bloc/course_purchasing/course_purchasing_bloc.dart';
 import 'package:praxis/s.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CourseCard extends StatelessWidget {
   const CourseCard({
@@ -71,6 +71,19 @@ class CourseCard extends StatelessWidget {
                           right: 4,
                           child: _PurchasedBadge(),
                         ),
+                      if (!isPurchased)
+                        Container(
+                          height: 100,
+                          width: 100,
+                          padding: const EdgeInsets.only(bottom: 8),
+                          alignment: AlignmentGeometry.bottomCenter,
+                          child: _CourseActionChip(
+                            courseId: course.id,
+                            priceInCoins: course.priceInCoins,
+                            isProcessing: isProcessing,
+                            userProfile: userProfile,
+                          ),
+                        ),
                     ],
                   ),
                   const SizedBox(width: 12),
@@ -89,8 +102,8 @@ class CourseCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Expanded(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8, right: 16),
                               child: Text(
                                 course.description,
                                 style: theme.textTheme.bodySmall?.copyWith(
@@ -108,14 +121,6 @@ class CourseCard extends StatelessWidget {
                             rating: course.rating,
                             duration: Duration(minutes: course.durationMinutes),
                             lessonsCount: course.totalTasks,
-                            action: isPurchased
-                                ? null
-                                : _CourseActionChip(
-                                    courseId: course.id,
-                                    priceInCoins: course.priceInCoins,
-                                    isProcessing: isProcessing,
-                                    userProfile: userProfile,
-                                  ),
                           ),
                         ],
                       ),
@@ -137,13 +142,11 @@ class _CourseMetaInfoRow extends StatelessWidget {
     required this.rating,
     required this.duration,
     required this.lessonsCount,
-    this.action,
   });
 
   final double rating;
   final Duration duration;
   final int lessonsCount;
-  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +182,6 @@ class _CourseMetaInfoRow extends StatelessWidget {
             color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
           ),
         ),
-        if (action != null) ...[const Spacer(), action!],
       ],
     );
   }
@@ -278,13 +280,6 @@ class _PurchaseChipContent extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          s.courseDetailsGet,
-          style: theme.textTheme.bodySmall?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: theme.colorScheme.primary,
-          ),
-        ),
         const SizedBox(width: 6),
         CoinAmount(
           amount: priceInCoins,
