@@ -384,6 +384,8 @@ class DependencyInjection {
       ..registerLazySingleton(
         () => CoursePurchasingBloc(
           purchaseCourseUseCase: GetIt.I<PurchaseCourseUseCase>(),
+          getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
+          getUserStatisticsUseCase: GetIt.I<GetUserStatisticsUseCase>(),
         ),
       )
       ..registerFactory(

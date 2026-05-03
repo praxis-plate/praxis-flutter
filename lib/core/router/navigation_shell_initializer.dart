@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:praxis/core/error/app_error_code_extension.dart';
 import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/features/features.dart';
 import 'package:praxis/s.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NavigationShellInitializer extends StatefulWidget {
   final Widget child;
@@ -55,8 +55,8 @@ class _NavigationShellInitializerState
             SnackBar(
               content: Text(
                 s.coursePurchaseInsufficientBalanceMessage(
-                  state.required,
-                  state.available,
+                  state.requiredMoney,
+                  state.availableMoney,
                 ),
               ),
               backgroundColor: Theme.of(context).colorScheme.error,

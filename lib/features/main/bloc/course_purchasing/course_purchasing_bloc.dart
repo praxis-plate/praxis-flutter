@@ -1,10 +1,10 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:praxis/core/error/app_error_code.dart';
 import 'package:praxis/core/error/failure.dart';
 import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/domain/usecases/usecases.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 part 'course_purchasing_event.dart';
@@ -13,10 +13,17 @@ part 'course_purchasing_state.dart';
 class CoursePurchasingBloc
     extends Bloc<CoursePurchasingEvent, CoursePurchasingState> {
   final PurchaseCourseUseCase _purchaseCourseUseCase;
+  final GetCourseDetailUseCase _getCourseDetailUseCase;
+  final GetUserStatisticsUseCase _getUserStatisticsUseCase;
 
-  CoursePurchasingBloc({required PurchaseCourseUseCase purchaseCourseUseCase})
-    : _purchaseCourseUseCase = purchaseCourseUseCase,
-      super(CoursePurchasingInitialState()) {
+  CoursePurchasingBloc({
+    required PurchaseCourseUseCase purchaseCourseUseCase,
+    required GetCourseDetailUseCase getCourseDetailUseCase,
+    required GetUserStatisticsUseCase getUserStatisticsUseCase,
+  }) : _purchaseCourseUseCase = purchaseCourseUseCase,
+       _getCourseDetailUseCase = getCourseDetailUseCase,
+       _getUserStatisticsUseCase = getUserStatisticsUseCase,
+       super(CoursePurchasingInitialState()) {
     on<CoursePurchasingRequestEvent>(_onPurchasingRequestEvent);
   }
 
@@ -25,38 +32,24 @@ class CoursePurchasingBloc
     Emitter<CoursePurchasingState> emit,
   ) async {
     final talker = GetIt.I<Talker>();
-    talker.info(
-      '💳 Starting course purchase: userId=${event.userId}, courseId=${event.courseId}',
-    );
 
     emit(CoursePurchasingLoadingState(event.courseId));
 
     try {
-      talker.debug('Calling PurchaseCourseUseCase...');
       final result = await _purchaseCourseUseCase(event.userId, event.courseId);
 
-      result.when(
-        success: (_) {
-          talker.info('✅ Course purchased successfully: ${event.courseId}');
-          emit(CoursePurchasingLoadSuccessState(event.courseId));
-        },
-        failure: (failure) {
-          if (failure.code == AppErrorCode.insufficientBalance) {
-            talker.warning('💰 Insufficient balance: ${failure.message}');
-            emit(
-              CoursePurchasingInsufficientBalanceState(
-                event.courseId,
-                required: 0,
-                available: 0,
-              ),
-            );
-            return;
-          }
+      if (result.isSuccess) {
+        emit(CoursePurchasingLoadSuccessState(event.courseId));
+        return;
+      }
 
-          talker.warning('⚠️ Course purchase failed: ${failure.message}');
-          emit(CoursePurchasingLoadErrorState(event.courseId, failure));
-        },
-      );
+      final failure = result.failureOrNull!;
+      if (failure.code == AppErrorCode.insufficientBalance) {
+        await _emitInsufficientBalanceState(event, emit);
+        return;
+      }
+
+      emit(CoursePurchasingLoadErrorState(event.courseId, failure));
     } catch (e, st) {
       talker.handle(e, st);
       emit(
@@ -66,5 +59,41 @@ class CoursePurchasingBloc
         ),
       );
     }
+  }
+
+  Future<void> _emitInsufficientBalanceState(
+    CoursePurchasingRequestEvent event,
+    Emitter<CoursePurchasingState> emit,
+  ) async {
+    final courseResult = await _getCourseDetailUseCase(event.courseId);
+    if (courseResult.isFailure || courseResult.dataOrNull == null) {
+      emit(_coursePurchaseUnavailableState(event.courseId));
+      return;
+    }
+
+    final statisticsResult = await _getUserStatisticsUseCase(event.userId);
+    if (statisticsResult.isFailure || statisticsResult.dataOrNull == null) {
+      emit(_coursePurchaseUnavailableState(event.courseId));
+      return;
+    }
+
+    emit(
+      CoursePurchasingInsufficientBalanceState(
+        event.courseId,
+        requiredMoney: courseResult.dataOrNull!.priceInCoins,
+        availableMoney: statisticsResult.dataOrNull!.balance.amount,
+      ),
+    );
+  }
+
+  CoursePurchasingLoadErrorState _coursePurchaseUnavailableState(int courseId) {
+    return CoursePurchasingLoadErrorState(
+      courseId,
+      const AppFailure(
+        code: AppErrorCode.coursePurchaseUnavailable,
+        message: 'Course purchase is unavailable',
+        canRetry: true,
+      ),
+    );
   }
 }
