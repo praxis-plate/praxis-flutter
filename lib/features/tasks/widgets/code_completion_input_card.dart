@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/s.dart';
-import 'package:flutter/material.dart';
 
 class CodeCompletionInputCard extends StatelessWidget {
   final List<String> codeParts;
