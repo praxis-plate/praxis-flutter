@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:praxis/domain/models/task/task_models.dart';
 import 'package:praxis/features/tasks/bloc/bloc.dart';
 import 'package:praxis/features/tasks/bloc/task/task_bloc.dart';
 import 'package:praxis/features/tasks/widgets/widgets.dart';
 import 'package:praxis/s.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CodeCompletionTask extends StatefulWidget {
   final CodeCompletionTaskModel task;
@@ -51,6 +51,10 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
   }
 
   String _getUserAnswer() {
+    if (_inputControllers.length == 1) {
+      return _inputControllers.single.text.trim();
+    }
+
     final buffer = StringBuffer();
     for (int i = 0; i < _codeParts.length; i++) {
       buffer.write(_codeParts[i]);
@@ -121,5 +125,4 @@ class _CodeCompletionTaskState extends State<CodeCompletionTask> {
       ),
     );
   }
-
 }

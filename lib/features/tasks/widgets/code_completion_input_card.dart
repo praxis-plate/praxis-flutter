@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/s.dart';
-import 'package:flutter/material.dart';
 
 class CodeCompletionInputCard extends StatelessWidget {
   final List<String> codeParts;
@@ -36,57 +36,41 @@ class CodeCompletionInputCard extends StatelessWidget {
       if (i < inputControllers.length) {
         widgets.add(
           IntrinsicWidth(
-            child: Theme(
-              data: theme.copyWith(
-                inputDecorationTheme: theme.inputDecorationTheme.copyWith(
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.12,
-                      ),
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.12,
-                      ),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: theme.colorScheme.primary),
-                  ),
-                  fillColor: theme.colorScheme.surfaceContainerHighest,
-                ),
+            child: TextField(
+              controller: inputControllers[i],
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontFamily: 'monospace',
+                fontSize: 14,
+                height: 1.5,
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.bold,
               ),
-              child: TextField(
-                controller: inputControllers[i],
-                style: theme.textTheme.bodyMedium?.copyWith(
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 6,
+                ),
+                constraints: const BoxConstraints(minWidth: 100),
+                hintText: s.codeCompletionPlaceholder,
+                hintStyle: theme.textTheme.bodyMedium?.copyWith(
                   fontFamily: 'monospace',
                   fontSize: 14,
-                  height: 1.5,
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
-                decoration: InputDecoration(
-                  constraints: const BoxConstraints(minWidth: 100),
-                  hintText: s.codeCompletionPlaceholder,
-                  hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                    fontFamily: 'monospace',
-                    fontSize: 14,
-                    color: theme.colorScheme.onSurfaceVariant.withValues(
-                      alpha: 0.5,
-                    ),
-                  ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: theme.colorScheme.tertiary),
                 ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: theme.colorScheme.tertiary),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: theme.colorScheme.primary),
+                ),
+                fillColor: theme.colorScheme.surfaceContainerHighest,
               ),
             ),
           ),
@@ -96,6 +80,7 @@ class CodeCompletionInputCard extends StatelessWidget {
 
     return SurfaceCard(
       borderRadius: BorderRadius.circular(12),
+      borderColor: theme.colorScheme.tertiary,
       padding: const EdgeInsets.all(16),
       child: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,

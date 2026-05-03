@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/domain/models/task/task_result_model.dart';
 import 'package:praxis/s.dart';
-import 'package:flutter/material.dart';
 
 Widget buildTaskFeedbackContent({
   required BuildContext context,
@@ -135,7 +135,7 @@ Widget buildTaskFeedbackContent({
           ),
         ],
         if (explanation != null) ...[
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           SurfaceCard(
             padding: const EdgeInsets.all(16),
             borderRadius: BorderRadius.circular(12),
@@ -167,7 +167,7 @@ Widget buildTaskFeedbackContent({
           ),
         ],
         if (!isCorrect && onRetry != null) ...[
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: onRetry,
             style: ElevatedButton.styleFrom(
