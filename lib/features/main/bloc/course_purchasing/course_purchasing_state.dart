@@ -42,15 +42,15 @@ class CoursePurchasingLoadErrorState extends CoursePurchasingState {
 
 class CoursePurchasingInsufficientBalanceState extends CoursePurchasingState {
   final int courseId;
-  final int required;
-  final int available;
+  final int requiredMoney;
+  final int availableMoney;
 
   const CoursePurchasingInsufficientBalanceState(
     this.courseId, {
-    required this.required,
-    required this.available,
+    required this.requiredMoney,
+    required this.availableMoney,
   });
 
   @override
-  List<Object> get props => [courseId, required, available];
+  List<Object> get props => [courseId, requiredMoney, availableMoney];
 }

@@ -60,6 +60,8 @@ extension AppErrorCodeExtension on AppErrorCode {
 
       case AppErrorCode.courseAlreadyPurchased:
         return l10n.errorCourseAlreadyPurchased;
+      case AppErrorCode.coursePurchaseUnavailable:
+        return l10n.errorCoursePurchaseUnavailable;
       case AppErrorCode.insufficientBalance:
         return l10n.errorInsufficientBalance;
 

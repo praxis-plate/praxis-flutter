@@ -282,6 +282,7 @@
   "learningContinueHint": "Продолжите с места, где остановились",
   "errorRateLimitMessage": "Превышен лимит запросов API. Подождите немного и попробуйте снова.",
   "errorCourseAlreadyPurchased": "Этот курс уже приобретен.",
+  "errorCoursePurchaseUnavailable": "Покупка курса сейчас недоступна. Попробуйте позже.",
   "errorInsufficientBalance": "Недостаточно средств для завершения покупки.",
   "errorCourseNotPurchased": "Этот курс не был приобретен.",
   "errorLessonNotUnlocked": "Этот урок еще не разблокирован.",

@@ -282,6 +282,7 @@
   "learningContinueHint": "Continue from where you left off",
   "errorRateLimitMessage": "API rate limit exceeded. Please wait a moment and try again.",
   "errorCourseAlreadyPurchased": "You have already purchased this course.",
+  "errorCoursePurchaseUnavailable": "Course purchase is currently unavailable. Please try again later.",
   "errorInsufficientBalance": "Insufficient balance to complete this purchase.",
   "errorCourseNotPurchased": "This course has not been purchased.",
   "errorLessonNotUnlocked": "This lesson is not yet unlocked.",
