@@ -9,13 +9,13 @@ import 'package:praxis/features/course_details/bloc/course_detail/course_detail_
 import 'package:praxis/features/course_details/view/course_detail_screen.dart';
 import 'package:praxis/features/course_learning/view/course_learning_screen.dart';
 import 'package:praxis/features/learning/learning.dart';
+import 'package:praxis/features/lesson/view/lesson_content_screen.dart';
 import 'package:praxis/features/main/main.dart';
 import 'package:praxis/features/navigation/view/navigation_screen.dart';
 import 'package:praxis/features/onboarding/view/onboarding_screen.dart';
 import 'package:praxis/features/profile/profile.dart';
 import 'package:praxis/features/tasks/view/lesson_task_session_screen.dart';
 import 'package:praxis/features/tasks/view/task_screen.dart';
-import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -219,11 +219,13 @@ class AppRouter {
               path: '/lesson/:lessonId',
               name: 'lesson-content',
               pageBuilder: (context, state) {
-                final s = S.of(context);
+                final lessonId = state.pathParameters['lessonId']!;
+                final courseId = state.uri.queryParameters['courseId'] ?? '';
                 return MaterialPage(
                   key: state.pageKey,
-                  child: Scaffold(
-                    body: Center(child: Text(s.lessonComingSoon)),
+                  child: LessonContentScreen(
+                    lessonId: lessonId,
+                    courseId: courseId,
                   ),
                 );
               },

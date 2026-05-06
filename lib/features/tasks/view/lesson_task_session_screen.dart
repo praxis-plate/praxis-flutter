@@ -102,6 +102,20 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
     }
   }
 
+  void _loadInitialSessionTask(
+    BuildContext context,
+    LessonTaskSessionState sessionState,
+  ) {
+    if (sessionState is! SessionActiveState) {
+      return;
+    }
+
+    final taskBloc = context.read<TaskBloc>();
+    if (taskBloc.state is TaskInitialState) {
+      taskBloc.add(LoadTaskEvent(sessionState.currentTask.id));
+    }
+  }
+
   String _resolveSessionErrorMessage(
     SessionErrorState state,
     AppLocalizations s,
@@ -168,7 +182,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
             GetIt.I<SubmitTaskAnswerUseCase>(),
             GetIt.I<RequestTaskHintUseCase>(),
             userId: userProfile.id,
-          )..add(const LoadTaskEvent(1)),
+          ),
         ),
         BlocProvider(
           create: (context) => GetIt.I<TaskHintCubit>(param1: userProfile.id),
@@ -176,6 +190,8 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
       ],
       child: BlocConsumer<LessonTaskSessionBloc, LessonTaskSessionState>(
         listener: (context, sessionState) {
+          _loadInitialSessionTask(context, sessionState);
+
           if (sessionState is SessionCompletedState) {
             _showSessionSummaryDialog(context, sessionState);
           }
@@ -315,7 +331,8 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                       Expanded(
                         child: BlocBuilder<TaskBloc, TaskState>(
                           builder: (context, taskState) {
-                            if (taskState is TaskLoadingState) {
+                            if (taskState is TaskInitialState ||
+                                taskState is TaskLoadingState) {
                               return Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

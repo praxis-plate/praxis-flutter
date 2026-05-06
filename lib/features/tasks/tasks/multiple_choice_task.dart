@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:praxis/domain/models/task/task_models.dart';
 import 'package:praxis/features/tasks/bloc/bloc.dart';
 import 'package:praxis/features/tasks/bloc/task/task_bloc.dart';
-import 'package:praxis/features/tasks/widgets/task_view_layout.dart';
 import 'package:praxis/features/tasks/widgets/submit_task_button.dart';
 import 'package:praxis/features/tasks/widgets/task_hint_button.dart';
+import 'package:praxis/features/tasks/widgets/task_view_layout.dart';
 import 'package:praxis/s.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MultipleChoiceTask extends StatefulWidget {
   final MultipleChoiceTaskModel task;
@@ -36,12 +36,7 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            s.taskSelectOption,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.85),
-            ),
-          ),
+          Text(s.taskSelectOption, style: theme.textTheme.titleMedium),
           const SizedBox(height: 12),
           ...widget.task.options.asMap().entries.map((entry) {
             final index = entry.key;
