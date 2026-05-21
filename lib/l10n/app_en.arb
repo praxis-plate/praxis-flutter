@@ -468,6 +468,7 @@
   "taskHintTitle": "Hint",
   "taskHintPenalty": "Using hints reduces XP reward by 50%",
   "taskSelectOption": "Select an option",
+  "taskSelectOptions": "Select all correct options",
   "taskEnterCode": "Enter your code",
   "taskMatchItems": "Match the items",
   "taskEnterAnswer": "Enter your answer",

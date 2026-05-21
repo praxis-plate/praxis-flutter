@@ -468,6 +468,7 @@
   "taskHintTitle": "Подсказка",
   "taskHintPenalty": "Использование подсказок уменьшает награду XP на 50%",
   "taskSelectOption": "Выберите вариант",
+  "taskSelectOptions": "Выберите все правильные варианты",
   "taskEnterCode": "Введите ваш код",
   "taskMatchItems": "Сопоставьте элементы",
   "taskEnterAnswer": "Введите ваш ответ",

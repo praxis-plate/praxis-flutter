@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:praxis/domain/enums/task_type.dart';
 import 'package:praxis/domain/models/task/task_models.dart';
 import 'package:praxis/features/tasks/bloc/bloc.dart';
 import 'package:praxis/features/tasks/bloc/task/task_bloc.dart';
@@ -19,6 +22,49 @@ class MultipleChoiceTask extends StatefulWidget {
 
 class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
   String? _selectedOption;
+  final Set<String> _selectedOptions = {};
+
+  bool get _isMultipleAnswer => widget.task.taskType == TaskType.multipleAnswer;
+
+  bool _isSelected(String option) {
+    if (_isMultipleAnswer) {
+      return _selectedOptions.contains(option);
+    }
+
+    return _selectedOption == option;
+  }
+
+  void _selectOption(String option) {
+    setState(() {
+      if (_isMultipleAnswer) {
+        if (!_selectedOptions.add(option)) {
+          _selectedOptions.remove(option);
+        }
+        return;
+      }
+
+      _selectedOption = option;
+    });
+  }
+
+  String _buildAnswer() {
+    if (!_isMultipleAnswer) {
+      return _selectedOption!;
+    }
+
+    final orderedOptions = widget.task.options
+        .where(_selectedOptions.contains)
+        .toList();
+    return jsonEncode(orderedOptions);
+  }
+
+  bool get _canSubmit {
+    if (_isMultipleAnswer) {
+      return _selectedOptions.isNotEmpty;
+    }
+
+    return _selectedOption != null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,34 +82,35 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
             ),
           ),
           const SizedBox(height: 24),
-          Text(s.taskSelectOption, style: theme.textTheme.titleMedium),
+          Text(
+            _isMultipleAnswer ? s.taskSelectOptions : s.taskSelectOption,
+            style: theme.textTheme.titleMedium,
+          ),
           const SizedBox(height: 12),
           ...widget.task.options.asMap().entries.map((entry) {
             final index = entry.key;
             final option = entry.value;
-            final isSelected = _selectedOption == option;
+            final isSelected = _isSelected(option);
+            final selectedColor = theme.colorScheme.primary;
+            final unselectedBorderColor = theme.dividerColor.withValues(
+              alpha: 0.6,
+            );
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: InkWell(
-                onTap: () {
-                  setState(() {
-                    _selectedOption = option;
-                  });
-                },
+                onTap: () => _selectOption(option),
                 borderRadius: BorderRadius.circular(12),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? theme.colorScheme.primary.withValues(alpha: 0.08)
+                        ? theme.colorScheme.surfaceContainerHighest
                         : theme.cardColor,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isSelected
-                          ? theme.colorScheme.primary
-                          : theme.dividerColor.withValues(alpha: 0.6),
+                      color: isSelected ? selectedColor : unselectedBorderColor,
                       width: 1,
                     ),
                   ),
@@ -74,11 +121,13 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
                         height: 32,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: theme.colorScheme.surface,
+                          color: isSelected
+                              ? selectedColor.withValues(alpha: 0.12)
+                              : theme.colorScheme.surface,
                           border: Border.all(
                             color: isSelected
-                                ? theme.colorScheme.primary
-                                : theme.dividerColor.withValues(alpha: 0.6),
+                                ? selectedColor
+                                : unselectedBorderColor,
                             width: 2,
                           ),
                         ),
@@ -87,7 +136,7 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
                             String.fromCharCode(65 + index),
                             style: theme.textTheme.titleSmall?.copyWith(
                               color: isSelected
-                                  ? theme.colorScheme.primary
+                                  ? selectedColor
                                   : theme.colorScheme.onSurface,
                               fontWeight: FontWeight.bold,
                             ),
@@ -99,9 +148,7 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
                         child: Text(
                           option,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: isSelected
-                                ? theme.colorScheme.primary
-                                : theme.colorScheme.onSurface,
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
                       ),
@@ -120,10 +167,10 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
           const SizedBox(height: 12),
           SubmitTaskButton(
             label: s.taskSubmitButton,
-            onPressed: _selectedOption != null
+            onPressed: _canSubmit
                 ? () {
                     context.read<TaskBloc>().add(
-                      SubmitAnswerEvent(_selectedOption!),
+                      SubmitAnswerEvent(_buildAnswer()),
                     );
                   }
                 : null,
