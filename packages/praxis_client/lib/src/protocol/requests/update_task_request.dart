@@ -19,6 +19,7 @@ abstract class UpdateTaskRequest implements _i1.SerializableModel {
     required this.taskType,
     required this.questionText,
     required this.correctAnswer,
+    this.optionsJson,
     this.codeTemplate,
     this.programmingLanguage,
     required this.difficultyLevel,
@@ -33,6 +34,7 @@ abstract class UpdateTaskRequest implements _i1.SerializableModel {
     required _i2.TaskType taskType,
     required String questionText,
     required String correctAnswer,
+    String? optionsJson,
     String? codeTemplate,
     String? programmingLanguage,
     required int difficultyLevel,
@@ -50,6 +52,7 @@ abstract class UpdateTaskRequest implements _i1.SerializableModel {
       ),
       questionText: jsonSerialization['questionText'] as String,
       correctAnswer: jsonSerialization['correctAnswer'] as String,
+      optionsJson: jsonSerialization['optionsJson'] as String?,
       codeTemplate: jsonSerialization['codeTemplate'] as String?,
       programmingLanguage: jsonSerialization['programmingLanguage'] as String?,
       difficultyLevel: jsonSerialization['difficultyLevel'] as int,
@@ -67,6 +70,8 @@ abstract class UpdateTaskRequest implements _i1.SerializableModel {
   String questionText;
 
   String correctAnswer;
+
+  String? optionsJson;
 
   String? codeTemplate;
 
@@ -90,6 +95,7 @@ abstract class UpdateTaskRequest implements _i1.SerializableModel {
     _i2.TaskType? taskType,
     String? questionText,
     String? correctAnswer,
+    String? optionsJson,
     String? codeTemplate,
     String? programmingLanguage,
     int? difficultyLevel,
@@ -106,6 +112,7 @@ abstract class UpdateTaskRequest implements _i1.SerializableModel {
       'taskType': taskType.toJson(),
       'questionText': questionText,
       'correctAnswer': correctAnswer,
+      if (optionsJson != null) 'optionsJson': optionsJson,
       if (codeTemplate != null) 'codeTemplate': codeTemplate,
       if (programmingLanguage != null)
         'programmingLanguage': programmingLanguage,
@@ -132,6 +139,7 @@ class _UpdateTaskRequestImpl extends UpdateTaskRequest {
     required _i2.TaskType taskType,
     required String questionText,
     required String correctAnswer,
+    String? optionsJson,
     String? codeTemplate,
     String? programmingLanguage,
     required int difficultyLevel,
@@ -144,6 +152,7 @@ class _UpdateTaskRequestImpl extends UpdateTaskRequest {
          taskType: taskType,
          questionText: questionText,
          correctAnswer: correctAnswer,
+         optionsJson: optionsJson,
          codeTemplate: codeTemplate,
          programmingLanguage: programmingLanguage,
          difficultyLevel: difficultyLevel,
@@ -162,6 +171,7 @@ class _UpdateTaskRequestImpl extends UpdateTaskRequest {
     _i2.TaskType? taskType,
     String? questionText,
     String? correctAnswer,
+    Object? optionsJson = _Undefined,
     Object? codeTemplate = _Undefined,
     Object? programmingLanguage = _Undefined,
     int? difficultyLevel,
@@ -175,6 +185,7 @@ class _UpdateTaskRequestImpl extends UpdateTaskRequest {
       taskType: taskType ?? this.taskType,
       questionText: questionText ?? this.questionText,
       correctAnswer: correctAnswer ?? this.correctAnswer,
+      optionsJson: optionsJson is String? ? optionsJson : this.optionsJson,
       codeTemplate: codeTemplate is String? ? codeTemplate : this.codeTemplate,
       programmingLanguage: programmingLanguage is String?
           ? programmingLanguage
