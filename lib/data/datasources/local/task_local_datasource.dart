@@ -53,9 +53,17 @@ class TaskLocalDataSource {
 
   Future<TaskProgressEntity?> getTaskProgress(String userId, int taskId) async {
     final resolvedUserId = await _resolveUserId(userId);
-    return await _db.managers.taskProgress
-        .filter((f) => f.userId.id(resolvedUserId))
-        .filter((f) => f.taskId.id(taskId))
+    return await (_db.select(_db.taskProgress)
+          ..where(
+            (table) =>
+                table.userId.equals(resolvedUserId) &
+                table.taskId.equals(taskId),
+          )
+          ..orderBy([
+            (table) => OrderingTerm.desc(table.isCompleted),
+            (table) => OrderingTerm.desc(table.lastAttemptAt),
+          ])
+          ..limit(1))
         .getSingleOrNull();
   }
 

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 class LessonCard extends StatelessWidget {
   final LessonModel lesson;
+  final int courseId;
   final int? taskCount;
   final int completedTaskCount;
   final bool isCompleted;
@@ -12,6 +13,7 @@ class LessonCard extends StatelessWidget {
   const LessonCard({
     super.key,
     required this.lesson,
+    required this.courseId,
     required this.taskCount,
     required this.completedTaskCount,
     required this.isCompleted,
@@ -44,6 +46,7 @@ class LessonCard extends StatelessWidget {
           context.pushNamed(
             'lesson-content',
             pathParameters: {'lessonId': lesson.id.toString()},
+            queryParameters: {'courseId': courseId.toString()},
           );
         },
         child: Padding(
@@ -75,7 +78,7 @@ class LessonCard extends StatelessWidget {
               const SizedBox(width: 8),
               if (taskCount != null) ...[
                 Text(
-                  '$completedTaskCount/$taskCount',
+                  '${completedTaskCount.clamp(0, taskCount!)}/$taskCount',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: foregroundColor.withValues(alpha: 0.8),
                     fontWeight: FontWeight.w600,

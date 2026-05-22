@@ -22,8 +22,13 @@ import 'package:go_router/go_router.dart';
 
 class LessonTaskSessionScreen extends StatefulWidget {
   final int lessonId;
+  final String? courseId;
 
-  const LessonTaskSessionScreen({super.key, required this.lessonId});
+  const LessonTaskSessionScreen({
+    super.key,
+    required this.lessonId,
+    this.courseId,
+  });
 
   @override
   State<LessonTaskSessionScreen> createState() =>
@@ -33,6 +38,8 @@ class LessonTaskSessionScreen extends StatefulWidget {
 class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
   Timer? _autoAdvanceTimer;
   String? _lessonTitle;
+  bool _isCompletingLastTask = false;
+  bool _isSessionSummaryDialogOpen = false;
 
   void _exitSession(BuildContext context) {
     if (context.canPop()) {
@@ -41,6 +48,16 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
     }
 
     context.go(RouteConstants.learning);
+  }
+
+  void _finishSession(BuildContext context) {
+    final courseId = widget.courseId;
+    if (courseId != null && courseId.isNotEmpty) {
+      context.go('/course/$courseId/learn');
+      return;
+    }
+
+    _exitSession(context);
   }
 
   @override
@@ -71,6 +88,12 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
     SessionActiveState sessionState,
   ) {
     if (taskState is TaskAnswerCorrectState) {
+      if (sessionState.isLastTask && !_isCompletingLastTask) {
+        setState(() {
+          _isCompletingLastTask = true;
+        });
+      }
+
       context.read<LessonTaskSessionBloc>().add(
         CompleteCurrentTaskEvent(
           isCorrect: true,
@@ -93,6 +116,12 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
         });
       }
     } else if (taskState is TaskAnswerIncorrectState) {
+      if (sessionState.isLastTask && !_isCompletingLastTask) {
+        setState(() {
+          _isCompletingLastTask = true;
+        });
+      }
+
       context.read<LessonTaskSessionBloc>().add(
         CompleteCurrentTaskEvent(
           isCorrect: false,
@@ -192,7 +221,8 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
         listener: (context, sessionState) {
           _loadInitialSessionTask(context, sessionState);
 
-          if (sessionState is SessionCompletedState) {
+          if (sessionState is SessionCompletedState &&
+              !_isSessionSummaryDialogOpen) {
             _showSessionSummaryDialog(context, sessionState);
           }
         },
@@ -420,6 +450,10 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                             }
 
                             if (taskState is TaskAnswerCorrectState) {
+                              if (_isCompletingLastTask) {
+                                return const SizedBox.shrink();
+                              }
+
                               return TaskFeedbackCorrectWidget(
                                 task: taskState.task,
                                 result: taskState.result,
@@ -427,6 +461,10 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                             }
 
                             if (taskState is TaskAnswerIncorrectState) {
+                              if (_isCompletingLastTask) {
+                                return const SizedBox.shrink();
+                              }
+
                               return TaskFeedbackIncorrectWidget(
                                 task: taskState.task,
                                 result: taskState.result,
@@ -497,6 +535,8 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
   ) {
     final s = S.of(context);
     final theme = Theme.of(context);
+    final sessionBloc = context.read<LessonTaskSessionBloc>();
+    _isSessionSummaryDialogOpen = true;
 
     showDialog(
       context: context,
@@ -513,6 +553,13 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                   child: SurfaceCard(
                     borderRadius: BorderRadius.circular(20),
                     padding: const EdgeInsets.all(20),
+                    borderColor: theme.colorScheme.primary.withValues(
+                      alpha: 0.24,
+                    ),
+                    backgroundColor: Color.alphaBlend(
+                      theme.colorScheme.primary.withValues(alpha: 0.04),
+                      theme.colorScheme.surfaceContainerHighest,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -569,17 +616,44 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                         const SizedBox(height: 20),
                         Align(
                           alignment: Alignment.centerRight,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(dialogContext).pop();
-                              _exitSession(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: theme.colorScheme.primary,
-                              foregroundColor: theme.colorScheme.onPrimary,
-                            ),
-                            child: Text(s.done),
-                          ),
+                          child:
+                              BlocBuilder<
+                                LessonTaskSessionBloc,
+                                LessonTaskSessionState
+                              >(
+                                bloc: sessionBloc,
+                                builder: (context, currentState) {
+                                  final isPersisting =
+                                      currentState is SessionCompletedState &&
+                                      currentState.isPersisting;
+
+                                  return ElevatedButton(
+                                    onPressed: isPersisting
+                                        ? null
+                                        : () {
+                                            Navigator.of(dialogContext).pop();
+                                            _finishSession(context);
+                                          },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          theme.colorScheme.primary,
+                                      foregroundColor:
+                                          theme.colorScheme.onPrimary,
+                                    ),
+                                    child: isPersisting
+                                        ? SizedBox(
+                                            width: 18,
+                                            height: 18,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color:
+                                                  theme.colorScheme.onSurface,
+                                            ),
+                                          )
+                                        : Text(s.done),
+                                  );
+                                },
+                              ),
                         ),
                       ],
                     ),
@@ -590,6 +664,10 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
           ),
         ),
       ),
-    );
+    ).whenComplete(() {
+      if (mounted) {
+        _isSessionSummaryDialogOpen = false;
+      }
+    });
   }
 }

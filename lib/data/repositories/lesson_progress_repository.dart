@@ -3,6 +3,8 @@ import 'package:praxis/core/exceptions/app_error.dart';
 import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/data/datasources/local/lesson_progress_local_datasource.dart';
 import 'package:praxis/data/datasources/remote/lesson_remote_datasource.dart';
+import 'package:praxis/data/datasources/remote/lesson_progress_remote_datasource.dart';
+import 'package:praxis/data/entities/lesson_progress_dto_extension.dart';
 import 'package:praxis/data/entities/lesson_progress_entity_extension.dart';
 import 'package:praxis/domain/models/lesson_progress/create_lesson_progress_model.dart';
 import 'package:praxis/domain/models/lesson_progress/lesson_progress_model.dart';
@@ -11,10 +13,12 @@ import 'package:praxis/domain/repositories/i_lesson_progress_repository.dart';
 
 class LessonProgressRepository implements ILessonProgressRepository {
   final LessonRemoteDataSource _remoteDataSource;
+  final LessonProgressRemoteDataSource _progressRemoteDataSource;
   final LessonProgressLocalDataSource _localDataSource;
 
   const LessonProgressRepository(
     this._remoteDataSource,
+    this._progressRemoteDataSource,
     this._localDataSource,
   );
 
@@ -50,9 +54,7 @@ class LessonProgressRepository implements ILessonProgressRepository {
           completedAt: DateTime.now(),
           timeSpentSeconds: timeSpentSeconds,
         );
-        await _localDataSource.updateLessonProgress(
-          updateModel.toCompanion(),
-        );
+        await _localDataSource.updateLessonProgress(updateModel.toCompanion());
       }
 
       return const Success(null);
@@ -69,13 +71,20 @@ class LessonProgressRepository implements ILessonProgressRepository {
     int courseId,
   ) async {
     try {
-      final result = await _localDataSource.getCourseLessonProgress(
-        userId,
+      final result = await _progressRemoteDataSource.getCourseLessonProgress(
         courseId,
       );
-      return Success(result.map((e) => e.toDomain()).toList());
+      return Success(result.map((e) => e.toDomain(userId)).toList());
     } catch (e) {
-      return Failure(AppFailure.fromException(e));
+      try {
+        final result = await _localDataSource.getCourseLessonProgress(
+          userId,
+          courseId,
+        );
+        return Success(result.map((e) => e.toDomain()).toList());
+      } catch (_) {
+        return Failure(AppFailure.fromException(e));
+      }
     }
   }
 }

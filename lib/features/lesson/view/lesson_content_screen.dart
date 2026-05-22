@@ -101,10 +101,7 @@ class _LessonContentView extends StatelessWidget {
             }
 
             if (state is LessonContentLoaded) {
-              return _LessonContent(
-                lesson: state.lesson,
-                isCompleted: state.isCompleted,
-              );
+              return _LessonContent(lesson: state.lesson, courseId: courseId);
             }
 
             if (state is LessonContentCompleting) {
@@ -165,9 +162,9 @@ class _LessonContentView extends StatelessWidget {
 
 class _LessonContent extends StatelessWidget {
   final CourseTask lesson;
-  final bool isCompleted;
+  final String courseId;
 
-  const _LessonContent({required this.lesson, required this.isCompleted});
+  const _LessonContent({required this.lesson, required this.courseId});
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +206,7 @@ class _LessonContent extends StatelessWidget {
           ),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -220,52 +217,23 @@ class _LessonContent extends StatelessWidget {
                         context.pushNamed(
                           'lesson-task-session',
                           pathParameters: {'lessonId': lesson.id.toString()},
+                          queryParameters: {'courseId': courseId},
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                         backgroundColor: theme.colorScheme.primary,
                         foregroundColor: theme.colorScheme.onPrimary,
                       ),
                       child: Text(
                         s.startLearning,
-                        style: theme.textTheme.titleMedium?.copyWith(
+                        style: theme.textTheme.bodyLarge?.copyWith(
                           color: theme.colorScheme.onPrimary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ),
-                  if (!isCompleted) ...[
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          final bloc = context.read<LessonContentBloc>();
-                          final state = bloc.state;
-                          if (state is LessonContentLoaded) {
-                            bloc.add(
-                              CompleteLesson(
-                                userId: '',
-                                lessonId: lesson.id.toString(),
-                                courseId: '',
-                              ),
-                            );
-                          }
-                        },
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                        child: Text(
-                          s.completeLesson,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),

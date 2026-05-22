@@ -18,6 +18,13 @@ class SubmitTaskAnswerUseCase {
     required String userId,
     required int hintsUsed,
   }) async {
+    final existingProgressResult = await _taskRepository.getTaskProgress(
+      userId,
+      taskId,
+    );
+    final wasCompleted =
+        existingProgressResult.dataOrNull?.isCompleted ?? false;
+
     final resultOrFailure = await _taskRepository.answer(
       taskId,
       answer,
@@ -52,7 +59,7 @@ class SubmitTaskAnswerUseCase {
       return Failure(saveResult.failureOrNull!);
     }
 
-    if (result.isCorrect) {
+    if (result.isCorrect && !wasCompleted) {
       await _coinRepository.create(
         CreateCoinTransactionModel(
           userId: userId,

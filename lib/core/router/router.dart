@@ -248,9 +248,13 @@ class AppRouter {
               name: 'lesson-task-session',
               pageBuilder: (context, state) {
                 final lessonId = int.parse(state.pathParameters['lessonId']!);
+                final courseId = state.uri.queryParameters['courseId'];
                 return MaterialPage(
                   key: state.pageKey,
-                  child: LessonTaskSessionScreen(lessonId: lessonId),
+                  child: LessonTaskSessionScreen(
+                    lessonId: lessonId,
+                    courseId: courseId,
+                  ),
                 );
               },
             ),
