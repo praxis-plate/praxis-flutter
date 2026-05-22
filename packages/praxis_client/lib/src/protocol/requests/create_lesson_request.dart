@@ -23,6 +23,7 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
     this.videoUrl,
     this.imageUrls,
     this.durationMinutes,
+    this.completionXp,
   });
 
   factory CreateLessonRequest({
@@ -33,6 +34,7 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
     String? videoUrl,
     String? imageUrls,
     int? durationMinutes,
+    int? completionXp,
   }) = _CreateLessonRequestImpl;
 
   factory CreateLessonRequest.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -48,6 +50,7 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
       videoUrl: jsonSerialization['videoUrl'] as String?,
       imageUrls: jsonSerialization['imageUrls'] as String?,
       durationMinutes: jsonSerialization['durationMinutes'] as int?,
+      completionXp: jsonSerialization['completionXp'] as int?,
     );
   }
 
@@ -65,6 +68,8 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
 
   int? durationMinutes;
 
+  int? completionXp;
+
   /// Returns a shallow copy of this [CreateLessonRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -76,6 +81,7 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
     String? videoUrl,
     String? imageUrls,
     int? durationMinutes,
+    int? completionXp,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -88,6 +94,7 @@ abstract class CreateLessonRequest implements _i1.SerializableModel {
       if (videoUrl != null) 'videoUrl': videoUrl,
       if (imageUrls != null) 'imageUrls': imageUrls,
       if (durationMinutes != null) 'durationMinutes': durationMinutes,
+      if (completionXp != null) 'completionXp': completionXp,
     };
   }
 
@@ -108,6 +115,7 @@ class _CreateLessonRequestImpl extends CreateLessonRequest {
     String? videoUrl,
     String? imageUrls,
     int? durationMinutes,
+    int? completionXp,
   }) : super._(
          moduleId: moduleId,
          title: title,
@@ -116,6 +124,7 @@ class _CreateLessonRequestImpl extends CreateLessonRequest {
          videoUrl: videoUrl,
          imageUrls: imageUrls,
          durationMinutes: durationMinutes,
+         completionXp: completionXp,
        );
 
   /// Returns a shallow copy of this [CreateLessonRequest]
@@ -130,6 +139,7 @@ class _CreateLessonRequestImpl extends CreateLessonRequest {
     Object? videoUrl = _Undefined,
     Object? imageUrls = _Undefined,
     Object? durationMinutes = _Undefined,
+    Object? completionXp = _Undefined,
   }) {
     return CreateLessonRequest(
       moduleId: moduleId ?? this.moduleId,
@@ -143,6 +153,7 @@ class _CreateLessonRequestImpl extends CreateLessonRequest {
       durationMinutes: durationMinutes is int?
           ? durationMinutes
           : this.durationMinutes,
+      completionXp: completionXp is int? ? completionXp : this.completionXp,
     );
   }
 }

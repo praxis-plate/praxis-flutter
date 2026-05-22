@@ -22,6 +22,7 @@ abstract class CourseImportLessonDto implements _i1.SerializableModel {
     this.contentDocument,
     this.videoUrl,
     this.imageUrls,
+    this.completionXp,
     this.tasks,
   });
 
@@ -31,6 +32,7 @@ abstract class CourseImportLessonDto implements _i1.SerializableModel {
     _i2.LessonContentDocumentDto? contentDocument,
     String? videoUrl,
     List<String>? imageUrls,
+    int? completionXp,
     List<_i3.CourseImportTaskDto>? tasks,
   }) = _CourseImportLessonDtoImpl;
 
@@ -51,6 +53,7 @@ abstract class CourseImportLessonDto implements _i1.SerializableModel {
           : _i4.Protocol().deserialize<List<String>>(
               jsonSerialization['imageUrls'],
             ),
+      completionXp: jsonSerialization['completionXp'] as int?,
       tasks: jsonSerialization['tasks'] == null
           ? null
           : _i4.Protocol().deserialize<List<_i3.CourseImportTaskDto>>(
@@ -69,6 +72,8 @@ abstract class CourseImportLessonDto implements _i1.SerializableModel {
 
   List<String>? imageUrls;
 
+  int? completionXp;
+
   List<_i3.CourseImportTaskDto>? tasks;
 
   /// Returns a shallow copy of this [CourseImportLessonDto]
@@ -80,6 +85,7 @@ abstract class CourseImportLessonDto implements _i1.SerializableModel {
     _i2.LessonContentDocumentDto? contentDocument,
     String? videoUrl,
     List<String>? imageUrls,
+    int? completionXp,
     List<_i3.CourseImportTaskDto>? tasks,
   });
   @override
@@ -91,6 +97,7 @@ abstract class CourseImportLessonDto implements _i1.SerializableModel {
       if (contentDocument != null) 'contentDocument': contentDocument?.toJson(),
       if (videoUrl != null) 'videoUrl': videoUrl,
       if (imageUrls != null) 'imageUrls': imageUrls?.toJson(),
+      if (completionXp != null) 'completionXp': completionXp,
       if (tasks != null) 'tasks': tasks?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
@@ -110,6 +117,7 @@ class _CourseImportLessonDtoImpl extends CourseImportLessonDto {
     _i2.LessonContentDocumentDto? contentDocument,
     String? videoUrl,
     List<String>? imageUrls,
+    int? completionXp,
     List<_i3.CourseImportTaskDto>? tasks,
   }) : super._(
          title: title,
@@ -117,6 +125,7 @@ class _CourseImportLessonDtoImpl extends CourseImportLessonDto {
          contentDocument: contentDocument,
          videoUrl: videoUrl,
          imageUrls: imageUrls,
+         completionXp: completionXp,
          tasks: tasks,
        );
 
@@ -130,6 +139,7 @@ class _CourseImportLessonDtoImpl extends CourseImportLessonDto {
     Object? contentDocument = _Undefined,
     Object? videoUrl = _Undefined,
     Object? imageUrls = _Undefined,
+    Object? completionXp = _Undefined,
     Object? tasks = _Undefined,
   }) {
     return CourseImportLessonDto(
@@ -142,6 +152,7 @@ class _CourseImportLessonDtoImpl extends CourseImportLessonDto {
       imageUrls: imageUrls is List<String>?
           ? imageUrls
           : this.imageUrls?.map((e0) => e0).toList(),
+      completionXp: completionXp is int? ? completionXp : this.completionXp,
       tasks: tasks is List<_i3.CourseImportTaskDto>?
           ? tasks
           : this.tasks?.map((e0) => e0.copyWith()).toList(),
