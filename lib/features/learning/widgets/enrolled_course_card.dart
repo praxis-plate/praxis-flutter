@@ -58,15 +58,18 @@ class EnrolledCourseCard extends StatelessWidget {
         .map((item) => item.lessonId)
         .toSet();
 
-    final nextLesson = lessons.firstWhere(
-      (lesson) => !completedSet.contains(lesson.id),
-      orElse: () => lessons.last,
-    );
-
     if (!context.mounted) {
       return;
     }
-    context.push('/lesson/${nextLesson.id}/tasks');
+
+    for (final lesson in lessons) {
+      if (!completedSet.contains(lesson.id)) {
+        context.push('/lesson/${lesson.id}?courseId=${course.id}');
+        return;
+      }
+    }
+
+    context.push('/course/${course.id}/learn');
   }
 
   @override

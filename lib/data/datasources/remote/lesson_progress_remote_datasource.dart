@@ -5,6 +5,10 @@ class LessonProgressRemoteDataSource {
 
   const LessonProgressRemoteDataSource(this._client);
 
+  Future<List<LessonProgressDto>> getCourseLessonProgress(int courseId) async {
+    return await _client.lesson.getProgressByCourseId(courseId);
+  }
+
   Future<LessonCompletionResultDto> completeLessonSession({
     required int lessonId,
     required int timeSpentSeconds,

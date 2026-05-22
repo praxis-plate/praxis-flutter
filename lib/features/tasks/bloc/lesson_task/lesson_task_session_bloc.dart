@@ -93,6 +93,18 @@ class LessonTaskSessionBloc
       final totalXpWithBonus = newTotalXp + bonusXp;
 
       try {
+        emit(
+          SessionCompletedState(
+            lessonId: currentState.lessonId,
+            totalXpEarned: totalXpWithBonus,
+            accuracyPercentage: accuracy * 100,
+            timeSpentSeconds: timeSpent,
+            totalTasks: currentState.tasks.length,
+            correctTasks: newCorrectCount,
+            isPersisting: true,
+          ),
+        );
+
         await _completeLessonSessionUseCase(
           userId: currentState.userId,
           lessonId: currentState.lessonId,

@@ -231,7 +231,11 @@ class _LessonsList extends StatelessWidget {
     final lessonsByModule = <int, List<LessonModel>>{};
 
     if (modules.isEmpty) {
-      final flatWidgets = _buildFlatLessonWidgets(state, completedLessonIds);
+      final flatWidgets = _buildFlatLessonWidgets(
+        state,
+        completedLessonIds,
+        courseId,
+      );
       return _prependLearningActions(flatWidgets, courseId, nextLessonId);
     }
 
@@ -259,6 +263,7 @@ class _LessonsList extends StatelessWidget {
         widgets.add(
           LessonCard(
             lesson: lesson,
+            courseId: courseId,
             taskCount: state.taskCounts[lesson.id],
             completedTaskCount: state.completedTaskCounts[lesson.id] ?? 0,
             isCompleted: completedLessonIds.contains(lesson.id),
@@ -280,6 +285,7 @@ class _LessonsList extends StatelessWidget {
   List<Widget> _buildFlatLessonWidgets(
     LessonsListLoadedState state,
     Set<int> completedLessonIds,
+    int courseId,
   ) {
     final lessons = List.of(state.lessons)
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
@@ -289,6 +295,7 @@ class _LessonsList extends StatelessWidget {
       widgets.add(
         LessonCard(
           lesson: lesson,
+          courseId: courseId,
           taskCount: state.taskCounts[lesson.id],
           completedTaskCount: state.completedTaskCounts[lesson.id] ?? 0,
           isCompleted: completedLessonIds.contains(lesson.id),
@@ -315,12 +322,13 @@ class _LessonsList extends StatelessWidget {
     final ordered = List.of(lessons)
       ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
 
-    final nextLesson = ordered.firstWhere(
-      (lesson) => !completedLessonIds.contains(lesson.id),
-      orElse: () => ordered.last,
-    );
+    for (final lesson in ordered) {
+      if (!completedLessonIds.contains(lesson.id)) {
+        return lesson.id;
+      }
+    }
 
-    return nextLesson.id;
+    return null;
   }
 
   List<Widget> _prependLearningActions(
@@ -333,7 +341,7 @@ class _LessonsList extends StatelessWidget {
     }
 
     return [
-      _CourseLearningResumeCard(nextLessonId: nextLessonId),
+      _CourseLearningResumeCard(courseId: courseId, nextLessonId: nextLessonId),
       const SizedBox(height: 12),
       ...widgets,
     ];
@@ -341,8 +349,12 @@ class _LessonsList extends StatelessWidget {
 }
 
 class _CourseLearningResumeCard extends StatelessWidget {
-  const _CourseLearningResumeCard({required this.nextLessonId});
+  const _CourseLearningResumeCard({
+    required this.courseId,
+    required this.nextLessonId,
+  });
 
+  final int courseId;
   final int nextLessonId;
 
   @override
@@ -371,7 +383,13 @@ class _CourseLearningResumeCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: () => context.push('/lesson/$nextLessonId/tasks'),
+                onPressed: () {
+                  context.pushNamed(
+                    'lesson-content',
+                    pathParameters: {'lessonId': nextLessonId.toString()},
+                    queryParameters: {'courseId': courseId.toString()},
+                  );
+                },
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(0, 36),
                   padding: const EdgeInsets.symmetric(vertical: 8),

@@ -50,7 +50,7 @@ void main() {
 
     expect(find.text('Purchase Course'), findsOneWidget);
     expect(router.routeInformationProvider.value.uri.path, '/');
-    expect(find.text('lesson-session-1'), findsNothing);
+    expect(find.text('lesson-content-1-course-1'), findsNothing);
   });
 
   testWidgets('allows lesson session navigation for purchased users', (
@@ -73,13 +73,13 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
 
-    expect(find.text('lesson-session-1'), findsOneWidget);
+    expect(find.text('lesson-content-1-course-1'), findsOneWidget);
     expect(router.canPop(), isTrue);
 
     router.pop();
     await tester.pumpAndSettle();
 
-    expect(find.text('lesson-session-1'), findsNothing);
+    expect(find.text('lesson-content-1-course-1'), findsNothing);
     expect(find.text('Lesson 1'), findsOneWidget);
   });
 }
@@ -96,11 +96,14 @@ GoRouter _buildRouter(CourseDetailBloc bloc) {
         ),
       ),
       GoRoute(
-        path: '/lesson/:lessonId/tasks',
-        name: 'lesson-task-session',
+        path: '/lesson/:lessonId',
+        name: 'lesson-content',
         builder: (context, state) {
           final lessonId = state.pathParameters['lessonId']!;
-          return Scaffold(body: Text('lesson-session-$lessonId'));
+          final courseId = state.uri.queryParameters['courseId']!;
+          return Scaffold(
+            body: Text('lesson-content-$lessonId-course-$courseId'),
+          );
         },
       ),
     ],

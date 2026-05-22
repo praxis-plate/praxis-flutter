@@ -81,6 +81,7 @@ class SessionCompletedState extends LessonTaskSessionState {
   final int timeSpentSeconds;
   final int totalTasks;
   final int correctTasks;
+  final bool isPersisting;
 
   const SessionCompletedState({
     required this.lessonId,
@@ -89,6 +90,7 @@ class SessionCompletedState extends LessonTaskSessionState {
     required this.timeSpentSeconds,
     required this.totalTasks,
     required this.correctTasks,
+    this.isPersisting = false,
   });
 
   @override
@@ -99,6 +101,7 @@ class SessionCompletedState extends LessonTaskSessionState {
     timeSpentSeconds,
     totalTasks,
     correctTasks,
+    isPersisting,
   ];
 }
 

@@ -207,6 +207,7 @@ class DependencyInjection {
       ..registerLazySingleton<ILessonProgressRepository>(
         () => LessonProgressRepository(
           GetIt.I<LessonRemoteDataSource>(),
+          GetIt.I<LessonProgressRemoteDataSource>(),
           GetIt.I<LessonProgressLocalDataSource>(),
         ),
       )

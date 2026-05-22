@@ -12,6 +12,7 @@ class TableOfContentsContent extends StatelessWidget {
   void _handleLessonTap(
     BuildContext context, {
     required bool isPurchased,
+    required int courseId,
     required int lessonId,
   }) {
     if (!isPurchased) {
@@ -23,8 +24,9 @@ class TableOfContentsContent extends StatelessWidget {
     }
 
     context.pushNamed(
-      'lesson-task-session',
+      'lesson-content',
       pathParameters: {'lessonId': lessonId.toString()},
+      queryParameters: {'courseId': courseId.toString()},
     );
   }
 
@@ -59,6 +61,7 @@ class TableOfContentsContent extends StatelessWidget {
                       onTap: () => _handleLessonTap(
                         context,
                         isPurchased: isPurchased,
+                        courseId: state.course.id,
                         lessonId: lesson.id,
                       ),
                     ),
@@ -169,9 +172,7 @@ class _LessonItem extends StatelessWidget {
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: isPurchased
                           ? theme.colorScheme.onSurface
-                          : theme.colorScheme.onSurface.withValues(
-                              alpha: 0.75,
-                            ),
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.75),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -191,8 +192,9 @@ class _LessonItem extends StatelessWidget {
                     child: Text(
                       S.of(context).minutesCount(lesson.durationMinutes),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color:
-                            theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.7,
+                        ),
                       ),
                     ),
                   ),

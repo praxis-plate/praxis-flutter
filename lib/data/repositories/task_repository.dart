@@ -74,7 +74,32 @@ class TaskRepository implements ITaskRepository {
     CreateTaskProgressModel progress,
   ) async {
     try {
-      await _localDataSource.insertTaskProgress(progress.toCompanion());
+      final existing = await _localDataSource.getTaskProgress(
+        progress.userId,
+        progress.taskId,
+      );
+
+      if (existing == null) {
+        await _localDataSource.insertTaskProgress(progress.toCompanion());
+        return const Success(null);
+      }
+
+      await _localDataSource.updateTaskProgress(
+        UpdateTaskProgressModel(
+          id: existing.id,
+          isCompleted: existing.isCompleted || progress.isCompleted,
+          attempts: existing.attempts + progress.attempts,
+          hintsUsed: progress.hintsUsed > existing.hintsUsed
+              ? progress.hintsUsed
+              : existing.hintsUsed,
+          xpEarned: progress.xpEarned > existing.xpEarned
+              ? progress.xpEarned
+              : existing.xpEarned,
+          userAnswer: progress.userAnswer,
+          completedAt: existing.completedAt ?? progress.completedAt,
+          lastAttemptAt: progress.lastAttemptAt,
+        ).toCompanion(),
+      );
       return const Success(null);
     } catch (e) {
       return Failure(AppFailure.fromException(e));
@@ -98,17 +123,17 @@ class TaskRepository implements ITaskRepository {
   }
 
   @override
-  Future<Result<int>> getCompletedTaskCount(
-    String userId,
-    int lessonId,
-  ) async {
+  Future<Result<int>> getCompletedTaskCount(String userId, int lessonId) async {
     try {
       final progress = await _localDataSource.getUserTaskProgress(
         userId,
         lessonId,
       );
-      final completedCount =
-          progress.where((entry) => entry.isCompleted).length;
+      final completedCount = progress
+          .where((entry) => entry.isCompleted)
+          .map((entry) => entry.taskId)
+          .toSet()
+          .length;
       return Success(completedCount);
     } catch (e) {
       return Failure(AppFailure.fromException(e));

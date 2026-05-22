@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 class LessonCard extends StatelessWidget {
   final LessonModel lesson;
+  final int courseId;
   final int? taskCount;
   final int completedTaskCount;
   final bool isCompleted;
@@ -12,6 +13,7 @@ class LessonCard extends StatelessWidget {
   const LessonCard({
     super.key,
     required this.lesson,
+    required this.courseId,
     required this.taskCount,
     required this.completedTaskCount,
     required this.isCompleted,
@@ -21,10 +23,12 @@ class LessonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final backgroundColor =
-        isCompleted ? theme.colorScheme.primary : theme.cardColor;
-    final foregroundColor =
-        isCompleted ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface;
+    final backgroundColor = isCompleted
+        ? theme.colorScheme.primary
+        : theme.cardColor;
+    final foregroundColor = isCompleted
+        ? theme.colorScheme.onPrimary
+        : theme.colorScheme.onSurface;
 
     return Material(
       color: backgroundColor,
@@ -40,11 +44,12 @@ class LessonCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: () {
           context.pushNamed(
-            'lesson-task-session',
+            'lesson-content',
             pathParameters: {'lessonId': lesson.id.toString()},
+            queryParameters: {'courseId': courseId.toString()},
           );
         },
-          child: Padding(
+        child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Row(
             children: [
@@ -73,7 +78,7 @@ class LessonCard extends StatelessWidget {
               const SizedBox(width: 8),
               if (taskCount != null) ...[
                 Text(
-                  '$completedTaskCount/$taskCount',
+                  '${completedTaskCount.clamp(0, taskCount!)}/$taskCount',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: foregroundColor.withValues(alpha: 0.8),
                     fontWeight: FontWeight.w600,

@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 
 import 'task_feedback_content.dart';
 
+const _praiseBackgroundAssets = [
+  'assets/images/task_praise_background_1.png',
+  'assets/images/task_praise_background_2.png',
+  'assets/images/task_praise_background_3.png',
+];
+
 class TaskFeedbackCorrectWidget extends StatefulWidget {
   final TaskModel task;
   final TaskResultModel result;
@@ -62,6 +68,9 @@ class _TaskFeedbackCorrectWidgetState extends State<TaskFeedbackCorrectWidget>
       scaleAnimation: _scaleAnimation,
       fadeAnimation: _fadeAnimation,
       onRetry: null,
+      praiseImageAsset:
+          _praiseBackgroundAssets[widget.task.id %
+              _praiseBackgroundAssets.length],
     );
   }
 }

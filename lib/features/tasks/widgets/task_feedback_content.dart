@@ -11,72 +11,85 @@ Widget buildTaskFeedbackContent({
   required Animation<double> fadeAnimation,
   required VoidCallback? onRetry,
   String? fallbackExplanation,
+  String? praiseImageAsset,
 }) {
   final s = S.of(context);
   final theme = Theme.of(context);
   final explanation =
       result.explanation ?? (!isCorrect ? fallbackExplanation : null);
+  final positiveColor = theme.colorScheme.primary;
 
   return SingleChildScrollView(
     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ScaleTransition(
-          scale: scaleAnimation,
-          child: SurfaceCard(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            borderRadius: BorderRadius.circular(16),
-            borderColor:
-                (isCorrect
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.error)
-                    .withValues(alpha: 0.35),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  isCorrect ? Icons.check_circle : Icons.cancel,
-                  size: 48,
-                  color: isCorrect
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.error,
-                ),
-                const SizedBox(height: 12),
-                if (isCorrect)
-                  Text(
-                    s.taskCorrectFeedback,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
-                    ),
-                    textAlign: TextAlign.center,
-                  )
-                else
-                  Column(
-                    children: [
-                      Text(
-                        s.taskIncorrectTitle,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.error,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        s.taskIncorrectSubtitle,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.error,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+        if (isCorrect && praiseImageAsset != null)
+          ScaleTransition(
+            scale: scaleAnimation,
+            child: _PraiseIllustrationCard(
+              imageAsset: praiseImageAsset,
+              title: s.taskCorrectFeedback,
+              accentColor: positiveColor,
+            ),
+          )
+        else
+          ScaleTransition(
+            scale: scaleAnimation,
+            child: SurfaceCard(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              borderRadius: BorderRadius.circular(16),
+              borderColor: (isCorrect ? positiveColor : theme.colorScheme.error)
+                  .withValues(alpha: 0.5),
+              backgroundColor: isCorrect
+                  ? Color.alphaBlend(
+                      positiveColor.withValues(alpha: 0.08),
+                      theme.colorScheme.surfaceContainerHighest,
+                    )
+                  : null,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    isCorrect ? Icons.check_circle : Icons.cancel,
+                    size: 48,
+                    color: isCorrect ? positiveColor : theme.colorScheme.error,
                   ),
-              ],
+                  const SizedBox(height: 12),
+                  if (isCorrect)
+                    Text(
+                      s.taskCorrectFeedback,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: positiveColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                  else
+                    Column(
+                      children: [
+                        Text(
+                          s.taskIncorrectTitle,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.error,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          s.taskIncorrectSubtitle,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.error,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
-        ),
         if (isCorrect && result.xpEarned > 0) ...[
           const SizedBox(height: 24),
           FadeTransition(
@@ -84,17 +97,21 @@ Widget buildTaskFeedbackContent({
             child: SurfaceCard(
               padding: const EdgeInsets.all(20),
               borderRadius: BorderRadius.circular(12),
-              borderColor: theme.colorScheme.primary.withValues(alpha: 0.25),
+              borderColor: positiveColor.withValues(alpha: 0.4),
+              backgroundColor: Color.alphaBlend(
+                positiveColor.withValues(alpha: 0.08),
+                theme.colorScheme.surfaceContainerHighest,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.stars, color: theme.colorScheme.primary, size: 32),
+                  Icon(Icons.stars, color: positiveColor, size: 32),
                   const SizedBox(width: 12),
                   Text(
                     s.taskXpEarned(result.xpEarned),
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
+                      color: positiveColor,
                     ),
                   ),
                 ],
@@ -190,4 +207,59 @@ Widget buildTaskFeedbackContent({
       ],
     ),
   );
+}
+
+class _PraiseIllustrationCard extends StatelessWidget {
+  const _PraiseIllustrationCard({
+    required this.imageAsset,
+    required this.title,
+    required this.accentColor,
+  });
+
+  final String imageAsset;
+  final String title;
+  final Color accentColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final radius = BorderRadius.circular(18);
+
+    return ClipRRect(
+      borderRadius: radius,
+      child: SurfaceCard(
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+        borderRadius: radius,
+        borderColor: accentColor.withValues(alpha: 0.42),
+        backgroundColor: Color.alphaBlend(
+          accentColor.withValues(alpha: 0.08),
+          theme.colorScheme.surfaceContainerHighest,
+        ),
+        child: SizedBox(
+          height: 260,
+          width: double.infinity,
+          child: Column(
+            children: [
+              Expanded(
+                child: Image.asset(
+                  imageAsset,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.high,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: accentColor,
+                  fontWeight: FontWeight.w800,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
