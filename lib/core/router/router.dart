@@ -1,8 +1,6 @@
 import 'package:praxis/core/bloc/auth/auth_bloc.dart';
 import 'package:praxis/core/router/auth_notifier.dart';
 import 'package:praxis/core/router/navigation_shell_initializer.dart';
-import 'package:praxis/core/router/route_constants.dart';
-import 'package:praxis/core/router/router_exports.dart';
 import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/features/auth/auth.dart';
 import 'package:praxis/features/course_details/bloc/course_detail/course_detail_bloc.dart';
@@ -57,13 +55,13 @@ class AppRouter {
       },
       routes: [
         GoRoute(
-          path: RouteConstants.onboarding,
+          path: '/onboarding',
           name: 'onboarding',
           pageBuilder: (context, state) =>
               MaterialPage(key: state.pageKey, child: const OnboardingScreen()),
         ),
         GoRoute(
-          path: RouteConstants.auth,
+          path: '/auth',
           name: 'auth',
           pageBuilder: (context, state) {
             final modeParam = state.uri.queryParameters['mode'];
@@ -126,13 +124,13 @@ class AppRouter {
               },
               routes: [
                 GoRoute(
-                  path: RouteConstants.navigation,
+                  path: '/navigation',
                   name: 'navigation',
-                  redirect: (context, state) => RouteConstants.home,
+                  redirect: (context, state) => '/home',
                 ),
 
                 GoRoute(
-                  path: RouteConstants.home,
+                  path: '/home',
                   name: 'home',
                   pageBuilder: (context, state) {
                     final userProfile = UserScope.of(context, listen: false);
@@ -148,7 +146,7 @@ class AppRouter {
                   },
                 ),
                 GoRoute(
-                  path: RouteConstants.learning,
+                  path: '/learning',
                   name: 'learning',
                   pageBuilder: (context, state) {
                     final userProfile = UserScope.of(context, listen: false);
@@ -165,7 +163,7 @@ class AppRouter {
                   },
                 ),
                 GoRoute(
-                  path: RouteConstants.profile,
+                  path: '/profile',
                   name: 'profile',
                   pageBuilder: (context, state) {
                     final userProfile = UserScope.of(context, listen: false);
@@ -287,7 +285,7 @@ class AppRouter {
       errorBuilder: (context, state) => Scaffold(
         body: NotFoundScreen(
           path: state.uri.toString(),
-          onNavigateHome: () => context.go(RouteConstants.home),
+          onNavigateHome: () => context.go('/home'),
         ),
       ),
     );
@@ -301,34 +299,34 @@ class AppRouter {
     final isOnboardingComplete =
         preferences.getBool(_onboardingCompleteKey) ?? false;
     final isAuthRoute =
-        matchedLocation.startsWith(RouteConstants.auth) ||
-        matchedLocation == RouteConstants.phoneSignUp;
-    final isOnboardingRoute = matchedLocation == RouteConstants.onboarding;
-    final isRootRoute = matchedLocation == RouteConstants.root;
+        matchedLocation.startsWith('/auth') ||
+        matchedLocation == '/phone-sign-up';
+    final isOnboardingRoute = matchedLocation == '/onboarding';
+    final isRootRoute = matchedLocation == '/';
 
     if (!isOnboardingComplete && !isOnboardingRoute) {
-      return RouteConstants.onboarding;
+      return '/onboarding';
     }
 
     if (isOnboardingComplete && isOnboardingRoute) {
       return authState is AuthAuthenticatedState
-          ? RouteConstants.navigation
-          : RouteConstants.signIn;
+          ? '/navigation'
+          : '/auth/sign-in';
     }
 
     if (authState is AuthUnauthenticatedState &&
         !isAuthRoute &&
         !isRootRoute &&
         !isOnboardingRoute) {
-      return RouteConstants.signIn;
+      return '/auth/sign-in';
     }
 
     if (authState is AuthAuthenticatedState && (isAuthRoute || isRootRoute)) {
-      return RouteConstants.navigation;
+      return '/navigation';
     }
 
     if (authState is AuthUnauthenticatedState && isRootRoute) {
-      return RouteConstants.signIn;
+      return '/auth/sign-in';
     }
 
     return null;

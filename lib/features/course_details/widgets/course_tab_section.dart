@@ -1,5 +1,4 @@
 import 'package:praxis/domain/models/course/course_model.dart';
-import 'package:praxis/core/router/route_constants.dart';
 import 'package:praxis/features/course_details/widgets/description_content.dart';
 import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
@@ -53,9 +52,7 @@ class _ContentsPreviewCard extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => context.push(
-          RouteConstants.courseContentsPath(course.id.toString()),
-        ),
+        onTap: () => context.push('/course/${course.id}/contents'),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           child: Row(

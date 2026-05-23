@@ -99,8 +99,7 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
       ),
       actionIconTheme: ActionIconThemeData(
-        backButtonIconBuilder: (context) =>
-            const Icon(Icons.arrow_back_ios_rounded),
+        backButtonIconBuilder: (context) => const Icon(Icons.arrow_back_ios),
       ),
       elevatedButtonTheme: _elevatedButtonTheme(palette),
       navigationBarTheme: _navigationBarTheme(palette),

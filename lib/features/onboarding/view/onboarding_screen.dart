@@ -1,6 +1,5 @@
 import 'package:praxis/core/bloc/theme/theme_cubit.dart';
 import 'package:praxis/features/onboarding/bloc/onboarding_bloc.dart';
-import 'package:praxis/core/router/route_constants.dart';
 import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +50,7 @@ class _OnboardingScreenContentState extends State<_OnboardingScreenContent> {
     return BlocListener<OnboardingBloc, OnboardingState>(
       listener: (context, state) {
         if (state is OnboardingCompleteState) {
-          context.go(RouteConstants.root);
+          context.go('/');
         }
       },
       child: Scaffold(

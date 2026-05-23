@@ -1,7 +1,6 @@
 import 'package:praxis/core/error/app_error_code_extension.dart';
 import 'dart:async';
 
-import 'package:praxis/core/router/route_constants.dart';
 import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/core/utils/duration.dart';
 import 'package:praxis/core/widgets/widgets.dart';
@@ -47,7 +46,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
       return;
     }
 
-    context.go(RouteConstants.learning);
+    context.go('/learning');
   }
 
   void _finishSession(BuildContext context) {
@@ -566,13 +565,24 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                       children: [
                         Row(
                           children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.of(dialogContext).pop();
+                                _finishSession(context);
+                              },
+                              icon: const Icon(Icons.arrow_back_ios),
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                            ),
+                            const SizedBox(width: 8),
                             Icon(
                               Icons.celebration,
                               color: theme.colorScheme.primary,
                               size: 32,
                             ),
                             const SizedBox(width: 12),
-                            Text(s.taskSessionCompleteTitle),
+                            Expanded(child: Text(s.taskSessionCompleteTitle)),
                           ],
                         ),
                         const SizedBox(height: 12),
