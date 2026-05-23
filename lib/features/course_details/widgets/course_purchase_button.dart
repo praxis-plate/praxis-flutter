@@ -22,7 +22,6 @@ class CoursePurchaseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final s = S.of(context);
 
     return BlocBuilder<CoursePurchasingBloc, CoursePurchasingState>(
       builder: (context, state) {
@@ -61,7 +60,6 @@ class CoursePurchaseButton extends StatelessWidget {
                     )
                   : _PurchaseButtonLabel(
                       priceInCoins: priceInCoins,
-                      label: priceInCoins == 0 ? s.add : s.courseDetailsGet,
                       compact: compact,
                     ),
             ),
@@ -84,12 +82,10 @@ class CoursePurchaseButton extends StatelessWidget {
 
 class _PurchaseButtonLabel extends StatelessWidget {
   final int priceInCoins;
-  final String label;
   final bool compact;
 
   const _PurchaseButtonLabel({
     required this.priceInCoins,
-    required this.label,
     required this.compact,
   });
 
@@ -105,16 +101,17 @@ class _PurchaseButtonLabel extends StatelessWidget {
             );
 
     if (priceInCoins == 0) {
-      return Text(label, style: textStyle);
+      return Text(S.of(context).add, style: textStyle);
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(label, style: textStyle),
-        SizedBox(width: compact ? 6 : 8),
-        CoinAmount(amount: priceInCoins, style: textStyle),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: compact ? 2 : 4),
+      child: CoinAmount(
+        amount: priceInCoins,
+        style: textStyle,
+        iconColor: theme.colorScheme.onPrimary,
+        iconSize: compact ? 14 : 16,
+      ),
     );
   }
 }

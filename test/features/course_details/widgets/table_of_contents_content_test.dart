@@ -48,7 +48,10 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
 
-    expect(find.text('Purchase Course'), findsOneWidget);
+    expect(
+      find.text('Purchase this course first to access its lessons'),
+      findsOneWidget,
+    );
     expect(router.routeInformationProvider.value.uri.path, '/');
     expect(find.text('lesson-content-1-course-1'), findsNothing);
   });
