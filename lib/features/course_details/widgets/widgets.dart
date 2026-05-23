@@ -1,14 +1,14 @@
-export 'course_app_bar.dart';
 export 'course_body.dart';
 export 'course_detail.dart';
 export 'course_header.dart';
+export 'course_hero_app_bar.dart';
 export 'course_meta_info.dart';
+export 'course_preview_gallery.dart';
+export 'course_primary_action_button.dart';
 export 'course_purchase_button.dart';
 export 'course_tab_section.dart';
 export 'description_content.dart';
 export 'meta_item.dart';
 export 'module_title.dart';
-export 'section_title.dart';
-export 'start_learning_button.dart';
 export 'table_of_contents_content.dart';
 export 'task_item.dart';

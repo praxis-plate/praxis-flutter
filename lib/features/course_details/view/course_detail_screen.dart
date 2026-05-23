@@ -6,15 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CourseDetailScreen extends StatelessWidget {
+  final UserProfileModel userProfile;
   final int courseId;
 
   const CourseDetailScreen({
+    super.key,
     required this.userProfile,
     required this.courseId,
-    super.key,
   });
-
-  final UserProfileModel userProfile;
 
   @override
   Widget build(BuildContext context) {
