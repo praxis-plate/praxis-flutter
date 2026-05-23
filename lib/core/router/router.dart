@@ -13,8 +13,15 @@ import 'package:praxis/features/main/main.dart';
 import 'package:praxis/features/navigation/view/navigation_screen.dart';
 import 'package:praxis/features/onboarding/view/onboarding_screen.dart';
 import 'package:praxis/features/profile/profile.dart';
+import 'package:praxis/features/tasks/bloc/lesson_task/lesson_task_session_bloc.dart';
+import 'package:praxis/features/tasks/bloc/task/task_bloc.dart';
+import 'package:praxis/features/tasks/bloc/task_hint/task_hint_cubit.dart';
+import 'package:praxis/features/tasks/renderers/task_renderer.dart';
 import 'package:praxis/features/tasks/view/task_session_screen.dart';
 import 'package:praxis/features/tasks/view/task_screen.dart';
+import 'package:praxis/domain/usecases/tasks/get_task_by_id_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/request_task_hint_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/submit_task_answer_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -222,7 +229,6 @@ class AppRouter {
                 );
               },
             ),
-            // Lesson content page: shows the lesson material itself (reading/video).
             GoRoute(
               path: '/lesson/:lessonId',
               name: 'lesson-content',
@@ -238,30 +244,85 @@ class AppRouter {
                 );
               },
             ),
-            // Single task page: standalone task details and solving UI.
             GoRoute(
               path: '/task/:taskId',
               name: 'task',
               pageBuilder: (context, state) {
                 final taskId = int.parse(state.pathParameters['taskId']!);
+                final userId = UserScope.of(context, listen: false).id;
                 return MaterialPage(
                   key: state.pageKey,
-                  child: TaskScreen(taskId: taskId),
+                  child: MultiRepositoryProvider(
+                    providers: [
+                      RepositoryProvider<TaskRenderer>.value(
+                        value: GetIt.I<TaskRenderer>(),
+                      ),
+                    ],
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => TaskBloc(
+                            GetIt.I<GetTaskByIdUseCase>(),
+                            GetIt.I<SubmitTaskAnswerUseCase>(),
+                            GetIt.I<RequestTaskHintUseCase>(),
+                            userId: userId,
+                          )..add(LoadTaskEvent(taskId)),
+                        ),
+                        BlocProvider(
+                          create: (context) =>
+                              GetIt.I<TaskHintCubit>(param1: userId),
+                        ),
+                      ],
+                      child: TaskScreen(taskId: taskId),
+                    ),
+                  ),
                 );
               },
             ),
-            // Lesson task session: step-by-step task flow for a specific lesson.
             GoRoute(
               path: '/lesson/:lessonId/tasks',
               name: 'lesson-task-session',
               pageBuilder: (context, state) {
                 final lessonId = int.parse(state.pathParameters['lessonId']!);
                 final courseId = state.uri.queryParameters['courseId'];
+                final userId = UserScope.of(context, listen: false).id;
                 return MaterialPage(
                   key: state.pageKey,
-                  child: TaskSessionScreen(
-                    lessonId: lessonId,
-                    courseId: courseId,
+                  child: MultiRepositoryProvider(
+                    providers: [
+                      RepositoryProvider<TaskRenderer>.value(
+                        value: GetIt.I<TaskRenderer>(),
+                      ),
+                    ],
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => GetIt.I<LessonTaskSessionBloc>()
+                            ..add(
+                              StartSessionEvent(
+                                lessonId: lessonId,
+                                userId: userId,
+                              ),
+                            ),
+                        ),
+                        BlocProvider(
+                          create: (context) => TaskBloc(
+                            GetIt.I<GetTaskByIdUseCase>(),
+                            GetIt.I<SubmitTaskAnswerUseCase>(),
+                            GetIt.I<RequestTaskHintUseCase>(),
+                            userId: userId,
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (context) =>
+                              GetIt.I<TaskHintCubit>(param1: userId),
+                        ),
+                      ],
+                      child: TaskSessionScreen(
+                        lessonId: lessonId,
+                        courseId: courseId,
+                      ),
+                    ),
                   ),
                 );
               },

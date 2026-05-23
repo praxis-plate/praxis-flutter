@@ -32,14 +32,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       emit(const UserProfileLoadingState());
       _currentUserId = event.userId;
 
-      final userProfile = UserProfileModel(
-        id: event.userId,
-        email: '',
-        name: '',
-        createdAt: DateTime.now(),
-      );
-
-      final result = await _getFullUserProfileUseCase(userProfile);
+      final result = await _getFullUserProfileUseCase(event.userId);
 
       result.when(
         success: (fullProfile) {
@@ -70,14 +63,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     if (_currentUserId == null) return;
 
     try {
-      final userProfile = UserProfileModel(
-        id: _currentUserId!,
-        email: '',
-        name: '',
-        createdAt: DateTime.now(),
-      );
-
-      final result = await _getFullUserProfileUseCase(userProfile);
+      final result = await _getFullUserProfileUseCase(_currentUserId!);
 
       result.when(
         success: (fullProfile) {

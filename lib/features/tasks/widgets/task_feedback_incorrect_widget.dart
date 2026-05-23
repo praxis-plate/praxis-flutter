@@ -58,8 +58,7 @@ class _TaskFeedbackIncorrectWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return buildTaskFeedbackContent(
-      context: context,
+    return TaskFeedbackContent(
       result: widget.result,
       isCorrect: false,
       scaleAnimation: _scaleAnimation,

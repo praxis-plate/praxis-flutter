@@ -2,8 +2,6 @@ import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/domain/models/achievement/achievement_data_model.dart';
 import 'package:praxis/domain/repositories/i_achievement_repository.dart';
 import 'package:praxis/domain/repositories/i_user_statistics_repository.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 class CheckStreakAndAwardAchievementUseCase {
   static const int _unstoppableStreakThreshold = 30;
@@ -67,10 +65,6 @@ class CheckStreakAndAwardAchievementUseCase {
 
     final achievement = allAchievementsResult.dataOrNull!.firstWhere(
       (a) => a.id == _unstoppableAchievementId,
-    );
-
-    GetIt.I<Talker>().info(
-      'Unstoppable achievement unlocked for user $userId with streak $streak',
     );
 
     return Success(achievement);
