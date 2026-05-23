@@ -8,6 +8,7 @@ import 'package:praxis/features/profile/profile.dart';
 import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, required this.userProfile});
@@ -132,7 +133,7 @@ class ProfileScreen extends StatelessWidget {
                     : const Icon(Icons.check_rounded, size: 20),
                 onTap: () {
                   context.read<ThemeCubit>().setDarkTheme(false);
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
               ),
               ListTile(
@@ -143,7 +144,7 @@ class ProfileScreen extends StatelessWidget {
                     : null,
                 onTap: () {
                   context.read<ThemeCubit>().setDarkTheme(true);
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
               ),
               const SizedBox(height: 8),
@@ -174,7 +175,7 @@ class ProfileScreen extends StatelessWidget {
                     : null,
                 onTap: () {
                   context.read<LocaleCubit>().setLocale(const Locale('ru'));
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
               ),
               ListTile(
@@ -184,7 +185,7 @@ class ProfileScreen extends StatelessWidget {
                     : null,
                 onTap: () {
                   context.read<LocaleCubit>().setLocale(const Locale('en'));
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
               ),
               const SizedBox(height: 8),

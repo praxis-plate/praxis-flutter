@@ -5,10 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:praxis/core/error/app_error_code_extension.dart';
-import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/domain/models/task/task_models.dart';
-import 'package:praxis/domain/usecases/lesson/get_lesson_by_id_usecase.dart';
 import 'package:praxis/domain/usecases/tasks/get_task_by_id_usecase.dart';
 import 'package:praxis/domain/usecases/tasks/request_task_hint_usecase.dart';
 import 'package:praxis/domain/usecases/tasks/submit_task_answer_usecase.dart';
@@ -31,15 +29,8 @@ class TaskSessionScreen extends StatefulWidget {
 
 class _TaskSessionScreenState extends State<TaskSessionScreen> {
   Timer? _autoAdvanceTimer;
-  String? _lessonTitle;
   bool _isCompletingLastTask = false;
   bool _isSessionSummaryDialogOpen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadLessonTitle();
-  }
 
   @override
   void dispose() {
@@ -73,17 +64,6 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
     }
 
     context.go('/learning');
-  }
-
-  Future<void> _loadLessonTitle() async {
-    final result = await GetIt.I<GetLessonByIdUseCase>()(widget.lessonId);
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _lessonTitle = result.dataOrNull?.title;
-    });
   }
 
   void _handleTaskCompletion(
@@ -182,7 +162,13 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
     AppLocalizations s,
     BuildContext context,
   ) {
-    final lessonTitle = _lessonTitle;
+    final lessonTitle = switch (state) {
+      SessionLoadingState(:final lessonTitle) => lessonTitle,
+      SessionActiveState(:final lessonTitle) => lessonTitle,
+      SessionCompletedState(:final lessonTitle) => lessonTitle,
+      SessionErrorState(:final lessonTitle) => lessonTitle,
+      _ => null,
+    };
     if (lessonTitle != null && lessonTitle.isNotEmpty) {
       return lessonTitle;
     }
@@ -209,7 +195,13 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
   }
 
   Future<void> _handlePopAttempt(BuildContext context) async {
-    final shouldExit = await showTaskSessionExitConfirmationDialog(context);
+    final shouldExit =
+        await showDialog<bool>(
+          context: context,
+          builder: (_) => const TaskSessionExitConfirmationDialog(),
+        ) ??
+        false;
+
     if (shouldExit && mounted && context.mounted) {
       _exitSession(context);
     }
@@ -223,11 +215,14 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
 
     if (sessionState is SessionCompletedState && !_isSessionSummaryDialogOpen) {
       _isSessionSummaryDialogOpen = true;
-      showTaskSessionSummaryDialog(
+      showDialog<void>(
         context: context,
-        sessionState: sessionState,
-        sessionBloc: context.read<LessonTaskSessionBloc>(),
-        onFinish: () => _finishSession(context),
+        barrierDismissible: false,
+        builder: (_) => TaskSessionSummaryDialog(
+          sessionState: sessionState,
+          sessionBloc: context.read<LessonTaskSessionBloc>(),
+          onFinish: () => _finishSession(context),
+        ),
       ).whenComplete(() {
         if (mounted) {
           _isSessionSummaryDialogOpen = false;

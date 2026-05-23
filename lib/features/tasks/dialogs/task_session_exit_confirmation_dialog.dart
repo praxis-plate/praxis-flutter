@@ -2,31 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:praxis/s.dart';
 
-Future<bool> showTaskSessionExitConfirmationDialog(BuildContext context) async {
-  final s = S.of(context);
-  final theme = Theme.of(context);
+class TaskSessionExitConfirmationDialog extends StatelessWidget {
+  const TaskSessionExitConfirmationDialog({super.key});
 
-  final result = await showDialog<bool>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
+    return AlertDialog(
       title: Text(s.taskSessionExitTitle),
       content: Text(s.taskSessionExitMessage),
       actions: [
         TextButton(
-          onPressed: () => dialogContext.pop(false),
+          onPressed: () => context.pop(false),
           child: Text(
             s.cancel,
             style: TextStyle(color: theme.colorScheme.primary),
           ),
         ),
         TextButton(
-          onPressed: () => dialogContext.pop(true),
+          onPressed: () => context.pop(true),
           style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error),
           child: Text(s.exit),
         ),
       ],
-    ),
-  );
-
-  return result ?? false;
+    );
+  }
 }

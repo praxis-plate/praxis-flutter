@@ -7,19 +7,24 @@ import 'package:praxis/features/tasks/bloc/bloc.dart';
 import 'package:praxis/features/tasks/widgets/widgets.dart';
 import 'package:praxis/s.dart';
 
-Future<void> showTaskSessionSummaryDialog({
-  required BuildContext context,
-  required SessionCompletedState sessionState,
-  required LessonTaskSessionBloc sessionBloc,
-  required VoidCallback onFinish,
-}) {
-  final s = S.of(context);
-  final theme = Theme.of(context);
+class TaskSessionSummaryDialog extends StatelessWidget {
+  const TaskSessionSummaryDialog({
+    super.key,
+    required this.sessionState,
+    required this.sessionBloc,
+    required this.onFinish,
+  });
 
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (dialogContext) => Dialog(
+  final SessionCompletedState sessionState;
+  final LessonTaskSessionBloc sessionBloc;
+  final VoidCallback onFinish;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context);
+    final theme = Theme.of(context);
+
+    return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.zero,
       child: SizedBox.expand(
@@ -46,7 +51,7 @@ Future<void> showTaskSessionSummaryDialog({
                         children: [
                           IconButton(
                             onPressed: () {
-                              dialogContext.pop();
+                              context.pop();
                               onFinish();
                             },
                             icon: const Icon(Icons.arrow_back_ios),
@@ -120,7 +125,7 @@ Future<void> showTaskSessionSummaryDialog({
                                   onPressed: isPersisting
                                       ? null
                                       : () {
-                                          dialogContext.pop();
+                                          context.pop();
                                           onFinish();
                                         },
                                   style: ElevatedButton.styleFrom(
@@ -150,6 +155,6 @@ Future<void> showTaskSessionSummaryDialog({
           ],
         ),
       ),
-    ),
-  );
+    );
+  }
 }
