@@ -13,7 +13,7 @@ import 'package:praxis/features/main/main.dart';
 import 'package:praxis/features/navigation/view/navigation_screen.dart';
 import 'package:praxis/features/onboarding/view/onboarding_screen.dart';
 import 'package:praxis/features/profile/profile.dart';
-import 'package:praxis/features/tasks/view/lesson_task_session_screen.dart';
+import 'package:praxis/features/tasks/view/task_session_screen.dart';
 import 'package:praxis/features/tasks/view/task_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -272,7 +272,7 @@ class AppRouter {
                 final courseId = state.uri.queryParameters['courseId'];
                 return MaterialPage(
                   key: state.pageKey,
-                  child: LessonTaskSessionScreen(
+                  child: TaskSessionScreen(
                     lessonId: lessonId,
                     courseId: courseId,
                   ),
