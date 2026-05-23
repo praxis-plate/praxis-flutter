@@ -1,64 +1,36 @@
-import 'package:praxis/core/error/app_error_code_extension.dart';
 import 'dart:async';
 
-import 'package:praxis/core/router/route_constants.dart';
-import 'package:praxis/core/utils/result.dart';
-import 'package:praxis/core/utils/duration.dart';
-import 'package:praxis/core/widgets/widgets.dart';
-import 'package:praxis/domain/models/task/task_models.dart';
-import 'package:praxis/domain/usecases/lesson/get_lesson_by_id_usecase.dart';
-import 'package:praxis/domain/usecases/tasks/get_task_by_id_usecase.dart';
-import 'package:praxis/domain/usecases/tasks/request_task_hint_usecase.dart';
-import 'package:praxis/domain/usecases/tasks/submit_task_answer_usecase.dart';
-import 'package:praxis/features/tasks/bloc/bloc.dart';
-import 'package:praxis/features/tasks/renderers/task_renderer.dart';
-import 'package:praxis/features/tasks/widgets/widgets.dart';
-import 'package:praxis/l10n/app_localizations.dart';
-import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:praxis/core/error/app_error_code_extension.dart';
+import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/task/task_models.dart';
+import 'package:praxis/domain/usecases/tasks/get_task_by_id_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/request_task_hint_usecase.dart';
+import 'package:praxis/domain/usecases/tasks/submit_task_answer_usecase.dart';
+import 'package:praxis/features/tasks/bloc/bloc.dart';
+import 'package:praxis/features/tasks/dialogs/dialogs.dart';
+import 'package:praxis/features/tasks/renderers/task_renderer.dart';
+import 'package:praxis/features/tasks/widgets/widgets.dart';
+import 'package:praxis/l10n/app_localizations.dart';
+import 'package:praxis/s.dart';
 
-class LessonTaskSessionScreen extends StatefulWidget {
+class TaskSessionScreen extends StatefulWidget {
+  const TaskSessionScreen({super.key, required this.lessonId, this.courseId});
+
   final int lessonId;
   final String? courseId;
 
-  const LessonTaskSessionScreen({
-    super.key,
-    required this.lessonId,
-    this.courseId,
-  });
-
   @override
-  State<LessonTaskSessionScreen> createState() =>
-      _LessonTaskSessionScreenState();
+  State<TaskSessionScreen> createState() => _TaskSessionScreenState();
 }
 
-class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
+class _TaskSessionScreenState extends State<TaskSessionScreen> {
   Timer? _autoAdvanceTimer;
-  String? _lessonTitle;
   bool _isCompletingLastTask = false;
   bool _isSessionSummaryDialogOpen = false;
-
-  void _exitSession(BuildContext context) {
-    if (context.canPop()) {
-      context.pop();
-      return;
-    }
-
-    context.go(RouteConstants.learning);
-  }
-
-  void _finishSession(BuildContext context) {
-    final courseId = widget.courseId;
-    if (courseId != null && courseId.isNotEmpty) {
-      context.go('/course/$courseId/learn');
-      return;
-    }
-
-    _exitSession(context);
-  }
 
   @override
   void dispose() {
@@ -66,20 +38,32 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _loadLessonTitle();
-  }
-
-  Future<void> _loadLessonTitle() async {
-    final result = await GetIt.I<GetLessonByIdUseCase>()(widget.lessonId);
-    if (!mounted) {
+  void _exitSession(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
       return;
     }
-    setState(() {
-      _lessonTitle = result.dataOrNull?.title;
-    });
+
+    context.go('/learning');
+  }
+
+  void _finishSession(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+
+      if (context.canPop()) {
+        context.pop();
+        return;
+      }
+    }
+
+    final courseId = widget.courseId;
+    if (courseId != null && courseId.isNotEmpty) {
+      context.go('/course/$courseId/learn');
+      return;
+    }
+
+    context.go('/learning');
   }
 
   void _handleTaskCompletion(
@@ -104,18 +88,25 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
       if (!sessionState.isLastTask) {
         _autoAdvanceTimer?.cancel();
         _autoAdvanceTimer = Timer(const Duration(seconds: 2), () {
-          if (!mounted) return;
+          if (!mounted) {
+            return;
+          }
 
-          final sessionBloc = context.read<LessonTaskSessionBloc>();
-          final taskBloc = context.read<TaskBloc>();
-          final currentSessionState = sessionBloc.state;
+          final currentSessionState = context
+              .read<LessonTaskSessionBloc>()
+              .state;
 
           if (currentSessionState is SessionActiveState) {
-            taskBloc.add(LoadTaskEvent(currentSessionState.currentTask.id));
+            context.read<TaskBloc>().add(
+              LoadTaskEvent(currentSessionState.currentTask.id),
+            );
           }
         });
       }
-    } else if (taskState is TaskAnswerIncorrectState) {
+      return;
+    }
+
+    if (taskState is TaskAnswerIncorrectState) {
       if (sessionState.isLastTask && !_isCompletingLastTask) {
         setState(() {
           _isCompletingLastTask = true;
@@ -171,7 +162,13 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
     AppLocalizations s,
     BuildContext context,
   ) {
-    final lessonTitle = _lessonTitle;
+    final lessonTitle = switch (state) {
+      SessionLoadingState(:final lessonTitle) => lessonTitle,
+      SessionActiveState(:final lessonTitle) => lessonTitle,
+      SessionCompletedState(:final lessonTitle) => lessonTitle,
+      SessionErrorState(:final lessonTitle) => lessonTitle,
+      _ => null,
+    };
     if (lessonTitle != null && lessonTitle.isNotEmpty) {
       return lessonTitle;
     }
@@ -185,6 +182,53 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
     }
 
     return s.taskSessionLoading;
+  }
+
+  String _getTaskTypeTitle(TaskModel task, BuildContext context) {
+    final s = S.of(context);
+    return task.getLocalizedTitle(
+      () => s.taskMultipleChoice,
+      () => s.taskCodeCompletion,
+      () => s.taskMatching,
+      () => s.taskTextInput,
+    );
+  }
+
+  Future<void> _handlePopAttempt(BuildContext context) async {
+    final shouldExit =
+        await showDialog<bool>(
+          context: context,
+          builder: (_) => const TaskSessionExitConfirmationDialog(),
+        ) ??
+        false;
+
+    if (shouldExit && mounted && context.mounted) {
+      _exitSession(context);
+    }
+  }
+
+  void _handleSessionStateChange(
+    BuildContext context,
+    LessonTaskSessionState sessionState,
+  ) {
+    _loadInitialSessionTask(context, sessionState);
+
+    if (sessionState is SessionCompletedState && !_isSessionSummaryDialogOpen) {
+      _isSessionSummaryDialogOpen = true;
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => TaskSessionSummaryDialog(
+          sessionState: sessionState,
+          sessionBloc: context.read<LessonTaskSessionBloc>(),
+          onFinish: () => _finishSession(context),
+        ),
+      ).whenComplete(() {
+        if (mounted) {
+          _isSessionSummaryDialogOpen = false;
+        }
+      });
+    }
   }
 
   @override
@@ -218,14 +262,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
         ),
       ],
       child: BlocConsumer<LessonTaskSessionBloc, LessonTaskSessionState>(
-        listener: (context, sessionState) {
-          _loadInitialSessionTask(context, sessionState);
-
-          if (sessionState is SessionCompletedState &&
-              !_isSessionSummaryDialogOpen) {
-            _showSessionSummaryDialog(context, sessionState);
-          }
-        },
+        listener: _handleSessionStateChange,
         builder: (context, sessionState) {
           if (sessionState is SessionLoadingState) {
             return Scaffold(
@@ -261,6 +298,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
               s,
               context,
             );
+
             return Scaffold(
               appBar: AppBar(
                 centerTitle: false,
@@ -317,14 +355,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                 canPop: false,
                 onPopInvokedWithResult: (didPop, result) async {
                   if (!didPop) {
-                    final shouldExit = await _showExitConfirmationDialog(
-                      context,
-                    );
-                    if (shouldExit && mounted) {
-                      if (context.mounted) {
-                        _exitSession(context);
-                      }
-                    }
+                    await _handlePopAttempt(context);
                   }
                 },
                 child: Scaffold(
@@ -339,14 +370,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                     titleSpacing: 16,
                     leading: IconButton(
                       icon: const Icon(Icons.close),
-                      onPressed: () async {
-                        final shouldExit = await _showExitConfirmationDialog(
-                          context,
-                        );
-                        if (shouldExit && context.mounted) {
-                          _exitSession(context);
-                        }
-                      },
+                      onPressed: () => _handlePopAttempt(context),
                     ),
                   ),
                   body: Column(
@@ -486,188 +510,5 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
         },
       ),
     );
-  }
-
-  String _getTaskTypeTitle(TaskModel task, BuildContext context) {
-    final s = S.of(context);
-    return task.getLocalizedTitle(
-      () => s.taskMultipleChoice,
-      () => s.taskCodeCompletion,
-      () => s.taskMatching,
-      () => s.taskTextInput,
-    );
-  }
-
-  Future<bool> _showExitConfirmationDialog(BuildContext context) async {
-    final s = S.of(context);
-    final theme = Theme.of(context);
-
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(s.taskSessionExitTitle),
-        content: Text(s.taskSessionExitMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(
-              s.cancel,
-              style: TextStyle(color: theme.colorScheme.primary),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: theme.colorScheme.error,
-            ),
-            child: Text(s.exit),
-          ),
-        ],
-      ),
-    );
-
-    return result ?? false;
-  }
-
-  void _showSessionSummaryDialog(
-    BuildContext context,
-    SessionCompletedState sessionState,
-  ) {
-    final s = S.of(context);
-    final theme = Theme.of(context);
-    final sessionBloc = context.read<LessonTaskSessionBloc>();
-    _isSessionSummaryDialogOpen = true;
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) => Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.zero,
-        child: SizedBox.expand(
-          child: Stack(
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: SurfaceCard(
-                    borderRadius: BorderRadius.circular(20),
-                    padding: const EdgeInsets.all(20),
-                    borderColor: theme.colorScheme.primary.withValues(
-                      alpha: 0.24,
-                    ),
-                    backgroundColor: Color.alphaBlend(
-                      theme.colorScheme.primary.withValues(alpha: 0.04),
-                      theme.colorScheme.surfaceContainerHighest,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.celebration,
-                              color: theme.colorScheme.primary,
-                              size: 32,
-                            ),
-                            const SizedBox(width: 12),
-                            Text(s.taskSessionCompleteTitle),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          s.taskSessionCompleteMessage,
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 20),
-                        SummaryRow(
-                          icon: Icons.emoji_events,
-                          label: s.taskSessionTotalXp,
-                          value: '${sessionState.totalXpEarned} XP',
-                          theme: theme,
-                        ),
-                        const SizedBox(height: 12),
-                        SummaryRow(
-                          icon: Icons.check_circle,
-                          label: s.taskSessionAccuracy,
-                          value:
-                              '${sessionState.accuracyPercentage.toStringAsFixed(1)}%',
-                          theme: theme,
-                        ),
-                        const SizedBox(height: 12),
-                        SummaryRow(
-                          icon: Icons.timer,
-                          label: s.taskSessionTimeSpent,
-                          value: DurationFormatter.formatSeconds(
-                            sessionState.timeSpentSeconds,
-                            s,
-                          ),
-                          theme: theme,
-                        ),
-                        const SizedBox(height: 12),
-                        SummaryRow(
-                          icon: Icons.task_alt,
-                          label: s.taskSessionTasksCompleted,
-                          value:
-                              '${sessionState.correctTasks}/${sessionState.totalTasks}',
-                          theme: theme,
-                        ),
-                        const SizedBox(height: 20),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child:
-                              BlocBuilder<
-                                LessonTaskSessionBloc,
-                                LessonTaskSessionState
-                              >(
-                                bloc: sessionBloc,
-                                builder: (context, currentState) {
-                                  final isPersisting =
-                                      currentState is SessionCompletedState &&
-                                      currentState.isPersisting;
-
-                                  return ElevatedButton(
-                                    onPressed: isPersisting
-                                        ? null
-                                        : () {
-                                            Navigator.of(dialogContext).pop();
-                                            _finishSession(context);
-                                          },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          theme.colorScheme.primary,
-                                      foregroundColor:
-                                          theme.colorScheme.onPrimary,
-                                    ),
-                                    child: isPersisting
-                                        ? SizedBox(
-                                            width: 18,
-                                            height: 18,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              color:
-                                                  theme.colorScheme.onSurface,
-                                            ),
-                                          )
-                                        : Text(s.done),
-                                  );
-                                },
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ).whenComplete(() {
-      if (mounted) {
-        _isSessionSummaryDialogOpen = false;
-      }
-    });
   }
 }

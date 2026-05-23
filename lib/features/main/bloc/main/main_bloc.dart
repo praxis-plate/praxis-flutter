@@ -26,7 +26,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     MainLoadCoursesEvent event,
     Emitter<MainState> emit,
   ) async {
-    emit(const MainCoursesLoadingState());
+    final previousSuccess = state is MainCoursesLoadSuccessState
+        ? state as MainCoursesLoadSuccessState
+        : null;
+
+    if (previousSuccess == null) {
+      emit(const MainCoursesLoadingState());
+    }
+
     try {
       final coursesResult = await _getCoursesUseCase();
       final enrolledResult = await _getEnrolledCoursesUseCase(event.userId);
@@ -38,6 +45,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
         emit(MainCoursesLoadSuccessState(courses, enrolledIds));
       } else {
+        if (previousSuccess != null) {
+          emit(previousSuccess);
+          return;
+        }
+
         emit(
           MainCoursesLoadErrorState(
             coursesResult.failureOrNull ??
@@ -47,6 +59,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         );
       }
     } catch (e) {
+      if (previousSuccess != null) {
+        emit(previousSuccess);
+        return;
+      }
+
       emit(MainCoursesLoadErrorState(AppFailure.fromException(e)));
     }
   }

@@ -4,6 +4,7 @@ import 'package:praxis/features/tasks/bloc/task_hint/task_hint_cubit.dart';
 import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class TaskHintButton extends StatefulWidget {
   final int taskId;
@@ -183,7 +184,7 @@ class _TaskHintButtonState extends State<TaskHintButton> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(dialogContext).pop();
+              dialogContext.pop();
               context.read<TaskHintCubit>().reset();
             },
             child: Text(s.ok),
@@ -218,7 +219,7 @@ class _TaskHintButtonState extends State<TaskHintButton> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(dialogContext).pop();
+              dialogContext.pop();
               context.read<TaskHintCubit>().reset();
             },
             child: Text(s.ok),

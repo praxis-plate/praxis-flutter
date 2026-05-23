@@ -149,7 +149,7 @@ class _LessonContentView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(dialogContext).pop();
+              dialogContext.pop();
               context.pop();
             },
             child: Text(s.ok),

@@ -460,6 +460,7 @@ class DependencyInjection {
       )
       ..registerFactory<LessonTaskSessionBloc>(
         () => LessonTaskSessionBloc(
+          GetIt.I<GetLessonByIdUseCase>(),
           GetIt.I<GetLessonTasksUseCase>(),
           GetIt.I<CompleteLessonSessionUseCase>(),
         ),

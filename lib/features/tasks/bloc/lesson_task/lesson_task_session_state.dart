@@ -12,12 +12,18 @@ class SessionInitialState extends LessonTaskSessionState {
 }
 
 class SessionLoadingState extends LessonTaskSessionState {
-  const SessionLoadingState();
+  final String? lessonTitle;
+
+  const SessionLoadingState({this.lessonTitle});
+
+  @override
+  List<Object?> get props => [lessonTitle];
 }
 
 class SessionActiveState extends LessonTaskSessionState {
   final int lessonId;
   final String userId;
+  final String lessonTitle;
   final List<TaskModel> tasks;
   final int currentTaskIndex;
   final int completedTasksCount;
@@ -28,6 +34,7 @@ class SessionActiveState extends LessonTaskSessionState {
   const SessionActiveState({
     required this.lessonId,
     required this.userId,
+    required this.lessonTitle,
     required this.tasks,
     required this.currentTaskIndex,
     required this.completedTasksCount,
@@ -44,6 +51,7 @@ class SessionActiveState extends LessonTaskSessionState {
       completedTasksCount > 0 ? correctTasksCount / completedTasksCount : 0.0;
 
   SessionActiveState copyWith({
+    String? lessonTitle,
     int? currentTaskIndex,
     int? completedTasksCount,
     int? correctTasksCount,
@@ -52,6 +60,7 @@ class SessionActiveState extends LessonTaskSessionState {
     return SessionActiveState(
       lessonId: lessonId,
       userId: userId,
+      lessonTitle: lessonTitle ?? this.lessonTitle,
       tasks: tasks,
       currentTaskIndex: currentTaskIndex ?? this.currentTaskIndex,
       completedTasksCount: completedTasksCount ?? this.completedTasksCount,
@@ -65,6 +74,7 @@ class SessionActiveState extends LessonTaskSessionState {
   List<Object> get props => [
     lessonId,
     userId,
+    lessonTitle,
     tasks,
     currentTaskIndex,
     completedTasksCount,
@@ -76,6 +86,7 @@ class SessionActiveState extends LessonTaskSessionState {
 
 class SessionCompletedState extends LessonTaskSessionState {
   final int lessonId;
+  final String lessonTitle;
   final int totalXpEarned;
   final double accuracyPercentage;
   final int timeSpentSeconds;
@@ -85,6 +96,7 @@ class SessionCompletedState extends LessonTaskSessionState {
 
   const SessionCompletedState({
     required this.lessonId,
+    required this.lessonTitle,
     required this.totalXpEarned,
     required this.accuracyPercentage,
     required this.timeSpentSeconds,
@@ -96,6 +108,7 @@ class SessionCompletedState extends LessonTaskSessionState {
   @override
   List<Object> get props => [
     lessonId,
+    lessonTitle,
     totalXpEarned,
     accuracyPercentage,
     timeSpentSeconds,
@@ -110,9 +123,10 @@ enum LessonTaskSessionErrorType { noTasks, generic }
 class SessionErrorState extends LessonTaskSessionState {
   final LessonTaskSessionErrorType type;
   final AppFailure? failure;
+  final String? lessonTitle;
 
-  const SessionErrorState({required this.type, this.failure});
+  const SessionErrorState({required this.type, this.failure, this.lessonTitle});
 
   @override
-  List<Object?> get props => [type, failure];
+  List<Object?> get props => [type, failure, lessonTitle];
 }

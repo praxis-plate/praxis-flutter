@@ -92,6 +92,10 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
             final option = entry.value;
             final isSelected = _isSelected(option);
             final selectedColor = theme.colorScheme.primary;
+            final selectedBackgroundColor = Color.alphaBlend(
+              selectedColor.withValues(alpha: 0.08),
+              theme.cardColor,
+            );
             final unselectedBorderColor = theme.dividerColor.withValues(
               alpha: 0.6,
             );
@@ -106,7 +110,7 @@ class _MultipleChoiceTaskState extends State<MultipleChoiceTask> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? theme.colorScheme.surfaceContainerHighest
+                        ? selectedBackgroundColor
                         : theme.cardColor,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(

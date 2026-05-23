@@ -68,7 +68,7 @@ class CourseCard extends StatelessWidget {
                       if (isPurchased)
                         const Positioned(
                           top: 4,
-                          right: 4,
+                          left: 4,
                           child: _PurchasedBadge(),
                         ),
                       if (!isPurchased)
@@ -338,12 +338,12 @@ class _PurchasedBadge extends StatelessWidget {
         children: [
           Icon(
             Icons.check_circle,
-            size: 12,
+            size: 14,
             color: theme.colorScheme.onPrimary,
           ),
-          const SizedBox(width: 2),
+          const SizedBox(width: 3),
           Text(
-            s.purchased,
+            s.inList,
             style: theme.textTheme.labelSmall?.copyWith(
               color: theme.colorScheme.onPrimary,
               fontWeight: FontWeight.w600,

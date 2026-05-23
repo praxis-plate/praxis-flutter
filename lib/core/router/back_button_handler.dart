@@ -55,11 +55,11 @@ class ConfirmExitBackButtonHandler extends StatelessWidget {
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => context.pop(false),
             child: Text(cancelText),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => context.pop(true),
             child: Text(confirmText),
           ),
         ],
@@ -115,17 +115,14 @@ class SaveBeforeExitBackButtonHandler extends StatelessWidget {
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(null),
+            onPressed: () => context.pop(null),
             child: Text(cancelText),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => context.pop(false),
             child: Text(discardText),
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(saveText),
-          ),
+          TextButton(onPressed: () => context.pop(true), child: Text(saveText)),
         ],
       ),
     );

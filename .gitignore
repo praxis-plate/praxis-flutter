@@ -54,6 +54,7 @@ devtools_options.yaml
 *.g.dart
 *.freezed.dart
 lib/l10n/app_localizations*.dart
+lib/l10n/intl_*.arb
 
 # Environment variables
 .env

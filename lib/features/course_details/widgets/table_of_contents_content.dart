@@ -19,7 +19,7 @@ class TableOfContentsContent extends StatelessWidget {
       final s = S.of(context);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(s.purchaseCourse)));
+      ).showSnackBar(SnackBar(content: Text(s.purchaseCourseToViewLessons)));
       return;
     }
 

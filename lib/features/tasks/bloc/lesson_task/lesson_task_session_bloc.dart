@@ -1,6 +1,7 @@
 import 'package:praxis/core/error/failure.dart';
 import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/domain/models/task/task_model.dart';
+import 'package:praxis/domain/usecases/lesson/get_lesson_by_id_usecase.dart';
 import 'package:praxis/domain/usecases/tasks/complete_lesson_session_usecase.dart';
 import 'package:praxis/domain/usecases/tasks/get_lesson_tasks_usecase.dart';
 import 'package:equatable/equatable.dart';
@@ -11,10 +12,12 @@ part 'lesson_task_session_state.dart';
 
 class LessonTaskSessionBloc
     extends Bloc<LessonTaskSessionEvent, LessonTaskSessionState> {
+  final GetLessonByIdUseCase _getLessonByIdUseCase;
   final GetLessonTasksUseCase _getLessonTasksUseCase;
   final CompleteLessonSessionUseCase _completeLessonSessionUseCase;
 
   LessonTaskSessionBloc(
+    this._getLessonByIdUseCase,
     this._getLessonTasksUseCase,
     this._completeLessonSessionUseCase,
   ) : super(const SessionInitialState()) {
@@ -29,13 +32,18 @@ class LessonTaskSessionBloc
   ) async {
     emit(const SessionLoadingState());
     try {
+      final lessonResult = await _getLessonByIdUseCase(event.lessonId);
+      final lessonTitle = lessonResult.dataOrNull?.title;
       final result = await _getLessonTasksUseCase(event.lessonId);
 
       result.when(
         success: (tasks) {
           if (tasks.isEmpty) {
             emit(
-              const SessionErrorState(type: LessonTaskSessionErrorType.noTasks),
+              SessionErrorState(
+                type: LessonTaskSessionErrorType.noTasks,
+                lessonTitle: lessonTitle,
+              ),
             );
             return;
           }
@@ -44,6 +52,7 @@ class LessonTaskSessionBloc
             SessionActiveState(
               lessonId: event.lessonId,
               userId: event.userId,
+              lessonTitle: lessonTitle ?? '',
               tasks: tasks,
               currentTaskIndex: 0,
               completedTasksCount: 0,
@@ -57,6 +66,7 @@ class LessonTaskSessionBloc
           SessionErrorState(
             type: LessonTaskSessionErrorType.generic,
             failure: failure,
+            lessonTitle: lessonTitle,
           ),
         ),
       );
@@ -96,6 +106,7 @@ class LessonTaskSessionBloc
         emit(
           SessionCompletedState(
             lessonId: currentState.lessonId,
+            lessonTitle: currentState.lessonTitle,
             totalXpEarned: totalXpWithBonus,
             accuracyPercentage: accuracy * 100,
             timeSpentSeconds: timeSpent,
@@ -115,6 +126,7 @@ class LessonTaskSessionBloc
         emit(
           SessionCompletedState(
             lessonId: currentState.lessonId,
+            lessonTitle: currentState.lessonTitle,
             totalXpEarned: totalXpWithBonus,
             accuracyPercentage: accuracy * 100,
             timeSpentSeconds: timeSpent,
@@ -127,6 +139,7 @@ class LessonTaskSessionBloc
           SessionErrorState(
             type: LessonTaskSessionErrorType.generic,
             failure: AppFailure.fromException(e),
+            lessonTitle: currentState.lessonTitle,
           ),
         );
       }

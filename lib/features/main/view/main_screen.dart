@@ -15,6 +15,13 @@ class MainScreen extends StatelessWidget {
 
   final UserProfileModel userProfile;
 
+  Future<void> _refresh(BuildContext context) async {
+    context.read<MainBloc>().add(MainLoadCoursesEvent(userId: userProfile.id));
+    context.read<UserStatisticsBloc>().add(
+      UserStatisticsLoadEvent(userId: userProfile.id),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -62,10 +69,14 @@ class MainScreen extends StatelessWidget {
                 );
               }
             },
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [CoursesSection(userProfile: userProfile)],
+            child: RefreshIndicator(
+              onRefresh: () => _refresh(context),
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [CoursesSection(userProfile: userProfile)],
+                ),
               ),
             ),
           ),

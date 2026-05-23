@@ -11,6 +11,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class LearningScreen extends StatelessWidget {
   const LearningScreen({super.key});
 
+  Future<void> _refresh(BuildContext context, String userId) async {
+    context.read<LearningBloc>().add(LearningLoadEvent(userId: userId));
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
@@ -47,13 +51,19 @@ class LearningScreen extends StatelessWidget {
             LearningLoadErrorState(:final failure) => ErrorScreen(
               message: failure.code.localizedMessage(context),
             ),
-            LearningLoadSuccessState() =>
-              state.enrolledCourses.isEmpty
-                  ? const EmptyLearningState()
+            LearningLoadSuccessState() => RefreshIndicator(
+              onRefresh: () => _refresh(context, userId),
+              child: state.enrolledCourses.isEmpty
+                  ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      children: const [EmptyLearningState()],
+                    )
                   : EnrolledCoursesList(
                       courses: state.enrolledCourses,
                       courseStatistics: state.courseStatistics,
                     ),
+            ),
           },
         ),
       ),

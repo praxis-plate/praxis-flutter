@@ -1,5 +1,6 @@
 import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ErrorDialog extends StatelessWidget {
   final String? title;
@@ -48,14 +49,14 @@ class ErrorDialog extends StatelessWidget {
         if (canRetry)
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(true);
+              context.pop(true);
               onRetry?.call();
             },
             child: Text(s.retry),
           ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(false);
+            context.pop(false);
             onDismiss?.call();
           },
           child: Text(canRetry ? s.cancel : s.ok),

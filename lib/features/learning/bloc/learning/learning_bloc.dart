@@ -57,18 +57,33 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
     LearningLoadEvent event,
     Emitter<LearningState> emit,
   ) async {
-    emit(const LearningLoadingState());
+    final previousSuccess = state is LearningLoadSuccessState
+        ? state as LearningLoadSuccessState
+        : null;
+
+    if (previousSuccess == null) {
+      emit(const LearningLoadingState());
+    }
+
     try {
       final userId = event.userId;
       final statisticsResult = await _getLearningDataUseCase(userId);
       final coursesResult = await _getEnrolledCoursesUseCase(userId);
 
       if (statisticsResult.isFailure) {
+        if (previousSuccess != null) {
+          emit(previousSuccess);
+          return;
+        }
         emit(LearningLoadErrorState(failure: statisticsResult.failureOrNull!));
         return;
       }
 
       if (coursesResult.isFailure) {
+        if (previousSuccess != null) {
+          emit(previousSuccess);
+          return;
+        }
         emit(LearningLoadErrorState(failure: coursesResult.failureOrNull!));
         return;
       }
@@ -101,6 +116,10 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
       );
     } catch (e, st) {
       GetIt.I<Talker>().handle(e, st);
+      if (previousSuccess != null) {
+        emit(previousSuccess);
+        return;
+      }
       emit(LearningLoadErrorState(failure: AppFailure.fromException(e)));
     }
   }

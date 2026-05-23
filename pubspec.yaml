@@ -28,7 +28,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   drift: ^2.14.0
-  sqlite3_flutter_libs: ^0.5.41
+  sqlite3_flutter_libs: 0.5.41
   path_provider: ^2.1.5
   path: ^1.8.3
   dio: ^5.4.0
@@ -63,7 +63,6 @@ dev_dependencies:
   # Testing
   mockito: ^5.4.4
   bloc_test: ^10.0.0
-  intl_utils: ^2.8.12
 
 flutter:
   generate: true
@@ -74,8 +73,6 @@ flutter:
     - assets/icons/
     - assets/icons/currency/
     - assets/prompts/
-flutter_intl:
-  enabled: true
 
 flutter_launcher_icons:
   android: true

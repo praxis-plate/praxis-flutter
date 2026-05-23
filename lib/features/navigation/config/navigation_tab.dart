@@ -1,6 +1,5 @@
-import 'package:praxis/core/router/router_exports.dart';
-import 'package:praxis/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:praxis/l10n/app_localizations.dart';
 
 class NavigationTab {
   final String route;
@@ -18,8 +17,8 @@ class NavigationTab {
 
     tabs.add(
       NavigationTab(
-        route: RouteConstants.home,
-        routePrefix: RouteConstants.home,
+        route: '/home',
+        routePrefix: '/home',
         destination: NavigationDestination(
           selectedIcon: const Icon(Icons.grid_view_rounded),
           icon: const Icon(Icons.grid_view_rounded),
@@ -30,8 +29,8 @@ class NavigationTab {
 
     tabs.add(
       NavigationTab(
-        route: RouteConstants.learning,
-        routePrefix: RouteConstants.learning,
+        route: '/learning',
+        routePrefix: '/learning',
         destination: NavigationDestination(
           selectedIcon: const Icon(Icons.play_circle_outline_rounded),
           icon: const Icon(Icons.play_circle_outline_rounded),
@@ -42,8 +41,8 @@ class NavigationTab {
 
     tabs.add(
       NavigationTab(
-        route: RouteConstants.profile,
-        routePrefix: RouteConstants.profile,
+        route: '/profile',
+        routePrefix: '/profile',
         destination: NavigationDestination(
           selectedIcon: const Icon(Icons.person_outline_rounded),
           icon: const Icon(Icons.person_outline_rounded),

@@ -1,18 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:praxis/core/utils/result.dart';
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:praxis/core/theme/app_theme.dart';
 import 'package:praxis/core/utils/constants.dart';
 import 'package:praxis/core/utils/duration.dart';
+import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/domain/models/course/course_model.dart';
 import 'package:praxis/domain/models/lesson_progress/lesson_progress_model.dart';
 import 'package:praxis/domain/models/user/user_course_statistics.dart';
 import 'package:praxis/domain/usecases/lesson/get_course_lesson_progress_usecase.dart';
 import 'package:praxis/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
 import 'package:praxis/features/course_learning/widgets/course_progress_bar.dart';
-import 'package:praxis/core/theme/app_theme.dart';
 import 'package:praxis/s.dart';
-import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 
 class EnrolledCourseCard extends StatelessWidget {
   const EnrolledCourseCard({
@@ -98,95 +98,102 @@ class EnrolledCourseCard extends StatelessWidget {
         onTap: () => context.push('/course/${course.id}/learn'),
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: CachedNetworkImage(
-                  height: 120,
-                  width: 120,
-                  fit: BoxFit.cover,
-                  imageUrl: course.thumbnailUrl ?? '',
-                  placeholder: (context, url) => Container(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                  ),
-                  errorWidget: (context, url, error) => Image.asset(
-                    Constants.placeholderCourseImagePath,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: SizedBox(
-                  height: 120,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        course.title,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CachedNetworkImage(
+                      height: 120,
+                      width: 120,
+                      fit: BoxFit.cover,
+                      imageUrl: course.thumbnailUrl ?? '',
+                      placeholder: (context, url) => Container(
+                        color: theme.colorScheme.surfaceContainerHighest,
                       ),
-                      const SizedBox(height: 6),
-                      _CourseMetaInfoRow(course: course),
-                      const SizedBox(height: 6),
-                      Row(
+                      errorWidget: (context, url, error) => Image.asset(
+                        Constants.placeholderCourseImagePath,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: SizedBox(
+                      height: 120,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Text(
-                              s.lessonsCompleted(
-                                stats.solvedTasks,
-                                stats.totalTasks,
-                              ),
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.7,
-                                ),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
                           Text(
-                            s.courseProgressPercent(stats.progress.round()),
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurface.withValues(
-                                alpha: 0.7,
-                              ),
+                            course.title,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w700,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      CourseProgressBar(userCourseStatistics: stats),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: FilledButton(
-                              onPressed: () => _handleContinue(context),
-                              style: FilledButton.styleFrom(
-                                minimumSize: const Size(0, 32),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 6,
+                          const SizedBox(height: 6),
+                          _CourseMetaInfoRow(course: course),
+                          const SizedBox(height: 8),
+                          CourseProgressBar(userCourseStatistics: stats),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  s.lessonsCompleted(
+                                    stats.solvedTasks,
+                                    stats.totalTasks,
+                                  ),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurface
+                                        .withValues(alpha: 0.7),
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
-                              child: Text(
-                                s.learningContinue,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              const SizedBox(width: 8),
+                              Text(
+                                s.courseProgressPercent(stats.progress.round()),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.7,
+                                  ),
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
+                            ],
                           ),
+                          const Spacer(),
                         ],
                       ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => _handleContinue(context),
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size.fromHeight(40),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    foregroundColor: theme.colorScheme.primary,
+                    textStyle: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.play_arrow_rounded, size: 18),
+                      const SizedBox(width: 6),
+                      Text(s.learningContinue),
                     ],
                   ),
                 ),
