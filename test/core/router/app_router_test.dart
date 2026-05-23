@@ -1,8 +1,7 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:praxis/core/bloc/auth/auth_bloc.dart';
-import 'package:praxis/core/router/route_constants.dart';
 import 'package:praxis/core/router/router.dart';
 import 'package:praxis/domain/models/user/user_profile_model.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -12,12 +11,12 @@ void main() {
       final preferences = await SharedPreferences.getInstance();
 
       final redirect = AppRouter.resolveRedirect(
-        matchedLocation: RouteConstants.root,
+        matchedLocation: '/',
         authState: const AuthUnauthenticatedState(),
         preferences: preferences,
       );
 
-      expect(redirect, RouteConstants.onboarding);
+      expect(redirect, '/onboarding');
     });
 
     test('allows onboarding route on first launch', () async {
@@ -25,7 +24,7 @@ void main() {
       final preferences = await SharedPreferences.getInstance();
 
       final redirect = AppRouter.resolveRedirect(
-        matchedLocation: RouteConstants.onboarding,
+        matchedLocation: '/onboarding',
         authState: const AuthUnauthenticatedState(),
         preferences: preferences,
       );
@@ -40,40 +39,40 @@ void main() {
         final preferences = await SharedPreferences.getInstance();
 
         final redirect = AppRouter.resolveRedirect(
-          matchedLocation: RouteConstants.onboarding,
+          matchedLocation: '/onboarding',
           authState: const AuthUnauthenticatedState(),
           preferences: preferences,
         );
 
-        expect(redirect, RouteConstants.signIn);
+        expect(redirect, '/auth/sign-in');
       },
     );
 
     test('sends authenticated users away from auth and root', () async {
       SharedPreferences.setMockInitialValues({'onboarding_complete': true});
       final preferences = await SharedPreferences.getInstance();
-      final authState = AuthAuthenticatedState(user: _user);
+      final authState = AuthAuthenticatedState(
+        user: UserProfileModel(
+          id: 'user-id',
+          email: 'test@example.com',
+          name: 'Test User',
+          createdAt: DateTime(2026),
+        ),
+      );
 
       final rootRedirect = AppRouter.resolveRedirect(
-        matchedLocation: RouteConstants.root,
+        matchedLocation: '/',
         authState: authState,
         preferences: preferences,
       );
       final authRedirect = AppRouter.resolveRedirect(
-        matchedLocation: RouteConstants.signIn,
+        matchedLocation: '/auth/sign-in',
         authState: authState,
         preferences: preferences,
       );
 
-      expect(rootRedirect, RouteConstants.navigation);
-      expect(authRedirect, RouteConstants.navigation);
+      expect(rootRedirect, '/navigation');
+      expect(authRedirect, '/navigation');
     });
   });
 }
-
-final _user = UserProfileModel(
-  id: 'user-id',
-  email: 'test@example.com',
-  name: 'Test User',
-  createdAt: DateTime(2026),
-);

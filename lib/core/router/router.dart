@@ -137,30 +137,17 @@ class AppRouter {
 
                     return NoTransitionPage(
                       key: state.pageKey,
-                      child: BlocProvider<MainBloc>(
-                        create: (context) => GetIt.I<MainBloc>()
-                          ..add(MainLoadCoursesEvent(userId: userProfile.id)),
-                        child: MainScreen(userProfile: userProfile),
-                      ),
+                      child: MainScreen(userProfile: userProfile),
                     );
                   },
                 ),
                 GoRoute(
                   path: '/learning',
                   name: 'learning',
-                  pageBuilder: (context, state) {
-                    final userProfile = UserScope.of(context, listen: false);
-
-                    return NoTransitionPage(
-                      key: state.pageKey,
-                      child: BlocProvider<LearningBloc>(
-                        create: (_) =>
-                            GetIt.I<LearningBloc>()
-                              ..add(LearningLoadEvent(userId: userProfile.id)),
-                        child: const LearningScreen(),
-                      ),
-                    );
-                  },
+                  pageBuilder: (context, state) => NoTransitionPage(
+                    key: state.pageKey,
+                    child: const LearningScreen(),
+                  ),
                 ),
                 GoRoute(
                   path: '/profile',
