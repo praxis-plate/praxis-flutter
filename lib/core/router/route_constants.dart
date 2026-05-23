@@ -12,7 +12,10 @@ class RouteConstants {
   static const String history = '/history';
   static const String profile = '/profile';
   static const String courseDetail = '/course/:courseId';
+  static const String courseContents = '/course/:courseId/contents';
   static const String test = '/test';
 
   static String courseDetailPath(String courseId) => '/course/$courseId';
+  static String courseContentsPath(String courseId) =>
+      '/course/$courseId/contents';
 }

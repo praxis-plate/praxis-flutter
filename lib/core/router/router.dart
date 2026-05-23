@@ -6,6 +6,7 @@ import 'package:praxis/core/router/router_exports.dart';
 import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/features/auth/auth.dart';
 import 'package:praxis/features/course_details/bloc/course_detail/course_detail_bloc.dart';
+import 'package:praxis/features/course_details/view/course_contents_screen.dart';
 import 'package:praxis/features/course_details/view/course_detail_screen.dart';
 import 'package:praxis/features/course_learning/view/course_learning_screen.dart';
 import 'package:praxis/features/learning/learning.dart';
@@ -199,6 +200,28 @@ class AppRouter {
                       userProfile: userProfile,
                       courseId: courseId,
                     ),
+                  ),
+                );
+              },
+            ),
+            GoRoute(
+              path: '/course/:courseId/contents',
+              name: 'course-contents',
+              pageBuilder: (context, state) {
+                final courseId = int.parse(state.pathParameters['courseId']!);
+                final userProfile = UserScope.of(context, listen: false);
+
+                return MaterialPage(
+                  key: state.pageKey,
+                  child: BlocProvider(
+                    create: (context) => GetIt.I<CourseDetailBloc>()
+                      ..add(
+                        CourseDetailLoadEvent(
+                          courseId: courseId,
+                          userId: userProfile.id,
+                        ),
+                      ),
+                    child: const CourseContentsScreen(),
                   ),
                 );
               },

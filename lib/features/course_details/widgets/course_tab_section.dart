@@ -1,10 +1,9 @@
 import 'package:praxis/domain/models/course/course_model.dart';
-import 'package:praxis/features/course_details/bloc/course_detail/course_detail_bloc.dart';
-import 'package:praxis/features/course_details/view/course_contents_screen.dart';
+import 'package:praxis/core/router/route_constants.dart';
 import 'package:praxis/features/course_details/widgets/description_content.dart';
 import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CourseTabSection extends StatelessWidget {
   final CourseModel course;
@@ -54,17 +53,9 @@ class _ContentsPreviewCard extends StatelessWidget {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          final bloc = context.read<CourseDetailBloc>();
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => BlocProvider.value(
-                value: bloc,
-                child: const CourseContentsScreen(),
-              ),
-            ),
-          );
-        },
+        onTap: () => context.push(
+          RouteConstants.courseContentsPath(course.id.toString()),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           child: Row(
