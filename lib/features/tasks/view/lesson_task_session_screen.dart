@@ -50,13 +50,22 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
   }
 
   void _finishSession(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+
+      if (context.canPop()) {
+        context.pop();
+        return;
+      }
+    }
+
     final courseId = widget.courseId;
     if (courseId != null && courseId.isNotEmpty) {
       context.go('/course/$courseId/learn');
       return;
     }
 
-    _exitSession(context);
+    context.go('/learning');
   }
 
   @override
@@ -641,7 +650,7 @@ class _LessonTaskSessionScreenState extends State<LessonTaskSessionScreen> {
                                     onPressed: isPersisting
                                         ? null
                                         : () {
-                                            Navigator.of(dialogContext).pop();
+                                            dialogContext.pop();
                                             _finishSession(context);
                                           },
                                     style: ElevatedButton.styleFrom(
