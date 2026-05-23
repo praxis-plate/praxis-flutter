@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:praxis/core/error/app_error_code_extension.dart';
 import 'package:praxis/core/widgets/widgets.dart';
-import 'package:praxis/domain/models/task/task_models.dart';
 import 'package:praxis/features/tasks/bloc/bloc.dart';
 import 'package:praxis/features/tasks/dialogs/dialogs.dart';
 import 'package:praxis/features/tasks/renderers/task_renderer.dart';
@@ -24,6 +23,7 @@ class TaskSessionScreen extends StatefulWidget {
 }
 
 class _TaskSessionScreenState extends State<TaskSessionScreen> {
+  static const _autoAdvanceDelay = Duration(seconds: 2);
   Timer? _autoAdvanceTimer;
   bool _isCompletingLastTask = false;
   bool _isSessionSummaryDialogOpen = false;
@@ -82,22 +82,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
       );
 
       if (!sessionState.isLastTask) {
-        _autoAdvanceTimer?.cancel();
-        _autoAdvanceTimer = Timer(const Duration(seconds: 2), () {
-          if (!mounted) {
-            return;
-          }
-
-          final currentSessionState = context
-              .read<LessonTaskSessionBloc>()
-              .state;
-
-          if (currentSessionState is SessionActiveState) {
-            context.read<TaskBloc>().add(
-              LoadTaskEvent(currentSessionState.currentTask.id),
-            );
-          }
-        });
+        _scheduleAutoAdvance(context);
       }
       return;
     }
@@ -116,6 +101,22 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
         ),
       );
     }
+  }
+
+  void _scheduleAutoAdvance(BuildContext context) {
+    _autoAdvanceTimer?.cancel();
+    _autoAdvanceTimer = Timer(_autoAdvanceDelay, () {
+      if (!mounted) {
+        return;
+      }
+
+      final currentSessionState = context.read<LessonTaskSessionBloc>().state;
+      if (currentSessionState is SessionActiveState) {
+        context.read<TaskBloc>().add(
+          LoadTaskEvent(currentSessionState.currentTask.id),
+        );
+      }
+    });
   }
 
   void _loadInitialSessionTask(
@@ -156,6 +157,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
   String _resolveAppBarTitle(
     LessonTaskSessionState state,
     AppLocalizations s,
+    TaskRenderer taskRenderer,
     BuildContext context,
   ) {
     final lessonTitle = switch (state) {
@@ -170,7 +172,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
     }
 
     if (state is SessionActiveState) {
-      return _getTaskTypeTitle(state.currentTask, context);
+      return taskRenderer.describe(context, state.currentTask).title;
     }
 
     if (state is SessionErrorState) {
@@ -178,16 +180,6 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
     }
 
     return s.taskSessionLoading;
-  }
-
-  String _getTaskTypeTitle(TaskModel task, BuildContext context) {
-    final s = S.of(context);
-    return task.getLocalizedTitle(
-      () => s.taskMultipleChoice,
-      () => s.taskCodeCompletion,
-      () => s.taskMatching,
-      () => s.taskTextInput,
-    );
   }
 
   Future<void> _handlePopAttempt(BuildContext context) async {
@@ -242,7 +234,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
               centerTitle: false,
               titleSpacing: 16,
               title: Text(
-                _resolveAppBarTitle(sessionState, s, context),
+                _resolveAppBarTitle(sessionState, s, taskRenderer, context),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -273,7 +265,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
               centerTitle: false,
               titleSpacing: 16,
               title: Text(
-                _resolveAppBarTitle(sessionState, s, context),
+                _resolveAppBarTitle(sessionState, s, taskRenderer, context),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -330,7 +322,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    _resolveAppBarTitle(sessionState, s, context),
+                    _resolveAppBarTitle(sessionState, s, taskRenderer, context),
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -420,7 +412,9 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
                           }
 
                           if (taskState is TaskLoadedState) {
-                            return taskRenderer.build(context, taskState.task);
+                            return taskRenderer
+                                .describe(context, taskState.task)
+                                .body;
                           }
 
                           if (taskState is TaskAnswerValidatingState) {

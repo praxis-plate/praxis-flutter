@@ -84,16 +84,6 @@ final class MatchingTaskModel extends TaskModel {
   @override
   TaskType get taskType => TaskType.matching;
 
-  @override
-  String getLocalizedTitle(
-    String Function() multipleChoice,
-    String Function() codeCompletion,
-    String Function() matching,
-    String Function() textInput,
-  ) {
-    return matching();
-  }
-
   MatchingTaskModel copyWith({
     int? id,
     int? lessonId,

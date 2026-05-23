@@ -1,5 +1,4 @@
 import 'package:praxis/core/error/app_error_code_extension.dart';
-import 'package:praxis/domain/models/task/task_models.dart';
 import 'package:praxis/features/tasks/bloc/task/task_bloc.dart';
 import 'package:praxis/features/tasks/renderers/task_renderer.dart';
 import 'package:praxis/features/tasks/widgets/widgets.dart';
@@ -29,7 +28,7 @@ class _TaskScreenState extends State<TaskScreen> {
           builder: (context, state) {
             if (state is TaskStateWithTask) {
               final task = (state as TaskStateWithTask).task;
-              return Text(_getTaskTypeTitle(task, context));
+              return Text(taskRenderer.describe(context, task).title);
             }
             return Text(s.taskMultipleChoice);
           },
@@ -93,7 +92,7 @@ class _TaskScreenState extends State<TaskScreen> {
 
           if (state is TaskLoadedState) {
             final task = state.task;
-            return taskRenderer.build(context, task);
+            return taskRenderer.describe(context, task).body;
           }
 
           if (state is TaskAnswerValidatingState) {
@@ -126,16 +125,6 @@ class _TaskScreenState extends State<TaskScreen> {
           return const SizedBox.shrink();
         },
       ),
-    );
-  }
-
-  String _getTaskTypeTitle(TaskModel task, BuildContext context) {
-    final s = S.of(context);
-    return task.getLocalizedTitle(
-      () => s.taskMultipleChoice,
-      () => s.taskCodeCompletion,
-      () => s.taskMatching,
-      () => s.taskTextInput,
     );
   }
 }

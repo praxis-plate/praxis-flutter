@@ -25,16 +25,6 @@ final class TextInputTaskModel extends TaskModel {
   @override
   TaskType get taskType => TaskType.textInput;
 
-  @override
-  String getLocalizedTitle(
-    String Function() multipleChoice,
-    String Function() codeCompletion,
-    String Function() matching,
-    String Function() textInput,
-  ) {
-    return textInput();
-  }
-
   TextInputTaskModel copyWith({
     int? id,
     int? lessonId,

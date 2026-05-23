@@ -41,14 +41,6 @@ sealed class TaskModel extends Equatable {
   /// Abstract method to get task type as enum
   TaskType get taskType;
 
-  /// Abstract method to get localized title based on task type
-  String getLocalizedTitle(
-    String Function() multipleChoice,
-    String Function() codeCompletion,
-    String Function() matching,
-    String Function() textInput,
-  );
-
   @override
   List<Object?> get props => [
     id,

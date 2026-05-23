@@ -26,16 +26,6 @@ final class CodeCompletionTaskModel extends TaskModel {
   @override
   TaskType get taskType => TaskType.codeCompletion;
 
-  @override
-  String getLocalizedTitle(
-    String Function() multipleChoice,
-    String Function() codeCompletion,
-    String Function() matching,
-    String Function() textInput,
-  ) {
-    return codeCompletion();
-  }
-
   CodeCompletionTaskModel copyWith({
     int? id,
     int? lessonId,
