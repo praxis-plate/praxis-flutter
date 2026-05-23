@@ -52,8 +52,6 @@ class DependencyInjection {
     _registerUseCases();
     _registerBlocs();
     _registerTaskFeature();
-
-    // Database seeding removed - data now comes from server
   }
 
   Future<void> _registerServices() async {
@@ -120,7 +118,6 @@ class DependencyInjection {
           rethrow;
         }
       })
-      // Keep user datasource local for now
       ..registerLazySingleton<UserLocalDataSource>(
         () => UserLocalDataSource(GetIt.I<AppDatabase>()),
       )
@@ -139,7 +136,6 @@ class DependencyInjection {
       ..registerLazySingleton<LessonProgressLocalDataSource>(
         () => LessonProgressLocalDataSource(GetIt.I<AppDatabase>()),
       )
-      // Use remote datasources
       ..registerLazySingleton<AuthRemoteDataSource>(
         () => AuthRemoteDataSource(GetIt.I<Client>()),
       )
@@ -250,6 +246,7 @@ class DependencyInjection {
       ..registerFactory(() => GetProfileUseCase(GetIt.I<IUserRepository>()))
       ..registerFactory(
         () => GetFullUserProfileUseCase(
+          GetIt.I<IUserRepository>(),
           GetIt.I<IUserStatisticsRepository>(),
           GetIt.I<ICourseRepository>(),
         ),
@@ -261,7 +258,6 @@ class DependencyInjection {
       ..registerFactory(
         () => GetUserStatisticsUseCase(GetIt.I<IUserStatisticsRepository>()),
       )
-      ..registerFactory(() => GenerateActivityUsecase())
       ..registerFactory(
         () => GetCourseDetailUseCase(GetIt.I<ICourseRepository>()),
       )
@@ -269,10 +265,7 @@ class DependencyInjection {
         () => GetCourseTableOfContentsUseCase(GetIt.I<ICourseRepository>()),
       )
       ..registerFactory(
-        () => GetLearningDataUseCase(
-          GetIt.I<IUserStatisticsRepository>(),
-          GetIt.I<GenerateActivityUsecase>(),
-        ),
+        () => GetLearningDataUseCase(GetIt.I<IUserStatisticsRepository>()),
       )
       ..registerFactory(
         () =>

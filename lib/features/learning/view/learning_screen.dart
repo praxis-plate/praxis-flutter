@@ -1,5 +1,6 @@
 import 'package:praxis/core/error/app_error_code_extension.dart';
 import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/models/course/course_model.dart';
 import 'package:praxis/features/learning/bloc/learning/learning_bloc.dart';
 import 'package:praxis/features/learning/widgets/empty_learning_state.dart';
 import 'package:praxis/features/learning/widgets/enrolled_courses_list.dart';
@@ -7,12 +8,30 @@ import 'package:praxis/features/main/main.dart';
 import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class LearningScreen extends StatelessWidget {
   const LearningScreen({super.key});
 
   Future<void> _refresh(BuildContext context, String userId) async {
     context.read<LearningBloc>().add(LearningLoadEvent(userId: userId));
+  }
+
+  Future<void> _continueLearning(
+    BuildContext context,
+    CourseModel course,
+    String userId,
+  ) async {
+    final route = await context.read<LearningBloc>().resolveContinueRoute(
+      userId: userId,
+      course: course,
+    );
+
+    if (!context.mounted) {
+      return;
+    }
+
+    context.push(route);
   }
 
   @override
@@ -62,6 +81,8 @@ class LearningScreen extends StatelessWidget {
                   : EnrolledCoursesList(
                       courses: state.enrolledCourses,
                       courseStatistics: state.courseStatistics,
+                      onContinue: (course) =>
+                          _continueLearning(context, course, userId),
                     ),
             ),
           },

@@ -5,20 +5,22 @@ import 'package:flutter/material.dart';
 
 import 'enrolled_course_card.dart';
 
+typedef ContinueCourseCallback = Future<void> Function(CourseModel course);
+
 class EnrolledCoursesList extends StatelessWidget {
   const EnrolledCoursesList({
     super.key,
     required this.courses,
     required this.courseStatistics,
+    required this.onContinue,
   });
 
   final List<CourseModel> courses;
   final Map<int, UserCourseStatistics> courseStatistics;
+  final ContinueCourseCallback onContinue;
 
   @override
   Widget build(BuildContext context) {
-    final userId = UserScope.of(context).id;
-
     return Wrapper(
       child: ListView.separated(
         padding: EdgeInsets.zero,
@@ -29,7 +31,7 @@ class EnrolledCoursesList extends StatelessWidget {
           return EnrolledCourseCard(
             course: course,
             statistics: courseStatistics[course.id],
-            userId: userId,
+            onContinue: () => onContinue(course),
           );
         },
       ),

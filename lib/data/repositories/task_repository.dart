@@ -59,7 +59,7 @@ class TaskRepository implements ITaskRepository {
         isCorrect: resultDto.isCorrect,
         xpEarned: resultDto.xpEarned ?? 0,
         explanation: resultDto.feedbackMessage,
-        correctAnswer: null, // Not provided by server yet
+        correctAnswer: null,
       );
       return Success(result);
     } on AppError catch (e) {

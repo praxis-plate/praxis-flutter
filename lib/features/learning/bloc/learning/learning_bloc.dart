@@ -53,6 +53,40 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
     );
   }
 
+  Future<String> resolveContinueRoute({
+    required String userId,
+    required CourseModel course,
+  }) async {
+    final lessonsResult = await _getLessonsByCourseIdUseCase(course.id);
+    if (lessonsResult.isFailure) {
+      return '/course/${course.id}/learn';
+    }
+
+    final lessons = List.of(lessonsResult.dataOrNull ?? [])
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    if (lessons.isEmpty) {
+      return '/course/${course.id}/learn';
+    }
+
+    final progressResult = await _getCourseLessonProgressUseCase(
+      userId: userId,
+      courseId: course.id,
+    );
+    final progress = progressResult.dataOrNull ?? <LessonProgressModel>[];
+    final completedLessonIds = progress
+        .where((item) => item.isCompleted)
+        .map((item) => item.lessonId)
+        .toSet();
+
+    for (final lesson in lessons) {
+      if (!completedLessonIds.contains(lesson.id)) {
+        return '/lesson/${lesson.id}?courseId=${course.id}';
+      }
+    }
+
+    return '/course/${course.id}/learn';
+  }
+
   Future<void> _onLoadData(
     LearningLoadEvent event,
     Emitter<LearningState> emit,

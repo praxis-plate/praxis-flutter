@@ -6,8 +6,6 @@ import 'package:praxis/domain/models/coin_transaction/create_coin_transaction_mo
 import 'package:praxis/domain/repositories/i_coin_transaction_repository.dart';
 import 'package:praxis/domain/repositories/i_course_repository.dart';
 import 'package:praxis/domain/repositories/i_user_statistics_repository.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 class PurchaseCourseUseCase {
   final ICourseRepository _courseRepository;
@@ -68,15 +66,7 @@ class PurchaseCourseUseCase {
 
     final currentBalance = statistics.balance.amount;
 
-    GetIt.I<Talker>().info(
-      '💰 Balance check: available=$currentBalance, '
-      'required=${course.priceInCoins}, courseId=${course.id}',
-    );
-
     if (currentBalance < course.priceInCoins) {
-      GetIt.I<Talker>().warning(
-        '❌ Insufficient balance: need ${course.priceInCoins - currentBalance} more coins',
-      );
       return const Failure(
         AppFailure(
           code: AppErrorCode.insufficientBalance,
@@ -109,9 +99,6 @@ class PurchaseCourseUseCase {
       return Failure(enrollResult.failureOrNull!);
     }
 
-    GetIt.I<Talker>().info(
-      'Course purchased successfully: $courseId by user: $userId',
-    );
     return const Success(null);
   }
 }

@@ -1,16 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:praxis/core/theme/app_theme.dart';
 import 'package:praxis/core/utils/constants.dart';
 import 'package:praxis/core/utils/duration.dart';
-import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/domain/models/course/course_model.dart';
-import 'package:praxis/domain/models/lesson_progress/lesson_progress_model.dart';
 import 'package:praxis/domain/models/user/user_course_statistics.dart';
-import 'package:praxis/domain/usecases/lesson/get_course_lesson_progress_usecase.dart';
-import 'package:praxis/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
 import 'package:praxis/features/course_learning/widgets/course_progress_bar.dart';
 import 'package:praxis/s.dart';
 
@@ -18,59 +13,13 @@ class EnrolledCourseCard extends StatelessWidget {
   const EnrolledCourseCard({
     super.key,
     required this.course,
-    required this.userId,
+    required this.onContinue,
     this.statistics,
   });
 
   final CourseModel course;
-  final String userId;
+  final VoidCallback onContinue;
   final UserCourseStatistics? statistics;
-
-  Future<void> _handleContinue(BuildContext context) async {
-    final lessonsResult = await GetIt.I<GetLessonsByCourseIdUseCase>()(
-      course.id,
-    );
-    if (lessonsResult.isFailure) {
-      if (!context.mounted) {
-        return;
-      }
-      context.push('/course/${course.id}/learn');
-      return;
-    }
-
-    final lessons = List.of(lessonsResult.dataOrNull ?? [])
-      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
-    if (lessons.isEmpty) {
-      if (!context.mounted) {
-        return;
-      }
-      context.push('/course/${course.id}/learn');
-      return;
-    }
-
-    final progressResult = await GetIt.I<GetCourseLessonProgressUseCase>()(
-      userId: userId,
-      courseId: course.id,
-    );
-    final progress = progressResult.dataOrNull ?? const <LessonProgressModel>[];
-    final completedSet = progress
-        .where((item) => item.isCompleted)
-        .map((item) => item.lessonId)
-        .toSet();
-
-    if (!context.mounted) {
-      return;
-    }
-
-    for (final lesson in lessons) {
-      if (!completedSet.contains(lesson.id)) {
-        context.push('/lesson/${lesson.id}?courseId=${course.id}');
-        return;
-      }
-    }
-
-    context.push('/course/${course.id}/learn');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +127,7 @@ class EnrolledCourseCard extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
-                  onPressed: () => _handleContinue(context),
+                  onPressed: onContinue,
                   style: TextButton.styleFrom(
                     minimumSize: const Size.fromHeight(40),
                     padding: const EdgeInsets.symmetric(vertical: 8),
