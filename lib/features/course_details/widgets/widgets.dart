@@ -1,5 +1,6 @@
 export 'course_body.dart';
 export 'course_detail.dart';
+export 'course_contents_module_section.dart';
 export 'course_header.dart';
 export 'course_hero_app_bar.dart';
 export 'course_meta_info.dart';
