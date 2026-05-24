@@ -1,9 +1,7 @@
-import 'package:praxis/core/bloc/auth/auth_bloc.dart';
 import 'package:praxis/core/bloc/locale/locale.dart';
 import 'package:praxis/core/bloc/theme/theme_cubit.dart';
 import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/domain/models/user/user.dart';
-import 'package:praxis/features/main/bloc/user_statistics/user_statistics_bloc.dart';
 import 'package:praxis/features/profile/profile.dart';
 import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
@@ -41,9 +39,9 @@ class ProfileScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _ProfileHeaderCard(userProfile: userProfile),
+                      ProfileHeaderCard(userProfile: userProfile),
                       const SizedBox(height: 16),
-                      _SettingsCard(
+                      ProfileSettingsCard(
                         children: [
                           BlocBuilder<ThemeCubit, ThemeState>(
                             builder: (context, themeState) {
@@ -82,25 +80,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const Spacer(),
                       const SizedBox(height: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: theme.cardColor,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: theme.dividerColor.withValues(alpha: 0.6),
-                          ),
-                        ),
-                        child: SettingsTile(
-                          title: s.profileLogOut,
-                          onTap: () => context.read<AuthBloc>().add(
-                            const AuthSignOutEvent(),
-                          ),
-                          icon: Icon(
-                            Icons.exit_to_app_rounded,
-                            color: theme.colorScheme.error,
-                          ),
-                        ),
-                      ),
+                      const ProfileLogoutCard(),
                     ],
                   ),
                 ),
@@ -193,132 +173,6 @@ class ProfileScreen extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _ProfileHeaderCard extends StatelessWidget {
-  const _ProfileHeaderCard({required this.userProfile});
-
-  final UserProfileModel userProfile;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.6)),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.12),
-            child: Icon(
-              Icons.person,
-              size: 28,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  userProfile.name,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  userProfile.email,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          BlocBuilder<UserStatisticsBloc, UserStatisticsState>(
-            builder: (context, state) {
-              if (state is! UserStatisticsLoadSuccessState) {
-                return const SizedBox.shrink();
-              }
-
-              return _BalancePill(amount: state.userStatistics.balance.amount);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BalancePill extends StatelessWidget {
-  const _BalancePill({required this.amount});
-
-  final int amount;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.6)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SvgAsset(
-            'assets/icons/currency/default.svg',
-            width: 16,
-            height: 16,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            '$amount',
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SettingsCard extends StatelessWidget {
-  const _SettingsCard({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.6)),
-      ),
-      child: Column(children: children),
     );
   }
 }

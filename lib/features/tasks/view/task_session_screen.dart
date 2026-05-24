@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:praxis/core/error/app_error_code_extension.dart';
-import 'package:praxis/core/widgets/widgets.dart';
-import 'package:praxis/domain/models/task/task_models.dart';
 import 'package:praxis/features/tasks/bloc/bloc.dart';
 import 'package:praxis/features/tasks/dialogs/dialogs.dart';
 import 'package:praxis/features/tasks/renderers/task_renderer.dart';
@@ -24,6 +22,7 @@ class TaskSessionScreen extends StatefulWidget {
 }
 
 class _TaskSessionScreenState extends State<TaskSessionScreen> {
+  static const _autoAdvanceDelay = Duration(seconds: 2);
   Timer? _autoAdvanceTimer;
   bool _isCompletingLastTask = false;
   bool _isSessionSummaryDialogOpen = false;
@@ -82,22 +81,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
       );
 
       if (!sessionState.isLastTask) {
-        _autoAdvanceTimer?.cancel();
-        _autoAdvanceTimer = Timer(const Duration(seconds: 2), () {
-          if (!mounted) {
-            return;
-          }
-
-          final currentSessionState = context
-              .read<LessonTaskSessionBloc>()
-              .state;
-
-          if (currentSessionState is SessionActiveState) {
-            context.read<TaskBloc>().add(
-              LoadTaskEvent(currentSessionState.currentTask.id),
-            );
-          }
-        });
+        _scheduleAutoAdvance(context);
       }
       return;
     }
@@ -116,6 +100,22 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
         ),
       );
     }
+  }
+
+  void _scheduleAutoAdvance(BuildContext context) {
+    _autoAdvanceTimer?.cancel();
+    _autoAdvanceTimer = Timer(_autoAdvanceDelay, () {
+      if (!mounted) {
+        return;
+      }
+
+      final currentSessionState = context.read<LessonTaskSessionBloc>().state;
+      if (currentSessionState is SessionActiveState) {
+        context.read<TaskBloc>().add(
+          LoadTaskEvent(currentSessionState.currentTask.id),
+        );
+      }
+    });
   }
 
   void _loadInitialSessionTask(
@@ -156,6 +156,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
   String _resolveAppBarTitle(
     LessonTaskSessionState state,
     AppLocalizations s,
+    TaskRenderer taskRenderer,
     BuildContext context,
   ) {
     final lessonTitle = switch (state) {
@@ -170,7 +171,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
     }
 
     if (state is SessionActiveState) {
-      return _getTaskTypeTitle(state.currentTask, context);
+      return taskRenderer.describe(context, state.currentTask).title;
     }
 
     if (state is SessionErrorState) {
@@ -178,16 +179,6 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
     }
 
     return s.taskSessionLoading;
-  }
-
-  String _getTaskTypeTitle(TaskModel task, BuildContext context) {
-    final s = S.of(context);
-    return task.getLocalizedTitle(
-      () => s.taskMultipleChoice,
-      () => s.taskCodeCompletion,
-      () => s.taskMatching,
-      () => s.taskTextInput,
-    );
   }
 
   Future<void> _handlePopAttempt(BuildContext context) async {
@@ -242,22 +233,13 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
               centerTitle: false,
               titleSpacing: 16,
               title: Text(
-                _resolveAppBarTitle(sessionState, s, context),
+                _resolveAppBarTitle(sessionState, s, taskRenderer, context),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(color: theme.colorScheme.primary),
-                  const SizedBox(height: 16),
-                  Text(s.taskSessionLoading, style: theme.textTheme.bodyLarge),
-                ],
-              ),
-            ),
+            body: const TaskSessionLoadingView(),
           );
         }
 
@@ -273,44 +255,17 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
               centerTitle: false,
               titleSpacing: 16,
               title: Text(
-                _resolveAppBarTitle(sessionState, s, context),
+                _resolveAppBarTitle(sessionState, s, taskRenderer, context),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: theme.colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    s.taskError,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: theme.colorScheme.error,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Text(
-                      errorMessage,
-                      style: theme.textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () => _exitSession(context),
-                    child: Text(s.goBack),
-                  ),
-                ],
-              ),
+            body: TaskSessionErrorView(
+              title: s.taskError,
+              message: errorMessage,
+              actionLabel: s.goBack,
+              onAction: () => _exitSession(context),
             ),
           );
         }
@@ -330,7 +285,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    _resolveAppBarTitle(sessionState, s, context),
+                    _resolveAppBarTitle(sessionState, s, taskRenderer, context),
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -344,127 +299,11 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
                 ),
                 body: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: LabeledStepProgressBar(
-                        completedCount: sessionState.completedTasksCount,
-                        totalSteps: sessionState.tasks.length,
-                      ),
-                    ),
                     Expanded(
-                      child: BlocBuilder<TaskBloc, TaskState>(
-                        builder: (context, taskState) {
-                          if (taskState is TaskInitialState ||
-                              taskState is TaskLoadingState) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    s.taskLoading,
-                                    style: theme.textTheme.bodyLarge,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-
-                          if (taskState is TaskErrorState) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.error_outline,
-                                    size: 64,
-                                    color: theme.colorScheme.error,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    s.taskError,
-                                    style: theme.textTheme.titleLarge?.copyWith(
-                                      color: theme.colorScheme.error,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 32,
-                                    ),
-                                    child: Text(
-                                      taskState.failure.code.localizedMessage(
-                                        context,
-                                      ),
-                                      style: theme.textTheme.bodyMedium,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 24),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      context.read<TaskBloc>().add(
-                                        LoadTaskEvent(
-                                          sessionState.currentTask.id,
-                                        ),
-                                      );
-                                    },
-                                    child: Text(s.retry),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-
-                          if (taskState is TaskLoadedState) {
-                            return taskRenderer.build(context, taskState.task);
-                          }
-
-                          if (taskState is TaskAnswerValidatingState) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircularProgressIndicator(
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    s.taskValidating,
-                                    style: theme.textTheme.bodyLarge,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-
-                          if (taskState is TaskAnswerCorrectState) {
-                            if (_isCompletingLastTask) {
-                              return const SizedBox.shrink();
-                            }
-
-                            return TaskFeedbackCorrectWidget(
-                              task: taskState.task,
-                              result: taskState.result,
-                            );
-                          }
-
-                          if (taskState is TaskAnswerIncorrectState) {
-                            if (_isCompletingLastTask) {
-                              return const SizedBox.shrink();
-                            }
-
-                            return TaskFeedbackIncorrectWidget(
-                              task: taskState.task,
-                              result: taskState.result,
-                            );
-                          }
-
-                          return const SizedBox.shrink();
-                        },
+                      child: TaskSessionActiveBody(
+                        sessionState: sessionState,
+                        taskRenderer: taskRenderer,
+                        isCompletingLastTask: _isCompletingLastTask,
                       ),
                     ),
                   ],

@@ -4,6 +4,7 @@ import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/data/datasources/local/task_local_datasource.dart';
 import 'package:praxis/data/datasources/remote/task_remote_datasource.dart';
 import 'package:praxis/data/entities/task_dto_extension.dart';
+import 'package:praxis/data/entities/task_entity_extension.dart';
 import 'package:praxis/data/entities/task_progress_entity_extension.dart';
 import 'package:praxis/domain/models/task/create_task_progress_model.dart';
 import 'package:praxis/domain/models/task/task_models.dart';
@@ -20,11 +21,21 @@ class TaskRepository implements ITaskRepository {
 
   @override
   Future<Result<List<TaskModel>>> getTasksByLessonId(int lessonId) async {
+    final cachedTasks = await _localDataSource.getTasksByLessonId(lessonId);
+
     try {
       final taskDtos = await _remoteDataSource.getTasksByLessonId(lessonId);
+      await _localDataSource.upsertTasks(
+        taskDtos.map((task) => task.toCompanion()).toList(),
+      );
       final tasks = taskDtos.map((dto) => dto.toDomain()).toList();
       return Success(tasks);
     } on AppError catch (e) {
+      if (cachedTasks.isNotEmpty && _shouldUseCachedData(e)) {
+        final tasks = cachedTasks.map((entity) => entity.toDomain()).toList();
+        return Success(tasks);
+      }
+
       return Failure(AppFailure.fromError(e));
     } catch (e) {
       return Failure(AppFailure.fromException(e));
@@ -33,10 +44,17 @@ class TaskRepository implements ITaskRepository {
 
   @override
   Future<Result<TaskModel>> getTaskById(int taskId) async {
+    final cachedTask = await _localDataSource.getTaskById(taskId);
+
     try {
       final taskDto = await _remoteDataSource.getTaskById(taskId);
+      await _localDataSource.upsertTask(taskDto.toCompanion());
       return Success(taskDto.toDomain());
     } on AppError catch (e) {
+      if (cachedTask != null && _shouldUseCachedData(e)) {
+        return Success(cachedTask.toDomain());
+      }
+
       return Failure(AppFailure.fromError(e));
     } catch (e) {
       return Failure(AppFailure.fromException(e));
@@ -149,4 +167,6 @@ class TaskRepository implements ITaskRepository {
       return Failure(AppFailure.fromException(e));
     }
   }
+
+  bool _shouldUseCachedData(AppError error) => error.canRetry;
 }

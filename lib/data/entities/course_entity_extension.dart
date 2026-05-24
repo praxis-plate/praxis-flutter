@@ -25,7 +25,7 @@ extension CourseEntityExtension on CourseEntity {
         completionRate: 0,
       ),
       totalTasks: 0,
-      coverImage: thumbnailUrl,
+      coverImage: coverImage,
     );
   }
 }

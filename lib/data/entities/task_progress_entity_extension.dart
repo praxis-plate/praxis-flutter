@@ -19,6 +19,20 @@ extension TaskProgressEntityExtension on TaskProgressEntity {
       lastAttemptAt: lastAttemptAt,
     );
   }
+
+  TaskProgressCompanion toInsertCompanion() {
+    return TaskProgressCompanion.insert(
+      taskId: taskId,
+      userId: userId,
+      isCompleted: Value(isCompleted),
+      attempts: Value(attempts),
+      hintsUsed: Value(hintsUsed),
+      xpEarned: Value(xpEarned),
+      userAnswer: Value(userAnswer),
+      completedAt: Value(completedAt),
+      lastAttemptAt: lastAttemptAt,
+    );
+  }
 }
 
 extension CreateTaskProgressModelExtension on CreateTaskProgressModel {

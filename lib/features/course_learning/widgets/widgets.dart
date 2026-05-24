@@ -1,5 +1,10 @@
 export 'course_progress_bar.dart';
 export 'course_progress_card.dart';
+export 'course_learning_app_bar_title.dart';
+export 'course_learning_progress.dart';
+export 'course_learning_resume_card.dart';
 export 'lesson_card.dart';
 export 'lesson_list_item.dart';
+export 'lessons_list.dart';
+export 'module_header.dart';
 export 'task.dart';

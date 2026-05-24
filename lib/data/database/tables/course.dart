@@ -11,5 +11,6 @@ class Course extends Table {
   IntColumn get durationMinutes => integer()();
   RealColumn get rating => real().withDefault(const Constant(0))();
   TextColumn get thumbnailUrl => text().nullable()();
+  TextColumn get coverImage => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 }

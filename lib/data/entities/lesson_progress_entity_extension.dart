@@ -15,6 +15,16 @@ extension LessonProgressEntityExtension on LessonProgressEntity {
       timeSpentSeconds: timeSpentSeconds,
     );
   }
+
+  LessonProgressCompanion toInsertCompanion() {
+    return LessonProgressCompanion.insert(
+      lessonId: lessonId,
+      userId: userId,
+      isCompleted: Value(isCompleted),
+      completedAt: Value(completedAt),
+      timeSpentSeconds: Value(timeSpentSeconds),
+    );
+  }
 }
 
 extension CreateLessonProgressModelExtension on CreateLessonProgressModel {
@@ -33,8 +43,12 @@ extension UpdateLessonProgressModelExtension on UpdateLessonProgressModel {
   LessonProgressCompanion toCompanion() {
     return LessonProgressCompanion(
       id: Value(id),
-      isCompleted: isCompleted != null ? Value(isCompleted!) : const Value.absent(),
-      completedAt: completedAt != null ? Value(completedAt!) : const Value.absent(),
+      isCompleted: isCompleted != null
+          ? Value(isCompleted!)
+          : const Value.absent(),
+      completedAt: completedAt != null
+          ? Value(completedAt!)
+          : const Value.absent(),
       timeSpentSeconds: timeSpentSeconds != null
           ? Value(timeSpentSeconds!)
           : const Value.absent(),

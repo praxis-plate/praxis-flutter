@@ -7,8 +7,6 @@ import 'package:praxis/features/main/widgets/courses_section.dart';
 import 'package:praxis/s.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key, required this.userProfile});
@@ -40,7 +38,7 @@ class MainScreen extends StatelessWidget {
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16),
-            child: _BalanceChipWrapper(),
+            child: _MainBalancePill(),
           ),
         ],
         bottom: PreferredSize(
@@ -86,48 +84,19 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-class _BalanceChipWrapper extends StatelessWidget {
-  const _BalanceChipWrapper();
+class _MainBalancePill extends StatelessWidget {
+  const _MainBalancePill();
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserStatisticsBloc, UserStatisticsState>(
       builder: (context, state) {
-        GetIt.I<Talker>().warning(state);
         if (state is! UserStatisticsLoadSuccessState) {
           return const SizedBox.shrink();
         }
 
-        return _BalanceChip(amount: state.userStatistics.balance.amount);
+        return CoinBalancePill(amount: state.userStatistics.balance.amount);
       },
-    );
-  }
-}
-
-class _BalanceChip extends StatelessWidget {
-  const _BalanceChip({required this.amount});
-
-  final int amount;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.5)),
-      ),
-      child: CoinAmount(
-        amount: amount,
-        iconSize: 14,
-        style: theme.textTheme.bodySmall?.copyWith(
-          fontWeight: FontWeight.w500,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
-        ),
-      ),
     );
   }
 }

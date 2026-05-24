@@ -27,6 +27,20 @@ class LessonLocalDataSource {
     return await _db.into(_db.lesson).insertReturning(entry);
   }
 
+  Future<void> upsertLesson(LessonCompanion entry) async {
+    await _db.into(_db.lesson).insertOnConflictUpdate(entry);
+  }
+
+  Future<void> upsertLessons(List<LessonCompanion> entries) async {
+    if (entries.isEmpty) {
+      return;
+    }
+
+    await _db.batch((batch) {
+      batch.insertAllOnConflictUpdate(_db.lesson, entries);
+    });
+  }
+
   Future<void> updateLesson(LessonCompanion entry) async {
     if (!entry.id.present) {
       throw ArgumentError('Lesson id must be present for update');

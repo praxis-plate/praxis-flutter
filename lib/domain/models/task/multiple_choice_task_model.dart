@@ -24,16 +24,6 @@ final class MultipleChoiceTaskModel extends TaskModel {
   @override
   TaskType get taskType => taskTypeValue;
 
-  @override
-  String getLocalizedTitle(
-    String Function() multipleChoice,
-    String Function() codeCompletion,
-    String Function() matching,
-    String Function() textInput,
-  ) {
-    return multipleChoice();
-  }
-
   MultipleChoiceTaskModel copyWith({
     int? id,
     int? lessonId,
