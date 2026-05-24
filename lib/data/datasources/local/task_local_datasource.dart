@@ -23,6 +23,20 @@ class TaskLocalDataSource {
     return await _db.into(_db.task).insertReturning(entry);
   }
 
+  Future<void> upsertTask(TaskCompanion entry) async {
+    await _db.into(_db.task).insertOnConflictUpdate(entry);
+  }
+
+  Future<void> upsertTasks(List<TaskCompanion> entries) async {
+    if (entries.isEmpty) {
+      return;
+    }
+
+    await _db.batch((batch) {
+      batch.insertAllOnConflictUpdate(_db.task, entries);
+    });
+  }
+
   Future<void> updateTask(TaskCompanion entry) async {
     if (!entry.id.present) {
       throw ArgumentError('Task id must be present for update');

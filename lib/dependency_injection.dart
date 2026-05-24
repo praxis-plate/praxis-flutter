@@ -195,10 +195,16 @@ class DependencyInjection {
             UserStatisticsRepository(GetIt.I<UserStatisticsRemoteDataSource>()),
       )
       ..registerLazySingleton<IModuleRepository>(
-        () => ModuleRepository(GetIt.I<ModuleRemoteDataSource>()),
+        () => ModuleRepository(
+          GetIt.I<ModuleRemoteDataSource>(),
+          GetIt.I<ModuleLocalDataSource>(),
+        ),
       )
       ..registerLazySingleton<ILessonRepository>(
-        () => LessonRepository(GetIt.I<LessonRemoteDataSource>()),
+        () => LessonRepository(
+          GetIt.I<LessonRemoteDataSource>(),
+          GetIt.I<LessonLocalDataSource>(),
+        ),
       )
       ..registerLazySingleton<ILessonProgressRepository>(
         () => LessonProgressRepository(

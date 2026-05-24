@@ -30,7 +30,7 @@ part 'app_database.g.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  static const int _currentSchemaVersion = 2;
+  static const int _currentSchemaVersion = 3;
 
   AppDatabase() : super(_openConnection());
 
@@ -42,6 +42,11 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
+      onUpgrade: (migrator, from, to) async {
+        if (from < 3) {
+          await migrator.addColumn(course, course.coverImage);
+        }
+      },
       beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
       },

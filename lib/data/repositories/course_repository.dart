@@ -1,3 +1,4 @@
+import 'package:praxis/data/database/app_database.dart';
 import 'package:praxis/core/error/app_error_code.dart';
 import 'package:praxis/core/error/failure.dart';
 import 'package:praxis/core/exceptions/app_error.dart';
@@ -8,14 +9,13 @@ import 'package:praxis/data/datasources/local/module_local_datasource.dart';
 import 'package:praxis/data/datasources/local/task_local_datasource.dart';
 import 'package:praxis/data/datasources/remote/course_remote_datasource.dart';
 import 'package:praxis/data/entities/course_dto_extension.dart';
-import 'package:praxis/data/entities/lesson_dto_extension.dart';
-import 'package:praxis/data/entities/module_dto_extension.dart';
-import 'package:praxis/data/entities/task_dto_extension.dart';
+import 'package:praxis/data/entities/course_entity_extension.dart';
 import 'package:praxis/data/mappers/course_structure_mapper.dart';
 import 'package:praxis/domain/models/course/course_model.dart';
+import 'package:praxis/domain/models/course/course_structure_lesson_model.dart';
 import 'package:praxis/domain/models/course/course_structure_model.dart';
+import 'package:praxis/domain/models/course/course_structure_module_model.dart';
 import 'package:praxis/domain/repositories/i_course_repository.dart';
-import 'package:praxis_client/praxis_client.dart';
 
 class CourseRepository implements ICourseRepository {
   final CourseRemoteDataSource _remoteDataSource;
@@ -49,6 +49,8 @@ class CourseRepository implements ICourseRepository {
 
   @override
   Future<Result<CourseModel>> getCourseById(int id) async {
+    final cachedCourse = await _courseLocalDataSource.getCourseById(id);
+
     try {
       final courseDetailDto = await _remoteDataSource.getCourseById(id);
       if (courseDetailDto == null) {
@@ -60,9 +62,17 @@ class CourseRepository implements ICourseRepository {
           ),
         );
       }
-      await _syncCourseDetail(courseDetailDto);
-      return Success(courseDetailDto.toDomain());
+      await _courseLocalDataSource.replaceCourseDetailSnapshot(courseDetailDto);
+      return Success(
+        courseDetailDto.course.toDomain().copyWith(
+          coverImage: courseDetailDto.course.coverImage,
+        ),
+      );
     } on AppError catch (e) {
+      if (cachedCourse != null && _shouldUseCachedData(e)) {
+        return Success(await _buildCachedCourseModelFromEntity(cachedCourse));
+      }
+
       return Failure(AppFailure.fromError(e));
     } catch (e) {
       return Failure(AppFailure.fromException(e));
@@ -103,69 +113,89 @@ class CourseRepository implements ICourseRepository {
 
   @override
   Future<Result<CourseStructureModel>> getTableOfContents(int courseId) async {
+    final cachedStructure = await _buildCachedCourseStructure(courseId);
+
     try {
       final structure = await _remoteDataSource.getTableOfContents(courseId);
       return Success(structure.toDomain());
     } on AppError catch (e) {
+      if (cachedStructure != null && _shouldUseCachedData(e)) {
+        return Success(cachedStructure);
+      }
+
       return Failure(AppFailure.fromError(e));
     } catch (e) {
       return Failure(AppFailure.fromException(e));
     }
   }
 
-  Future<void> _syncCourseDetail(CourseDetailDto detail) async {
-    await _upsertCourse(detail.course);
+  Future<CourseModel> _buildCachedCourseModelFromEntity(
+    CourseEntity course,
+  ) async {
+    final lessons = await _lessonLocalDataSource.getLessonsByCourseId(
+      course.id,
+    );
+    var totalTasks = 0;
 
-    for (final module in detail.modules) {
-      await _upsertModule(module);
+    for (final lesson in lessons) {
+      totalTasks += (await _taskLocalDataSource.getTasksByLessonId(
+        lesson.id,
+      )).length;
     }
 
-    for (final lesson in detail.lessons) {
-      await _upsertLesson(lesson);
-    }
-
-    for (final task in detail.tasks) {
-      await _upsertTask(task);
-    }
+    return course.toDomain().copyWith(
+      totalTasks: totalTasks,
+      coverImage: course.coverImage,
+    );
   }
 
-  Future<void> _upsertCourse(CourseDto dto) async {
-    final existing = await _courseLocalDataSource.getCourseById(dto.id);
-    final companion = dto.toCompanion();
-    if (existing == null) {
-      await _courseLocalDataSource.insertCourse(companion);
-    } else {
-      await _courseLocalDataSource.updateCourse(companion);
+  Future<CourseStructureModel?> _buildCachedCourseStructure(
+    int courseId,
+  ) async {
+    final course = await _courseLocalDataSource.getCourseById(courseId);
+    final modules = await _moduleLocalDataSource.getModulesByCourseId(courseId);
+
+    if (course == null || modules.isEmpty) {
+      return null;
     }
+
+    final sortedModules = List.of(modules)
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    final moduleModels = <CourseStructureModuleModel>[];
+
+    for (final module in sortedModules) {
+      final lessons = await _lessonLocalDataSource.getLessonsByModuleId(
+        module.id,
+      );
+      final sortedLessons = List.of(lessons)
+        ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+
+      moduleModels.add(
+        CourseStructureModuleModel(
+          id: module.id,
+          title: module.title,
+          description: module.description,
+          orderIndex: module.orderIndex,
+          lessons: sortedLessons
+              .map(
+                (lesson) => CourseStructureLessonModel(
+                  id: lesson.id,
+                  title: lesson.title,
+                  orderIndex: lesson.orderIndex,
+                  durationMinutes: lesson.durationMinutes,
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    return CourseStructureModel(
+      courseId: course.id,
+      title: course.title,
+      modules: moduleModels,
+    );
   }
 
-  Future<void> _upsertModule(ModuleDto dto) async {
-    final existing = await _moduleLocalDataSource.getModuleById(dto.id);
-    final companion = dto.toCompanion();
-    if (existing == null) {
-      await _moduleLocalDataSource.insertModule(companion);
-    } else {
-      await _moduleLocalDataSource.updateModule(companion);
-    }
-  }
-
-  Future<void> _upsertLesson(LessonDto dto) async {
-    final existing = await _lessonLocalDataSource.getLessonById(dto.id);
-    final companion = dto.toCompanion();
-    if (existing == null) {
-      await _lessonLocalDataSource.insertLesson(companion);
-    } else {
-      await _lessonLocalDataSource.updateLesson(companion);
-    }
-  }
-
-  Future<void> _upsertTask(TaskDto dto) async {
-    final existing = await _taskLocalDataSource.getTaskById(dto.id);
-    final companion = dto.toCompanion();
-    if (existing == null) {
-      await _taskLocalDataSource.insertTask(companion);
-    } else {
-      await _taskLocalDataSource.updateTask(companion);
-    }
-  }
+  bool _shouldUseCachedData(AppError error) => error.canRetry;
 }

@@ -18,6 +18,7 @@ extension CourseDtoExtension on CourseDto {
       durationMinutes: durationMinutes,
       rating: rating,
       thumbnailUrl: thumbnailUrl,
+      coverImage: coverImage,
       createdAt: createdAt,
       pricing: CoursePricing(price: Money.fromInt(priceInCoins)),
       statistics: CourseStatistics(
@@ -42,6 +43,7 @@ extension CourseDtoCompanionExtension on CourseDto {
       durationMinutes: Value(durationMinutes),
       rating: Value(rating),
       thumbnailUrl: Value(thumbnailUrl),
+      coverImage: Value(coverImage),
       createdAt: Value(createdAt),
     );
   }

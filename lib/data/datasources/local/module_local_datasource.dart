@@ -21,6 +21,20 @@ class ModuleLocalDataSource {
     return await _db.into(_db.module).insertReturning(entry);
   }
 
+  Future<void> upsertModule(ModuleCompanion entry) async {
+    await _db.into(_db.module).insertOnConflictUpdate(entry);
+  }
+
+  Future<void> upsertModules(List<ModuleCompanion> entries) async {
+    if (entries.isEmpty) {
+      return;
+    }
+
+    await _db.batch((batch) {
+      batch.insertAllOnConflictUpdate(_db.module, entries);
+    });
+  }
+
   Future<void> updateModule(ModuleCompanion entry) async {
     if (!entry.id.present) {
       throw ArgumentError('Module id must be present for update');
