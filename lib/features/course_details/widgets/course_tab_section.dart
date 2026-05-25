@@ -61,7 +61,7 @@ class _ContentsPreviewCard extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  s.lessonsCount(course.totalTasks),
+                  s.lessonsCount(course.totalLessons),
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

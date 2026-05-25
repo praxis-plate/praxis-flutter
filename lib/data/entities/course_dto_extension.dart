@@ -26,6 +26,7 @@ extension CourseDtoExtension on CourseDto {
         completionRate: 0,
         averageRating: rating,
       ),
+      totalLessons: totalLessons,
       totalTasks: totalTasks,
     );
   }

@@ -84,10 +84,18 @@ class _CourseLearningScaffold extends StatelessWidget {
               .map((progress) => progress.lessonId)
               .toSet();
 
-          return LessonsList(
-            courseId: state.course.id,
-            completedLessonIds: completedLessonIds,
-            userId: userId,
+          return Column(
+            children: [
+              if (state.courseAssessment != null)
+                CourseAssessmentCard(assessment: state.courseAssessment!),
+              Expanded(
+                child: LessonsList(
+                  courseId: state.course.id,
+                  completedLessonIds: completedLessonIds,
+                  userId: userId,
+                ),
+              ),
+            ],
           );
         },
       ),

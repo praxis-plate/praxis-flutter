@@ -28,7 +28,7 @@ class CourseMetaInfo extends StatelessWidget {
               label: s.courseDetailsRating,
             ),
             MetaItem(
-              value: '${course.totalTasks}',
+              value: '${course.totalLessons}',
               label: s.courseDetailsLessonsLabel,
             ),
           ];

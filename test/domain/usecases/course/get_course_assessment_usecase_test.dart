@@ -107,7 +107,7 @@ final _task = MultipleChoiceTaskModel(
   lessonId: 1,
   questionText: 'Question',
   correctAnswer: 'Answer',
-  options: ['A', 'B'],
+  options: const ['A', 'B'],
   difficultyLevel: 1,
   xpValue: 10,
   orderIndex: 0,

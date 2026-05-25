@@ -120,7 +120,7 @@ class CourseCard extends StatelessWidget {
                             key: Key(course.id.toString()),
                             rating: course.rating,
                             duration: Duration(minutes: course.durationMinutes),
-                            lessonsCount: course.totalTasks,
+                            lessonsCount: course.totalLessons,
                           ),
                         ],
                       ),

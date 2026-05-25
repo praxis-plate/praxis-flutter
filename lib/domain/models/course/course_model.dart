@@ -16,6 +16,7 @@ class CourseModel extends Equatable {
   final String tableOfContents;
   final CoursePricing pricing;
   final CourseStatistics statistics;
+  final int totalLessons;
   final int totalTasks;
   final String? coverImage;
 
@@ -33,6 +34,7 @@ class CourseModel extends Equatable {
     this.tableOfContents = '',
     required this.pricing,
     required this.statistics,
+    this.totalLessons = 0,
     this.totalTasks = 0,
     this.coverImage,
   });
@@ -51,6 +53,7 @@ class CourseModel extends Equatable {
     String? tableOfContents,
     CoursePricing? pricing,
     CourseStatistics? statistics,
+    int? totalLessons,
     int? totalTasks,
     String? coverImage,
   }) {
@@ -68,6 +71,7 @@ class CourseModel extends Equatable {
       tableOfContents: tableOfContents ?? this.tableOfContents,
       pricing: pricing ?? this.pricing,
       statistics: statistics ?? this.statistics,
+      totalLessons: totalLessons ?? this.totalLessons,
       totalTasks: totalTasks ?? this.totalTasks,
       coverImage: coverImage ?? this.coverImage,
     );
@@ -88,6 +92,7 @@ class CourseModel extends Equatable {
     tableOfContents,
     pricing,
     statistics,
+    totalLessons,
     totalTasks,
     coverImage,
   ];

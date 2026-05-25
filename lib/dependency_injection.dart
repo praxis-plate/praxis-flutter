@@ -404,6 +404,7 @@ class DependencyInjection {
       ..registerFactory(
         () => CourseLearningBloc(
           getCourseDetailUseCase: GetIt.I<GetCourseDetailUseCase>(),
+          getCourseAssessmentUseCase: GetIt.I<GetCourseAssessmentUseCase>(),
           getCourseLessonProgressUseCase:
               GetIt.I<GetCourseLessonProgressUseCase>(),
           getLessonsByCourseIdUseCase: GetIt.I<GetLessonsByCourseIdUseCase>(),

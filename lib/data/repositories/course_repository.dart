@@ -144,6 +144,7 @@ class CourseRepository implements ICourseRepository {
     }
 
     return course.toDomain().copyWith(
+      totalLessons: lessons.length,
       totalTasks: totalTasks,
       coverImage: course.coverImage,
     );
