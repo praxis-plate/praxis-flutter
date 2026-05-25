@@ -67,10 +67,17 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
     SessionActiveState sessionState,
   ) {
     if (taskState is TaskAnswerCorrectState) {
-      if (sessionState.isLastTask && !_isCompletingLastTask) {
+      if (sessionState.isLastTask) {
+        if (_isCompletingLastTask) {
+          return;
+        }
+
         setState(() {
           _isCompletingLastTask = true;
         });
+
+        _scheduleSessionCompletion(context, taskState.result.xpEarned);
+        return;
       }
 
       context.read<LessonTaskSessionBloc>().add(
@@ -80,25 +87,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
         ),
       );
 
-      if (!sessionState.isLastTask) {
-        _scheduleAutoAdvance(context);
-      }
-      return;
-    }
-
-    if (taskState is TaskAnswerIncorrectState) {
-      if (sessionState.isLastTask && !_isCompletingLastTask) {
-        setState(() {
-          _isCompletingLastTask = true;
-        });
-      }
-
-      context.read<LessonTaskSessionBloc>().add(
-        CompleteCurrentTaskEvent(
-          isCorrect: false,
-          xpEarned: taskState.result.xpEarned,
-        ),
-      );
+      _scheduleAutoAdvance(context);
     }
   }
 
@@ -115,6 +104,19 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
           LoadTaskEvent(currentSessionState.currentTask.id),
         );
       }
+    });
+  }
+
+  void _scheduleSessionCompletion(BuildContext context, int xpEarned) {
+    _autoAdvanceTimer?.cancel();
+    _autoAdvanceTimer = Timer(_autoAdvanceDelay, () {
+      if (!mounted) {
+        return;
+      }
+
+      context.read<LessonTaskSessionBloc>().add(
+        CompleteCurrentTaskEvent(isCorrect: true, xpEarned: xpEarned),
+      );
     });
   }
 
@@ -199,6 +201,14 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
     LessonTaskSessionState sessionState,
   ) {
     _loadInitialSessionTask(context, sessionState);
+
+    if (sessionState is! SessionActiveState &&
+        _isCompletingLastTask &&
+        mounted) {
+      setState(() {
+        _isCompletingLastTask = false;
+      });
+    }
 
     if (sessionState is SessionCompletedState && !_isSessionSummaryDialogOpen) {
       _isSessionSummaryDialogOpen = true;
@@ -303,7 +313,6 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
                       child: TaskSessionActiveBody(
                         sessionState: sessionState,
                         taskRenderer: taskRenderer,
-                        isCompletingLastTask: _isCompletingLastTask,
                       ),
                     ),
                   ],

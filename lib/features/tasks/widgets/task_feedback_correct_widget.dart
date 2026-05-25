@@ -1,13 +1,17 @@
 import 'package:praxis/domain/models/task/task_model.dart';
 import 'package:praxis/domain/models/task/task_result_model.dart';
 import 'package:flutter/material.dart';
+import 'package:praxis/core/widgets/widgets.dart';
 
 import 'task_feedback_content.dart';
 
-const _praiseBackgroundAssets = [
-  'assets/images/task_praise_background_1.png',
-  'assets/images/task_praise_background_2.png',
-  'assets/images/task_praise_background_3.png',
+const _positiveShiftStates = [
+  ShiftState.celebrate,
+  ShiftState.thumbsUp,
+  ShiftState.correctCheck,
+  ShiftState.achievementStar,
+  ShiftState.lessonTrophy,
+  ShiftState.streakFlame,
 ];
 
 class TaskFeedbackCorrectWidget extends StatefulWidget {
@@ -67,9 +71,8 @@ class _TaskFeedbackCorrectWidgetState extends State<TaskFeedbackCorrectWidget>
       scaleAnimation: _scaleAnimation,
       fadeAnimation: _fadeAnimation,
       onRetry: null,
-      praiseImageAsset:
-          _praiseBackgroundAssets[widget.task.id %
-              _praiseBackgroundAssets.length],
+      shiftState:
+          _positiveShiftStates[widget.task.id % _positiveShiftStates.length],
     );
   }
 }

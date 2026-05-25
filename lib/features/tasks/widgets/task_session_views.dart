@@ -83,12 +83,10 @@ class TaskSessionActiveBody extends StatelessWidget {
     super.key,
     required this.sessionState,
     required this.taskRenderer,
-    required this.isCompletingLastTask,
   });
 
   final SessionActiveState sessionState;
   final TaskRenderer taskRenderer;
-  final bool isCompletingLastTask;
 
   @override
   Widget build(BuildContext context) {
@@ -135,13 +133,9 @@ class TaskSessionActiveBody extends StatelessWidget {
                   ),
                 ),
                 TaskAnswerCorrectState(:final task, :final result) =>
-                  isCompletingLastTask
-                      ? const SizedBox.shrink()
-                      : TaskFeedbackCorrectWidget(task: task, result: result),
+                  TaskFeedbackCorrectWidget(task: task, result: result),
                 TaskAnswerIncorrectState(:final task, :final result) =>
-                  isCompletingLastTask
-                      ? const SizedBox.shrink()
-                      : TaskFeedbackIncorrectWidget(task: task, result: result),
+                  TaskFeedbackIncorrectWidget(task: task, result: result),
                 _ => const SizedBox.shrink(),
               };
             },

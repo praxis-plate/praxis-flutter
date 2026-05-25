@@ -3,6 +3,8 @@ import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/domain/models/task/task_result_model.dart';
 import 'package:praxis/s.dart';
 
+import 'task_feedback_hero.dart';
+
 class TaskFeedbackContent extends StatelessWidget {
   const TaskFeedbackContent({
     super.key,
@@ -12,7 +14,7 @@ class TaskFeedbackContent extends StatelessWidget {
     required this.fadeAnimation,
     required this.onRetry,
     this.fallbackExplanation,
-    this.praiseImageAsset,
+    this.shiftState,
   });
 
   final TaskResultModel result;
@@ -21,7 +23,7 @@ class TaskFeedbackContent extends StatelessWidget {
   final Animation<double> fadeAnimation;
   final VoidCallback? onRetry;
   final String? fallbackExplanation;
-  final String? praiseImageAsset;
+  final ShiftState? shiftState;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +38,31 @@ class TaskFeedbackContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (isCorrect && praiseImageAsset != null)
+          if (shiftState != null)
             ScaleTransition(
               scale: scaleAnimation,
-              child: _PraiseIllustrationCard(
-                imageAsset: praiseImageAsset!,
-                title: s.taskCorrectFeedback,
-                accentColor: positiveColor,
+              child: TaskFeedbackHero(
+                isCorrect: isCorrect,
+                shiftState: shiftState!,
+                label: isCorrect ? s.taskCorrectLabel : s.taskIncorrectLabel,
+                title: isCorrect ? s.taskCorrectFeedback : s.taskIncorrectTitle,
+                subtitle: isCorrect ? null : s.taskIncorrectSubtitle,
+                xpEarned: result.xpEarned,
+                accentColor: isCorrect
+                    ? positiveColor
+                    : theme.colorScheme.error,
+                backgroundColor: Color.alphaBlend(
+                  (isCorrect ? positiveColor : theme.colorScheme.error)
+                      .withValues(alpha: isCorrect ? 0.1 : 0.08),
+                  theme.colorScheme.surfaceContainerHighest,
+                ),
+                illustrationRotation: isCorrect ? -0.12 : 0.08,
+                illustrationAlignment: isCorrect
+                    ? Alignment.topRight
+                    : Alignment.centerRight,
+                badgeBackgroundColor: isCorrect
+                    ? positiveColor.withValues(alpha: 0.12)
+                    : theme.colorScheme.error.withValues(alpha: 0.12),
               ),
             )
           else
@@ -108,35 +128,6 @@ class TaskFeedbackContent extends StatelessWidget {
                 ),
               ),
             ),
-          if (isCorrect && result.xpEarned > 0) ...[
-            const SizedBox(height: 24),
-            FadeTransition(
-              opacity: fadeAnimation,
-              child: SurfaceCard(
-                padding: const EdgeInsets.all(20),
-                borderRadius: BorderRadius.circular(12),
-                borderColor: positiveColor.withValues(alpha: 0.4),
-                backgroundColor: Color.alphaBlend(
-                  positiveColor.withValues(alpha: 0.08),
-                  theme.colorScheme.surfaceContainerHighest,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.stars, color: positiveColor, size: 32),
-                    const SizedBox(width: 12),
-                    Text(
-                      s.taskXpEarned(result.xpEarned),
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: positiveColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
           if (!isCorrect && result.correctAnswer != null) ...[
             const SizedBox(height: 24),
             SurfaceCard(
@@ -223,61 +214,6 @@ class TaskFeedbackContent extends StatelessWidget {
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-class _PraiseIllustrationCard extends StatelessWidget {
-  const _PraiseIllustrationCard({
-    required this.imageAsset,
-    required this.title,
-    required this.accentColor,
-  });
-
-  final String imageAsset;
-  final String title;
-  final Color accentColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final radius = BorderRadius.circular(18);
-
-    return ClipRRect(
-      borderRadius: radius,
-      child: SurfaceCard(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
-        borderRadius: radius,
-        borderColor: accentColor.withValues(alpha: 0.42),
-        backgroundColor: Color.alphaBlend(
-          accentColor.withValues(alpha: 0.08),
-          theme.colorScheme.surfaceContainerHighest,
-        ),
-        child: SizedBox(
-          height: 260,
-          width: double.infinity,
-          child: Column(
-            children: [
-              Expanded(
-                child: Image.asset(
-                  imageAsset,
-                  fit: BoxFit.contain,
-                  filterQuality: FilterQuality.high,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: accentColor,
-                  fontWeight: FontWeight.w800,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
