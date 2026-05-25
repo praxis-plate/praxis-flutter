@@ -97,6 +97,7 @@ class TaskFeedbackHero extends StatelessWidget {
                 accentColor: accentColor,
                 illustrationRotation: illustrationRotation,
                 compact: isCompact,
+                framed: false,
               ),
             ),
           ],
@@ -244,8 +245,10 @@ class _FeedbackHeroCopy extends StatelessWidget {
           Text(
             subtitle!,
             style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
+              color: isCorrect
+                  ? theme.colorScheme.onSurfaceVariant
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.9),
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
