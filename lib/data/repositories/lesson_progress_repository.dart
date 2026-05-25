@@ -4,8 +4,10 @@ import 'package:praxis/core/utils/result.dart';
 import 'package:praxis/data/datasources/local/lesson_progress_local_datasource.dart';
 import 'package:praxis/data/datasources/remote/lesson_remote_datasource.dart';
 import 'package:praxis/data/datasources/remote/lesson_progress_remote_datasource.dart';
+import 'package:praxis/data/entities/lesson_completion_result_dto_extension.dart';
 import 'package:praxis/data/entities/lesson_progress_dto_extension.dart';
 import 'package:praxis/data/entities/lesson_progress_entity_extension.dart';
+import 'package:praxis/domain/models/lesson/lesson_completion_result_model.dart';
 import 'package:praxis/domain/models/lesson_progress/create_lesson_progress_model.dart';
 import 'package:praxis/domain/models/lesson_progress/lesson_progress_model.dart';
 import 'package:praxis/domain/models/lesson_progress/update_lesson_progress_model.dart';
@@ -85,6 +87,57 @@ class LessonProgressRepository implements ILessonProgressRepository {
       } catch (_) {
         return Failure(AppFailure.fromException(e));
       }
+    }
+  }
+
+  @override
+  Future<Result<LessonCompletionResultModel>> completeLessonSession({
+    required String userId,
+    required int lessonId,
+    required int timeSpentSeconds,
+    required int bonusXp,
+    required int correctTasks,
+    required int totalTasks,
+    required int totalXpEarned,
+  }) async {
+    try {
+      final result = await _progressRemoteDataSource.completeLessonSession(
+        lessonId: lessonId,
+        timeSpentSeconds: timeSpentSeconds,
+        bonusXp: bonusXp,
+        correctTasks: correctTasks,
+        totalTasks: totalTasks,
+        totalXpEarned: totalXpEarned,
+      );
+
+      final existing = await _localDataSource.getLessonProgress(
+        userId,
+        lessonId,
+      );
+      if (existing == null) {
+        final model = CreateLessonProgressModel(
+          lessonId: lessonId,
+          userId: userId,
+          isCompleted: true,
+          completedAt: DateTime.now(),
+          timeSpentSeconds: timeSpentSeconds,
+        );
+        await _localDataSource.insertLessonProgress(model.toCompanion());
+      } else {
+        final updateModel = UpdateLessonProgressModel(
+          id: existing.id,
+          isCompleted: true,
+          completedAt: existing.completedAt ?? DateTime.now(),
+          timeSpentSeconds: timeSpentSeconds,
+        );
+        await _localDataSource.updateLessonProgress(updateModel.toCompanion());
+      }
+
+      return Success(result.toDomain());
+    } on AppError catch (e) {
+      return Failure(AppFailure.fromError(e));
+    } catch (e) {
+      return Failure(AppFailure.fromException(e));
     }
   }
 }

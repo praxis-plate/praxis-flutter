@@ -331,6 +331,13 @@ class DependencyInjection {
       )
       ..registerFactory(
         () => GetTaskCountByLessonIdUseCase(GetIt.I<ITaskRepository>()),
+      )
+      ..registerFactory(
+        () => GetCourseAssessmentUseCase(
+          lessonRepository: GetIt.I<ILessonRepository>(),
+          lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
+          taskRepository: GetIt.I<ITaskRepository>(),
+        ),
       );
   }
 
@@ -452,16 +459,15 @@ class DependencyInjection {
         (userId, _) => TaskHintCubit(GetIt.I<RequestTaskHintUseCase>(), userId),
       )
       ..registerFactory<CompleteLessonSessionUseCase>(
-        () => CompleteLessonSessionUseCase(
-          GetIt.I<ILessonProgressRepository>(),
-          GetIt.I<ICoinTransactionRepository>(),
-        ),
+        () =>
+            CompleteLessonSessionUseCase(GetIt.I<ILessonProgressRepository>()),
       )
       ..registerFactory<LessonTaskSessionBloc>(
         () => LessonTaskSessionBloc(
           GetIt.I<GetLessonByIdUseCase>(),
           GetIt.I<GetLessonTasksUseCase>(),
           GetIt.I<CompleteLessonSessionUseCase>(),
+          GetIt.I<GetCourseAssessmentUseCase>(),
         ),
       );
   }

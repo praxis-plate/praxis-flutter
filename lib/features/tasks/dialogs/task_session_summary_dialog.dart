@@ -107,6 +107,70 @@ class TaskSessionSummaryDialog extends StatelessWidget {
                             '${sessionState.correctTasks}/${sessionState.totalTasks}',
                         theme: theme,
                       ),
+                      if (sessionState.coinsAwarded > 0) ...[
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.monetization_on,
+                          label: s.taskSessionCoinsAwarded,
+                          value: '${sessionState.coinsAwarded}',
+                          theme: theme,
+                        ),
+                      ],
+                      if (sessionState.unlockedAchievements.isNotEmpty) ...[
+                        const SizedBox(height: 20),
+                        Text(
+                          s.taskSessionAchievementsUnlocked,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: 8),
+                        for (final achievement
+                            in sessionState.unlockedAchievements) ...[
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 6),
+                            child: Text('• ${achievement.title}'),
+                          ),
+                        ],
+                      ],
+                      if (sessionState.courseAssessment != null) ...[
+                        const SizedBox(height: 20),
+                        Text(
+                          s.courseAssessmentTitle,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.workspace_premium,
+                          label: s.courseAssessmentGrade,
+                          value: s.courseAssessmentGradeValue(
+                            sessionState.courseAssessment!.grade,
+                          ),
+                          theme: theme,
+                        ),
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.auto_graph,
+                          label: s.courseAssessmentAccuracy,
+                          value:
+                              '${sessionState.courseAssessment!.accuracyPercentage.toStringAsFixed(1)}%',
+                          theme: theme,
+                        ),
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.school,
+                          label: s.courseAssessmentLessons,
+                          value:
+                              '${sessionState.courseAssessment!.completedLessons}/${sessionState.courseAssessment!.totalLessons}',
+                          theme: theme,
+                        ),
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.assignment_turned_in,
+                          label: s.courseAssessmentTasks,
+                          value:
+                              '${sessionState.courseAssessment!.completedTasks}/${sessionState.courseAssessment!.totalTasks}',
+                          theme: theme,
+                        ),
+                      ],
                       const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerRight,

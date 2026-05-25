@@ -492,6 +492,21 @@
   "taskSessionAccuracy": "Точность",
   "taskSessionTimeSpent": "Время",
   "taskSessionTasksCompleted": "Заданий выполнено",
+  "taskSessionCoinsAwarded": "Получено монет",
+  "taskSessionAchievementsUnlocked": "Открытые достижения",
+  "courseAssessmentTitle": "Курс завершен!",
+  "courseAssessmentGrade": "Итоговая оценка",
+  "courseAssessmentAccuracy": "Точность по курсу",
+  "courseAssessmentLessons": "Уроков завершено",
+  "courseAssessmentTasks": "Заданий выполнено",
+  "courseAssessmentGradeValue": "{grade}/5",
+  "@courseAssessmentGradeValue": {
+    "placeholders": {
+      "grade": {
+        "type": "int"
+      }
+    }
+  },
   "offlineMode": "Оффлайн - функции ИИ недоступны",
   "goBack": "Назад",
   "exit": "Выйти",

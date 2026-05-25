@@ -1,3 +1,4 @@
+export 'get_course_assessment_usecase.dart';
 export 'check_course_enrollment_usecase.dart';
 export 'get_course_detail_usecase.dart';
 export 'get_course_table_of_contents_usecase.dart';

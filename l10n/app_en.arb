@@ -492,6 +492,21 @@
   "taskSessionAccuracy": "Accuracy",
   "taskSessionTimeSpent": "Time Spent",
   "taskSessionTasksCompleted": "Tasks Completed",
+  "taskSessionCoinsAwarded": "Coins Awarded",
+  "taskSessionAchievementsUnlocked": "Achievements unlocked",
+  "courseAssessmentTitle": "Course Complete!",
+  "courseAssessmentGrade": "Final Grade",
+  "courseAssessmentAccuracy": "Course Accuracy",
+  "courseAssessmentLessons": "Lessons Completed",
+  "courseAssessmentTasks": "Tasks Completed",
+  "courseAssessmentGradeValue": "{grade}/5",
+  "@courseAssessmentGradeValue": {
+    "placeholders": {
+      "grade": {
+        "type": "int"
+      }
+    }
+  },
   "offlineMode": "Offline - AI features unavailable",
   "goBack": "Back",
   "exit": "Exit",

@@ -297,13 +297,16 @@ class AppRouter {
                     child: MultiBlocProvider(
                       providers: [
                         BlocProvider(
-                          create: (context) => GetIt.I<LessonTaskSessionBloc>()
-                            ..add(
-                              StartSessionEvent(
-                                lessonId: lessonId,
-                                userId: userId,
+                          create: (context) =>
+                              GetIt.I<LessonTaskSessionBloc>()..add(
+                                StartSessionEvent(
+                                  lessonId: lessonId,
+                                  userId: userId,
+                                  courseId: courseId == null
+                                      ? null
+                                      : int.tryParse(courseId),
+                                ),
                               ),
-                            ),
                         ),
                         BlocProvider(
                           create: (context) => TaskBloc(
