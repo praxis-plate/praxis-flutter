@@ -70,6 +70,10 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/shift/
+    - assets/images/shift/states/
+    - assets/images/shift/states/positive/
+    - assets/images/shift/states/negative/
     - assets/icons/
     - assets/icons/currency/
     - assets/prompts/

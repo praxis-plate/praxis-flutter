@@ -3,8 +3,17 @@ import 'package:praxis/domain/models/task/task_result_model.dart';
 import 'package:praxis/features/tasks/bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:praxis/core/widgets/widgets.dart';
 
 import 'task_feedback_content.dart';
+
+const _negativeShiftStates = [
+  ShiftState.wrongSad,
+  ShiftState.retry,
+  ShiftState.almostThere,
+  ShiftState.thinking,
+  ShiftState.bugError,
+];
 
 class TaskFeedbackIncorrectWidget extends StatefulWidget {
   final TaskModel task;
@@ -67,6 +76,8 @@ class _TaskFeedbackIncorrectWidgetState
         context.read<TaskBloc>().add(const RetryTaskEvent());
       },
       fallbackExplanation: widget.task.fallbackExplanation,
+      shiftState:
+          _negativeShiftStates[widget.task.id % _negativeShiftStates.length],
     );
   }
 }
