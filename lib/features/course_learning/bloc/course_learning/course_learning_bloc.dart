@@ -87,7 +87,6 @@ class CourseLearningBloc
         final courseAssessment = await _loadCourseAssessment(
           userId: event.userId,
           courseId: event.courseId,
-          progress: progress,
           totalLessons: totalLessons,
         );
 
@@ -156,7 +155,6 @@ class CourseLearningBloc
         final courseAssessment = await _loadCourseAssessment(
           userId: _currentUserId!,
           courseId: _currentCourseId!,
-          progress: progress,
           totalLessons: totalLessons,
         );
 
@@ -200,11 +198,9 @@ class CourseLearningBloc
   Future<CourseAssessmentModel?> _loadCourseAssessment({
     required String userId,
     required int courseId,
-    required List<LessonProgressModel> progress,
     required int totalLessons,
   }) async {
-    final completedLessons = progress.where((item) => item.isCompleted).length;
-    if (totalLessons == 0 || completedLessons < totalLessons) {
+    if (totalLessons == 0) {
       return null;
     }
 
@@ -212,6 +208,11 @@ class CourseLearningBloc
       userId: userId,
       courseId: courseId,
     );
-    return assessmentResult.dataOrNull;
+    final assessment = assessmentResult.dataOrNull;
+    if (assessment == null || !assessment.isCourseCompleted) {
+      return null;
+    }
+
+    return assessment;
   }
 }

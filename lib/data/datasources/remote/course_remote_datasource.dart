@@ -24,4 +24,15 @@ class CourseRemoteDataSource {
   Future<CourseStructureDto> getTableOfContents(int courseId) async {
     return await _client.course.getTableOfContents(courseId);
   }
+
+  Future<void> submitCourseReview({
+    required int courseId,
+    required int rating,
+    required String comment,
+  }) async {
+    await _client.course.submitReview(
+      courseId,
+      CreateCourseReviewRequest(rating: rating, comment: comment),
+    );
+  }
 }

@@ -160,6 +160,34 @@ void main() {
       expect(result.dataOrNull?.coverImage, 'cover');
     },
   );
+
+  test(
+    'submitCourseReview delegates review submission to remote data source',
+    () async {
+      when(
+        () => remoteDataSource.submitCourseReview(
+          courseId: 1,
+          rating: 5,
+          comment: 'Helpful course',
+        ),
+      ).thenAnswer((_) async {});
+
+      final result = await repository.submitCourseReview(
+        courseId: 1,
+        rating: 5,
+        comment: 'Helpful course',
+      );
+
+      expect(result.isSuccess, isTrue);
+      verify(
+        () => remoteDataSource.submitCourseReview(
+          courseId: 1,
+          rating: 5,
+          comment: 'Helpful course',
+        ),
+      ).called(1);
+    },
+  );
 }
 
 final _courseEntity = CourseEntity(
@@ -258,4 +286,6 @@ final _courseDetailDto = CourseDetailDto(
   modules: const [],
   lessons: const [],
   tasks: const [],
+  reviews: const [],
+  canSubmitReview: false,
 );

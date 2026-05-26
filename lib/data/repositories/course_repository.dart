@@ -33,7 +33,7 @@ class CourseRepository implements ICourseRepository {
   );
 
   @override
-  Future<Result<List<CourseModel>>> getCourses([int limit = 10]) async {
+  Future<Result<List<CourseModel>>> getCourses([int limit = 100]) async {
     try {
       final courseDtos = await _remoteDataSource.getAllCourses();
       final courses = courseDtos.map((dto) => dto.toDomain()).toList();
@@ -63,11 +63,7 @@ class CourseRepository implements ICourseRepository {
         );
       }
       await _courseLocalDataSource.replaceCourseDetailSnapshot(courseDetailDto);
-      return Success(
-        courseDetailDto.course.toDomain().copyWith(
-          coverImage: courseDetailDto.course.coverImage,
-        ),
-      );
+      return Success(courseDetailDto.toDomain());
     } on AppError catch (e) {
       if (cachedCourse != null && _shouldUseCachedData(e)) {
         return Success(await _buildCachedCourseModelFromEntity(cachedCourse));
@@ -123,6 +119,26 @@ class CourseRepository implements ICourseRepository {
         return Success(cachedStructure);
       }
 
+      return Failure(AppFailure.fromError(e));
+    } catch (e) {
+      return Failure(AppFailure.fromException(e));
+    }
+  }
+
+  @override
+  Future<Result<void>> submitCourseReview({
+    required int courseId,
+    required int rating,
+    required String comment,
+  }) async {
+    try {
+      await _remoteDataSource.submitCourseReview(
+        courseId: courseId,
+        rating: rating,
+        comment: comment,
+      );
+      return const Success(null);
+    } on AppError catch (e) {
       return Failure(AppFailure.fromError(e));
     } catch (e) {
       return Failure(AppFailure.fromException(e));

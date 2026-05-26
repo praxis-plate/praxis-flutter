@@ -49,15 +49,30 @@ class TaskSessionSummaryDialog extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          IconButton(
+                          OutlinedButton.icon(
                             onPressed: () {
                               context.pop();
                               onFinish();
                             },
-                            icon: const Icon(Icons.arrow_back_ios),
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: theme.colorScheme.primary,
+                              backgroundColor:
+                                  theme.colorScheme.surface.withValues(
+                                    alpha: 0.92,
+                                  ),
+                              side: BorderSide(
+                                color: theme.colorScheme.primary.withValues(
+                                  alpha: 0.28,
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            icon: const Icon(Icons.arrow_back_ios_new, size: 16),
+                            label: Text(s.goBack),
                           ),
                           const SizedBox(width: 8),
                           Icon(

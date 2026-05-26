@@ -4,6 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:praxis/core/error/app_error_code_extension.dart';
 import 'package:praxis/core/widgets/widgets.dart';
+import 'package:praxis/domain/usecases/course/submit_course_review_usecase.dart';
+import 'package:praxis/features/course_details/widgets/course_review_dialog.dart';
 import 'package:praxis/features/features.dart';
 import 'package:praxis/s.dart';
 
@@ -84,21 +86,45 @@ class _CourseLearningScaffold extends StatelessWidget {
               .map((progress) => progress.lessonId)
               .toSet();
 
-          return Column(
-            children: [
-              if (state.courseAssessment != null)
-                CourseAssessmentCard(assessment: state.courseAssessment!),
-              Expanded(
-                child: LessonsList(
-                  courseId: state.course.id,
-                  completedLessonIds: completedLessonIds,
-                  userId: userId,
-                ),
-              ),
-            ],
+          return LessonsList(
+            courseId: state.course.id,
+            completedLessonIds: completedLessonIds,
+            userId: userId,
+            topContent: state.courseAssessment == null
+                ? null
+                : CourseAssessmentCard(
+                    assessment: state.courseAssessment!,
+                    margin: EdgeInsets.zero,
+                    action: state.course.canSubmitReview
+                        ? SizedBox(
+                            width: double.infinity,
+                            child: FilledButton(
+                              onPressed: () => _openCourseReviewDialog(context),
+                              child: Text(s.courseReviewAction),
+                            ),
+                          )
+                        : null,
+                  ),
           );
         },
       ),
     );
+  }
+
+  Future<void> _openCourseReviewDialog(BuildContext context) async {
+    final submitted = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => CourseReviewDialog(
+        courseId: courseId,
+        submitCourseReviewUseCase: GetIt.I<SubmitCourseReviewUseCase>(),
+        initialReview: null,
+      ),
+    );
+
+    if (submitted != true || !context.mounted) {
+      return;
+    }
+
+    context.read<CourseLearningBloc>().add(const RefreshProgress());
   }
 }

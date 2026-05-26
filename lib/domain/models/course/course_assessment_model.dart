@@ -18,7 +18,8 @@ class CourseAssessmentModel extends Equatable {
   });
 
   bool get isCourseCompleted =>
-      totalLessons > 0 && completedLessons >= totalLessons;
+      (totalLessons > 0 && completedLessons >= totalLessons) ||
+      (totalTasks > 0 && completedTasks >= totalTasks);
 
   @override
   List<Object?> get props => [

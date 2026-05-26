@@ -60,6 +60,37 @@ void main() {
     expect(result.dataOrNull?.grade, 4);
     expect(result.dataOrNull?.isCourseCompleted, isTrue);
   });
+
+  test(
+    'treats legacy completed course as completed when all tasks are done',
+    () async {
+      when(
+        () => lessonRepository.getLessonsByCourseId(10),
+      ).thenAnswer((_) async => Success(_lessons));
+      when(
+        () => lessonProgressRepository.getCourseLessonProgress('user-1', 10),
+      ).thenAnswer((_) async => Success(_legacyProgress));
+      when(
+        () => taskRepository.getTasksByLessonId(1),
+      ).thenAnswer((_) async => Success(List.filled(2, _task)));
+      when(
+        () => taskRepository.getTasksByLessonId(2),
+      ).thenAnswer((_) async => Success(List.filled(2, _task)));
+      when(
+        () => taskRepository.getCompletedTaskCount('user-1', 1),
+      ).thenAnswer((_) async => const Success(2));
+      when(
+        () => taskRepository.getCompletedTaskCount('user-1', 2),
+      ).thenAnswer((_) async => const Success(2));
+
+      final result = await useCase.call(userId: 'user-1', courseId: 10);
+
+      expect(result.isSuccess, isTrue);
+      expect(result.dataOrNull?.isCourseCompleted, isTrue);
+      expect(result.dataOrNull?.completedLessons, _lessons.length);
+      expect(result.dataOrNull?.completedTasks, 4);
+    },
+  );
 }
 
 final _lessons = [
@@ -95,6 +126,17 @@ final _progress = [
   LessonProgressModel(
     id: 2,
     lessonId: 2,
+    userId: 'user-1',
+    isCompleted: true,
+    completedAt: DateTime(2026, 1, 1),
+    timeSpentSeconds: 60,
+  ),
+];
+
+final _legacyProgress = [
+  LessonProgressModel(
+    id: 1,
+    lessonId: 1,
     userId: 'user-1',
     isCompleted: true,
     completedAt: DateTime(2026, 1, 1),

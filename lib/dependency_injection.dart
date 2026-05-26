@@ -301,6 +301,11 @@ class DependencyInjection {
         () => GetRecommendedCoursesUseCase(GetIt.I<ICourseRepository>()),
       )
       ..registerFactory(
+        () => SubmitCourseReviewUseCase(
+          courseRepository: GetIt.I<ICourseRepository>(),
+        ),
+      )
+      ..registerFactory(
         () => CompleteLessonUseCase(
           lessonProgressRepository: GetIt.I<ILessonProgressRepository>(),
         ),

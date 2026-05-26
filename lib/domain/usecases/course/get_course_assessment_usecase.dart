@@ -75,6 +75,9 @@ class GetCourseAssessmentUseCase {
         .map((item) => item.lessonId)
         .toSet()
         .length;
+    final isCourseCompleted =
+        (lessons.isNotEmpty && completedLessons >= lessons.length) ||
+        (totalTasks > 0 && completedTasks >= totalTasks);
     final accuracyPercentage = totalTasks == 0
         ? 100.0
         : (completedTasks / totalTasks) * 100;
@@ -82,7 +85,7 @@ class GetCourseAssessmentUseCase {
     return Success(
       CourseAssessmentModel(
         totalLessons: lessons.length,
-        completedLessons: completedLessons,
+        completedLessons: isCourseCompleted ? lessons.length : completedLessons,
         totalTasks: totalTasks,
         completedTasks: completedTasks,
         accuracyPercentage: accuracyPercentage,

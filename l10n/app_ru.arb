@@ -507,6 +507,18 @@
       }
     }
   },
+  "courseReviewsTitle": "Отзывы обучающихся",
+  "courseReviewsEmpty": "Пока нет отзывов. Оставьте первый комментарий о курсе.",
+  "courseReviewAction": "Оценить курс",
+  "courseReviewEditAction": "Изменить отзыв",
+  "courseReviewDialogTitle": "Оцените этот курс",
+  "courseReviewEditDialogTitle": "Измените свой отзыв",
+  "courseReviewDialogRatingLabel": "Ваша оценка",
+  "courseReviewDialogCommentLabel": "Ваш отзыв",
+  "courseReviewDialogCommentHint": "Расскажите, что было полезно и что можно улучшить.",
+  "courseReviewSubmitAction": "Отправить отзыв",
+  "courseReviewUpdateAction": "Сохранить изменения",
+  "courseReviewSubmitSuccess": "Ваш отзыв опубликован.",
   "offlineMode": "Оффлайн - функции ИИ недоступны",
   "goBack": "Назад",
   "exit": "Выйти",

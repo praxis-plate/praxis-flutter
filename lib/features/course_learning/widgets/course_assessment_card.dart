@@ -4,9 +4,16 @@ import 'package:praxis/features/tasks/widgets/summary_row.dart';
 import 'package:praxis/s.dart';
 
 class CourseAssessmentCard extends StatelessWidget {
-  const CourseAssessmentCard({super.key, required this.assessment});
+  const CourseAssessmentCard({
+    super.key,
+    required this.assessment,
+    this.margin = const EdgeInsets.fromLTRB(16, 16, 16, 0),
+    this.action,
+  });
 
   final CourseAssessmentModel assessment;
+  final EdgeInsetsGeometry margin;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +21,7 @@ class CourseAssessmentCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      margin: margin,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Color.alphaBlend(
@@ -63,6 +70,10 @@ class CourseAssessmentCard extends StatelessWidget {
             value: '${assessment.completedTasks}/${assessment.totalTasks}',
             theme: theme,
           ),
+          if (action != null) ...[
+            const SizedBox(height: 16),
+            action!,
+          ],
         ],
       ),
     );

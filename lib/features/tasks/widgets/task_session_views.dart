@@ -83,19 +83,28 @@ class TaskSessionActiveBody extends StatelessWidget {
     super.key,
     required this.sessionState,
     required this.taskRenderer,
+    this.showCurrentTaskAsCompleted = false,
   });
 
   final SessionActiveState sessionState;
   final TaskRenderer taskRenderer;
+  final bool showCurrentTaskAsCompleted;
 
   @override
   Widget build(BuildContext context) {
+    final displayedCompletedCount = showCurrentTaskAsCompleted
+        ? (sessionState.completedTasksCount + 1).clamp(
+            0,
+            sessionState.tasks.length,
+          )
+        : sessionState.completedTasksCount;
+
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: LabeledStepProgressBar(
-            completedCount: sessionState.completedTasksCount,
+            completedCount: displayedCompletedCount,
             totalSteps: sessionState.tasks.length,
           ),
         ),

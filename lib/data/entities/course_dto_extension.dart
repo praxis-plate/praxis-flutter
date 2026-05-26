@@ -1,6 +1,7 @@
 import 'package:praxis/data/database/app_database.dart';
 import 'package:praxis/domain/models/course/course_model.dart';
 import 'package:praxis/domain/models/course/course_pricing.dart';
+import 'package:praxis/domain/models/course/course_review_model.dart';
 import 'package:praxis/domain/models/course/course_statistics.dart';
 import 'package:praxis/domain/models/user/money.dart';
 import 'package:drift/drift.dart';
@@ -52,6 +53,40 @@ extension CourseDtoCompanionExtension on CourseDto {
 
 extension CourseDetailDtoExtension on CourseDetailDto {
   CourseModel toDomain() {
-    return course.toDomain();
+    final reviewModels =
+        (reviews ?? const [])
+            .map(
+              (review) => CourseReviewModel(
+                id: review.id,
+                courseId: review.courseId,
+                authorName: review.authorName,
+                isCurrentUserReview: review.isCurrentUserReview,
+                rating: review.rating,
+                comment: review.comment,
+                createdAt: review.createdAt,
+              ),
+            )
+            .toList()
+          ..sort(
+            (a, b) => b.isCurrentUserReview == a.isCurrentUserReview
+                ? 0
+                : (b.isCurrentUserReview ? 1 : -1),
+          );
+
+    return course.toDomain().copyWith(
+      reviews: reviewModels,
+      canSubmitReview: canSubmitReview ?? false,
+      currentUserReview: currentUserReview == null
+          ? null
+          : CourseReviewModel(
+              id: currentUserReview!.id,
+              courseId: currentUserReview!.courseId,
+              authorName: currentUserReview!.authorName,
+              isCurrentUserReview: true,
+              rating: currentUserReview!.rating,
+              comment: currentUserReview!.comment,
+              createdAt: currentUserReview!.createdAt,
+            ),
+    );
   }
 }

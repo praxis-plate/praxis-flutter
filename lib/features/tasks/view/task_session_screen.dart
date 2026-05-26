@@ -313,6 +313,7 @@ class _TaskSessionScreenState extends State<TaskSessionScreen> {
                       child: TaskSessionActiveBody(
                         sessionState: sessionState,
                         taskRenderer: taskRenderer,
+                        showCurrentTaskAsCompleted: _isCompletingLastTask,
                       ),
                     ),
                   ],
