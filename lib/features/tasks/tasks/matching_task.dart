@@ -182,9 +182,7 @@ class _MatchingTaskState extends State<MatchingTask> {
                               border: Border.all(
                                 color: isHighlighted
                                     ? theme.colorScheme.primary
-                                    : theme.dividerColor.withValues(
-                                        alpha: 0.6,
-                                      ),
+                                    : theme.dividerColor.withValues(alpha: 0.6),
                                 width: 1,
                               ),
                             ),
@@ -274,9 +272,7 @@ class _MatchingTaskState extends State<MatchingTask> {
                               border: Border.all(
                                 color: isHighlighted
                                     ? theme.colorScheme.primary
-                                    : theme.dividerColor.withValues(
-                                        alpha: 0.6,
-                                      ),
+                                    : theme.dividerColor.withValues(alpha: 0.6),
                                 width: 1,
                               ),
                             ),
@@ -358,10 +354,7 @@ class _MatchBadge extends StatelessWidget {
   final String label;
   final bool isHighlighted;
 
-  const _MatchBadge({
-    required this.label,
-    required this.isHighlighted,
-  });
+  const _MatchBadge({required this.label, required this.isHighlighted});
 
   @override
   Widget build(BuildContext context) {

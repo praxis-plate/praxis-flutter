@@ -29,8 +29,7 @@ final class LessonsListLoadedState extends LessonsListState {
   });
 
   @override
-  List<Object> get props =>
-      [modules, lessons, taskCounts, completedTaskCounts];
+  List<Object> get props => [modules, lessons, taskCounts, completedTaskCounts];
 }
 
 final class LessonsListErrorState extends LessonsListState {

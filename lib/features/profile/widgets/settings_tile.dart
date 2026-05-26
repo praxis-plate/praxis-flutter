@@ -41,10 +41,7 @@ class SettingsTile extends StatelessWidget {
                     Text(subtitle!, style: theme.textTheme.labelSmall),
                 ],
               ),
-              if (trailing != null) ...[
-                const Spacer(),
-                trailing!,
-              ],
+              if (trailing != null) ...[const Spacer(), trailing!],
             ],
           ),
         ),

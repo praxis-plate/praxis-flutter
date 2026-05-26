@@ -32,30 +32,25 @@ class StepProgressBar extends StatelessWidget {
         inactiveColor ?? theme.colorScheme.primary.withValues(alpha: 0.2);
 
     return Row(
-      children: List.generate(
-        totalSteps,
-        (index) {
-          final isActive = completedCount != null
-              ? index < completedCount!
-              : index == (activeIndex ?? 0);
+      children: List.generate(totalSteps, (index) {
+        final isActive = completedCount != null
+            ? index < completedCount!
+            : index == (activeIndex ?? 0);
 
-          return Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(
-                right: index == totalSteps - 1 ? 0 : gap,
-              ),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                height: height,
-                decoration: BoxDecoration(
-                  color: isActive ? resolvedActive : resolvedInactive,
-                  borderRadius: BorderRadius.circular(999),
-                ),
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: index == totalSteps - 1 ? 0 : gap),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              height: height,
+              decoration: BoxDecoration(
+                color: isActive ? resolvedActive : resolvedInactive,
+                borderRadius: BorderRadius.circular(999),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      }),
     );
   }
 }
