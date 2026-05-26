@@ -11,10 +11,7 @@ final class LoadLessonsListEvent extends LessonsListEvent {
   final int courseId;
   final String userId;
 
-  const LoadLessonsListEvent({
-    required this.courseId,
-    required this.userId,
-  });
+  const LoadLessonsListEvent({required this.courseId, required this.userId});
 
   @override
   List<Object> get props => [courseId, userId];

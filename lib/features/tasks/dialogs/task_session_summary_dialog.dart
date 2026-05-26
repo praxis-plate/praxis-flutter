@@ -49,15 +49,30 @@ class TaskSessionSummaryDialog extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          IconButton(
+                          OutlinedButton.icon(
                             onPressed: () {
                               context.pop();
                               onFinish();
                             },
-                            icon: const Icon(Icons.arrow_back_ios),
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: theme.colorScheme.primary,
+                              backgroundColor:
+                                  theme.colorScheme.surface.withValues(
+                                    alpha: 0.92,
+                                  ),
+                              side: BorderSide(
+                                color: theme.colorScheme.primary.withValues(
+                                  alpha: 0.28,
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            icon: const Icon(Icons.arrow_back_ios_new, size: 16),
+                            label: Text(s.goBack),
                           ),
                           const SizedBox(width: 8),
                           Icon(
@@ -107,6 +122,70 @@ class TaskSessionSummaryDialog extends StatelessWidget {
                             '${sessionState.correctTasks}/${sessionState.totalTasks}',
                         theme: theme,
                       ),
+                      if (sessionState.coinsAwarded > 0) ...[
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.monetization_on,
+                          label: s.taskSessionCoinsAwarded,
+                          value: '${sessionState.coinsAwarded}',
+                          theme: theme,
+                        ),
+                      ],
+                      if (sessionState.unlockedAchievements.isNotEmpty) ...[
+                        const SizedBox(height: 20),
+                        Text(
+                          s.taskSessionAchievementsUnlocked,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: 8),
+                        for (final achievement
+                            in sessionState.unlockedAchievements) ...[
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 6),
+                            child: Text('• ${achievement.title}'),
+                          ),
+                        ],
+                      ],
+                      if (sessionState.courseAssessment != null) ...[
+                        const SizedBox(height: 20),
+                        Text(
+                          s.courseAssessmentTitle,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.workspace_premium,
+                          label: s.courseAssessmentGrade,
+                          value: s.courseAssessmentGradeValue(
+                            sessionState.courseAssessment!.grade,
+                          ),
+                          theme: theme,
+                        ),
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.auto_graph,
+                          label: s.courseAssessmentAccuracy,
+                          value:
+                              '${sessionState.courseAssessment!.accuracyPercentage.toStringAsFixed(1)}%',
+                          theme: theme,
+                        ),
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.school,
+                          label: s.courseAssessmentLessons,
+                          value:
+                              '${sessionState.courseAssessment!.completedLessons}/${sessionState.courseAssessment!.totalLessons}',
+                          theme: theme,
+                        ),
+                        const SizedBox(height: 12),
+                        SummaryRow(
+                          icon: Icons.assignment_turned_in,
+                          label: s.courseAssessmentTasks,
+                          value:
+                              '${sessionState.courseAssessment!.completedTasks}/${sessionState.courseAssessment!.totalTasks}',
+                          theme: theme,
+                        ),
+                      ],
                       const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerRight,

@@ -32,10 +32,7 @@ class LabeledStepProgressBar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        StepProgressBar(
-          totalSteps: totalSteps,
-          completedCount: completedCount,
-        ),
+        StepProgressBar(totalSteps: totalSteps, completedCount: completedCount),
       ],
     );
   }

@@ -7,6 +7,8 @@ export 'course_meta_info.dart';
 export 'course_preview_gallery.dart';
 export 'course_primary_action_button.dart';
 export 'course_purchase_button.dart';
+export 'course_review_dialog.dart';
+export 'course_reviews_section.dart';
 export 'course_tab_section.dart';
 export 'description_content.dart';
 export 'meta_item.dart';

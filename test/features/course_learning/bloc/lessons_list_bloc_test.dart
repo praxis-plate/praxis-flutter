@@ -68,9 +68,8 @@ void main() {
       ).thenAnswer((_) async => const Failure(_failure));
     },
     build: () => bloc,
-    act: (bloc) => bloc.add(
-      const LoadLessonsListEvent(courseId: 1, userId: 'user-1'),
-    ),
+    act: (bloc) =>
+        bloc.add(const LoadLessonsListEvent(courseId: 1, userId: 'user-1')),
     expect: () => [
       const LessonsListLoadingState(),
       LessonsListLoadedState(

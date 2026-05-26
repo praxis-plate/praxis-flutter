@@ -134,10 +134,7 @@ class _LessonProgress extends StatelessWidget {
   final String label;
   final ThemeData theme;
 
-  const _LessonProgress({
-    required this.label,
-    required this.theme,
-  });
+  const _LessonProgress({required this.label, required this.theme});
 
   @override
   Widget build(BuildContext context) {

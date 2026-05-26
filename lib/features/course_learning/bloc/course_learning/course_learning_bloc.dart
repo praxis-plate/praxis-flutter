@@ -1,9 +1,11 @@
 import 'package:praxis/core/error/app_error_code.dart';
 import 'package:praxis/core/error/failure.dart';
 import 'package:praxis/core/utils/result.dart';
+import 'package:praxis/domain/models/course/course_assessment_model.dart';
 import 'package:praxis/domain/models/course/course_model.dart';
 import 'package:praxis/domain/models/lesson_progress/lesson_progress_model.dart';
 import 'package:praxis/domain/models/user/user_course_statistics.dart';
+import 'package:praxis/domain/usecases/course/get_course_assessment_usecase.dart';
 import 'package:praxis/domain/usecases/course/get_course_detail_usecase.dart';
 import 'package:praxis/domain/usecases/lesson/get_course_lesson_progress_usecase.dart';
 import 'package:praxis/domain/usecases/lessons/get_lessons_by_course_id_usecase.dart';
@@ -18,6 +20,7 @@ part 'course_learning_state.dart';
 class CourseLearningBloc
     extends Bloc<CourseLearningEvent, CourseLearningState> {
   final GetCourseDetailUseCase _getCourseDetailUseCase;
+  final GetCourseAssessmentUseCase _getCourseAssessmentUseCase;
   final GetCourseLessonProgressUseCase _getCourseLessonProgressUseCase;
   final GetLessonsByCourseIdUseCase _getLessonsByCourseIdUseCase;
 
@@ -26,9 +29,11 @@ class CourseLearningBloc
 
   CourseLearningBloc({
     required GetCourseDetailUseCase getCourseDetailUseCase,
+    required GetCourseAssessmentUseCase getCourseAssessmentUseCase,
     required GetCourseLessonProgressUseCase getCourseLessonProgressUseCase,
     required GetLessonsByCourseIdUseCase getLessonsByCourseIdUseCase,
   }) : _getCourseDetailUseCase = getCourseDetailUseCase,
+       _getCourseAssessmentUseCase = getCourseAssessmentUseCase,
        _getCourseLessonProgressUseCase = getCourseLessonProgressUseCase,
        _getLessonsByCourseIdUseCase = getLessonsByCourseIdUseCase,
        super(const CourseLearningInitial()) {
@@ -79,12 +84,18 @@ class CourseLearningBloc
           event.courseId,
         );
         final totalLessons = lessonsResult.dataOrNull?.length ?? 0;
+        final courseAssessment = await _loadCourseAssessment(
+          userId: event.userId,
+          courseId: event.courseId,
+          totalLessons: totalLessons,
+        );
 
         if (course != null) {
           emit(
             CourseLearningLoaded(
               course: course,
               lessonProgress: progress,
+              courseAssessment: courseAssessment,
               statistics: _createStatistics(
                 progress,
                 totalLessons,
@@ -141,12 +152,18 @@ class CourseLearningBloc
           _currentCourseId!,
         );
         final totalLessons = lessonsResult.dataOrNull?.length ?? 0;
+        final courseAssessment = await _loadCourseAssessment(
+          userId: _currentUserId!,
+          courseId: _currentCourseId!,
+          totalLessons: totalLessons,
+        );
 
         if (course != null) {
           emit(
             CourseLearningLoaded(
               course: course,
               lessonProgress: progress,
+              courseAssessment: courseAssessment,
               statistics: _createStatistics(
                 progress,
                 totalLessons,
@@ -176,5 +193,26 @@ class CourseLearningBloc
       GetIt.I<Talker>().handle(e, st);
       emit(CourseLearningError(failure: AppFailure.fromException(e)));
     }
+  }
+
+  Future<CourseAssessmentModel?> _loadCourseAssessment({
+    required String userId,
+    required int courseId,
+    required int totalLessons,
+  }) async {
+    if (totalLessons == 0) {
+      return null;
+    }
+
+    final assessmentResult = await _getCourseAssessmentUseCase.call(
+      userId: userId,
+      courseId: courseId,
+    );
+    final assessment = assessmentResult.dataOrNull;
+    if (assessment == null || !assessment.isCourseCompleted) {
+      return null;
+    }
+
+    return assessment;
   }
 }

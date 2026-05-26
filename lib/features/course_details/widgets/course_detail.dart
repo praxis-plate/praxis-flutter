@@ -3,6 +3,7 @@ import 'package:praxis/core/widgets/widgets.dart';
 import 'package:praxis/domain/models/models.dart';
 import 'package:praxis/features/course_details/widgets/course_header.dart';
 import 'package:praxis/features/course_details/widgets/course_hero_app_bar.dart';
+import 'package:praxis/features/course_details/widgets/course_reviews_section.dart';
 import 'package:praxis/features/course_details/widgets/course_tab_section.dart';
 
 class CourseDetail extends StatelessWidget {
@@ -36,6 +37,9 @@ class CourseDetail extends StatelessWidget {
           ),
         ),
         SliverToBoxAdapter(child: CourseTabSection(course: course)),
+        SliverToBoxAdapter(
+          child: CourseReviewsSection(course: course, userProfile: userProfile),
+        ),
       ],
     );
   }

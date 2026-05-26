@@ -171,8 +171,7 @@ class _SignUpProgress extends StatelessWidget {
               totalSteps: 3,
               activeIndex: currentStep,
               activeColor: theme.colorScheme.onPrimary,
-              inactiveColor:
-                  theme.colorScheme.onPrimary.withValues(alpha: 0.3),
+              inactiveColor: theme.colorScheme.onPrimary.withValues(alpha: 0.3),
             ),
           ],
         );

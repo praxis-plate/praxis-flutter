@@ -23,6 +23,7 @@ class SessionLoadingState extends LessonTaskSessionState {
 class SessionActiveState extends LessonTaskSessionState {
   final int lessonId;
   final String userId;
+  final int? courseId;
   final String lessonTitle;
   final List<TaskModel> tasks;
   final int currentTaskIndex;
@@ -34,6 +35,7 @@ class SessionActiveState extends LessonTaskSessionState {
   const SessionActiveState({
     required this.lessonId,
     required this.userId,
+    required this.courseId,
     required this.lessonTitle,
     required this.tasks,
     required this.currentTaskIndex,
@@ -60,6 +62,7 @@ class SessionActiveState extends LessonTaskSessionState {
     return SessionActiveState(
       lessonId: lessonId,
       userId: userId,
+      courseId: courseId,
       lessonTitle: lessonTitle ?? this.lessonTitle,
       tasks: tasks,
       currentTaskIndex: currentTaskIndex ?? this.currentTaskIndex,
@@ -74,6 +77,7 @@ class SessionActiveState extends LessonTaskSessionState {
   List<Object> get props => [
     lessonId,
     userId,
+    courseId ?? -1,
     lessonTitle,
     tasks,
     currentTaskIndex,
@@ -92,6 +96,9 @@ class SessionCompletedState extends LessonTaskSessionState {
   final int timeSpentSeconds;
   final int totalTasks;
   final int correctTasks;
+  final int coinsAwarded;
+  final List<AchievementModel> unlockedAchievements;
+  final CourseAssessmentModel? courseAssessment;
   final bool isPersisting;
 
   const SessionCompletedState({
@@ -102,11 +109,14 @@ class SessionCompletedState extends LessonTaskSessionState {
     required this.timeSpentSeconds,
     required this.totalTasks,
     required this.correctTasks,
+    this.coinsAwarded = 0,
+    this.unlockedAchievements = const [],
+    this.courseAssessment,
     this.isPersisting = false,
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
     lessonId,
     lessonTitle,
     totalXpEarned,
@@ -114,6 +124,9 @@ class SessionCompletedState extends LessonTaskSessionState {
     timeSpentSeconds,
     totalTasks,
     correctTasks,
+    coinsAwarded,
+    unlockedAchievements,
+    courseAssessment,
     isPersisting,
   ];
 }

@@ -16,11 +16,13 @@ class LessonsList extends StatelessWidget {
     required this.courseId,
     required this.completedLessonIds,
     required this.userId,
+    this.topContent,
   });
 
   final int courseId;
   final Set<int> completedLessonIds;
   final String userId;
+  final Widget? topContent;
 
   @override
   Widget build(BuildContext context) {
@@ -65,20 +67,22 @@ class LessonsList extends StatelessWidget {
             courseId,
           );
 
-          return Wrapper(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                if (nextLessonId != null) ...[
-                  CourseLearningResumeCard(
-                    courseId: courseId,
-                    nextLessonId: nextLessonId,
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                ...lessonWidgets,
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            children: [
+              if (topContent != null) ...[
+                topContent!,
+                const SizedBox(height: 12),
               ],
-            ),
+              if (nextLessonId != null) ...[
+                CourseLearningResumeCard(
+                  courseId: courseId,
+                  nextLessonId: nextLessonId,
+                ),
+                const SizedBox(height: 12),
+              ],
+              ...lessonWidgets,
+            ],
           );
         },
       ),

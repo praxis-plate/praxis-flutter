@@ -18,16 +18,23 @@ class CourseLearningLoading extends CourseLearningState {
 class CourseLearningLoaded extends CourseLearningState {
   final CourseModel course;
   final List<LessonProgressModel> lessonProgress;
+  final CourseAssessmentModel? courseAssessment;
   final UserCourseStatistics statistics;
 
   const CourseLearningLoaded({
     required this.course,
     required this.lessonProgress,
+    required this.courseAssessment,
     required this.statistics,
   });
 
   @override
-  List<Object?> get props => [course, lessonProgress, statistics];
+  List<Object?> get props => [
+    course,
+    lessonProgress,
+    courseAssessment,
+    statistics,
+  ];
 }
 
 class CourseLearningError extends CourseLearningState {

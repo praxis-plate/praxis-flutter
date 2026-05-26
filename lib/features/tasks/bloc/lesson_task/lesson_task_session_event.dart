@@ -4,17 +4,22 @@ abstract class LessonTaskSessionEvent extends Equatable {
   const LessonTaskSessionEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class StartSessionEvent extends LessonTaskSessionEvent {
   final int lessonId;
   final String userId;
+  final int? courseId;
 
-  const StartSessionEvent({required this.lessonId, required this.userId});
+  const StartSessionEvent({
+    required this.lessonId,
+    required this.userId,
+    this.courseId,
+  });
 
   @override
-  List<Object> get props => [lessonId, userId];
+  List<Object?> get props => [lessonId, userId, courseId];
 }
 
 class CompleteCurrentTaskEvent extends LessonTaskSessionEvent {
@@ -27,7 +32,7 @@ class CompleteCurrentTaskEvent extends LessonTaskSessionEvent {
   });
 
   @override
-  List<Object> get props => [isCorrect, xpEarned];
+  List<Object?> get props => [isCorrect, xpEarned];
 }
 
 class ExitSessionEvent extends LessonTaskSessionEvent {
@@ -36,5 +41,5 @@ class ExitSessionEvent extends LessonTaskSessionEvent {
   const ExitSessionEvent({this.saveProgress = false});
 
   @override
-  List<Object> get props => [saveProgress];
+  List<Object?> get props => [saveProgress];
 }

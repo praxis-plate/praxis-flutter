@@ -492,6 +492,33 @@
   "taskSessionAccuracy": "Точность",
   "taskSessionTimeSpent": "Время",
   "taskSessionTasksCompleted": "Заданий выполнено",
+  "taskSessionCoinsAwarded": "Получено монет",
+  "taskSessionAchievementsUnlocked": "Открытые достижения",
+  "courseAssessmentTitle": "Курс завершен!",
+  "courseAssessmentGrade": "Итоговая оценка",
+  "courseAssessmentAccuracy": "Точность по курсу",
+  "courseAssessmentLessons": "Уроков завершено",
+  "courseAssessmentTasks": "Заданий выполнено",
+  "courseAssessmentGradeValue": "{grade}/5",
+  "@courseAssessmentGradeValue": {
+    "placeholders": {
+      "grade": {
+        "type": "int"
+      }
+    }
+  },
+  "courseReviewsTitle": "Отзывы обучающихся",
+  "courseReviewsEmpty": "Пока нет отзывов. Оставьте первый комментарий о курсе.",
+  "courseReviewAction": "Оценить курс",
+  "courseReviewEditAction": "Изменить отзыв",
+  "courseReviewDialogTitle": "Оцените этот курс",
+  "courseReviewEditDialogTitle": "Измените свой отзыв",
+  "courseReviewDialogRatingLabel": "Ваша оценка",
+  "courseReviewDialogCommentLabel": "Ваш отзыв",
+  "courseReviewDialogCommentHint": "Расскажите, что было полезно и что можно улучшить.",
+  "courseReviewSubmitAction": "Отправить отзыв",
+  "courseReviewUpdateAction": "Сохранить изменения",
+  "courseReviewSubmitSuccess": "Ваш отзыв опубликован.",
   "offlineMode": "Оффлайн - функции ИИ недоступны",
   "goBack": "Назад",
   "exit": "Выйти",

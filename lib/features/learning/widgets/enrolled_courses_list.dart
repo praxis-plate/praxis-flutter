@@ -25,7 +25,7 @@ class EnrolledCoursesList extends StatelessWidget {
       child: ListView.separated(
         padding: EdgeInsets.zero,
         itemCount: courses.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        separatorBuilder: (context, index) => const SizedBox(height: 16),
         itemBuilder: (context, index) {
           final course = courses[index];
           return EnrolledCourseCard(

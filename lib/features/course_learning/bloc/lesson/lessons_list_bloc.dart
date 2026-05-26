@@ -17,7 +17,7 @@ class LessonsListBloc extends Bloc<LessonsListEvent, LessonsListState> {
   final GetLessonsByCourseIdUseCase _getLessonsByCourseIdUseCase;
   final GetTaskCountByLessonIdUseCase _getTaskCountByLessonIdUseCase;
   final GetCompletedTaskCountByLessonIdUseCase
-      _getCompletedTaskCountByLessonIdUseCase;
+  _getCompletedTaskCountByLessonIdUseCase;
 
   LessonsListBloc(
     this._getModulesByCourseIdUseCase,

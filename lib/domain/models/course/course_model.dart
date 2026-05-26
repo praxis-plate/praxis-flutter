@@ -1,3 +1,4 @@
+import 'package:praxis/domain/models/course/course_review_model.dart';
 import 'package:praxis/domain/models/course/course_pricing.dart';
 import 'package:praxis/domain/models/course/course_statistics.dart';
 import 'package:equatable/equatable.dart';
@@ -16,8 +17,12 @@ class CourseModel extends Equatable {
   final String tableOfContents;
   final CoursePricing pricing;
   final CourseStatistics statistics;
+  final int totalLessons;
   final int totalTasks;
   final String? coverImage;
+  final List<CourseReviewModel> reviews;
+  final bool canSubmitReview;
+  final CourseReviewModel? currentUserReview;
 
   const CourseModel({
     required this.id,
@@ -33,8 +38,12 @@ class CourseModel extends Equatable {
     this.tableOfContents = '',
     required this.pricing,
     required this.statistics,
+    this.totalLessons = 0,
     this.totalTasks = 0,
     this.coverImage,
+    this.reviews = const [],
+    this.canSubmitReview = false,
+    this.currentUserReview,
   });
 
   CourseModel copyWith({
@@ -51,8 +60,12 @@ class CourseModel extends Equatable {
     String? tableOfContents,
     CoursePricing? pricing,
     CourseStatistics? statistics,
+    int? totalLessons,
     int? totalTasks,
     String? coverImage,
+    List<CourseReviewModel>? reviews,
+    bool? canSubmitReview,
+    CourseReviewModel? currentUserReview,
   }) {
     return CourseModel(
       id: id ?? this.id,
@@ -68,8 +81,12 @@ class CourseModel extends Equatable {
       tableOfContents: tableOfContents ?? this.tableOfContents,
       pricing: pricing ?? this.pricing,
       statistics: statistics ?? this.statistics,
+      totalLessons: totalLessons ?? this.totalLessons,
       totalTasks: totalTasks ?? this.totalTasks,
       coverImage: coverImage ?? this.coverImage,
+      reviews: reviews ?? this.reviews,
+      canSubmitReview: canSubmitReview ?? this.canSubmitReview,
+      currentUserReview: currentUserReview ?? this.currentUserReview,
     );
   }
 
@@ -88,8 +105,12 @@ class CourseModel extends Equatable {
     tableOfContents,
     pricing,
     statistics,
+    totalLessons,
     totalTasks,
     coverImage,
+    reviews,
+    canSubmitReview,
+    currentUserReview,
   ];
 
   @override

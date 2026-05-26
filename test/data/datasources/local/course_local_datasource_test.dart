@@ -242,6 +242,8 @@ final _courseDetailDto = client.CourseDetailDto(
     totalLessons: 1,
     totalTasks: 1,
   ),
+  reviews: const [],
+  canSubmitReview: false,
   modules: [
     client.ModuleDto(
       id: 100,

@@ -1,4 +1,6 @@
+export 'course_assessment_model.dart';
 export 'course_model.dart';
+export 'course_review_model.dart';
 export 'course_pricing.dart';
 export 'course_statistics.dart';
 export 'course_structure_lesson_model.dart';
